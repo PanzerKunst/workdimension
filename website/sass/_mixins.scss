@@ -1,0 +1,40 @@
+@mixin medium-screen {
+  @media screen and (min-width: $medium-content-width) {
+    @content;
+  }
+}
+
+@mixin large-screen {
+  @media screen and (min-width: $large-content-width) {
+    @content;
+  }
+}
+
+@mixin ellipsis($white-space: nowrap) {
+  white-space: $white-space;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+
+// Retina sprite mixin and function inspired by Paul Stamatiou (http://paulstamatiou.com/responsive-retina-blog-development-part-2)
+
+@mixin hdpi-sprite {
+  @include retina-image($sprite-url, 1000px 250px);  // Sprite dimensions, halved
+  background-color: transparent;
+}
+// silly function to divide the width and height to save me 2 seconds
+// whenever I need to calculate the halved retina background position
+@function half-pos($w, $h) {
+  @return $w/2 $h/2;
+}
+
+@mixin adaptive-font-size($font-size) {
+  font-size: #{$font-size * 4}px; // Initially "#{$font-size}vw", but doesn't work well on the iOS Safari
+  @include medium-screen {
+    font-size: #{$font-size * 6.4}px;
+  }
+  @include large-screen {
+    font-size: #{$font-size * 8}px;
+  }
+}

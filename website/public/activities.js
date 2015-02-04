@@ -1,0 +1,395 @@
+CS.Activities = {};
+
+CS.Activities.Base = P(function (c) {
+    c.router = new Grapnel();
+    c.$el = $("#current-c1-or-activity");
+    c.controllers = {};
+
+    c.init = function(className, accountData) {
+        this.model = {
+            activityClassName: className,
+            accountData: accountData || {}
+        };
+
+        this.$el.empty();
+
+        this._initElements();
+    };
+
+    c._initElements = function() {
+        this.$activitiesTab = $("#activities-tab");
+
+        this.$tabPanels = $('[role="tabpanel"]');
+        this.$activitiesPanel = this.$tabPanels.filter("#activities");
+
+        this.$feedSection = this.$activitiesPanel.children("#c1-and-activity-feed");
+        this.$currentC1OrActivitySection = this.$activitiesPanel.children("#current-c1-or-activity");
+    };
+
+    c.registerController = function(controllerClass, route) {
+        this.controllers[route] = controllerClass;
+    };
+
+    c.renderController = function (route) {
+        if (!this.$activitiesPanel.hasClass("active")) {
+            this.$tabPanels.removeClass("active");
+            this.$activitiesTab.tab('show');
+            this.$activitiesPanel.addClass("active");
+        }
+
+        this.$feedSection.hide();
+        this.$currentC1OrActivitySection.show();
+
+        this.$el.children().hide();
+        this.controllers[route].render();
+    };
+});
+;CS.Activities.Controller = P(function (c) {
+    c.init = function (route, activity) {
+        this.route = route;
+        this.activity = activity;
+        this.activity.registerController(this, this.route);
+    };
+
+    c.render = function () {
+        if (!this.isRendered) {
+            var uuid = CS.Services.guid();
+
+            this.activity.$el.append('<div class="activity-page" id="' + uuid + '"></div>');
+            this.$el = $("#" + uuid);
+
+            React.render(
+                React.createElement(this.reactClass, {data: this.activity.model.insightModule.data}),
+                this.$el[0]
+            );
+
+            this.initElements();
+            this.initValidation();
+            this.initEvents();
+
+            this.isRendered = true;
+        }
+
+        this.onReRender();
+
+        this.$el.show();
+    };
+
+    c.navigateTo = function(route) {
+        location.hash = route;
+    };
+
+    // Child functions are call instead if exist
+    c.initElements = function() {};
+    c.initValidation = function() {};
+    c.initEvents = function() {};
+    c.onReRender = function() {};
+});
+;CS.Activities.GlobalFindYourStrengths = P(CS.Activities.Base, function (c, base) {
+    c.init = function (accoundData) {
+        base.init("GlobalFindYourStrengths", accoundData);
+
+        // Initialising all app controllers
+        this.page1Controller = CS.Activities.GlobalFindYourStrengths.Controllers.Page1("activities/" + this.model.className, this);
+        this.page2Controller = CS.Activities.GlobalFindYourStrengths.Controllers.Page2("activities/" + this.model.className + "/2", this);
+        this.page3Controller = CS.Activities.GlobalFindYourStrengths.Controllers.Page3("activities/" + this.model.className + "/3", this);
+
+        this.router.get(this.page1Controller.route, function (req) {
+            this.renderController(this.page1Controller.route);
+        }.bind(this));
+
+        this.router.get(this.page2Controller.route, function (req) {
+            this.renderController(this.page2Controller.route);
+        }.bind(this));
+
+        this.router.get(this.page3Controller.route, function (req) {
+            this.renderController(this.page3Controller.route);
+        }.bind(this));
+    };
+});
+
+CS.Activities.GlobalFindYourStrengths.Controllers = {};
+;CS.Activities.GlobalFindYourStrengths2 = P(CS.Activities.Base, function (c, base) {
+    c.initActivity = function (activity) {
+        base.initActivity(activity);
+
+        // Initialising all app controllers
+        this.controller = CS.Activities.GlobalFindYourStrengths2.Controllers.Page1("activities/" + this.model.className, this);
+
+        this.router.get(this.controller.route, function (req) {
+            this.renderController(this.controller.route);
+        }.bind(this));
+    };
+});
+
+CS.Activities.GlobalFindYourStrengths2.Controllers = {};
+;CS.Activities.GlobalFindYourStrengths.Controllers.Page1 = P(CS.Activities.Controller, function (c, base) {
+    c.reactClass = React.createClass({displayName: "reactClass",
+        render: function () {
+            return (
+                React.createElement("form", {role: "form"}, 
+                    React.createElement("div", {className: "form-group"}, 
+                        React.createElement("label", {for: "strength-1"}, "My first strength is"), 
+                        React.createElement("input", {type: "text", id: "strength-1", className: "form-control"}), 
+
+                        React.createElement("p", {className: "field-error", "data-check": "empty"})
+                    ), 
+                    React.createElement("div", {className: "submit-wrapper"}, 
+                        React.createElement("button", {type: "submit", className: "btn btn-primary"}, "Next")
+                    )
+                )
+                );
+        }
+    });
+
+    c.initElements = function () {
+        this.$form = this.$el.find("form");
+        this.$strengthField = this.$form.find("#strength-1");
+    };
+
+    c.initValidation = function () {
+        this.validator = CS.Services.Validator([
+            "strength-1"
+        ]);
+    };
+
+    c.initEvents = function () {
+        this.$form.submit($.proxy(this._doSubmit, this));
+    };
+
+    c._doSubmit = function (e) {
+        e.preventDefault();
+
+        if (this.validator.isValid()) {
+            this.model.accountData.strength1 = this.$strengthField.val();
+
+            this.navigateTo(this.activity.page2Controller.route);
+        }
+    };
+});
+
+CS.Activities.GlobalFindYourStrengths.Controllers.Page2 = P(CS.Activities.Controller, function (c, base) {
+    c.reactClass = React.createClass({displayName: "reactClass",
+        render: function () {
+            return (
+                React.createElement("form", {role: "form"}, 
+                    React.createElement("div", {className: "form-group"}, 
+                        React.createElement("label", {for: "strength-2"}, "My second strength is"), 
+                        React.createElement("input", {type: "text", id: "strength-2", className: "form-control"}), 
+
+                        React.createElement("p", {className: "field-error", "data-check": "empty"})
+                    ), 
+                    React.createElement("div", {className: "submit-wrapper"}, 
+                        React.createElement("button", {type: "submit", className: "btn btn-primary"}, "Next")
+                    )
+                )
+                );
+        }
+    });
+
+    c.initElements = function () {
+        this.$form = this.$el.find("form");
+        this.$strengthField = this.$form.find("#strength-2");
+    };
+
+    c.initValidation = function () {
+        this.validator = CS.Services.Validator([
+            "strength-2"
+        ]);
+    };
+
+    c.initEvents = function () {
+        this.$form.submit($.proxy(this._doSubmit, this));
+    };
+
+    c._doSubmit = function (e) {
+        e.preventDefault();
+
+        if (this.validator.isValid()) {
+            this.model.accountData.strength2 = this.$strengthField.val();
+
+            this.navigateTo(this.activity.page3Controller.route);
+        }
+    };
+});
+
+CS.Activities.GlobalFindYourStrengths.Controllers.Page3 = P(CS.Activities.Controller, function (c, base) {
+    c.reactClass = React.createClass({displayName: "reactClass",
+        render: function () {
+            return (
+                React.createElement("form", {role: "form"}, 
+                    React.createElement("div", {className: "form-group"}, 
+                        React.createElement("label", {for: "strength-3"}, "My third strength is"), 
+                        React.createElement("input", {type: "text", id: "strength-3", className: "form-control"}), 
+
+                        React.createElement("p", {className: "field-error", "data-check": "empty"})
+                    ), 
+                    React.createElement("div", {className: "submit-wrapper"}, 
+                        React.createElement("button", {type: "submit", className: "btn btn-primary", "data-loading-text": "Saving..."}, "Done")
+                    )
+                )
+                );
+        }
+    });
+
+    c.initElements = function () {
+        this.$form = this.$el.find("form");
+        this.$strengthField = this.$form.find("#strength-3");
+        this.$submitBtn = this.$form.find("[type=submit]");
+    };
+
+    c.initValidation = function () {
+        this.validator = CS.Services.Validator([
+            "strength-3"
+        ]);
+    };
+
+    c.initEvents = function () {
+        this.$form.submit($.proxy(this._doSubmit, this));
+    };
+
+    c.onReRender = function() {
+        // The submit button may still be in loading state when navigating back. We make sure it doesn't happen
+        this.$submitBtn.button('reset');
+    };
+
+    c._doSubmit = function (e) {
+        e.preventDefault();
+
+        if (this.validator.isValid()) {
+            this.$submitBtn.button('loading');
+
+            this.model.accountData.strength3 = this.$strengthField.val();
+
+            var type = "POST";
+            var url = "/api/account-activity";
+
+            $.ajax({
+                url: url,
+                type: type,
+                contentType: "application/json",
+                data: JSON.stringify(this.model),
+                success: function (data, textStatus, jqXHR) {
+                    location.href = "/#insights";
+                }.bind(this),
+                error: function (jqXHR, textStatus, errorThrown) {
+                    this.$submitBtn.button('reset');
+                    alert('AJAX failure doing a ' + type + ' request to "' + url + '"');
+                }.bind(this)
+            });
+        }
+    };
+});
+
+CS.Activities.GlobalFindYourStrengths2.Controllers.Page1 = P(CS.Activities.Controller, function (c, base) {
+    c.reactClass = React.createClass({displayName: "reactClass",
+        render: function () {
+            return (
+                React.createElement("form", {role: "form"}, 
+                    React.createElement("div", {className: "form-group"}, 
+                        React.createElement("label", {for: "strength-4"}, "My first über-strength is"), 
+                        React.createElement("input", {type: "text", id: "strength-4", className: "form-control"}), 
+
+                        React.createElement("p", {className: "field-error", "data-check": "empty"})
+                    ), 
+                    React.createElement("div", {className: "form-group"}, 
+                        React.createElement("label", {for: "strength-5"}, "My second über-strength is"), 
+                        React.createElement("input", {type: "text", id: "strength-5", className: "form-control"}), 
+
+                        React.createElement("p", {className: "field-error", "data-check": "empty"})
+                    ), 
+                    React.createElement("div", {className: "form-group"}, 
+                        React.createElement("label", {for: "strength-6"}, "My third über-strength is"), 
+                        React.createElement("input", {type: "text", id: "strength-6", className: "form-control"}), 
+
+                        React.createElement("p", {className: "field-error", "data-check": "empty"})
+                    ), 
+                    React.createElement("div", {className: "submit-wrapper"}, 
+                        React.createElement("button", {type: "submit", className: "btn btn-primary", "data-loading-text": "Saving..."}, "Done")
+                    )
+                )
+                );
+        }
+    });
+
+    c.initElements = function () {
+        this.$form = this.$el.find("form");
+
+        this.$strength4Field = $("#strength-4");
+        this.$strength5Field = $("#strength-5");
+        this.$strength6Field = $("#strength-6");
+
+        this.$submitBtn = $("[type=submit]");
+    };
+
+    c.initValidation = function () {
+        this.validator = CS.Services.Validator([
+            "strength-4",
+            "strength-5",
+            "strength-6"
+        ]);
+    };
+
+    c.initEvents = function () {
+        this.$form.submit($.proxy(this._doSubmit, this));
+    };
+
+    c.onReRender = function() {
+        // The submit button may still be in loading state when navigating back. We make sure it doesn't happen
+        this.$submitBtn.button('reset');
+    };
+
+    c._doSubmit = function (e) {
+        e.preventDefault();
+
+        if (this.validator.isValid()) {
+            this.$submitBtn.button('loading');
+
+            this.activity.model.insightModule.data.strength4 = this.$strength4Field.val();
+            this.activity.model.insightModule.data.strength5 = this.$strength5Field.val();
+            this.activity.model.insightModule.data.strength6 = this.$strength6Field.val();
+
+            this._updateInsightModuleData();
+        }
+    };
+
+    c._updateInsightModuleData = function () {
+        var type = "PUT";
+        var url = "/api/insight-modules";
+
+        $.ajax({
+            url: url,
+            type: type,
+            contentType: "application/json",
+            data: JSON.stringify(this.activity.model.insightModule),
+            success: function (data, textStatus, jqXHR) {
+                this._updateActivityState();
+            }.bind(this),
+            error: function (jqXHR, textStatus, errorThrown) {
+                this.$submitBtn.button('reset');
+                alert('AJAX failure doing a ' + type + ' request to "' + url + '"');
+            }.bind(this)
+        });
+    };
+
+    c._updateActivityState = function () {
+        this.activity.model.state = CS.Models.Activity.state.done;
+
+        var type = "PUT";
+        var url = "/api/activities/state";
+
+        $.ajax({
+            url: url,
+            type: type,
+            contentType: "application/json",
+            data: JSON.stringify(this.activity.model),
+            success: function (data, textStatus, jqXHR) {
+                location.href = "/#insights";
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                this.$submitBtn.button('reset');
+                alert('AJAX failure doing a ' + type + ' request to "' + url + '"');
+            }.bind(this)
+        });
+    };
+});

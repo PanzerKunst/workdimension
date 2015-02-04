@@ -1,0 +1,20 @@
+[role="navigation"] {
+  > a {
+    display: none;
+  }
+}
+
+#modal {
+  form {
+    .form-group {
+      float: none;
+
+      width: 100%;
+      margin-right: auto;
+    }
+
+    [type="submit"] {
+      display: none;
+    }
+  }
+}

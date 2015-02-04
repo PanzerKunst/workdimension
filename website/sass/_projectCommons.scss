@@ -1,0 +1,11 @@
+#content {
+  margin: 0 auto;
+  padding: 0 $spacer-unit-size;
+
+  @include medium-screen {
+    max-width: $medium-content-width;
+  }
+  @include large-screen {
+    max-width: $large-content-width;
+  }
+}

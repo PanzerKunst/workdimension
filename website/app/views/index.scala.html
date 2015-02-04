@@ -1,0 +1,30 @@
+@(accountId: Long)
+@main("Work Dimension", "index") {
+<!--
+    Header
+-->
+@navbar()
+
+} {
+<!--
+    Content
+-->
+<div class="tab-content">
+    <div role="tabpanel" class="tab-pane active" id="activities">
+        <section id="c1-and-activity-feed"></section>
+        <section id="current-c1-or-activity"></section>
+    </div>
+
+    <div role="tabpanel" class="tab-pane" id="insights"></div>
+</div>
+} {
+<!--
+    Javascript
+-->
+<script type="text/javascript">
+    document.addEventListener("DOMContentLoaded", function () {
+        CS.Controllers.Index(@accountId);
+    });
+</script>
+
+}

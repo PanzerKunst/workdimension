@@ -1,0 +1,18 @@
+$sprite-url: 'images/sprite';
+
+$action-color: rgb(255, 138, 56);  // #FF8A38
+
+$line-height-project: 1.75em;
+
+$small-content-width: 320px;
+$medium-content-width: $small-content-width * 2;
+$large-content-width: $small-content-width * 3;
+
+$spacer-unit-size: 14px;
+$default-spacer-size: 10vw;
+$default-spacer-size-large-screen: $spacer-unit-size * 7;
+
+// From Bootstrap
+$font-size-base: 14px;
+
+$page-side-padding: $spacer-unit-size;

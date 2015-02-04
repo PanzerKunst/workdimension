@@ -1,0 +1,55 @@
+@(title: String, page: String)(header: Html)(content: Html)(javascript: Html)
+
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+    <head>
+
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>@title</title>
+        <meta name="description" content="">
+        <meta name="keywords" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+
+        <!-- TODO Favicon
+        <link rel="shortcut icon" type="image/png" href="@routes.Assets.at("images/favicon.png")">
+        <link rel="icon" type="image/x-icon" href="@routes.Assets.at("images/favicon.ico")"> -->
+
+        <!-- Stylesheets -->
+        <link rel="stylesheet" href="@routes.Assets.at("main-v1.css")">
+    </head>
+
+    <body id="@page">
+        <div id="container">
+            <header>@header</header>
+            <div id="content" role="main">@content</div>
+            <footer></footer>
+        </div>
+
+        <!-- Javascript CDN libs -->
+        <script src="//cdnjs.cloudflare.com/ajax/libs/modernizr/2.8.3/modernizr.min.js"></script>
+        <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+        <script src="//cdnjs.cloudflare.com/ajax/libs/fastclick/1.0.3/fastclick.min.js"></script>
+        <script src="//cdnjs.cloudflare.com/ajax/libs/lodash.js/2.4.1/lodash.min.js"></script>
+        <script src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.1/js/bootstrap.min.js"></script>
+        <script src="//cdnjs.cloudflare.com/ajax/libs/gsap/1.15.0/TweenLite.min.js"></script>
+        <script src="//cdnjs.cloudflare.com/ajax/libs/gsap/1.15.0/easing/EasePack.min.js"></script>
+        <script src="//cdnjs.cloudflare.com/ajax/libs/gsap/1.15.0/plugins/CSSPlugin.min.js"></script>
+        <script src="//cdnjs.cloudflare.com/ajax/libs/react/0.12.2/react-with-addons.min.js"></script>
+
+        <!-- Project Javascripts -->
+        <script src="@routes.Assets.at("main.js")"></script>
+
+        <!-- FastClick init -->
+        <script>
+            window.addEventListener('load', function() {
+                FastClick.attach(document.body);
+            }, false);
+        </script>
+
+        @javascript
+    </body>
+</html>
