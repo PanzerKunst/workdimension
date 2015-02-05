@@ -32,11 +32,11 @@ CS.Activities.GlobalFindYourStrengths2.Controllers.Page1 = P(CS.Activities.Contr
     c.initElements = function () {
         this.$form = this.$el.find("form");
 
-        this.$strength4Field = $("#strength-4");
-        this.$strength5Field = $("#strength-5");
-        this.$strength6Field = $("#strength-6");
+        this.$strength4Field = this.$form.find("#strength-4");
+        this.$strength5Field = this.$form.find("#strength-5");
+        this.$strength6Field = this.$form.find("#strength-6");
 
-        this.$submitBtn = $("[type=submit]");
+        this.$submitBtn = this.$form.find("[type=submit]");
     };
 
     c.initValidation = function () {
@@ -62,51 +62,11 @@ CS.Activities.GlobalFindYourStrengths2.Controllers.Page1 = P(CS.Activities.Contr
         if (this.validator.isValid()) {
             this.$submitBtn.button('loading');
 
-            this.activity.model.insightModule.data.strength4 = this.$strength4Field.val();
-            this.activity.model.insightModule.data.strength5 = this.$strength5Field.val();
-            this.activity.model.insightModule.data.strength6 = this.$strength6Field.val();
+            this.activity.model.accountData.strengths.strength4 = this.$strength4Field.val();
+            this.activity.model.accountData.strengths.strength5 = this.$strength5Field.val();
+            this.activity.model.accountData.strengths.strength6 = this.$strength6Field.val();
 
-            this._updateInsightModuleData();
+            this.postData();
         }
-    };
-
-    c._updateInsightModuleData = function () {
-        var type = "PUT";
-        var url = "/api/insight-modules";
-
-        $.ajax({
-            url: url,
-            type: type,
-            contentType: "application/json",
-            data: JSON.stringify(this.activity.model.insightModule),
-            success: function (data, textStatus, jqXHR) {
-                this._updateActivityState();
-            }.bind(this),
-            error: function (jqXHR, textStatus, errorThrown) {
-                this.$submitBtn.button('reset');
-                alert('AJAX failure doing a ' + type + ' request to "' + url + '"');
-            }.bind(this)
-        });
-    };
-
-    c._updateActivityState = function () {
-        this.activity.model.state = CS.Models.Activity.state.done;
-
-        var type = "PUT";
-        var url = "/api/activities/state";
-
-        $.ajax({
-            url: url,
-            type: type,
-            contentType: "application/json",
-            data: JSON.stringify(this.activity.model),
-            success: function (data, textStatus, jqXHR) {
-                location.href = "/#insights";
-            },
-            error: function (jqXHR, textStatus, errorThrown) {
-                this.$submitBtn.button('reset');
-                alert('AJAX failure doing a ' + type + ' request to "' + url + '"');
-            }.bind(this)
-        });
     };
 });

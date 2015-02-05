@@ -3,33 +3,26 @@ package db
 import java.util.Date
 
 import anorm._
-import models.frontend.FrontendActivity
+import models.frontend.ActivitySentToFrontend
 import play.api.Logger
 import play.api.Play.current
 import play.api.db.DB
-import play.api.libs.json.{JsObject, Json}
 
 object AccountActivityDto {
-  def getFrontendActivitiesOfAccountId(accountId: Long): List[FrontendActivity] = {
+  def getFrontendActivitiesOfAccountId(accountId: Long): List[ActivitySentToFrontend] = {
     DB.withConnection { implicit c =>
       val query = """
-          select distinct aa.activity_class_name, aa.activity_state, aa.creation_timestamp aa_creation_timestamp,
-            ad.data
-          from account_activity aa
-          inner join account_data ad on ad.account_id = aa.account_id
-          where aa.account_id = """ + accountId + """
-            and ad.creation_timestamp in(
-              select max(creation_timestamp) from account_data
-              where account_id = """ + accountId + """)
-          order by aa.creation_timestamp desc;"""
+          select distinct activity_class_name, activity_state, max(creation_timestamp)
+          from account_activity
+          where account_id = """ + accountId + """
+          group by activity_class_name, activity_state;"""
 
       Logger.info("AccountActivityDto.getFrontendActivitiesOfAccountId():" + query)
 
       SQL(query)().map { row =>
-        FrontendActivity(
-          row[String]("class_name"),
-          row[String]("state"),
-          Json.parse(row[String]("data")).as[JsObject]
+        ActivitySentToFrontend(
+          row[String]("activity_class_name"),
+          row[String]("activity_state")
         )
       }.toList
     }
@@ -38,7 +31,7 @@ object AccountActivityDto {
   def create(accountId: Long, className: String, state: String): Option[Long] = {
     DB.withConnection { implicit c =>
       val query = """
-        insert into account_activity (account_id, activity_class_name, state, creation_timestamp)
+        insert into account_activity (account_id, activity_class_name, activity_state, creation_timestamp)
         values(""" + accountId + """, '""" +
         DbUtil.safetize(className) + """', '""" +
         DbUtil.safetize(state) + """', """ +

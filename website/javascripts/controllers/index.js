@@ -1,8 +1,11 @@
 CS.Controllers.Index = P(function (c) {
-    c.init = function (accountId) {
-        this.accountId = accountId;
 
-        this.c1AndActivityFeedController = CS.Controllers.C1AndActivityFeed();
+    c.init = function (accountId, accountData) {
+        this.accountId = accountId;
+        CS.accountData = accountData;
+        CS.router = new Grapnel();
+
+        this.activityFeedController = CS.Controllers.ActivityFeed();
 
         CS.Controllers.HeaderModal.Register(this);
         CS.Controllers.HeaderModal.SignIn(this);
@@ -41,9 +44,7 @@ CS.Controllers.Index = P(function (c) {
 
     c._initEvents = function () {
         this.$activitiesTab.click(function (e) {
-            // TODO: remove if (!location.hash.startsWith("#activities")) {
             location.hash = "activities";
-            //}
         });
 
         this.$insightsTab.click(function (e) {
@@ -56,17 +57,15 @@ CS.Controllers.Index = P(function (c) {
     };
 
     c._initRouter = function () {
-        var router = new Grapnel();
-
-        router.get("", function (req) {
+        CS.router.get("", function (req) {
             this._activateActivitiesPanel();
         }.bind(this));
 
-        router.get("activities", function (req) {
+        CS.router.get("activities", function (req) {
             this._activateActivitiesPanel();
         }.bind(this));
 
-        router.get("insights", function (req) {
+        CS.router.get("insights", function (req) {
             this._activateInsightsPanel();
         }.bind(this));
     };
@@ -78,7 +77,7 @@ CS.Controllers.Index = P(function (c) {
             this.$activitiesPanel.addClass("active");
         }
 
-        this.c1AndActivityFeedController.refreshData();
+        this.activityFeedController.refreshData();
 
         this.$currentC1OrActivitySection.hide();
         this.$feedSection.show();
@@ -91,7 +90,7 @@ CS.Controllers.Index = P(function (c) {
             this.$insightsPanel.addClass("active");
         }
 
-        this.c1AndActivityFeedController.refreshData();
+        this.activityFeedController.refreshData();
 
         this.$currentC1OrActivitySection.hide();
         this.$feedSection.show();
@@ -101,7 +100,7 @@ CS.Controllers.Index = P(function (c) {
         return this.accountId < 0;
     };
 
-    c._signOut = function(e) {
+    c._signOut = function (e) {
         var type = "DELETE";
         var url = "/api/auth";
 
@@ -117,7 +116,7 @@ CS.Controllers.Index = P(function (c) {
         });
     };
 
-    c._confirmExit = function(e) {
+    c._confirmExit = function (e) {
         if (this._isTemporaryAccount() && CS.Controllers.Index.isUnsavedProgress) {
             return "You are about to lose your progress. You can save it by registering via the link at the top of the page.";
         }

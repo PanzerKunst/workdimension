@@ -1,14 +1,15 @@
 CS.Activities = {};
 
 CS.Activities.Base = P(function (c) {
-    c.router = new Grapnel();
     c.$el = $("#current-c1-or-activity");
     c.controllers = {};
 
-    c.init = function(className, accountData) {
+    c.init = function(className, title) {
+        this.title = title;
+
         this.model = {
-            activityClassName: className,
-            accountData: accountData || {}
+            className: className,
+            accountData: CS.accountData || {}
         };
 
         this.$el.empty();
@@ -24,6 +25,14 @@ CS.Activities.Base = P(function (c) {
 
         this.$feedSection = this.$activitiesPanel.children("#c1-and-activity-feed");
         this.$currentC1OrActivitySection = this.$activitiesPanel.children("#current-c1-or-activity");
+    };
+
+    c.getClassName = function() {
+        return this.model.className;
+    };
+
+    c.getTitle = function() {
+        return this.title;
     };
 
     c.registerController = function(controllerClass, route) {
@@ -59,7 +68,7 @@ CS.Activities.Base = P(function (c) {
             this.$el = $("#" + uuid);
 
             React.render(
-                React.createElement(this.reactClass, {data: this.activity.model.insightModule.data}),
+                React.createElement(this.reactClass, {data: this.activity.model.accountData}),
                 this.$el[0]
             );
 
@@ -79,6 +88,26 @@ CS.Activities.Base = P(function (c) {
         location.hash = route;
     };
 
+    c.postData = function() {
+        var type = "POST";
+        var url = "/api/activities";
+
+        $.ajax({
+            url: url,
+            type: type,
+            contentType: "application/json",
+            data: JSON.stringify(this.activity.model),
+            success: function (data, textStatus, jqXHR) {
+                CS.accountData = this.activity.model.accountData;
+                location.href = "/#insights";
+            }.bind(this),
+            error: function (jqXHR, textStatus, errorThrown) {
+                this.$submitBtn.button('reset');
+                alert('AJAX failure doing a ' + type + ' request to "' + url + '"');
+            }.bind(this)
+        });
+    };
+
     // Child functions are call instead if exist
     c.initElements = function() {};
     c.initValidation = function() {};
@@ -86,23 +115,31 @@ CS.Activities.Base = P(function (c) {
     c.onReRender = function() {};
 });
 ;CS.Activities.GlobalFindYourStrengths = P(CS.Activities.Base, function (c, base) {
-    c.init = function (accoundData) {
-        base.init("GlobalFindYourStrengths", accoundData);
+    c.init = function (className, title) {
+        base.init.call(this, className, title);
 
+        this.model.accountData.strengths = this.model.accountData.strengths || {};
+    };
+
+    c.isDoable = function() {
+        return true;    // No conditions
+    };
+
+    c.preLaunch = function() {
         // Initialising all app controllers
         this.page1Controller = CS.Activities.GlobalFindYourStrengths.Controllers.Page1("activities/" + this.model.className, this);
         this.page2Controller = CS.Activities.GlobalFindYourStrengths.Controllers.Page2("activities/" + this.model.className + "/2", this);
         this.page3Controller = CS.Activities.GlobalFindYourStrengths.Controllers.Page3("activities/" + this.model.className + "/3", this);
 
-        this.router.get(this.page1Controller.route, function (req) {
+        CS.router.get(this.page1Controller.route, function (req) {
             this.renderController(this.page1Controller.route);
         }.bind(this));
 
-        this.router.get(this.page2Controller.route, function (req) {
+        CS.router.get(this.page2Controller.route, function (req) {
             this.renderController(this.page2Controller.route);
         }.bind(this));
 
-        this.router.get(this.page3Controller.route, function (req) {
+        CS.router.get(this.page3Controller.route, function (req) {
             this.renderController(this.page3Controller.route);
         }.bind(this));
     };
@@ -110,13 +147,22 @@ CS.Activities.Base = P(function (c) {
 
 CS.Activities.GlobalFindYourStrengths.Controllers = {};
 ;CS.Activities.GlobalFindYourStrengths2 = P(CS.Activities.Base, function (c, base) {
-    c.initActivity = function (activity) {
-        base.initActivity(activity);
+    c.init = function (className, title) {
+        base.init.call(this, className, title);
+    };
 
+    c.isDoable = function () {
+        return this.model.accountData.strengths &&
+            this.model.accountData.strengths.strength1 &&
+            this.model.accountData.strengths.strength2 &&
+            this.model.accountData.strengths.strength3;
+    };
+
+    c.preLaunch = function () {
         // Initialising all app controllers
         this.controller = CS.Activities.GlobalFindYourStrengths2.Controllers.Page1("activities/" + this.model.className, this);
 
-        this.router.get(this.controller.route, function (req) {
+        CS.router.get(this.controller.route, function (req) {
             this.renderController(this.controller.route);
         }.bind(this));
     };
@@ -161,7 +207,7 @@ CS.Activities.GlobalFindYourStrengths2.Controllers = {};
         e.preventDefault();
 
         if (this.validator.isValid()) {
-            this.model.accountData.strength1 = this.$strengthField.val();
+            this.activity.model.accountData.strengths.strength1 = this.$strengthField.val();
 
             this.navigateTo(this.activity.page2Controller.route);
         }
@@ -206,7 +252,7 @@ CS.Activities.GlobalFindYourStrengths.Controllers.Page2 = P(CS.Activities.Contro
         e.preventDefault();
 
         if (this.validator.isValid()) {
-            this.model.accountData.strength2 = this.$strengthField.val();
+            this.activity.model.accountData.strengths.strength2 = this.$strengthField.val();
 
             this.navigateTo(this.activity.page3Controller.route);
         }
@@ -259,24 +305,9 @@ CS.Activities.GlobalFindYourStrengths.Controllers.Page3 = P(CS.Activities.Contro
         if (this.validator.isValid()) {
             this.$submitBtn.button('loading');
 
-            this.model.accountData.strength3 = this.$strengthField.val();
+            this.activity.model.accountData.strengths.strength3 = this.$strengthField.val();
 
-            var type = "POST";
-            var url = "/api/account-activity";
-
-            $.ajax({
-                url: url,
-                type: type,
-                contentType: "application/json",
-                data: JSON.stringify(this.model),
-                success: function (data, textStatus, jqXHR) {
-                    location.href = "/#insights";
-                }.bind(this),
-                error: function (jqXHR, textStatus, errorThrown) {
-                    this.$submitBtn.button('reset');
-                    alert('AJAX failure doing a ' + type + ' request to "' + url + '"');
-                }.bind(this)
-            });
+            this.postData();
         }
     };
 });
@@ -315,11 +346,11 @@ CS.Activities.GlobalFindYourStrengths2.Controllers.Page1 = P(CS.Activities.Contr
     c.initElements = function () {
         this.$form = this.$el.find("form");
 
-        this.$strength4Field = $("#strength-4");
-        this.$strength5Field = $("#strength-5");
-        this.$strength6Field = $("#strength-6");
+        this.$strength4Field = this.$form.find("#strength-4");
+        this.$strength5Field = this.$form.find("#strength-5");
+        this.$strength6Field = this.$form.find("#strength-6");
 
-        this.$submitBtn = $("[type=submit]");
+        this.$submitBtn = this.$form.find("[type=submit]");
     };
 
     c.initValidation = function () {
@@ -345,51 +376,11 @@ CS.Activities.GlobalFindYourStrengths2.Controllers.Page1 = P(CS.Activities.Contr
         if (this.validator.isValid()) {
             this.$submitBtn.button('loading');
 
-            this.activity.model.insightModule.data.strength4 = this.$strength4Field.val();
-            this.activity.model.insightModule.data.strength5 = this.$strength5Field.val();
-            this.activity.model.insightModule.data.strength6 = this.$strength6Field.val();
+            this.activity.model.accountData.strengths.strength4 = this.$strength4Field.val();
+            this.activity.model.accountData.strengths.strength5 = this.$strength5Field.val();
+            this.activity.model.accountData.strengths.strength6 = this.$strength6Field.val();
 
-            this._updateInsightModuleData();
+            this.postData();
         }
-    };
-
-    c._updateInsightModuleData = function () {
-        var type = "PUT";
-        var url = "/api/insight-modules";
-
-        $.ajax({
-            url: url,
-            type: type,
-            contentType: "application/json",
-            data: JSON.stringify(this.activity.model.insightModule),
-            success: function (data, textStatus, jqXHR) {
-                this._updateActivityState();
-            }.bind(this),
-            error: function (jqXHR, textStatus, errorThrown) {
-                this.$submitBtn.button('reset');
-                alert('AJAX failure doing a ' + type + ' request to "' + url + '"');
-            }.bind(this)
-        });
-    };
-
-    c._updateActivityState = function () {
-        this.activity.model.state = CS.Models.Activity.state.done;
-
-        var type = "PUT";
-        var url = "/api/activities/state";
-
-        $.ajax({
-            url: url,
-            type: type,
-            contentType: "application/json",
-            data: JSON.stringify(this.activity.model),
-            success: function (data, textStatus, jqXHR) {
-                location.href = "/#insights";
-            },
-            error: function (jqXHR, textStatus, errorThrown) {
-                this.$submitBtn.button('reset');
-                alert('AJAX failure doing a ' + type + ' request to "' + url + '"');
-            }.bind(this)
-        });
     };
 });

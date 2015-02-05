@@ -14,8 +14,8 @@ object AccountDto {
     DB.withConnection { implicit c =>
       val query = """
       insert into account(id, creation_timestamp)
-      values(""" + accountId + """, """
-      new Date().getTime + """);"""
+      values(""" + accountId + """, """ +
+        new Date().getTime + """);"""
 
       Logger.info("AccountDto.createTemporary():" + query)
 
@@ -28,10 +28,11 @@ object AccountDto {
       val query = """
       insert into account(email_address, password, creation_timestamp)
       values('""" + DbUtil.safetize(emailAddress) + """',
-        crypt('""" + DbUtil.safetize(password) + """', gen_salt('md5'))),""" +
-        new Date().getTime + """;"""
+        crypt('""" + DbUtil.safetize(password) + """', gen_salt('md5')),""" +
+        new Date().getTime + """);"""
 
-      Logger.info("AccountDto.create():" + query)
+      /* Not logged to avoid logging clear password
+      Logger.info("AccountDto.create():" + query) */
 
       try {
         SQL(query).executeInsert()
@@ -52,9 +53,9 @@ object AccountDto {
     DB.withConnection {
       implicit c =>
         val query = """
-          select email_address, creation_timestamp
-          from account
-          where id = """ + accountId + """;"""
+    select email_address, creation_timestamp
+    from account
+    where id = """ + accountId + """;"""
 
         Logger.info("AccountDto.getOfId():" + query)
 
@@ -77,10 +78,10 @@ object AccountDto {
     DB.withConnection {
       implicit c =>
         val query = """
-          select id, creation_timestamp
-          from account
-          where email_address = '""" + DbUtil.safetize(emailAddress) + """'
-          and password = crypt('""" + DbUtil.safetize(password) + """', password);"""
+    select id, creation_timestamp
+    from account
+    where email_address = '""" + DbUtil.safetize(emailAddress) + """'
+    and password = crypt('""" + DbUtil.safetize(password) + """', password);"""
 
         /* Not logged to avoid logging clear password
         Logger.info("AccountDto.getOfSignInInfo():" + query) */
@@ -104,8 +105,8 @@ object AccountDto {
     DB.withConnection {
       implicit c =>
         val query = """
-        delete from account
-        where id = """ + accountId + """;"""
+  delete from account
+  where id = """ + accountId + """;"""
 
         Logger.info("AccountDto.delete():" + query)
 

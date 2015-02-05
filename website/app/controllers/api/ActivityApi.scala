@@ -2,7 +2,8 @@ package controllers.api
 
 import controllers.Application
 import db.{AccountActivityDto, AccountDataDto, AccountDto}
-import models.frontend.FrontendActivity
+import models.ActivityState
+import models.frontend.ActivityReceivedFromFrontend
 import play.api.libs.json.{JsError, JsSuccess, Json}
 import play.api.mvc.{Action, Controller}
 import services.EmailService
@@ -20,14 +21,15 @@ object ActivityApi extends Controller {
       case None => BadRequest("Account ID not found in session")
 
       case Some(accountId) =>
-        request.body.validate[FrontendActivity] match {
-          case s: JsSuccess[FrontendActivity] =>
+        request.body.validate[ActivityReceivedFromFrontend] match {
+          case s: JsSuccess[ActivityReceivedFromFrontend] =>
             val frontendActivity = s.get
+
+            AccountDataDto.create(accountId, frontendActivity.accountData)
+            AccountActivityDto.create(accountId, frontendActivity.className, ActivityState.DONE.getString)
 
             AccountDto.getOfId(accountId) match {
               case Some(account) =>
-                AccountDataDto.create(accountId, frontendActivity.accountData)
-
                 account.emailAddress match {
                   case Some(emailAddress) => EmailService.sendAccountDataUpdatedEmail(emailAddress, frontendActivity.accountData)
                   case None =>
@@ -35,9 +37,8 @@ object ActivityApi extends Controller {
 
               case None => InternalServerError("The account ID found in session didn't have a corresponding database entry")
             }
-
             Ok
-          case e: JsError => BadRequest("Could not validate accound data as JsObject")
+          case e: JsError => BadRequest("Could not validate ActivityReceivedFromFrontend")
         }
     }
   }

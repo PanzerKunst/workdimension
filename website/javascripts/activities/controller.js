@@ -13,7 +13,7 @@ CS.Activities.Controller = P(function (c) {
             this.$el = $("#" + uuid);
 
             React.render(
-                React.createElement(this.reactClass, {data: this.activity.model.insightModule.data}),
+                React.createElement(this.reactClass, {data: this.activity.model.accountData}),
                 this.$el[0]
             );
 
@@ -31,6 +31,26 @@ CS.Activities.Controller = P(function (c) {
 
     c.navigateTo = function(route) {
         location.hash = route;
+    };
+
+    c.postData = function() {
+        var type = "POST";
+        var url = "/api/activities";
+
+        $.ajax({
+            url: url,
+            type: type,
+            contentType: "application/json",
+            data: JSON.stringify(this.activity.model),
+            success: function (data, textStatus, jqXHR) {
+                CS.accountData = this.activity.model.accountData;
+                location.href = "/#insights";
+            }.bind(this),
+            error: function (jqXHR, textStatus, errorThrown) {
+                this.$submitBtn.button('reset');
+                alert('AJAX failure doing a ' + type + ' request to "' + url + '"');
+            }.bind(this)
+        });
     };
 
     // Child functions are call instead if exist

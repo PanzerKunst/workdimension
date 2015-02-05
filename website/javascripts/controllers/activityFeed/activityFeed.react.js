@@ -1,5 +1,5 @@
 CS.Controllers.ActivityFeed = P(function (c) {
-    c.reactClass = React.createClass({displayName: "reactClass",
+    c.reactClass = React.createClass({
         getInitialState: function () {
             return {data: []};
         },
@@ -7,14 +7,14 @@ CS.Controllers.ActivityFeed = P(function (c) {
         render: function () {
             var listItems = this.state.data.map(function (c1OrActivity) {
                 return (
-                    React.createElement(CS.Controllers.ActivityFeedItem, {c1OrActivity: c1OrActivity})
+                    <CS.Controllers.ActivityFeedItem c1OrActivity={c1OrActivity}/>
                     );
             }.bind(this));
 
             return (
-                React.createElement("ul", {className: "styleless"}, 
-                    listItems
-                )
+                <ul className="styleless">
+                    {listItems}
+                </ul>
                 );
         }
     });
@@ -124,33 +124,3 @@ CS.Controllers.ActivityFeed.packageName = {
     c1: "C1s",
     activity: "Activities"
 };
-CS.Controllers.ActivityFeedItem = React.createClass({displayName: "ActivityFeedItem",
-    render: function () {
-        var liClasses = React.addons.classSet({
-            "well": true,
-            "done": this.props.c1OrActivity.isDone
-        });
-
-        var buttonText = this.props.c1OrActivity.isDone ? "Restart" : "Start";
-
-        return (
-            React.createElement("li", {className: liClasses}, 
-                React.createElement("h2", null, this.props.c1OrActivity.title), 
-                React.createElement("button", {onClick: this._handleClick}, buttonText)
-            )
-            );
-    },
-    
-    _handleClick: function (e) {
-        var instance = this.props.c1OrActivity.instance;
-
-        instance.preLaunch();
-
-        location.hash = "activities/" + instance.getClassName();
-
-        $("#c1-and-activity-feed").hide();
-        $("#current-c1-or-activity").show();
-
-        CS.Controllers.Index.isUnsavedProgress = true;
-    }
-});

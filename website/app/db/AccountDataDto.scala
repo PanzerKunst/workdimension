@@ -9,6 +9,28 @@ import play.api.db.DB
 import play.api.libs.json.{JsObject, Json}
 
 object AccountDataDto {
+  def getOfAccountId(accountId: Long): Option[JsObject] = {
+    DB.withConnection { implicit c =>
+      val query = """
+      select data
+      from account_data
+      where account_id = """ + accountId + """
+      order by creation_timestamp desc
+      limit 1;"""
+
+      Logger.info("AccountDataDto.create():" + query)
+
+      SQL(query).apply().headOption match {
+        case Some(row) =>
+          row[Option[String]]("data") match {
+            case Some(stringData) => Some(Json.parse(stringData).as[JsObject])
+            case None => None
+          }
+        case None => None
+      }
+    }
+  }
+
   def create(accountId: Long, data: JsObject): Option[Long] = {
     DB.withConnection { implicit c =>
       val query = """

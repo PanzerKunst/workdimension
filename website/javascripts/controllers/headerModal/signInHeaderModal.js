@@ -1,6 +1,6 @@
 CS.Controllers.HeaderModal.SignIn = P(CS.Controllers.HeaderModal, function (c, base) {
     c.initElements = function () {
-        base.initElements();
+        base.initElements.call(this);
 
         this.$launchLink = this.$headerLinks.filter("#sign-in-link");
 
@@ -53,7 +53,9 @@ CS.Controllers.HeaderModal.SignIn = P(CS.Controllers.HeaderModal, function (c, b
                         this.$headerLinks.hide();
                         this.$signOutLink.show();
 
-                        this.indexController.accountId = data;
+                        CS.accountId = data.accountId;
+                        CS.accountData = data.accountData;
+
                         location.hash = "activities";
 
                         this.$modal.modal('hide');

@@ -460,10 +460,13 @@ CS.C1s = {};
     emailAlreadyRegistered: 230
 };
 ;CS.Controllers.Index = P(function (c) {
-    c.init = function (accountId) {
-        this.accountId = accountId;
 
-        this.c1AndActivityFeedController = CS.Controllers.C1AndActivityFeed();
+    c.init = function (accountId, accountData) {
+        this.accountId = accountId;
+        CS.accountData = accountData;
+        CS.router = new Grapnel();
+
+        this.activityFeedController = CS.Controllers.ActivityFeed();
 
         CS.Controllers.HeaderModal.Register(this);
         CS.Controllers.HeaderModal.SignIn(this);
@@ -502,9 +505,7 @@ CS.C1s = {};
 
     c._initEvents = function () {
         this.$activitiesTab.click(function (e) {
-            // TODO: remove if (!location.hash.startsWith("#activities")) {
             location.hash = "activities";
-            //}
         });
 
         this.$insightsTab.click(function (e) {
@@ -517,17 +518,15 @@ CS.C1s = {};
     };
 
     c._initRouter = function () {
-        var router = new Grapnel();
-
-        router.get("", function (req) {
+        CS.router.get("", function (req) {
             this._activateActivitiesPanel();
         }.bind(this));
 
-        router.get("activities", function (req) {
+        CS.router.get("activities", function (req) {
             this._activateActivitiesPanel();
         }.bind(this));
 
-        router.get("insights", function (req) {
+        CS.router.get("insights", function (req) {
             this._activateInsightsPanel();
         }.bind(this));
     };
@@ -539,7 +538,7 @@ CS.C1s = {};
             this.$activitiesPanel.addClass("active");
         }
 
-        this.c1AndActivityFeedController.refreshData();
+        this.activityFeedController.refreshData();
 
         this.$currentC1OrActivitySection.hide();
         this.$feedSection.show();
@@ -552,7 +551,7 @@ CS.C1s = {};
             this.$insightsPanel.addClass("active");
         }
 
-        this.c1AndActivityFeedController.refreshData();
+        this.activityFeedController.refreshData();
 
         this.$currentC1OrActivitySection.hide();
         this.$feedSection.show();
@@ -562,7 +561,7 @@ CS.C1s = {};
         return this.accountId < 0;
     };
 
-    c._signOut = function(e) {
+    c._signOut = function (e) {
         var type = "DELETE";
         var url = "/api/auth";
 
@@ -578,7 +577,7 @@ CS.C1s = {};
         });
     };
 
-    c._confirmExit = function(e) {
+    c._confirmExit = function (e) {
         if (this._isTemporaryAccount() && CS.Controllers.Index.isUnsavedProgress) {
             return "You are about to lose your progress. You can save it by registering via the link at the top of the page.";
         }
@@ -657,7 +656,7 @@ CS.Controllers.Index.isUnsavedProgress = false;
 });
 ;CS.Controllers.HeaderModal.Register = P(CS.Controllers.HeaderModal, function (c, base) {
     c.initElements = function() {
-        base.initElements();
+        base.initElements.call(this);
 
         this.$launchLink = this.$headerLinks.filter("#register-link");
 
@@ -715,7 +714,9 @@ CS.Controllers.Index.isUnsavedProgress = false;
                         this.$headerLinks.hide();
                         this.$signOutLink.show();
 
-                        this.indexController.accountId = data;
+                        CS.accountId = data.accountId;
+                        CS.accountData = data.accountData;
+
                         location.hash = "activities";
 
                         this.$modal.modal('hide');
@@ -748,7 +749,7 @@ CS.Controllers.Index.isUnsavedProgress = false;
 });
 ;CS.Controllers.HeaderModal.SignIn = P(CS.Controllers.HeaderModal, function (c, base) {
     c.initElements = function () {
-        base.initElements();
+        base.initElements.call(this);
 
         this.$launchLink = this.$headerLinks.filter("#sign-in-link");
 
@@ -801,7 +802,9 @@ CS.Controllers.Index.isUnsavedProgress = false;
                         this.$headerLinks.hide();
                         this.$signOutLink.show();
 
-                        this.indexController.accountId = data;
+                        CS.accountId = data.accountId;
+                        CS.accountData = data.accountData;
+
                         location.hash = "activities";
 
                         this.$modal.modal('hide');
@@ -822,16 +825,16 @@ CS.Controllers.Index.isUnsavedProgress = false;
         this.$modal.modal('hide');
     };
 });
-;CS.Controllers.C1AndActivityFeed = P(function (c) {
+;CS.Controllers.ActivityFeed = P(function (c) {
     c.reactClass = React.createClass({displayName: "reactClass",
         getInitialState: function () {
             return {data: []};
         },
-        
+
         render: function () {
             var listItems = this.state.data.map(function (c1OrActivity) {
                 return (
-                    React.createElement(CS.Controllers.C1OrActivityFeedItem, {c1OrActivity: c1OrActivity})
+                    React.createElement(CS.Controllers.ActivityFeedItem, {c1OrActivity: c1OrActivity})
                     );
             }.bind(this));
 
@@ -844,6 +847,25 @@ CS.Controllers.Index.isUnsavedProgress = false;
     });
 
     c.init = function () {
+        this.feedItems = [
+            /* TODO {
+             packageName: CS.Controllers.ActivityFeed.packageName.c1,
+             className: "JobApplicationEmployer"
+             },{
+             packageName: CS.Controllers.ActivityFeed.packageName.c1,
+             className: "JobApplicationPosition"
+             },*/{
+                packageName: CS.Controllers.ActivityFeed.packageName.activity,
+                className: "GlobalFindYourStrengths2",
+                title: "Find my über strengths"
+            },
+            {
+                packageName: CS.Controllers.ActivityFeed.packageName.activity,
+                className: "GlobalFindYourStrengths",
+                title: "Find my strengths"
+            }
+        ];
+
         this.reactInstance = React.render(
             React.createElement(this.reactClass),
             document.getElementById("c1-and-activity-feed")
@@ -851,6 +873,10 @@ CS.Controllers.Index.isUnsavedProgress = false;
     };
 
     c.refreshData = function () {
+        this.feedItemInstances = this.feedItems.map(function (item, index) {
+            return CS[item.packageName][item.className](item.className, item.title);
+        }, this);
+
         this._fetchActivities();
     };
 
@@ -863,7 +889,7 @@ CS.Controllers.Index.isUnsavedProgress = false;
             type: type,
             dataType: "json",
             success: function (data, textStatus, jqXHR) {
-                this._replaceReactState(data);
+                this._orderFeedItems(data);
             }.bind(this),
             error: function (jqXHR, textStatus, errorThrown) {
                 alert('AJAX failure doing a ' + type + ' request to "' + url + '"');
@@ -871,21 +897,49 @@ CS.Controllers.Index.isUnsavedProgress = false;
         });
     };
 
-    c._replaceReactState = function(activityData) {
+    c._orderFeedItems = function (activityData) {
         var undoneActivities = [];
         var doneActivities = [];
 
         activityData.forEach(function (activity) {
-            var itemData = {
-                isDone: activity.state === CS.Models.Activity.state.done,
-                name: activity.name,
-                model: activity
-            };
+            var instance = _.find(this.feedItemInstances, function(instans) {
+                return instans.getClassName() === activity.className;
+            });
 
-            if (itemData.isDone) {
-                doneActivities.push(itemData);
-            } else {
-                undoneActivities.push(itemData);
+            if (activity.state === CS.Models.Activity.state.done) {
+                doneActivities.push({
+                    title: instance.getTitle(),
+                    isDone: true,
+                    instance: instance
+                });
+            } else if (instance.isDoable()) {
+                undoneActivities.push({
+                    title: instance.getTitle(),
+                    isDone: false,
+                    instance: instance
+                });
+            }
+        }, this);
+
+        // We handle instances which didn't have any activity data
+        this.feedItemInstances.forEach(function(instance, index) {
+            var isTodo = _.isEmpty(_.find(doneActivities, function(activity) {
+                return activity.instance.getClassName() === instance.getClassName();
+            }));
+
+            if (isTodo && instance.isDoable()) {
+                // Is it already is among the undoneActivities?
+                var isAlreadyInTheList = _.find(undoneActivities, function(activity) {
+                    return activity.instance.getClassName() === instance.getClassName();
+                });
+
+                if (!isAlreadyInTheList) {
+                    undoneActivities.push({
+                        title: instance.getTitle(),
+                        isDone: false,
+                        instance: instance
+                    });
+                }
             }
         }, this);
 
@@ -893,7 +947,11 @@ CS.Controllers.Index.isUnsavedProgress = false;
     };
 });
 
-CS.Controllers.C1OrActivityFeedItem = React.createClass({displayName: "C1OrActivityFeedItem",
+CS.Controllers.ActivityFeed.packageName = {
+    c1: "C1s",
+    activity: "Activities"
+};
+CS.Controllers.ActivityFeedItem = React.createClass({displayName: "ActivityFeedItem",
     render: function () {
         var liClasses = React.addons.classSet({
             "well": true,
@@ -904,56 +962,37 @@ CS.Controllers.C1OrActivityFeedItem = React.createClass({displayName: "C1OrActiv
 
         return (
             React.createElement("li", {className: liClasses}, 
-                React.createElement("h2", null, this.props.c1OrActivity.name), 
+                React.createElement("h2", null, this.props.c1OrActivity.title), 
                 React.createElement("button", {onClick: this._handleClick}, buttonText)
             )
             );
     },
     
     _handleClick: function (e) {
-        if (this._isC1(this.props.c1OrActivity)) {
-            var c1 = this.props.c1OrActivity.model;
-            var c1ClassName = c1.c1.className;
+        var instance = this.props.c1OrActivity.instance;
 
-            if (_.isFunction(CS.C1s[c1ClassName])) {
-                CS.C1s[c1ClassName]().initC1(c1);
-            } else {
-                CS.C1s[c1ClassName].initC1(c1);
-            }
+        instance.preLaunch();
 
-            location.hash = "c1s/" + c1ClassName;
-        } else {
-            var activity = this.props.c1OrActivity.model;
+        location.hash = "activities/" + instance.getClassName();
 
-            if (_.isFunction(CS.Activities[activity.className])) {
-                CS.Activities[activity.className]().initActivity(activity);
-            } else {
-                CS.Activities[activity.className].initActivity(activity);
-            }
-
-            location.hash = "activities/" + activity.className;
-        }
         $("#c1-and-activity-feed").hide();
         $("#current-c1-or-activity").show();
 
         CS.Controllers.Index.isUnsavedProgress = true;
-    },
-    
-    _isC1: function (c1OrActivity) {
-        return c1OrActivity.model.c1 !== undefined;
     }
 });
 ;CS.Activities = {};
 
 CS.Activities.Base = P(function (c) {
-    c.router = new Grapnel();
     c.$el = $("#current-c1-or-activity");
     c.controllers = {};
 
-    c.init = function(className, accountData) {
+    c.init = function(className, title) {
+        this.title = title;
+
         this.model = {
-            activityClassName: className,
-            accountData: accountData || {}
+            className: className,
+            accountData: CS.accountData || {}
         };
 
         this.$el.empty();
@@ -969,6 +1008,14 @@ CS.Activities.Base = P(function (c) {
 
         this.$feedSection = this.$activitiesPanel.children("#c1-and-activity-feed");
         this.$currentC1OrActivitySection = this.$activitiesPanel.children("#current-c1-or-activity");
+    };
+
+    c.getClassName = function() {
+        return this.model.className;
+    };
+
+    c.getTitle = function() {
+        return this.title;
     };
 
     c.registerController = function(controllerClass, route) {
@@ -1004,7 +1051,7 @@ CS.Activities.Base = P(function (c) {
             this.$el = $("#" + uuid);
 
             React.render(
-                React.createElement(this.reactClass, {data: this.activity.model.insightModule.data}),
+                React.createElement(this.reactClass, {data: this.activity.model.accountData}),
                 this.$el[0]
             );
 
@@ -1024,6 +1071,26 @@ CS.Activities.Base = P(function (c) {
         location.hash = route;
     };
 
+    c.postData = function() {
+        var type = "POST";
+        var url = "/api/activities";
+
+        $.ajax({
+            url: url,
+            type: type,
+            contentType: "application/json",
+            data: JSON.stringify(this.activity.model),
+            success: function (data, textStatus, jqXHR) {
+                CS.accountData = this.activity.model.accountData;
+                location.href = "/#insights";
+            }.bind(this),
+            error: function (jqXHR, textStatus, errorThrown) {
+                this.$submitBtn.button('reset');
+                alert('AJAX failure doing a ' + type + ' request to "' + url + '"');
+            }.bind(this)
+        });
+    };
+
     // Child functions are call instead if exist
     c.initElements = function() {};
     c.initValidation = function() {};
@@ -1031,23 +1098,31 @@ CS.Activities.Base = P(function (c) {
     c.onReRender = function() {};
 });
 ;CS.Activities.GlobalFindYourStrengths = P(CS.Activities.Base, function (c, base) {
-    c.init = function (accoundData) {
-        base.init("GlobalFindYourStrengths", accoundData);
+    c.init = function (className, title) {
+        base.init.call(this, className, title);
 
+        this.model.accountData.strengths = this.model.accountData.strengths || {};
+    };
+
+    c.isDoable = function() {
+        return true;    // No conditions
+    };
+
+    c.preLaunch = function() {
         // Initialising all app controllers
         this.page1Controller = CS.Activities.GlobalFindYourStrengths.Controllers.Page1("activities/" + this.model.className, this);
         this.page2Controller = CS.Activities.GlobalFindYourStrengths.Controllers.Page2("activities/" + this.model.className + "/2", this);
         this.page3Controller = CS.Activities.GlobalFindYourStrengths.Controllers.Page3("activities/" + this.model.className + "/3", this);
 
-        this.router.get(this.page1Controller.route, function (req) {
+        CS.router.get(this.page1Controller.route, function (req) {
             this.renderController(this.page1Controller.route);
         }.bind(this));
 
-        this.router.get(this.page2Controller.route, function (req) {
+        CS.router.get(this.page2Controller.route, function (req) {
             this.renderController(this.page2Controller.route);
         }.bind(this));
 
-        this.router.get(this.page3Controller.route, function (req) {
+        CS.router.get(this.page3Controller.route, function (req) {
             this.renderController(this.page3Controller.route);
         }.bind(this));
     };
@@ -1055,13 +1130,22 @@ CS.Activities.Base = P(function (c) {
 
 CS.Activities.GlobalFindYourStrengths.Controllers = {};
 ;CS.Activities.GlobalFindYourStrengths2 = P(CS.Activities.Base, function (c, base) {
-    c.initActivity = function (activity) {
-        base.initActivity(activity);
+    c.init = function (className, title) {
+        base.init.call(this, className, title);
+    };
 
+    c.isDoable = function () {
+        return this.model.accountData.strengths &&
+            this.model.accountData.strengths.strength1 &&
+            this.model.accountData.strengths.strength2 &&
+            this.model.accountData.strengths.strength3;
+    };
+
+    c.preLaunch = function () {
         // Initialising all app controllers
         this.controller = CS.Activities.GlobalFindYourStrengths2.Controllers.Page1("activities/" + this.model.className, this);
 
-        this.router.get(this.controller.route, function (req) {
+        CS.router.get(this.controller.route, function (req) {
             this.renderController(this.controller.route);
         }.bind(this));
     };
@@ -1106,7 +1190,7 @@ CS.Activities.GlobalFindYourStrengths2.Controllers = {};
         e.preventDefault();
 
         if (this.validator.isValid()) {
-            this.model.accountData.strength1 = this.$strengthField.val();
+            this.activity.model.accountData.strengths.strength1 = this.$strengthField.val();
 
             this.navigateTo(this.activity.page2Controller.route);
         }
@@ -1151,7 +1235,7 @@ CS.Activities.GlobalFindYourStrengths.Controllers.Page2 = P(CS.Activities.Contro
         e.preventDefault();
 
         if (this.validator.isValid()) {
-            this.model.accountData.strength2 = this.$strengthField.val();
+            this.activity.model.accountData.strengths.strength2 = this.$strengthField.val();
 
             this.navigateTo(this.activity.page3Controller.route);
         }
@@ -1204,24 +1288,9 @@ CS.Activities.GlobalFindYourStrengths.Controllers.Page3 = P(CS.Activities.Contro
         if (this.validator.isValid()) {
             this.$submitBtn.button('loading');
 
-            this.model.accountData.strength3 = this.$strengthField.val();
+            this.activity.model.accountData.strengths.strength3 = this.$strengthField.val();
 
-            var type = "POST";
-            var url = "/api/account-activity";
-
-            $.ajax({
-                url: url,
-                type: type,
-                contentType: "application/json",
-                data: JSON.stringify(this.model),
-                success: function (data, textStatus, jqXHR) {
-                    location.href = "/#insights";
-                }.bind(this),
-                error: function (jqXHR, textStatus, errorThrown) {
-                    this.$submitBtn.button('reset');
-                    alert('AJAX failure doing a ' + type + ' request to "' + url + '"');
-                }.bind(this)
-            });
+            this.postData();
         }
     };
 });
@@ -1260,11 +1329,11 @@ CS.Activities.GlobalFindYourStrengths2.Controllers.Page1 = P(CS.Activities.Contr
     c.initElements = function () {
         this.$form = this.$el.find("form");
 
-        this.$strength4Field = $("#strength-4");
-        this.$strength5Field = $("#strength-5");
-        this.$strength6Field = $("#strength-6");
+        this.$strength4Field = this.$form.find("#strength-4");
+        this.$strength5Field = this.$form.find("#strength-5");
+        this.$strength6Field = this.$form.find("#strength-6");
 
-        this.$submitBtn = $("[type=submit]");
+        this.$submitBtn = this.$form.find("[type=submit]");
     };
 
     c.initValidation = function () {
@@ -1290,51 +1359,11 @@ CS.Activities.GlobalFindYourStrengths2.Controllers.Page1 = P(CS.Activities.Contr
         if (this.validator.isValid()) {
             this.$submitBtn.button('loading');
 
-            this.activity.model.insightModule.data.strength4 = this.$strength4Field.val();
-            this.activity.model.insightModule.data.strength5 = this.$strength5Field.val();
-            this.activity.model.insightModule.data.strength6 = this.$strength6Field.val();
+            this.activity.model.accountData.strengths.strength4 = this.$strength4Field.val();
+            this.activity.model.accountData.strengths.strength5 = this.$strength5Field.val();
+            this.activity.model.accountData.strengths.strength6 = this.$strength6Field.val();
 
-            this._updateInsightModuleData();
+            this.postData();
         }
-    };
-
-    c._updateInsightModuleData = function () {
-        var type = "PUT";
-        var url = "/api/insight-modules";
-
-        $.ajax({
-            url: url,
-            type: type,
-            contentType: "application/json",
-            data: JSON.stringify(this.activity.model.insightModule),
-            success: function (data, textStatus, jqXHR) {
-                this._updateActivityState();
-            }.bind(this),
-            error: function (jqXHR, textStatus, errorThrown) {
-                this.$submitBtn.button('reset');
-                alert('AJAX failure doing a ' + type + ' request to "' + url + '"');
-            }.bind(this)
-        });
-    };
-
-    c._updateActivityState = function () {
-        this.activity.model.state = CS.Models.Activity.state.done;
-
-        var type = "PUT";
-        var url = "/api/activities/state";
-
-        $.ajax({
-            url: url,
-            type: type,
-            contentType: "application/json",
-            data: JSON.stringify(this.activity.model),
-            success: function (data, textStatus, jqXHR) {
-                location.href = "/#insights";
-            },
-            error: function (jqXHR, textStatus, errorThrown) {
-                this.$submitBtn.button('reset');
-                alert('AJAX failure doing a ' + type + ' request to "' + url + '"');
-            }.bind(this)
-        });
     };
 });

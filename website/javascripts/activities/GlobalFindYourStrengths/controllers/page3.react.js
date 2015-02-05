@@ -44,24 +44,9 @@ CS.Activities.GlobalFindYourStrengths.Controllers.Page3 = P(CS.Activities.Contro
         if (this.validator.isValid()) {
             this.$submitBtn.button('loading');
 
-            this.model.accountData.strength3 = this.$strengthField.val();
+            this.activity.model.accountData.strengths.strength3 = this.$strengthField.val();
 
-            var type = "POST";
-            var url = "/api/account-activity";
-
-            $.ajax({
-                url: url,
-                type: type,
-                contentType: "application/json",
-                data: JSON.stringify(this.model),
-                success: function (data, textStatus, jqXHR) {
-                    location.href = "/#insights";
-                }.bind(this),
-                error: function (jqXHR, textStatus, errorThrown) {
-                    this.$submitBtn.button('reset');
-                    alert('AJAX failure doing a ' + type + ' request to "' + url + '"');
-                }.bind(this)
-            });
+            this.postData();
         }
     };
 });

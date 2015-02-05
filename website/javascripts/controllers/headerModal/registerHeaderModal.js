@@ -1,6 +1,6 @@
 CS.Controllers.HeaderModal.Register = P(CS.Controllers.HeaderModal, function (c, base) {
     c.initElements = function() {
-        base.initElements();
+        base.initElements.call(this);
 
         this.$launchLink = this.$headerLinks.filter("#register-link");
 
@@ -58,7 +58,9 @@ CS.Controllers.HeaderModal.Register = P(CS.Controllers.HeaderModal, function (c,
                         this.$headerLinks.hide();
                         this.$signOutLink.show();
 
-                        this.indexController.accountId = data;
+                        CS.accountId = data.accountId;
+                        CS.accountData = data.accountData;
+
                         location.hash = "activities";
 
                         this.$modal.modal('hide');

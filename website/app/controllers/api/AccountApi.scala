@@ -3,8 +3,9 @@ package controllers.api
 import controllers.Application
 import db._
 import models.frontend.FrontendAccount
-import play.api.libs.json.{JsError, JsSuccess, Json}
+import play.api.libs.json._
 import play.api.mvc.{Action, Controller}
+import services.EmailService
 
 object AccountApi extends Controller {
   def create = Action(parse.json) { request =>
@@ -29,7 +30,17 @@ object AccountApi extends Controller {
 
                   // TODO EmailService.sendWelcomeEmail(frontendAccount.emailAddress)
 
-                  Ok(Json.toJson(newAccountId)).withSession(request.session +("accountId", newAccountId.toString))
+                  AccountDataDto.getOfAccountId(accountId: Long) match {
+                    case Some(accountData) => EmailService.sendAccountDataUpdatedEmail(frontendAccount.emailAddress, accountData)
+                    case None =>
+                  }
+
+                  val jsonToReturn = JsObject(Seq(
+                    "accountId" -> JsNumber(newAccountId),
+                    "accountData" -> AccountDataDto.getOfAccountId(accountId).getOrElse(JsNull)
+                  ))
+
+                  Ok(jsonToReturn).withSession(request.session +("accountId", newAccountId.toString))
 
                 case None => InternalServerError("FATAL ERROR: AccountDto.create() did not return an ID")
               }

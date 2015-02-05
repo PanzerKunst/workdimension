@@ -14,7 +14,7 @@ object Application extends Controller {
       case Some(id) => id
     }
 
-    Ok(views.html.index(accountId)).withSession(request.session
+    Ok(views.html.index(accountId, AccountDataDto.getOfAccountId(accountId))).withSession(request.session
       +("accountId", accountId.toString)
     )
   }

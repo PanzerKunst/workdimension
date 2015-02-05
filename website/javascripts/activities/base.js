@@ -1,14 +1,15 @@
 CS.Activities = {};
 
 CS.Activities.Base = P(function (c) {
-    c.router = new Grapnel();
     c.$el = $("#current-c1-or-activity");
     c.controllers = {};
 
-    c.init = function(className, accountData) {
+    c.init = function(className, title) {
+        this.title = title;
+
         this.model = {
-            activityClassName: className,
-            accountData: accountData || {}
+            className: className,
+            accountData: CS.accountData || {}
         };
 
         this.$el.empty();
@@ -24,6 +25,14 @@ CS.Activities.Base = P(function (c) {
 
         this.$feedSection = this.$activitiesPanel.children("#c1-and-activity-feed");
         this.$currentC1OrActivitySection = this.$activitiesPanel.children("#current-c1-or-activity");
+    };
+
+    c.getClassName = function() {
+        return this.model.className;
+    };
+
+    c.getTitle = function() {
+        return this.title;
     };
 
     c.registerController = function(controllerClass, route) {
