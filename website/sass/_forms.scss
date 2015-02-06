@@ -3,11 +3,20 @@ form {
     @include clearfix;
   }
 
+  /* TODO
   $form-width-medium-screen: $medium-content-width - 2*$spacer-unit-size;
   $form-width-large-screen: $large-content-width - 2*$spacer-unit-size;
-  $form-group-separating-margin: 2*$spacer-unit-size;
+  $form-group-separating-margin: 2*$spacer-unit-size; */
 
   .form-group {
+    @include medium-screen {
+      width: $small-content-width;
+
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    /* TODO
     @include medium-screen {
       float: left;
 
@@ -29,7 +38,7 @@ form {
       &:nth-child(3n+3) {
         margin-right: 0;
       }
-    }
+    } */
 
     > label,
     > input,

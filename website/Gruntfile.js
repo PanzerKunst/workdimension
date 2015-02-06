@@ -78,6 +78,7 @@ module.exports = function (grunt) {
                     "javascripts/controllers/headerModal/headerModal.js",
                     "javascripts/controllers/headerModal/registerHeaderModal.js",
                     "javascripts/controllers/headerModal/signInHeaderModal.js",
+                    "javascripts/controllers/customActivity.js",
 
                     // React
                     "public/react-site.js"
@@ -96,6 +97,7 @@ module.exports = function (grunt) {
                     "javascripts/activities/controller.js",
 
                     // Non-React
+                    "javascripts/activities/Custom/activity.js",
                     "javascripts/activities/GlobalFindYourStrengths/activity.js",
                     "javascripts/activities/GlobalFindYourStrengths2/activity.js",
 

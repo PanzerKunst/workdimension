@@ -5,7 +5,7 @@ CS.Activities.Controller = P(function (c) {
         this.activity.registerController(this, this.route);
     };
 
-    c.render = function () {
+    c.render = function (data) {
         if (!this.isRendered) {
             var uuid = CS.Services.guid();
 
@@ -13,7 +13,7 @@ CS.Activities.Controller = P(function (c) {
             this.$el = $("#" + uuid);
 
             React.render(
-                React.createElement(this.reactClass, {data: this.activity.model.accountData}),
+                React.createElement(this.reactClass, data),
                 this.$el[0]
             );
 

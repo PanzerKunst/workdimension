@@ -12,7 +12,7 @@ object ActivityApi extends Controller {
   def get = Action { request =>
     Application.getAccountId(request.session) match {
       case None => BadRequest("Account ID not found in session")
-      case Some(accountId) => Ok(Json.toJson(AccountActivityDto.getFrontendActivitiesOfAccountId(accountId)))
+      case Some(accountId) => Ok(Json.toJson(AccountActivityDto.getOfAccountId(accountId)))
     }
   }
 

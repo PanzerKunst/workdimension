@@ -18,3 +18,7 @@ CS.Models = {};
 CS.Controllers = {};
 CS.Services = {};
 CS.C1s = {};
+
+// Global objects
+CS.accountData = null;
+CS.router = new Grapnel();

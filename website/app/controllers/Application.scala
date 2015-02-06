@@ -19,6 +19,10 @@ object Application extends Controller {
     )
   }
 
+  def customActivity = Action { request =>
+    Ok(views.html.customActivity())
+  }
+
   def getAccountId(session: Session): Option[Long] = {
     session.get("accountId") match {
       case Some(activeC1IdsAsString) => Some(activeC1IdsAsString.toLong)

@@ -7,6 +7,7 @@ GET     /assets/*file                               controllers.Assets.at(path="
 
 # Pages
 GET     /                                           controllers.Application.index
+GET     /custom-activity                            controllers.Application.customActivity
 
 # API
 POST    /api/db/re-create-tables                    controllers.api.DbAdminApi.reCreateTables
@@ -14,7 +15,11 @@ POST    /api/db/re-create-tables                    controllers.api.DbAdminApi.r
 GET     /api/activities                             controllers.api.ActivityApi.get
 POST    /api/activities                             controllers.api.ActivityApi.add
 
+GET     /api/accounts                               controllers.api.AccountApi.get
 POST    /api/accounts                               controllers.api.AccountApi.create
 
 POST    /api/auth                                   controllers.api.AuthApi.signIn
 DELETE  /api/auth                                   controllers.api.AuthApi.signOut
+
+GET     /api/custom-activities                      controllers.api.CustomActivityApi.get
+POST    /api/custom-activities                      controllers.api.CustomActivityApi.create

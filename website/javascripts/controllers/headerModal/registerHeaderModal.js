@@ -82,7 +82,7 @@ CS.Controllers.HeaderModal.Register = P(CS.Controllers.HeaderModal, function (c,
     };
 
     c._arePasswordsMatching = function () {
-        var isValid = this.$passwordField.val() === this.$passwordConfirmationField.val();
+        var isValid = this.$passwordField.val().trim() === this.$passwordConfirmationField.val().trim();
 
         if (!isValid) {
             this.$passwordsNotMatchingError.show();

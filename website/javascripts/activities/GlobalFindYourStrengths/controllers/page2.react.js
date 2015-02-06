@@ -36,7 +36,7 @@ CS.Activities.GlobalFindYourStrengths.Controllers.Page2 = P(CS.Activities.Contro
         e.preventDefault();
 
         if (this.validator.isValid()) {
-            this.activity.model.accountData.strengths.strength2 = this.$strengthField.val();
+            this.activity.model.accountData.strengths.strength2 = this.$strengthField.val().trim();
 
             this.navigateTo(this.activity.page3Controller.route);
         }

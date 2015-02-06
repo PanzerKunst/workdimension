@@ -9,7 +9,7 @@ import play.api.Play.current
 import play.api.db.DB
 
 object AccountActivityDto {
-  def getFrontendActivitiesOfAccountId(accountId: Long): List[ActivitySentToFrontend] = {
+  def getOfAccountId(accountId: Long): List[ActivitySentToFrontend] = {
     DB.withConnection { implicit c =>
       val query = """
           select distinct activity_class_name, activity_state, max(creation_timestamp)
@@ -17,7 +17,7 @@ object AccountActivityDto {
           where account_id = """ + accountId + """
           group by activity_class_name, activity_state;"""
 
-      Logger.info("AccountActivityDto.getFrontendActivitiesOfAccountId():" + query)
+      Logger.info("AccountActivityDto.getOfAccountId():" + query)
 
       SQL(query)().map { row =>
         ActivitySentToFrontend(

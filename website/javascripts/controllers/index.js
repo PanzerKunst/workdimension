@@ -3,7 +3,6 @@ CS.Controllers.Index = P(function (c) {
     c.init = function (accountId, accountData) {
         this.accountId = accountId;
         CS.accountData = accountData;
-        CS.router = new Grapnel();
 
         this.activityFeedController = CS.Controllers.ActivityFeed();
 

@@ -46,11 +46,34 @@ CS.Controllers.ActivityFeed = P(function (c) {
     };
 
     c.refreshData = function () {
-        this.feedItemInstances = this.feedItems.map(function (item, index) {
-            return CS[item.packageName][item.className](item.className, item.title);
-        }, this);
+        this._fetchCustomActivities();
+    };
 
-        this._fetchActivities();
+    c._fetchCustomActivities = function () {
+        var type = "GET";
+        var url = "/api/custom-activities";
+
+        $.ajax({
+            url: url,
+            type: type,
+            dataType: "json",
+            success: function (data, textStatus, jqXHR) {
+                var feedItemInstancesCustomActivities = data.map(function (customActivity, index) {
+                    return CS.Activities.Custom(customActivity.className, customActivity.title, customActivity.mainText, customActivity.accountDataKey);
+                }, this);
+
+                var feedItemInstancesClassicActivities = this.feedItems.map(function (item, index) {
+                    return CS[item.packageName][item.className](item.className, item.title);
+                }, this);
+
+                this.feedItemInstances = _.union(feedItemInstancesCustomActivities, feedItemInstancesClassicActivities);
+
+                this._fetchActivities();
+            }.bind(this),
+            error: function (jqXHR, textStatus, errorThrown) {
+                alert('AJAX failure doing a ' + type + ' request to "' + url + '"');
+            }.bind(this)
+        });
     };
 
     c._fetchActivities = function () {
@@ -66,7 +89,7 @@ CS.Controllers.ActivityFeed = P(function (c) {
             }.bind(this),
             error: function (jqXHR, textStatus, errorThrown) {
                 alert('AJAX failure doing a ' + type + ' request to "' + url + '"');
-            }
+            }.bind(this)
         });
     };
 
@@ -124,6 +147,7 @@ CS.Controllers.ActivityFeed.packageName = {
     c1: "C1s",
     activity: "Activities"
 };
+
 CS.Controllers.ActivityFeedItem = React.createClass({displayName: "ActivityFeedItem",
     render: function () {
         var liClasses = React.addons.classSet({

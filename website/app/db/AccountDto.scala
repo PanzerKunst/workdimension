@@ -53,9 +53,9 @@ object AccountDto {
     DB.withConnection {
       implicit c =>
         val query = """
-    select email_address, creation_timestamp
-    from account
-    where id = """ + accountId + """;"""
+        select email_address, creation_timestamp
+        from account
+        where id = """ + accountId + """;"""
 
         Logger.info("AccountDto.getOfId():" + query)
 
@@ -78,10 +78,10 @@ object AccountDto {
     DB.withConnection {
       implicit c =>
         val query = """
-    select id, creation_timestamp
-    from account
-    where email_address = '""" + DbUtil.safetize(emailAddress) + """'
-    and password = crypt('""" + DbUtil.safetize(password) + """', password);"""
+        select id, creation_timestamp
+        from account
+        where email_address = '""" + DbUtil.safetize(emailAddress) + """'
+        and password = crypt('""" + DbUtil.safetize(password) + """', password);"""
 
         /* Not logged to avoid logging clear password
         Logger.info("AccountDto.getOfSignInInfo():" + query) */
@@ -105,12 +105,37 @@ object AccountDto {
     DB.withConnection {
       implicit c =>
         val query = """
-  delete from account
-  where id = """ + accountId + """;"""
+        delete from account
+        where id = """ + accountId + """;"""
 
         Logger.info("AccountDto.delete():" + query)
 
         SQL(query).execute()
+    }
+  }
+
+  def getOfEmailAddress(emailAddress: String): Option[Account] = {
+    DB.withConnection {
+      implicit c =>
+        val query = """
+        select id, creation_timestamp
+        from account
+        where email_address = '""" + DbUtil.safetize(emailAddress) + """';"""
+
+        Logger.info("AccountDto.getOfEmailAddress():" + query)
+
+        SQL(query).apply().headOption match {
+          case Some(row) =>
+            Some(
+              Account(
+                row[Option[Long]]("id"),
+                Some(emailAddress),
+                None,
+                row[Long]("creation_timestamp")
+              )
+            )
+          case None => None
+        }
     }
   }
 }

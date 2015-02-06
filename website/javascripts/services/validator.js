@@ -218,7 +218,7 @@ CS.Services.Validator = P(function (s) {
 
         // Email?
         if (this._isToCheckIfEmail($field)) {
-            if (!this._isEmail($field.val())) {
+            if (!this._isEmail($field.val().trim())) {
                 this.flagInvalid($field);
                 this._slideDownErrorMessage(this._get$email($field));
                 return false;
@@ -229,7 +229,7 @@ CS.Services.Validator = P(function (s) {
 
         // Username?
         if (this._isToCheckIfUsername($field)) {
-            if (!this._isUsername($field.val())) {
+            if (!this._isUsername($field.val().trim())) {
                 this.flagInvalid($field);
                 this._slideDownErrorMessage(this._get$username($field));
                 return false;
@@ -239,7 +239,7 @@ CS.Services.Validator = P(function (s) {
 
         // In the future?
         if (this._isToCheckIfInFuture($field)) {
-            if (!this._isInFuture($field.val())) {
+            if (!this._isInFuture($field.val().trim())) {
                 this.flagInvalid($field);
                 this._slideDownErrorMessage(this._get$inFuture($field));
                 return false;
@@ -249,7 +249,7 @@ CS.Services.Validator = P(function (s) {
 
         // Min length?
         if (this._isToCheckIfMinLength($field)) {
-            if (!this._isMinLength($field.val(), $field.data("min-length"))) {
+            if (!this._isMinLength($field.val().trim(), $field.data("min-length"))) {
                 this.flagInvalid($field);
                 this._slideDownErrorMessage(this._get$minLength($field));
                 return false;
@@ -259,7 +259,7 @@ CS.Services.Validator = P(function (s) {
 
         // Max length?
         if (this._isToCheckIfMaxLength($field)) {
-            if (!this._isMaxLength($field.val(), $field.attr("maxlength"))) {
+            if (!this._isMaxLength($field.val().trim(), $field.attr("maxlength"))) {
                 this.flagInvalid($field);
                 this._slideDownErrorMessage(this._get$maxLength($field));
                 return false;
@@ -269,7 +269,7 @@ CS.Services.Validator = P(function (s) {
 
         // Integer number?
         if (this._isToCheckIfInteger($field)) {
-            if (!this._isInteger($field.val())) {
+            if (!this._isInteger($field.val().trim())) {
                 this.flagInvalid($field);
                 this._slideDownErrorMessage(this._get$integer($field));
                 return false;
@@ -279,7 +279,7 @@ CS.Services.Validator = P(function (s) {
 
         // Decimal number?
         if (this._isToCheckIfDecimal($field)) {
-            if (!this._isDecimal($field.val())) {
+            if (!this._isDecimal($field.val().trim())) {
                 this.flagInvalid($field);
                 this._slideDownErrorMessage(this._get$decimal($field));
                 return false;
@@ -289,7 +289,7 @@ CS.Services.Validator = P(function (s) {
 
         // URL?
         if (this._isToCheckIfUrl($field)) {
-            if (!this._isUrl($field.val())) {
+            if (!this._isUrl($field.val().trim())) {
                 this.flagInvalid($field);
                 this._slideDownErrorMessage(this._get$url($field));
                 return false;

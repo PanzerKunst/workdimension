@@ -62,9 +62,9 @@ CS.Activities.GlobalFindYourStrengths2.Controllers.Page1 = P(CS.Activities.Contr
         if (this.validator.isValid()) {
             this.$submitBtn.button('loading');
 
-            this.activity.model.accountData.strengths.strength4 = this.$strength4Field.val();
-            this.activity.model.accountData.strengths.strength5 = this.$strength5Field.val();
-            this.activity.model.accountData.strengths.strength6 = this.$strength6Field.val();
+            this.activity.model.accountData.strengths.strength4 = this.$strength4Field.val().trim();
+            this.activity.model.accountData.strengths.strength5 = this.$strength5Field.val().trim();
+            this.activity.model.accountData.strengths.strength6 = this.$strength6Field.val().trim();
 
             this.postData();
         }

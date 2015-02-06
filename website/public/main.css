@@ -4774,47 +4774,68 @@ blockquote {
 .centered-contents {
   text-align: center; }
 
-@media screen and (min-width: 640px) {
-  form:before, form:after {
-    content: " ";
-    display: table; }
-  form:after {
-    clear: both; } }
-@media screen and (min-width: 640px) {
+form {
+  /* TODO
+  $form-width-medium-screen: $medium-content-width - 2*$spacer-unit-size;
+  $form-width-large-screen: $large-content-width - 2*$spacer-unit-size;
+  $form-group-separating-margin: 2*$spacer-unit-size; */ }
+  @media screen and (min-width: 640px) {
+    form:before, form:after {
+      content: " ";
+      display: table; }
+    form:after {
+      clear: both; } }
   form .form-group {
-    float: left;
-    width: 292px; }
-    form .form-group:nth-child(odd) {
-      margin-right: 28px; } }
-@media screen and (min-width: 960px) {
-  form .form-group {
-    width: 292px; }
-    form .form-group:nth-child(even), form .form-group:nth-child(odd) {
-      margin-right: 28px; }
-    form .form-group:nth-child(3n+3) {
-      margin-right: 0; } }
-form .form-group > label,
-form .form-group > input,
-form .form-group > select,
-form .form-group > textarea {
-  display: block;
-  width: 100%; }
-form .form-group > label {
-  margin-bottom: 0; }
-  form .form-group > label.mdnz-polyfill {
-    display: none; }
-form .field-error {
-  display: none;
-  font-style: italic;
-  font-weight: bold;
-  font-size: 12px;
-  color: #a94442;
-  margin-bottom: 0; }
-  form .field-error.other-form-error {
-    font-size: 14px;
-    margin-bottom: 10px;
-    text-align: center;
-    clear: both; }
+    /* TODO
+    @include medium-screen {
+      float: left;
+
+      width: ($form-width-medium-screen - $form-group-separating-margin) / 2;
+
+      &:nth-child(odd) {
+        margin-right: $form-group-separating-margin;
+      }
+    }
+
+    @include large-screen {
+      width: ($form-width-large-screen - $form-group-separating-margin * 2) / 3;
+
+      &:nth-child(even),
+      &:nth-child(odd) {
+        margin-right: $form-group-separating-margin;
+      }
+
+      &:nth-child(3n+3) {
+        margin-right: 0;
+      }
+    } */ }
+    @media screen and (min-width: 640px) {
+      form .form-group {
+        width: 320px;
+        margin-left: auto;
+        margin-right: auto; } }
+    form .form-group > label,
+    form .form-group > input,
+    form .form-group > select,
+    form .form-group > textarea {
+      display: block;
+      width: 100%; }
+    form .form-group > label {
+      margin-bottom: 0; }
+      form .form-group > label.mdnz-polyfill {
+        display: none; }
+  form .field-error {
+    display: none;
+    font-style: italic;
+    font-weight: bold;
+    font-size: 12px;
+    color: #a94442;
+    margin-bottom: 0; }
+    form .field-error.other-form-error {
+      font-size: 14px;
+      margin-bottom: 10px;
+      text-align: center;
+      clear: both; }
 
 .check-or-radio {
   display: table-row; }
@@ -4847,6 +4868,9 @@ form .field-error {
   @media screen and (min-width: 960px) {
     #content {
       max-width: 960px; } }
+
+.alert-success {
+  display: none; }
 
 html {
   font-size: 14px; }

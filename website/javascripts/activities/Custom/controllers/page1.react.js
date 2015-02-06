@@ -1,11 +1,11 @@
-CS.Activities.GlobalFindYourStrengths.Controllers.Page3 = P(CS.Activities.Controller, function (c, base) {
+CS.Activities.Custom.Controllers.Page1 = P(CS.Activities.Controller, function (c, base) {
     c.reactClass = React.createClass({
         render: function () {
             return (
                 <form role="form">
                     <div className="form-group">
-                        <label for="strength-3">My third strength is</label>
-                        <input type="text" id="strength-3" className="form-control" />
+                        <p>{this.props.text}</p>
+                        <textarea id="custom-activity-answer" class="form-control"></textarea>
 
                         <p className="field-error" data-check="empty"></p>
                     </div>
@@ -19,13 +19,15 @@ CS.Activities.GlobalFindYourStrengths.Controllers.Page3 = P(CS.Activities.Contro
 
     c.initElements = function () {
         this.$form = this.$el.find("form");
-        this.$strengthField = this.$form.find("#strength-3");
+
+        this.$textarea = this.$form.find("#custom-activity-answer");
+
         this.$submitBtn = this.$form.find("[type=submit]");
     };
 
     c.initValidation = function () {
         this.validator = CS.Services.Validator([
-            "strength-3"
+            "custom-activity-answer"
         ]);
     };
 
@@ -44,7 +46,7 @@ CS.Activities.GlobalFindYourStrengths.Controllers.Page3 = P(CS.Activities.Contro
         if (this.validator.isValid()) {
             this.$submitBtn.button('loading');
 
-            this.activity.model.accountData.strengths.strength3 = this.$strengthField.val().trim();
+            this.activity.model.accountData.custom[this.activity.accountDataKey] = this.$textarea.val().trim();
 
             this.postData();
         }

@@ -39,7 +39,7 @@ CS.Activities.Base = P(function (c) {
         this.controllers[route] = controllerClass;
     };
 
-    c.renderController = function (route) {
+    c.renderController = function (route, data) {
         if (!this.$activitiesPanel.hasClass("active")) {
             this.$tabPanels.removeClass("active");
             this.$activitiesTab.tab('show');
@@ -50,6 +50,6 @@ CS.Activities.Base = P(function (c) {
         this.$currentC1OrActivitySection.show();
 
         this.$el.children().hide();
-        this.controllers[route].render();
+        this.controllers[route].render(data);
     };
 });

@@ -2,7 +2,7 @@ package controllers.api
 
 import controllers.Application
 import db._
-import models.frontend.FrontendAccount
+import models.frontend.AccountReceivedFromFrontend
 import play.api.libs.json._
 import play.api.mvc.{Action, Controller}
 import services.EmailService
@@ -13,8 +13,8 @@ object AccountApi extends Controller {
       case None => BadRequest("Account ID not found in session")
 
       case Some(accountId) =>
-        request.body.validate[FrontendAccount] match {
-          case s: JsSuccess[FrontendAccount] =>
+        request.body.validate[AccountReceivedFromFrontend] match {
+          case s: JsSuccess[AccountReceivedFromFrontend] =>
             val frontendAccount = s.get
 
             try {
@@ -47,8 +47,19 @@ object AccountApi extends Controller {
             } catch {
               case eare: EmailAlreadyRegisteredException => Status(230)("This email is already registered")
             }
-          case e: JsError => BadRequest("Validation of FrontendAccount failed")
+          case e: JsError => BadRequest("Validation of AccountReceivedFromFrontend failed")
         }
     }
+  }
+
+  def get = Action { request =>
+    if (request.queryString.contains("emailAddress")) {
+      val emailAddress = request.queryString.get("emailAddress").get.head
+      AccountDto.getOfEmailAddress(emailAddress) match {
+        case None => NoContent
+        case Some(account) => Ok(Json.toJson(account))
+      }
+    } else
+      BadRequest("Query string param 'emailAddress' must be set")
   }
 }

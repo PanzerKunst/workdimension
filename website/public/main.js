@@ -101,6 +101,10 @@ CS.Models = {};
 CS.Controllers = {};
 CS.Services = {};
 CS.C1s = {};
+
+// Global objects
+CS.accountData = null;
+CS.router = new Grapnel();
 ;CS.Services = {
     guid: (function () {
         function s4() {
@@ -335,7 +339,7 @@ CS.C1s = {};
 
         // Email?
         if (this._isToCheckIfEmail($field)) {
-            if (!this._isEmail($field.val())) {
+            if (!this._isEmail($field.val().trim())) {
                 this.flagInvalid($field);
                 this._slideDownErrorMessage(this._get$email($field));
                 return false;
@@ -346,7 +350,7 @@ CS.C1s = {};
 
         // Username?
         if (this._isToCheckIfUsername($field)) {
-            if (!this._isUsername($field.val())) {
+            if (!this._isUsername($field.val().trim())) {
                 this.flagInvalid($field);
                 this._slideDownErrorMessage(this._get$username($field));
                 return false;
@@ -356,7 +360,7 @@ CS.C1s = {};
 
         // In the future?
         if (this._isToCheckIfInFuture($field)) {
-            if (!this._isInFuture($field.val())) {
+            if (!this._isInFuture($field.val().trim())) {
                 this.flagInvalid($field);
                 this._slideDownErrorMessage(this._get$inFuture($field));
                 return false;
@@ -366,7 +370,7 @@ CS.C1s = {};
 
         // Min length?
         if (this._isToCheckIfMinLength($field)) {
-            if (!this._isMinLength($field.val(), $field.data("min-length"))) {
+            if (!this._isMinLength($field.val().trim(), $field.data("min-length"))) {
                 this.flagInvalid($field);
                 this._slideDownErrorMessage(this._get$minLength($field));
                 return false;
@@ -376,7 +380,7 @@ CS.C1s = {};
 
         // Max length?
         if (this._isToCheckIfMaxLength($field)) {
-            if (!this._isMaxLength($field.val(), $field.attr("maxlength"))) {
+            if (!this._isMaxLength($field.val().trim(), $field.attr("maxlength"))) {
                 this.flagInvalid($field);
                 this._slideDownErrorMessage(this._get$maxLength($field));
                 return false;
@@ -386,7 +390,7 @@ CS.C1s = {};
 
         // Integer number?
         if (this._isToCheckIfInteger($field)) {
-            if (!this._isInteger($field.val())) {
+            if (!this._isInteger($field.val().trim())) {
                 this.flagInvalid($field);
                 this._slideDownErrorMessage(this._get$integer($field));
                 return false;
@@ -396,7 +400,7 @@ CS.C1s = {};
 
         // Decimal number?
         if (this._isToCheckIfDecimal($field)) {
-            if (!this._isDecimal($field.val())) {
+            if (!this._isDecimal($field.val().trim())) {
                 this.flagInvalid($field);
                 this._slideDownErrorMessage(this._get$decimal($field));
                 return false;
@@ -406,7 +410,7 @@ CS.C1s = {};
 
         // URL?
         if (this._isToCheckIfUrl($field)) {
-            if (!this._isUrl($field.val())) {
+            if (!this._isUrl($field.val().trim())) {
                 this.flagInvalid($field);
                 this._slideDownErrorMessage(this._get$url($field));
                 return false;
@@ -464,7 +468,6 @@ CS.C1s = {};
     c.init = function (accountId, accountData) {
         this.accountId = accountId;
         CS.accountData = accountData;
-        CS.router = new Grapnel();
 
         this.activityFeedController = CS.Controllers.ActivityFeed();
 
@@ -738,7 +741,7 @@ CS.Controllers.Index.isUnsavedProgress = false;
     };
 
     c._arePasswordsMatching = function () {
-        var isValid = this.$passwordField.val() === this.$passwordConfirmationField.val();
+        var isValid = this.$passwordField.val().trim() === this.$passwordConfirmationField.val().trim();
 
         if (!isValid) {
             this.$passwordsNotMatchingError.show();
@@ -825,6 +828,114 @@ CS.Controllers.Index.isUnsavedProgress = false;
         this.$modal.modal('hide');
     };
 });
+;CS.Controllers.CustomActivity = P(function (c) {
+    c.init = function () {
+        this._initElements();
+        this._initValidation();
+        this._initEvents();
+    };
+
+    c._initElements = function () {
+        this.$successAlert = $("#custom-activity-saved");
+
+        this.$form = $("form");
+
+        this.$emailField = this.$form.find("#email");
+        this.$formGroupEmail = this.$emailField.parent();
+        this.$classNameField = this.$form.find("#class-name");
+        this.$titleField = this.$form.find("#title");
+        this.$textField = this.$form.find("#text");
+        this.$accountDataKeyField = this.$form.find("#account-data-key");
+
+        this.$noAccountFoundForThisEmailError = this.$form.find("#no-account-found-for-this-email");
+
+        this.$submitBtn = this.$form.find("[type=submit]");
+    };
+
+    c._initValidation = function () {
+        this.validator = CS.Services.Validator([
+            "email",
+            "class-name",
+            "title",
+            "text",
+            "account-data-key"
+        ]);
+    };
+
+    c._initEvents = function () {
+        this.$form.submit($.proxy(this._handleSubmit, this));
+        this.$emailField.blur($.proxy(this._checkIfAccountExists, this));
+    };
+
+    c._handleSubmit = function (e) {
+        e.preventDefault();
+
+        this.$successAlert.hide();
+
+        if (this.validator.isValid()) {
+            this._checkIfAccountExists(null, function () {
+                var data = {
+                    accountEmailAddress: this.$emailField.val().trim(),
+                    className: this.$classNameField.val().trim(),
+                    title: this.$titleField.val().trim(),
+                    mainText: this.$textField.val().trim(),
+                    accountDataKey: this.$accountDataKeyField.val().trim()
+                };
+
+                var type = "POST";
+                var url = "/api/custom-activities";
+
+                $.ajax({
+                    url: url,
+                    type: type,
+                    contentType: "application/json",
+                    data: JSON.stringify(data),
+                    success: function (data, textStatus, jqXHR) {
+                        this.$submitBtn.button('reset');
+                        this.$form[0].reset();
+                        this.$successAlert.show();
+                    }.bind(this),
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        this.$submitBtn.button('reset');
+                        alert('AJAX failure doing a ' + type + ' request to "' + url + '"');
+                    }.bind(this)
+                });
+            }.bind(this));
+        }
+    };
+
+    c._checkIfAccountExists = function (e, callback) {
+        var emailAddress = this.$emailField.val().trim();
+
+        if (emailAddress) {
+            this.$formGroupEmail.removeClass("has-error");
+            this.$noAccountFoundForThisEmailError.hide();
+
+            var type = "GET";
+            var url = "/api/accounts";
+
+            $.ajax({
+                url: url + "?emailAddress=" + emailAddress,
+                type: type,
+                success: function (data, textStatus, jqXHR) {
+                    if (jqXHR.status === CS.Controllers.httpStatusCode.noContent) {
+                        this.$formGroupEmail.addClass("has-error");
+                        this.$noAccountFoundForThisEmailError.show();
+                    } else {
+                        this.$formGroupEmail.addClass("has-success");
+
+                        if (callback) {
+                            callback();
+                        }
+                    }
+                }.bind(this),
+                error: function (jqXHR, textStatus, errorThrown) {
+                    alert('AJAX failure doing a ' + type + ' request to "' + url + '"');
+                }.bind(this)
+            });
+        }
+    };
+});
 ;CS.Controllers.ActivityFeed = P(function (c) {
     c.reactClass = React.createClass({displayName: "reactClass",
         getInitialState: function () {
@@ -873,11 +984,34 @@ CS.Controllers.Index.isUnsavedProgress = false;
     };
 
     c.refreshData = function () {
-        this.feedItemInstances = this.feedItems.map(function (item, index) {
-            return CS[item.packageName][item.className](item.className, item.title);
-        }, this);
+        this._fetchCustomActivities();
+    };
 
-        this._fetchActivities();
+    c._fetchCustomActivities = function () {
+        var type = "GET";
+        var url = "/api/custom-activities";
+
+        $.ajax({
+            url: url,
+            type: type,
+            dataType: "json",
+            success: function (data, textStatus, jqXHR) {
+                var feedItemInstancesCustomActivities = data.map(function (customActivity, index) {
+                    return CS.Activities.Custom(customActivity.className, customActivity.title, customActivity.mainText, customActivity.accountDataKey);
+                }, this);
+
+                var feedItemInstancesClassicActivities = this.feedItems.map(function (item, index) {
+                    return CS[item.packageName][item.className](item.className, item.title);
+                }, this);
+
+                this.feedItemInstances = _.union(feedItemInstancesCustomActivities, feedItemInstancesClassicActivities);
+
+                this._fetchActivities();
+            }.bind(this),
+            error: function (jqXHR, textStatus, errorThrown) {
+                alert('AJAX failure doing a ' + type + ' request to "' + url + '"');
+            }.bind(this)
+        });
     };
 
     c._fetchActivities = function () {
@@ -893,7 +1027,7 @@ CS.Controllers.Index.isUnsavedProgress = false;
             }.bind(this),
             error: function (jqXHR, textStatus, errorThrown) {
                 alert('AJAX failure doing a ' + type + ' request to "' + url + '"');
-            }
+            }.bind(this)
         });
     };
 
@@ -951,6 +1085,7 @@ CS.Controllers.ActivityFeed.packageName = {
     c1: "C1s",
     activity: "Activities"
 };
+
 CS.Controllers.ActivityFeedItem = React.createClass({displayName: "ActivityFeedItem",
     render: function () {
         var liClasses = React.addons.classSet({
@@ -1022,7 +1157,7 @@ CS.Activities.Base = P(function (c) {
         this.controllers[route] = controllerClass;
     };
 
-    c.renderController = function (route) {
+    c.renderController = function (route, data) {
         if (!this.$activitiesPanel.hasClass("active")) {
             this.$tabPanels.removeClass("active");
             this.$activitiesTab.tab('show');
@@ -1033,7 +1168,7 @@ CS.Activities.Base = P(function (c) {
         this.$currentC1OrActivitySection.show();
 
         this.$el.children().hide();
-        this.controllers[route].render();
+        this.controllers[route].render(data);
     };
 });
 ;CS.Activities.Controller = P(function (c) {
@@ -1043,7 +1178,7 @@ CS.Activities.Base = P(function (c) {
         this.activity.registerController(this, this.route);
     };
 
-    c.render = function () {
+    c.render = function (data) {
         if (!this.isRendered) {
             var uuid = CS.Services.guid();
 
@@ -1051,7 +1186,7 @@ CS.Activities.Base = P(function (c) {
             this.$el = $("#" + uuid);
 
             React.render(
-                React.createElement(this.reactClass, {data: this.activity.model.accountData}),
+                React.createElement(this.reactClass, data),
                 this.$el[0]
             );
 
@@ -1097,6 +1232,31 @@ CS.Activities.Base = P(function (c) {
     c.initEvents = function() {};
     c.onReRender = function() {};
 });
+;CS.Activities.Custom = P(CS.Activities.Base, function (c, base) {
+    c.init = function (className, title, text, accountDataKey) {
+        base.init.call(this, className, title);
+
+        this.text = text;
+        this.accountDataKey = accountDataKey;
+
+        this.model.accountData.custom = this.model.accountData.custom || {};
+    };
+
+    c.isDoable = function () {
+        return true;    // Always doable
+    };
+
+    c.preLaunch = function () {
+        // Initialising all app controllers
+        this.controller = CS.Activities.Custom.Controllers.Page1("activities/" + this.model.className, this);
+
+        CS.router.get(this.controller.route, function (req) {
+            this.renderController(this.controller.route, { text: this.text});
+        }.bind(this));
+    };
+});
+
+CS.Activities.Custom.Controllers = {};
 ;CS.Activities.GlobalFindYourStrengths = P(CS.Activities.Base, function (c, base) {
     c.init = function (className, title) {
         base.init.call(this, className, title);
@@ -1152,7 +1312,62 @@ CS.Activities.GlobalFindYourStrengths.Controllers = {};
 });
 
 CS.Activities.GlobalFindYourStrengths2.Controllers = {};
-;CS.Activities.GlobalFindYourStrengths.Controllers.Page1 = P(CS.Activities.Controller, function (c, base) {
+;CS.Activities.Custom.Controllers.Page1 = P(CS.Activities.Controller, function (c, base) {
+    c.reactClass = React.createClass({displayName: "reactClass",
+        render: function () {
+            return (
+                React.createElement("form", {role: "form"}, 
+                    React.createElement("div", {className: "form-group"}, 
+                        React.createElement("p", null, this.props.text), 
+                        React.createElement("textarea", {id: "custom-activity-answer", class: "form-control"}), 
+
+                        React.createElement("p", {className: "field-error", "data-check": "empty"})
+                    ), 
+                    React.createElement("div", {className: "submit-wrapper"}, 
+                        React.createElement("button", {type: "submit", className: "btn btn-primary", "data-loading-text": "Saving..."}, "Done")
+                    )
+                )
+                );
+        }
+    });
+
+    c.initElements = function () {
+        this.$form = this.$el.find("form");
+
+        this.$textarea = this.$form.find("#custom-activity-answer");
+
+        this.$submitBtn = this.$form.find("[type=submit]");
+    };
+
+    c.initValidation = function () {
+        this.validator = CS.Services.Validator([
+            "custom-activity-answer"
+        ]);
+    };
+
+    c.initEvents = function () {
+        this.$form.submit($.proxy(this._handleSubmit, this));
+    };
+
+    c.onReRender = function() {
+        // The submit button may still be in loading state when navigating back. We make sure it doesn't happen
+        this.$submitBtn.button('reset');
+    };
+
+    c._handleSubmit = function (e) {
+        e.preventDefault();
+
+        if (this.validator.isValid()) {
+            this.$submitBtn.button('loading');
+
+            this.activity.model.accountData.custom[this.activity.accountDataKey] = this.$textarea.val().trim();
+
+            this.postData();
+        }
+    };
+});
+
+CS.Activities.GlobalFindYourStrengths.Controllers.Page1 = P(CS.Activities.Controller, function (c, base) {
     c.reactClass = React.createClass({displayName: "reactClass",
         render: function () {
             return (
@@ -1190,7 +1405,7 @@ CS.Activities.GlobalFindYourStrengths2.Controllers = {};
         e.preventDefault();
 
         if (this.validator.isValid()) {
-            this.activity.model.accountData.strengths.strength1 = this.$strengthField.val();
+            this.activity.model.accountData.strengths.strength1 = this.$strengthField.val().trim();
 
             this.navigateTo(this.activity.page2Controller.route);
         }
@@ -1235,7 +1450,7 @@ CS.Activities.GlobalFindYourStrengths.Controllers.Page2 = P(CS.Activities.Contro
         e.preventDefault();
 
         if (this.validator.isValid()) {
-            this.activity.model.accountData.strengths.strength2 = this.$strengthField.val();
+            this.activity.model.accountData.strengths.strength2 = this.$strengthField.val().trim();
 
             this.navigateTo(this.activity.page3Controller.route);
         }
@@ -1274,7 +1489,7 @@ CS.Activities.GlobalFindYourStrengths.Controllers.Page3 = P(CS.Activities.Contro
     };
 
     c.initEvents = function () {
-        this.$form.submit($.proxy(this._doSubmit, this));
+        this.$form.submit($.proxy(this._handleSubmit, this));
     };
 
     c.onReRender = function() {
@@ -1282,13 +1497,13 @@ CS.Activities.GlobalFindYourStrengths.Controllers.Page3 = P(CS.Activities.Contro
         this.$submitBtn.button('reset');
     };
 
-    c._doSubmit = function (e) {
+    c._handleSubmit = function (e) {
         e.preventDefault();
 
         if (this.validator.isValid()) {
             this.$submitBtn.button('loading');
 
-            this.activity.model.accountData.strengths.strength3 = this.$strengthField.val();
+            this.activity.model.accountData.strengths.strength3 = this.$strengthField.val().trim();
 
             this.postData();
         }
@@ -1359,9 +1574,9 @@ CS.Activities.GlobalFindYourStrengths2.Controllers.Page1 = P(CS.Activities.Contr
         if (this.validator.isValid()) {
             this.$submitBtn.button('loading');
 
-            this.activity.model.accountData.strengths.strength4 = this.$strength4Field.val();
-            this.activity.model.accountData.strengths.strength5 = this.$strength5Field.val();
-            this.activity.model.accountData.strengths.strength6 = this.$strength6Field.val();
+            this.activity.model.accountData.strengths.strength4 = this.$strength4Field.val().trim();
+            this.activity.model.accountData.strengths.strength5 = this.$strength5Field.val().trim();
+            this.activity.model.accountData.strengths.strength6 = this.$strength6Field.val().trim();
 
             this.postData();
         }
