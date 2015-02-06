@@ -1,7 +1,5 @@
 CS.Controllers.HeaderModal = P(function (c) {
-    c.init = function (indexController) {
-        this.indexController = indexController;
-
+    c.init = function () {
         this.initElements();
         this.initValidation();
         this.initEvents();

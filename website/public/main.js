@@ -105,20 +105,6 @@ CS.C1s = {};
 // Global objects
 CS.accountData = null;
 CS.router = new Grapnel();
-;CS.Services = {
-    guid: (function () {
-        function s4() {
-            return Math.floor((1 + Math.random()) * 0x10000)
-                .toString(16)
-                .substring(1);
-        }
-
-        return function () {
-            return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
-                s4() + '-' + s4() + s4() + s4();
-        };
-    })()
-};
 ;CS.Services.Validator = P(function (s) {
     s.checkEmpty = "empty";
     s.checkEmail = "email";
@@ -464,15 +450,15 @@ CS.router = new Grapnel();
     emailAlreadyRegistered: 230
 };
 ;CS.Controllers.Index = P(function (c) {
-
     c.init = function (accountId, accountData) {
         this.accountId = accountId;
         CS.accountData = accountData;
 
         this.activityFeedController = CS.Controllers.ActivityFeed();
+        this.standoutsController = CS.Controllers.Standouts();
 
-        CS.Controllers.HeaderModal.Register(this);
-        CS.Controllers.HeaderModal.SignIn(this);
+        CS.Controllers.HeaderModal.Register();
+        CS.Controllers.HeaderModal.SignIn();
 
         this._initElements();
         this._initHeaderLinks();
@@ -484,14 +470,14 @@ CS.router = new Grapnel();
     c._initElements = function () {
         this.$headerNav = $('[role="navigation"]');
         this.$activitiesTab = this.$headerNav.find("#activities-tab");
-        this.$insightsTab = this.$headerNav.find("#insights-tab");
+        this.$standoutsTab = this.$headerNav.find("#standouts-tab");
 
         this.$headerLinks = this.$headerNav.children("a");
         this.$signOutLink = this.$headerLinks.filter("#sign-out-link");
 
         this.$tabPanels = $('[role="tabpanel"]');
         this.$activitiesPanel = this.$tabPanels.filter("#activities");
-        this.$insightsPanel = this.$tabPanels.filter("#insights");
+        this.$standoutsPanel = this.$tabPanels.filter("#standouts");
 
         this.$feedSection = this.$activitiesPanel.children("#c1-and-activity-feed");
         this.$currentC1OrActivitySection = this.$activitiesPanel.children("#current-c1-or-activity");
@@ -511,8 +497,8 @@ CS.router = new Grapnel();
             location.hash = "activities";
         });
 
-        this.$insightsTab.click(function (e) {
-            location.hash = "insights";
+        this.$standoutsTab.click(function (e) {
+            location.hash = "standouts";
         });
 
         this.$signOutLink.click($.proxy(this._signOut, this));
@@ -529,8 +515,8 @@ CS.router = new Grapnel();
             this._activateActivitiesPanel();
         }.bind(this));
 
-        CS.router.get("insights", function (req) {
-            this._activateInsightsPanel();
+        CS.router.get("standouts", function (req) {
+            this._activateStandoutsPanel();
         }.bind(this));
     };
 
@@ -542,19 +528,21 @@ CS.router = new Grapnel();
         }
 
         this.activityFeedController.refreshData();
+        this.standoutsController.refreshData();
 
         this.$currentC1OrActivitySection.hide();
         this.$feedSection.show();
     };
 
-    c._activateInsightsPanel = function () {
-        if (!this.$insightsPanel.hasClass("active")) {
+    c._activateStandoutsPanel = function () {
+        if (!this.$standoutsPanel.hasClass("active")) {
             this.$tabPanels.removeClass("active");
-            this.$insightsTab.tab('show');
-            this.$insightsPanel.addClass("active");
+            this.$standoutsTab.tab('show');
+            this.$standoutsPanel.addClass("active");
         }
 
         this.activityFeedController.refreshData();
+        this.standoutsController.refreshData();
 
         this.$currentC1OrActivitySection.hide();
         this.$feedSection.show();
@@ -593,9 +581,7 @@ CS.router = new Grapnel();
 
 CS.Controllers.Index.isUnsavedProgress = false;
 ;CS.Controllers.HeaderModal = P(function (c) {
-    c.init = function (indexController) {
-        this.indexController = indexController;
-
+    c.init = function () {
         this.initElements();
         this.initValidation();
         this.initEvents();
@@ -1116,6 +1102,72 @@ CS.Controllers.ActivityFeedItem = React.createClass({displayName: "ActivityFeedI
         CS.Controllers.Index.isUnsavedProgress = true;
     }
 });
+
+CS.Controllers.Standouts = P(function (c) {
+    c.reactClass = React.createClass({displayName: "reactClass",
+        getInitialState: function () {
+            return {data: []};
+        },
+
+        render: function () {
+            var listItems = this.state.data.map(function (standout) {
+                return (
+                    React.createElement("li", {id: standout.className, className: "well"})
+                    );
+            }.bind(this));
+
+            return (
+                React.createElement("ul", {className: "styleless"}, 
+                    listItems
+                )
+                );
+        }
+    });
+
+    c.init = function () {
+        this.itemClassNames = ["Strengths"];
+
+        this.reactInstance = React.render(
+            React.createElement(this.reactClass),
+            document.getElementById("standouts")
+        );
+    };
+
+    c.refreshData = function () {
+        this._fetchCustomActivities();
+    };
+
+    c._fetchCustomActivities = function () {
+        var type = "GET";
+        var url = "/api/custom-activities";
+
+        $.ajax({
+            url: url,
+            type: type,
+            dataType: "json",
+            success: function (data, textStatus, jqXHR) {
+                var itemInstancesCustomStandouts = data.map(function (customActivity, index) {
+                    return CS.Standouts.Custom(customActivity.className, customActivity.title, customActivity.accountDataKey);
+                }, this);
+
+                var itemInstancesClassicStandouts = this.itemClassNames.map(function (className, index) {
+                    return CS.Standouts[className](className);
+                }, this);
+
+                var allItemInstances = _.union(itemInstancesCustomStandouts, itemInstancesClassicStandouts);
+
+                this.reactInstance.replaceState({ data: allItemInstances });
+
+                allItemInstances.forEach(function(instance, index) {
+                    instance.render();
+                }, this);
+            }.bind(this),
+            error: function (jqXHR, textStatus, errorThrown) {
+                alert('AJAX failure doing a ' + type + ' request to "' + url + '"');
+            }.bind(this)
+        });
+    };
+});
 ;CS.Activities = {};
 
 CS.Activities.Base = P(function (c) {
@@ -1180,10 +1232,10 @@ CS.Activities.Base = P(function (c) {
 
     c.render = function (data) {
         if (!this.isRendered) {
-            var uuid = CS.Services.guid();
+            var uniqueId = _.uniqueId();
 
-            this.activity.$el.append('<div class="activity-page" id="' + uuid + '"></div>');
-            this.$el = $("#" + uuid);
+            this.activity.$el.append('<div class="activity-page" id="' + uniqueId + '"></div>');
+            this.$el = $("#" + uniqueId);
 
             React.render(
                 React.createElement(this.reactClass, data),
@@ -1217,7 +1269,7 @@ CS.Activities.Base = P(function (c) {
             data: JSON.stringify(this.activity.model),
             success: function (data, textStatus, jqXHR) {
                 CS.accountData = this.activity.model.accountData;
-                location.href = "/#insights";
+                location.href = "/#standouts";
             }.bind(this),
             error: function (jqXHR, textStatus, errorThrown) {
                 this.$submitBtn.button('reset');
@@ -1580,5 +1632,107 @@ CS.Activities.GlobalFindYourStrengths2.Controllers.Page1 = P(CS.Activities.Contr
 
             this.postData();
         }
+    };
+});
+;CS.Standouts = {};
+
+CS.Standouts.Base = P(function (c) {
+    c.init = function (className) {
+        this.className = className;
+    };
+
+    c.render = function (data) {
+        this.reactInstance = React.render(
+            React.createElement(this.reactClass, data),
+            document.getElementById(this.className)
+        );
+    };
+});
+;CS.Standouts.Custom = P(CS.Standouts.Base, function (c, base) {
+    c.reactClass = React.createClass({displayName: "reactClass",
+        render: function () {
+            return (
+                React.createElement("div", null, 
+                    React.createElement("h2", null, this.props.title), 
+                    React.createElement("p", null, this.props.data)
+                )
+                );
+        }
+    });
+
+    c.init = function (className, title, accountDataKey) {
+        base.init.call(this, className);
+
+        this.className = className;
+        this.title = title;
+        this.accountDataKey = accountDataKey;
+    };
+
+    c.render = function () {
+        base.render.call(this, {
+            title: this.title,
+            data: CS.accountData.custom[this.accountDataKey]
+        });
+    };
+});
+
+CS.Standouts.Strengths = P(CS.Standouts.Base, function (c, base) {
+    c.reactClass = React.createClass({displayName: "reactClass",
+        render: function () {
+            var listItemStrenght1, listItemStrenght2, listItemStrenght3, listItemStrenght4, listItemStrenght5, listItemStrenght6;
+
+            if (this.props.strength1) {
+                listItemStrenght1 = (
+                    React.createElement("li", null, this.props.strength1)
+                    );
+            }
+            if (this.props.strength2) {
+                listItemStrenght2 = (
+                    React.createElement("li", null, this.props.strength2)
+                    );
+            }
+            if (this.props.strength3) {
+                listItemStrenght3 = (
+                    React.createElement("li", null, this.props.strength3)
+                    );
+            }
+            if (this.props.strength4) {
+                listItemStrenght4 = (
+                    React.createElement("li", null, this.props.strength4)
+                    );
+            }
+            if (this.props.strength5) {
+                listItemStrenght5 = (
+                    React.createElement("li", null, this.props.strength5)
+                    );
+            }
+            if (this.props.strength6) {
+                listItemStrenght6 = (
+                    React.createElement("li", null, this.props.strength6)
+                    );
+            }
+
+            return (
+                React.createElement("div", null, 
+                    React.createElement("h2", null, "My strengths"), 
+                    React.createElement("ul", null, 
+                        listItemStrenght1, 
+                        listItemStrenght2, 
+                        listItemStrenght3, 
+                        listItemStrenght4, 
+                        listItemStrenght5, 
+                        listItemStrenght6
+                    )
+                )
+                );
+        }
+    });
+
+    c.init = function (className) {
+        base.init.call(this, className);
+    };
+
+    c.render = function () {
+        base.render.call(this, CS.accountData.strengths);
     };
 });

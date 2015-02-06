@@ -1,0 +1,9 @@
+#custom-activity {
+  #content {
+    margin-top: $default-spacer-size;
+
+    @include large-screen {
+      margin-top: $default-spacer-size-large-screen;
+    }
+  }
+}

@@ -1,13 +1,13 @@
 CS.Controllers.Index = P(function (c) {
-
     c.init = function (accountId, accountData) {
         this.accountId = accountId;
         CS.accountData = accountData;
 
         this.activityFeedController = CS.Controllers.ActivityFeed();
+        this.standoutsController = CS.Controllers.Standouts();
 
-        CS.Controllers.HeaderModal.Register(this);
-        CS.Controllers.HeaderModal.SignIn(this);
+        CS.Controllers.HeaderModal.Register();
+        CS.Controllers.HeaderModal.SignIn();
 
         this._initElements();
         this._initHeaderLinks();
@@ -19,14 +19,14 @@ CS.Controllers.Index = P(function (c) {
     c._initElements = function () {
         this.$headerNav = $('[role="navigation"]');
         this.$activitiesTab = this.$headerNav.find("#activities-tab");
-        this.$insightsTab = this.$headerNav.find("#insights-tab");
+        this.$standoutsTab = this.$headerNav.find("#standouts-tab");
 
         this.$headerLinks = this.$headerNav.children("a");
         this.$signOutLink = this.$headerLinks.filter("#sign-out-link");
 
         this.$tabPanels = $('[role="tabpanel"]');
         this.$activitiesPanel = this.$tabPanels.filter("#activities");
-        this.$insightsPanel = this.$tabPanels.filter("#insights");
+        this.$standoutsPanel = this.$tabPanels.filter("#standouts");
 
         this.$feedSection = this.$activitiesPanel.children("#c1-and-activity-feed");
         this.$currentC1OrActivitySection = this.$activitiesPanel.children("#current-c1-or-activity");
@@ -46,8 +46,8 @@ CS.Controllers.Index = P(function (c) {
             location.hash = "activities";
         });
 
-        this.$insightsTab.click(function (e) {
-            location.hash = "insights";
+        this.$standoutsTab.click(function (e) {
+            location.hash = "standouts";
         });
 
         this.$signOutLink.click($.proxy(this._signOut, this));
@@ -64,8 +64,8 @@ CS.Controllers.Index = P(function (c) {
             this._activateActivitiesPanel();
         }.bind(this));
 
-        CS.router.get("insights", function (req) {
-            this._activateInsightsPanel();
+        CS.router.get("standouts", function (req) {
+            this._activateStandoutsPanel();
         }.bind(this));
     };
 
@@ -77,19 +77,21 @@ CS.Controllers.Index = P(function (c) {
         }
 
         this.activityFeedController.refreshData();
+        this.standoutsController.refreshData();
 
         this.$currentC1OrActivitySection.hide();
         this.$feedSection.show();
     };
 
-    c._activateInsightsPanel = function () {
-        if (!this.$insightsPanel.hasClass("active")) {
+    c._activateStandoutsPanel = function () {
+        if (!this.$standoutsPanel.hasClass("active")) {
             this.$tabPanels.removeClass("active");
-            this.$insightsTab.tab('show');
-            this.$insightsPanel.addClass("active");
+            this.$standoutsTab.tab('show');
+            this.$standoutsPanel.addClass("active");
         }
 
         this.activityFeedController.refreshData();
+        this.standoutsController.refreshData();
 
         this.$currentC1OrActivitySection.hide();
         this.$feedSection.show();

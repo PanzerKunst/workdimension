@@ -4888,4 +4888,10 @@ html {
 #activities .well.done {
   opacity: 0.4; }
 
+#custom-activity #content {
+  margin-top: 10vw; }
+  @media screen and (min-width: 960px) {
+    #custom-activity #content {
+      margin-top: 98px; } }
+
 /*# sourceMappingURL=main.css.map */

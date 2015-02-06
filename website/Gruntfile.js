@@ -47,6 +47,13 @@ module.exports = function (grunt) {
                         "javascripts/activities/**/*.react.js"
                     ]
                 }
+            },
+            standouts: {
+                files: {
+                    "public/react-standouts.js": [
+                        "javascripts/standouts/**/*.react.js"
+                    ]
+                }
             }
         },
 
@@ -90,8 +97,6 @@ module.exports = function (grunt) {
                     separator:';'
                 },
                 src: [
-                    // Non-CDN libs
-
                     // Base
                     "javascripts/activities/base.js",
                     "javascripts/activities/controller.js",
@@ -106,6 +111,19 @@ module.exports = function (grunt) {
                 ],
                 dest: 'public/activities.js'
             },
+            standouts: {
+                options: {
+                    separator:';'
+                },
+                src: [
+                    // Base
+                    "javascripts/standouts/base.js",
+
+                    // React
+                    "public/react-standouts.js"
+                ],
+                dest: 'public/standouts.js'
+            },
             all: {
                 options: {
                     separator:';'
@@ -115,7 +133,10 @@ module.exports = function (grunt) {
                     "public/site.js",
 
                     // Activities
-                    "public/activities.js"
+                    "public/activities.js",
+
+                    // Activities
+                    "public/standouts.js"
                 ],
                 dest: 'public/<%= pkg.name %>.js'
             }
@@ -162,7 +183,8 @@ module.exports = function (grunt) {
                     '<%= concat.site.src %>',
                     '<%= concat.activities.src %>',
                     'javascripts/controllers/**/*.react.js',
-                    'javascripts/activities/**/*.react.js'
+                    'javascripts/activities/**/*.react.js',
+                    'javascripts/standouts/**/*.react.js'
                 ],
                 tasks: ['buildjs']
             },
@@ -177,6 +199,6 @@ module.exports = function (grunt) {
     });
 
     grunt.registerTask('default', ['buildjs', 'buildcss']);
-    grunt.registerTask('buildjs',  ['jshint', 'react:site', 'react:activities', 'concat:site', 'concat:activities', 'concat:all']);
+    grunt.registerTask('buildjs',  ['jshint', 'react:site', 'react:activities', 'react:standouts', 'concat:site', 'concat:activities', 'concat:standouts', 'concat:all']);
     grunt.registerTask('buildcss',  ['sass', 'cssmin']);
 };

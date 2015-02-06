@@ -7,10 +7,10 @@ CS.Activities.Controller = P(function (c) {
 
     c.render = function (data) {
         if (!this.isRendered) {
-            var uuid = CS.Services.guid();
+            var uniqueId = _.uniqueId();
 
-            this.activity.$el.append('<div class="activity-page" id="' + uuid + '"></div>');
-            this.$el = $("#" + uuid);
+            this.activity.$el.append('<div class="activity-page" id="' + uniqueId + '"></div>');
+            this.$el = $("#" + uniqueId);
 
             React.render(
                 React.createElement(this.reactClass, data),
@@ -44,7 +44,7 @@ CS.Activities.Controller = P(function (c) {
             data: JSON.stringify(this.activity.model),
             success: function (data, textStatus, jqXHR) {
                 CS.accountData = this.activity.model.accountData;
-                location.href = "/#insights";
+                location.href = "/#standouts";
             }.bind(this),
             error: function (jqXHR, textStatus, errorThrown) {
                 this.$submitBtn.button('reset');
