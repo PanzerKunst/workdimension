@@ -1,6 +1,6 @@
 CS.Controllers.Index = P(function (c) {
     c.init = function (accountId, accountData) {
-        this.accountId = accountId;
+        CS.accountId = accountId;
         CS.accountData = accountData;
 
         this.activityFeedController = CS.Controllers.ActivityFeed();
@@ -35,7 +35,7 @@ CS.Controllers.Index = P(function (c) {
     };
 
     c._initHeaderLinks = function () {
-        if (this._isTemporaryAccount()) {
+        if (CS.Controllers.isTemporaryAccount()) {
             this.$headerLinks.show();
             this.$signOutLink.hide();
         } else {
@@ -69,10 +69,6 @@ CS.Controllers.Index = P(function (c) {
         }.bind(this));
     };
 
-    c._isTemporaryAccount = function () {
-        return this.accountId < 0;
-    };
-
     c._activateActivitiesPanel = function () {
         if (!this.$activitiesPanel.hasClass("active")) {
             this.$tabPanels.removeClass("active");
@@ -99,14 +95,6 @@ CS.Controllers.Index = P(function (c) {
 
         this.$currentC1OrActivitySection.hide();
         this.$feedSection.show();
-
-        this._displayRegisterReminderIfNeeded();
-    };
-
-    c._displayRegisterReminderIfNeeded = function() {
-        if (this._isTemporaryAccount() && CS.hasJustCompletedFirstActivity) {
-
-        }
     };
 
     c._signOut = function (e) {

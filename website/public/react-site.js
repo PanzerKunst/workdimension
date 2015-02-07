@@ -43,6 +43,12 @@ CS.Controllers.ActivityFeed = P(function (c) {
             React.createElement(this.reactClass),
             document.getElementById("c1-and-activity-feed")
         );
+
+        this._initElements();
+    };
+
+    c._initElements = function() {
+        this.$registerReminderAlert = $("#register-reminder").children();
     };
 
     c.refreshData = function () {
@@ -59,7 +65,7 @@ CS.Controllers.ActivityFeed = P(function (c) {
             dataType: "json",
             success: function (data, textStatus, jqXHR) {
                 var feedItemInstancesCustomActivities = data.map(function (customActivity, index) {
-                    return CS.Activities.Custom(customActivity.className, customActivity.title, customActivity.mainText, customActivity.accountDataKey);
+                    return CS.Activities.Custom(customActivity.className, customActivity.title, customActivity.mainText);
                 }, this);
 
                 var feedItemInstancesClassicActivities = this.feedItems.map(function (item, index) {
@@ -139,7 +145,17 @@ CS.Controllers.ActivityFeed = P(function (c) {
             }
         }, this);
 
+        this._showOrHideRegisterReminder(doneActivities.length);
+
         this.reactInstance.replaceState({ data: _.union(undoneActivities, doneActivities) });
+    };
+
+    c._showOrHideRegisterReminder = function(doneActivitiesCount) {
+        if (CS.Controllers.isTemporaryAccount() && doneActivitiesCount > 0) {
+            this.$registerReminderAlert.show();
+        } else {
+            this.$registerReminderAlert.hide();
+        }
     };
 });
 

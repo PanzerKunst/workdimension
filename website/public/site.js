@@ -103,6 +103,7 @@ CS.Services = {};
 CS.C1s = {};
 
 // Global objects
+CS.accountId = null;
 CS.accountData = null;
 CS.router = new Grapnel();
 ;CS.Services.Validator = P(function (s) {
@@ -445,13 +446,18 @@ CS.router = new Grapnel();
         done: "DONE"
     }
 };
-;CS.Controllers.httpStatusCode = {
-    noContent: 204,
-    emailAlreadyRegistered: 230
+;CS.Controllers = {
+    httpStatusCode: {
+        noContent: 204,
+        emailAlreadyRegistered: 230
+    },
+    isTemporaryAccount: function () {
+        return CS.accountId < 0;
+    }
 };
 ;CS.Controllers.Index = P(function (c) {
     c.init = function (accountId, accountData) {
-        this.accountId = accountId;
+        CS.accountId = accountId;
         CS.accountData = accountData;
 
         this.activityFeedController = CS.Controllers.ActivityFeed();
@@ -486,7 +492,7 @@ CS.router = new Grapnel();
     };
 
     c._initHeaderLinks = function () {
-        if (this._isTemporaryAccount()) {
+        if (CS.Controllers.isTemporaryAccount()) {
             this.$headerLinks.show();
             this.$signOutLink.hide();
         } else {
@@ -520,10 +526,6 @@ CS.router = new Grapnel();
         }.bind(this));
     };
 
-    c._isTemporaryAccount = function () {
-        return this.accountId < 0;
-    };
-
     c._activateActivitiesPanel = function () {
         if (!this.$activitiesPanel.hasClass("active")) {
             this.$tabPanels.removeClass("active");
@@ -550,14 +552,6 @@ CS.router = new Grapnel();
 
         this.$currentC1OrActivitySection.hide();
         this.$feedSection.show();
-
-        this._displayRegisterReminderIfNeeded();
-    };
-
-    c._displayRegisterReminderIfNeeded = function() {
-        if (this._isTemporaryAccount() && CS.hasJustCompletedFirstActivity) {
-
-        }
     };
 
     c._signOut = function (e) {
@@ -595,6 +589,8 @@ CS.router = new Grapnel();
         this.$modalTitles = this.$modal.find(".modal-title");
         this.$modalForms = this.$modal.find("form");
         this.$modalSubmitButtons = this.$modal.find(".modal-footer").find("button");
+
+        this.$registerReminderAlert = $("#register-reminder").children();
     };
 
     c.initEvents = function () {
@@ -605,7 +601,23 @@ CS.router = new Grapnel();
         this.$submitBtn.click($.proxy(this.handleSubmit, this));
     };
 
-    c.resetForm = function () {
+    c.onFormSubmitSuccess = function(data) {
+        this.$headerLinks.hide();
+        this.$signOutLink.show();
+
+        CS.accountId = data.accountId;
+        CS.accountData = data.accountData;
+
+        this.$registerReminderAlert.hide();
+
+        location.hash = "activities";
+
+        this.$modal.modal('hide');
+
+        this._resetForm();
+    };
+
+    c._resetForm = function () {
         this.$form[0].reset();
         this.$submitBtn.button('reset');
     };
@@ -697,17 +709,7 @@ CS.router = new Grapnel();
                         this.$submitBtn.button('reset');
                         this.$emailAlreadyRegisteredError.show();
                     } else {
-                        this.$headerLinks.hide();
-                        this.$signOutLink.show();
-
-                        CS.accountId = data.accountId;
-                        CS.accountData = data.accountData;
-
-                        location.hash = "activities";
-
-                        this.$modal.modal('hide');
-
-                        this.resetForm();
+                        this.onFormSubmitSuccess(data);
                     }
                 }.bind(this),
                 error: function (jqXHR, textStatus, errorThrown) {
@@ -785,17 +787,7 @@ CS.router = new Grapnel();
                         this.$submitBtn.button('reset');
                         this.$wrongCredentialsError.show();
                     } else {
-                        this.$headerLinks.hide();
-                        this.$signOutLink.show();
-
-                        CS.accountId = data.accountId;
-                        CS.accountData = data.accountData;
-
-                        location.hash = "activities";
-
-                        this.$modal.modal('hide');
-
-                        this.resetForm();
+                        this.onFormSubmitSuccess(data);
                     }
                 }.bind(this),
                 error: function (jqXHR, textStatus, errorThrown) {
@@ -820,8 +812,7 @@ CS.router = new Grapnel();
     c.initElements = function () {
         this.$mainRegisterLink = $("#register-link");
 
-        this.$registerReminderAlert = $("#register-reminder");
-        this.$registerLink = this.$registerReminderAlert.find("a");
+        this.$registerLink = $("#register-reminder").find("a");
     };
 
     c.initEvents = function () {
@@ -982,6 +973,12 @@ CS.router = new Grapnel();
             React.createElement(this.reactClass),
             document.getElementById("c1-and-activity-feed")
         );
+
+        this._initElements();
+    };
+
+    c._initElements = function() {
+        this.$registerReminderAlert = $("#register-reminder").children();
     };
 
     c.refreshData = function () {
@@ -998,7 +995,7 @@ CS.router = new Grapnel();
             dataType: "json",
             success: function (data, textStatus, jqXHR) {
                 var feedItemInstancesCustomActivities = data.map(function (customActivity, index) {
-                    return CS.Activities.Custom(customActivity.className, customActivity.title, customActivity.mainText, customActivity.accountDataKey);
+                    return CS.Activities.Custom(customActivity.className, customActivity.title, customActivity.mainText);
                 }, this);
 
                 var feedItemInstancesClassicActivities = this.feedItems.map(function (item, index) {
@@ -1078,7 +1075,17 @@ CS.router = new Grapnel();
             }
         }, this);
 
+        this._showOrHideRegisterReminder(doneActivities.length);
+
         this.reactInstance.replaceState({ data: _.union(undoneActivities, doneActivities) });
+    };
+
+    c._showOrHideRegisterReminder = function(doneActivitiesCount) {
+        if (CS.Controllers.isTemporaryAccount() && doneActivitiesCount > 0) {
+            this.$registerReminderAlert.show();
+        } else {
+            this.$registerReminderAlert.hide();
+        }
     };
 });
 

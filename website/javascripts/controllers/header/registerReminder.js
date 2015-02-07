@@ -7,8 +7,7 @@ CS.Controllers.RegisterReminder = P(function (c) {
     c.initElements = function () {
         this.$mainRegisterLink = $("#register-link");
 
-        this.$registerReminderAlert = $("#register-reminder");
-        this.$registerLink = this.$registerReminderAlert.find("a");
+        this.$registerLink = $("#register-reminder").find("a");
     };
 
     c.initEvents = function () {

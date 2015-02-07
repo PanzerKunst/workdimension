@@ -50,17 +50,7 @@ CS.Controllers.HeaderModal.SignIn = P(CS.Controllers.HeaderModal, function (c, b
                         this.$submitBtn.button('reset');
                         this.$wrongCredentialsError.show();
                     } else {
-                        this.$headerLinks.hide();
-                        this.$signOutLink.show();
-
-                        CS.accountId = data.accountId;
-                        CS.accountData = data.accountData;
-
-                        location.hash = "activities";
-
-                        this.$modal.modal('hide');
-
-                        this.resetForm();
+                        this.onFormSubmitSuccess(data);
                     }
                 }.bind(this),
                 error: function (jqXHR, textStatus, errorThrown) {

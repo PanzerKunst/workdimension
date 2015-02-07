@@ -4875,6 +4875,9 @@ nav[role="navigation"],
     #register-reminder {
       max-width: 960px; } }
 
+.alert {
+  display: none; }
+
 .tab-pane {
   margin-top: 14px; }
 

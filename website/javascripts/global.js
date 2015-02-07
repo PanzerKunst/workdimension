@@ -20,5 +20,6 @@ CS.Services = {};
 CS.C1s = {};
 
 // Global objects
+CS.accountId = null;
 CS.accountData = null;
 CS.router = new Grapnel();

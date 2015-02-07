@@ -1,9 +1,8 @@
 CS.Activities.Custom = P(CS.Activities.Base, function (c, base) {
-    c.init = function (className, title, text, accountDataKey) {
+    c.init = function (className, title, text) {
         base.init.call(this, className, title);
 
         this.text = text;
-        this.accountDataKey = accountDataKey;
 
         this.model.accountData.custom = this.model.accountData.custom || {};
     };

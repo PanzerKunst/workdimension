@@ -16,6 +16,8 @@ CS.Controllers.HeaderModal = P(function (c) {
         this.$modalTitles = this.$modal.find(".modal-title");
         this.$modalForms = this.$modal.find("form");
         this.$modalSubmitButtons = this.$modal.find(".modal-footer").find("button");
+
+        this.$registerReminderAlert = $("#register-reminder").children();
     };
 
     c.initEvents = function () {
@@ -26,7 +28,23 @@ CS.Controllers.HeaderModal = P(function (c) {
         this.$submitBtn.click($.proxy(this.handleSubmit, this));
     };
 
-    c.resetForm = function () {
+    c.onFormSubmitSuccess = function(data) {
+        this.$headerLinks.hide();
+        this.$signOutLink.show();
+
+        CS.accountId = data.accountId;
+        CS.accountData = data.accountData;
+
+        this.$registerReminderAlert.hide();
+
+        location.hash = "activities";
+
+        this.$modal.modal('hide');
+
+        this._resetForm();
+    };
+
+    c._resetForm = function () {
         this.$form[0].reset();
         this.$submitBtn.button('reset');
     };
