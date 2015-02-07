@@ -30,14 +30,14 @@ object AccountApi extends Controller {
 
                   // TODO EmailService.sendWelcomeEmail(frontendAccount.emailAddress)
 
-                  AccountDataDto.getOfAccountId(accountId: Long) match {
+                  AccountDataDto.getOfAccountId(newAccountId) match {
                     case Some(accountData) => EmailService.sendAccountDataUpdatedEmail(frontendAccount.emailAddress, accountData)
                     case None =>
                   }
 
                   val jsonToReturn = JsObject(Seq(
                     "accountId" -> JsNumber(newAccountId),
-                    "accountData" -> AccountDataDto.getOfAccountId(accountId).getOrElse(JsNull)
+                    "accountData" -> AccountDataDto.getOfAccountId(newAccountId).getOrElse(JsNull)
                   ))
 
                   Ok(jsonToReturn).withSession(request.session +("accountId", newAccountId.toString))
