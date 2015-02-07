@@ -10,18 +10,22 @@ CS.Standouts.Custom = P(CS.Standouts.Base, function (c, base) {
         }
     });
 
-    c.init = function (className, title, accountDataKey) {
+    c.init = function (className, title) {
         base.init.call(this, className);
 
-        this.className = className;
         this.title = title;
-        this.accountDataKey = accountDataKey;
     };
 
     c.render = function () {
+        var data = null;
+
+        if (CS.accountData && CS.accountData.custom) {
+            data = CS.accountData.custom[this.className];
+        }
+
         base.render.call(this, {
             title: this.title,
-            data: CS.accountData.custom[this.accountDataKey]
+            data: data
         });
     };
 });

@@ -8,6 +8,7 @@ CS.Controllers.Index = P(function (c) {
 
         CS.Controllers.HeaderModal.Register();
         CS.Controllers.HeaderModal.SignIn();
+        CS.Controllers.RegisterReminder();
 
         this._initElements();
         this._initHeaderLinks();
@@ -17,12 +18,13 @@ CS.Controllers.Index = P(function (c) {
     };
 
     c._initElements = function () {
+        this.$headerSection = $("#header-links");
+        this.$headerLinks = this.$headerSection.children("a");
+        this.$signOutLink = this.$headerLinks.filter("#sign-out-link");
+
         this.$headerNav = $('[role="navigation"]');
         this.$activitiesTab = this.$headerNav.find("#activities-tab");
         this.$standoutsTab = this.$headerNav.find("#standouts-tab");
-
-        this.$headerLinks = this.$headerNav.children("a");
-        this.$signOutLink = this.$headerLinks.filter("#sign-out-link");
 
         this.$tabPanels = $('[role="tabpanel"]');
         this.$activitiesPanel = this.$tabPanels.filter("#activities");
@@ -51,8 +53,6 @@ CS.Controllers.Index = P(function (c) {
         });
 
         this.$signOutLink.click($.proxy(this._signOut, this));
-
-        window.onbeforeunload = $.proxy(this._confirmExit, this);
     };
 
     c._initRouter = function () {
@@ -69,6 +69,10 @@ CS.Controllers.Index = P(function (c) {
         }.bind(this));
     };
 
+    c._isTemporaryAccount = function () {
+        return this.accountId < 0;
+    };
+
     c._activateActivitiesPanel = function () {
         if (!this.$activitiesPanel.hasClass("active")) {
             this.$tabPanels.removeClass("active");
@@ -76,11 +80,7 @@ CS.Controllers.Index = P(function (c) {
             this.$activitiesPanel.addClass("active");
         }
 
-        this.activityFeedController.refreshData();
-        this.standoutsController.refreshData();
-
-        this.$currentC1OrActivitySection.hide();
-        this.$feedSection.show();
+        this._handlePanelActivated();
     };
 
     c._activateStandoutsPanel = function () {
@@ -90,15 +90,23 @@ CS.Controllers.Index = P(function (c) {
             this.$standoutsPanel.addClass("active");
         }
 
+        this._handlePanelActivated();
+    };
+
+    c._handlePanelActivated = function() {
         this.activityFeedController.refreshData();
         this.standoutsController.refreshData();
 
         this.$currentC1OrActivitySection.hide();
         this.$feedSection.show();
+
+        this._displayRegisterReminderIfNeeded();
     };
 
-    c._isTemporaryAccount = function () {
-        return this.accountId < 0;
+    c._displayRegisterReminderIfNeeded = function() {
+        if (this._isTemporaryAccount() && CS.hasJustCompletedFirstActivity) {
+
+        }
     };
 
     c._signOut = function (e) {
@@ -116,16 +124,5 @@ CS.Controllers.Index = P(function (c) {
             }.bind(this)
         });
     };
-
-    c._confirmExit = function (e) {
-        if (this._isTemporaryAccount() && CS.Controllers.Index.isUnsavedProgress) {
-            return "You are about to lose your progress. You can save it by registering via the link at the top of the page.";
-        }
-    };
-
-    c._isTemporaryAccount = function () {
-        return this.accountId < 0;
-    };
 });
 
-CS.Controllers.Index.isUnsavedProgress = false;

@@ -76,8 +76,7 @@ object DbAdmin {
             account_id bigint not null references account(id),
             class_name varchar(64) not null,
             title varchar(128) not null,
-            main_text varchar(1024) not null,
-            account_data_key varchar(32) not null
+            main_text varchar(1024) not null
           );"""
 
       Logger.info("DbAdmin.createTableCustomActivity():" + query)

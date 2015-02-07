@@ -24,18 +24,22 @@ CS.Standouts.Base = P(function (c) {
         }
     });
 
-    c.init = function (className, title, accountDataKey) {
+    c.init = function (className, title) {
         base.init.call(this, className);
 
-        this.className = className;
         this.title = title;
-        this.accountDataKey = accountDataKey;
     };
 
     c.render = function () {
+        var data = null;
+
+        if (CS.accountData && CS.accountData.custom) {
+            data = CS.accountData.custom[this.className];
+        }
+
         base.render.call(this, {
             title: this.title,
-            data: CS.accountData.custom[this.accountDataKey]
+            data: data
         });
     };
 });
@@ -43,35 +47,35 @@ CS.Standouts.Base = P(function (c) {
 CS.Standouts.Strengths = P(CS.Standouts.Base, function (c, base) {
     c.reactClass = React.createClass({displayName: "reactClass",
         render: function () {
-            var listItemStrenght1, listItemStrenght2, listItemStrenght3, listItemStrenght4, listItemStrenght5, listItemStrenght6;
+            var listItemStrength1, listItemStrength2, listItemStrength3, listItemStrength4, listItemStrength5, listItemStrength6;
 
             if (this.props.strength1) {
-                listItemStrenght1 = (
+                listItemStrength1 = (
                     React.createElement("li", null, this.props.strength1)
                     );
             }
             if (this.props.strength2) {
-                listItemStrenght2 = (
+                listItemStrength2 = (
                     React.createElement("li", null, this.props.strength2)
                     );
             }
             if (this.props.strength3) {
-                listItemStrenght3 = (
+                listItemStrength3 = (
                     React.createElement("li", null, this.props.strength3)
                     );
             }
             if (this.props.strength4) {
-                listItemStrenght4 = (
+                listItemStrength4 = (
                     React.createElement("li", null, this.props.strength4)
                     );
             }
             if (this.props.strength5) {
-                listItemStrenght5 = (
+                listItemStrength5 = (
                     React.createElement("li", null, this.props.strength5)
                     );
             }
             if (this.props.strength6) {
-                listItemStrenght6 = (
+                listItemStrength6 = (
                     React.createElement("li", null, this.props.strength6)
                     );
             }
@@ -80,12 +84,12 @@ CS.Standouts.Strengths = P(CS.Standouts.Base, function (c, base) {
                 React.createElement("div", null, 
                     React.createElement("h2", null, "My strengths"), 
                     React.createElement("ul", null, 
-                        listItemStrenght1, 
-                        listItemStrenght2, 
-                        listItemStrenght3, 
-                        listItemStrenght4, 
-                        listItemStrenght5, 
-                        listItemStrenght6
+                        listItemStrength1, 
+                        listItemStrength2, 
+                        listItemStrength3, 
+                        listItemStrength4, 
+                        listItemStrength5, 
+                        listItemStrength6
                     )
                 )
                 );
@@ -97,6 +101,8 @@ CS.Standouts.Strengths = P(CS.Standouts.Base, function (c, base) {
     };
 
     c.render = function () {
-        base.render.call(this, CS.accountData.strengths);
+        var data = CS.accountData ? CS.accountData.strengths : null;
+
+        base.render.call(this, data);
     };
 });

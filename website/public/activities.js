@@ -242,7 +242,7 @@ CS.Activities.GlobalFindYourStrengths2.Controllers = {};
         if (this.validator.isValid()) {
             this.$submitBtn.button('loading');
 
-            this.activity.model.accountData.custom[this.activity.accountDataKey] = this.$textarea.val().trim();
+            this.activity.model.accountData.custom[this.activity.model.className] = this.$textarea.val().trim();
 
             this.postData();
         }

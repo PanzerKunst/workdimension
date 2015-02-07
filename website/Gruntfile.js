@@ -82,9 +82,10 @@ module.exports = function (grunt) {
                     // Controllers
                     "javascripts/controllers/base.js",
                     "javascripts/controllers/index.js",
-                    "javascripts/controllers/headerModal/headerModal.js",
-                    "javascripts/controllers/headerModal/registerHeaderModal.js",
-                    "javascripts/controllers/headerModal/signInHeaderModal.js",
+                    "javascripts/controllers/header/headerModal.js",
+                    "javascripts/controllers/header/registerHeaderModal.js",
+                    "javascripts/controllers/header/signInHeaderModal.js",
+                    "javascripts/controllers/header/registerReminder.js",
                     "javascripts/controllers/customActivity.js",
 
                     // React

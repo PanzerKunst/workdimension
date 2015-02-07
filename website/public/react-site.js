@@ -174,8 +174,6 @@ CS.Controllers.ActivityFeedItem = React.createClass({displayName: "ActivityFeedI
 
         $("#c1-and-activity-feed").hide();
         $("#current-c1-or-activity").show();
-
-        CS.Controllers.Index.isUnsavedProgress = true;
     }
 });
 
@@ -223,7 +221,7 @@ CS.Controllers.Standouts = P(function (c) {
             dataType: "json",
             success: function (data, textStatus, jqXHR) {
                 var itemInstancesCustomStandouts = data.map(function (customActivity, index) {
-                    return CS.Standouts.Custom(customActivity.className, customActivity.title, customActivity.accountDataKey);
+                    return CS.Standouts.Custom(customActivity.className, customActivity.title);
                 }, this);
 
                 var itemInstancesClassicStandouts = this.itemClassNames.map(function (className, index) {

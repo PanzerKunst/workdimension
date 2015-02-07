@@ -6,8 +6,8 @@ CS.Controllers.HeaderModal = P(function (c) {
     };
 
     c.initElements = function () {
-        this.$headerNav = $('[role="navigation"]');
-        this.$headerLinks = this.$headerNav.children("a");
+        this.$headerSection = $("#header-links");
+        this.$headerLinks = this.$headerSection.children("a");
         this.$registerLink = this.$headerLinks.filter("#register-link");
         this.$signInLink = this.$headerLinks.filter("#sign-in-link");
         this.$signOutLink = this.$headerLinks.filter("#sign-out-link");

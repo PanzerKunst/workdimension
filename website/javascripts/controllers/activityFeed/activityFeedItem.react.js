@@ -24,7 +24,5 @@ CS.Controllers.ActivityFeedItem = React.createClass({
 
         $("#c1-and-activity-feed").hide();
         $("#current-c1-or-activity").show();
-
-        CS.Controllers.Index.isUnsavedProgress = true;
     }
 });

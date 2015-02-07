@@ -15,7 +15,6 @@ CS.Controllers.CustomActivity = P(function (c) {
         this.$classNameField = this.$form.find("#class-name");
         this.$titleField = this.$form.find("#title");
         this.$textField = this.$form.find("#text");
-        this.$accountDataKeyField = this.$form.find("#account-data-key");
 
         this.$noAccountFoundForThisEmailError = this.$form.find("#no-account-found-for-this-email");
 
@@ -27,8 +26,7 @@ CS.Controllers.CustomActivity = P(function (c) {
             "email",
             "class-name",
             "title",
-            "text",
-            "account-data-key"
+            "text"
         ]);
     };
 
@@ -48,8 +46,7 @@ CS.Controllers.CustomActivity = P(function (c) {
                     accountEmailAddress: this.$emailField.val().trim(),
                     className: this.$classNameField.val().trim(),
                     title: this.$titleField.val().trim(),
-                    mainText: this.$textField.val().trim(),
-                    accountDataKey: this.$accountDataKeyField.val().trim()
+                    mainText: this.$textField.val().trim()
                 };
 
                 var type = "POST";

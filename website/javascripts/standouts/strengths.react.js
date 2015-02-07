@@ -1,35 +1,35 @@
 CS.Standouts.Strengths = P(CS.Standouts.Base, function (c, base) {
     c.reactClass = React.createClass({
         render: function () {
-            var listItemStrenght1, listItemStrenght2, listItemStrenght3, listItemStrenght4, listItemStrenght5, listItemStrenght6;
+            var listItemStrength1, listItemStrength2, listItemStrength3, listItemStrength4, listItemStrength5, listItemStrength6;
 
             if (this.props.strength1) {
-                listItemStrenght1 = (
+                listItemStrength1 = (
                     <li>{this.props.strength1}</li>
                     );
             }
             if (this.props.strength2) {
-                listItemStrenght2 = (
+                listItemStrength2 = (
                     <li>{this.props.strength2}</li>
                     );
             }
             if (this.props.strength3) {
-                listItemStrenght3 = (
+                listItemStrength3 = (
                     <li>{this.props.strength3}</li>
                     );
             }
             if (this.props.strength4) {
-                listItemStrenght4 = (
+                listItemStrength4 = (
                     <li>{this.props.strength4}</li>
                     );
             }
             if (this.props.strength5) {
-                listItemStrenght5 = (
+                listItemStrength5 = (
                     <li>{this.props.strength5}</li>
                     );
             }
             if (this.props.strength6) {
-                listItemStrenght6 = (
+                listItemStrength6 = (
                     <li>{this.props.strength6}</li>
                     );
             }
@@ -38,12 +38,12 @@ CS.Standouts.Strengths = P(CS.Standouts.Base, function (c, base) {
                 <div>
                     <h2>My strengths</h2>
                     <ul>
-                        {listItemStrenght1}
-                        {listItemStrenght2}
-                        {listItemStrenght3}
-                        {listItemStrenght4}
-                        {listItemStrenght5}
-                        {listItemStrenght6}
+                        {listItemStrength1}
+                        {listItemStrength2}
+                        {listItemStrength3}
+                        {listItemStrength4}
+                        {listItemStrength5}
+                        {listItemStrength6}
                     </ul>
                 </div>
                 );
@@ -55,6 +55,8 @@ CS.Standouts.Strengths = P(CS.Standouts.Base, function (c, base) {
     };
 
     c.render = function () {
-        base.render.call(this, CS.accountData.strengths);
+        var data = CS.accountData ? CS.accountData.strengths : null;
+
+        base.render.call(this, data);
     };
 });

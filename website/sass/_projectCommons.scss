@@ -1,4 +1,6 @@
-#content {
+#content,
+nav[role="navigation"],
+#register-reminder {
   margin: 0 auto;
   padding: 0 $spacer-unit-size;
 
@@ -10,6 +12,10 @@
   }
 }
 
-.alert-success {
-  display: none;
+.alert {
+  // TODO display: none;
+}
+
+.tab-pane {
+  margin-top: $spacer-unit-size;
 }

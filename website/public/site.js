@@ -459,6 +459,7 @@ CS.router = new Grapnel();
 
         CS.Controllers.HeaderModal.Register();
         CS.Controllers.HeaderModal.SignIn();
+        CS.Controllers.RegisterReminder();
 
         this._initElements();
         this._initHeaderLinks();
@@ -468,12 +469,13 @@ CS.router = new Grapnel();
     };
 
     c._initElements = function () {
+        this.$headerSection = $("#header-links");
+        this.$headerLinks = this.$headerSection.children("a");
+        this.$signOutLink = this.$headerLinks.filter("#sign-out-link");
+
         this.$headerNav = $('[role="navigation"]');
         this.$activitiesTab = this.$headerNav.find("#activities-tab");
         this.$standoutsTab = this.$headerNav.find("#standouts-tab");
-
-        this.$headerLinks = this.$headerNav.children("a");
-        this.$signOutLink = this.$headerLinks.filter("#sign-out-link");
 
         this.$tabPanels = $('[role="tabpanel"]');
         this.$activitiesPanel = this.$tabPanels.filter("#activities");
@@ -502,8 +504,6 @@ CS.router = new Grapnel();
         });
 
         this.$signOutLink.click($.proxy(this._signOut, this));
-
-        window.onbeforeunload = $.proxy(this._confirmExit, this);
     };
 
     c._initRouter = function () {
@@ -520,6 +520,10 @@ CS.router = new Grapnel();
         }.bind(this));
     };
 
+    c._isTemporaryAccount = function () {
+        return this.accountId < 0;
+    };
+
     c._activateActivitiesPanel = function () {
         if (!this.$activitiesPanel.hasClass("active")) {
             this.$tabPanels.removeClass("active");
@@ -527,11 +531,7 @@ CS.router = new Grapnel();
             this.$activitiesPanel.addClass("active");
         }
 
-        this.activityFeedController.refreshData();
-        this.standoutsController.refreshData();
-
-        this.$currentC1OrActivitySection.hide();
-        this.$feedSection.show();
+        this._handlePanelActivated();
     };
 
     c._activateStandoutsPanel = function () {
@@ -541,15 +541,23 @@ CS.router = new Grapnel();
             this.$standoutsPanel.addClass("active");
         }
 
+        this._handlePanelActivated();
+    };
+
+    c._handlePanelActivated = function() {
         this.activityFeedController.refreshData();
         this.standoutsController.refreshData();
 
         this.$currentC1OrActivitySection.hide();
         this.$feedSection.show();
+
+        this._displayRegisterReminderIfNeeded();
     };
 
-    c._isTemporaryAccount = function () {
-        return this.accountId < 0;
+    c._displayRegisterReminderIfNeeded = function() {
+        if (this._isTemporaryAccount() && CS.hasJustCompletedFirstActivity) {
+
+        }
     };
 
     c._signOut = function (e) {
@@ -567,19 +575,8 @@ CS.router = new Grapnel();
             }.bind(this)
         });
     };
-
-    c._confirmExit = function (e) {
-        if (this._isTemporaryAccount() && CS.Controllers.Index.isUnsavedProgress) {
-            return "You are about to lose your progress. You can save it by registering via the link at the top of the page.";
-        }
-    };
-
-    c._isTemporaryAccount = function () {
-        return this.accountId < 0;
-    };
 });
 
-CS.Controllers.Index.isUnsavedProgress = false;
 ;CS.Controllers.HeaderModal = P(function (c) {
     c.init = function () {
         this.initElements();
@@ -588,8 +585,8 @@ CS.Controllers.Index.isUnsavedProgress = false;
     };
 
     c.initElements = function () {
-        this.$headerNav = $('[role="navigation"]');
-        this.$headerLinks = this.$headerNav.children("a");
+        this.$headerSection = $("#header-links");
+        this.$headerLinks = this.$headerSection.children("a");
         this.$registerLink = this.$headerLinks.filter("#register-link");
         this.$signInLink = this.$headerLinks.filter("#sign-in-link");
         this.$signOutLink = this.$headerLinks.filter("#sign-out-link");
@@ -814,6 +811,27 @@ CS.Controllers.Index.isUnsavedProgress = false;
         this.$modal.modal('hide');
     };
 });
+;CS.Controllers.RegisterReminder = P(function (c) {
+    c.init = function () {
+        this.initElements();
+        this.initEvents();
+    };
+
+    c.initElements = function () {
+        this.$mainRegisterLink = $("#register-link");
+
+        this.$registerReminderAlert = $("#register-reminder");
+        this.$registerLink = this.$registerReminderAlert.find("a");
+    };
+
+    c.initEvents = function () {
+        this.$registerLink.click($.proxy(this._clickOnMainLink, this));
+    };
+
+    c._clickOnMainLink = function (e) {
+        this.$mainRegisterLink.click();
+    };
+});
 ;CS.Controllers.CustomActivity = P(function (c) {
     c.init = function () {
         this._initElements();
@@ -831,7 +849,6 @@ CS.Controllers.Index.isUnsavedProgress = false;
         this.$classNameField = this.$form.find("#class-name");
         this.$titleField = this.$form.find("#title");
         this.$textField = this.$form.find("#text");
-        this.$accountDataKeyField = this.$form.find("#account-data-key");
 
         this.$noAccountFoundForThisEmailError = this.$form.find("#no-account-found-for-this-email");
 
@@ -843,8 +860,7 @@ CS.Controllers.Index.isUnsavedProgress = false;
             "email",
             "class-name",
             "title",
-            "text",
-            "account-data-key"
+            "text"
         ]);
     };
 
@@ -864,8 +880,7 @@ CS.Controllers.Index.isUnsavedProgress = false;
                     accountEmailAddress: this.$emailField.val().trim(),
                     className: this.$classNameField.val().trim(),
                     title: this.$titleField.val().trim(),
-                    mainText: this.$textField.val().trim(),
-                    accountDataKey: this.$accountDataKeyField.val().trim()
+                    mainText: this.$textField.val().trim()
                 };
 
                 var type = "POST";
@@ -1098,8 +1113,6 @@ CS.Controllers.ActivityFeedItem = React.createClass({displayName: "ActivityFeedI
 
         $("#c1-and-activity-feed").hide();
         $("#current-c1-or-activity").show();
-
-        CS.Controllers.Index.isUnsavedProgress = true;
     }
 });
 
@@ -1147,7 +1160,7 @@ CS.Controllers.Standouts = P(function (c) {
             dataType: "json",
             success: function (data, textStatus, jqXHR) {
                 var itemInstancesCustomStandouts = data.map(function (customActivity, index) {
-                    return CS.Standouts.Custom(customActivity.className, customActivity.title, customActivity.accountDataKey);
+                    return CS.Standouts.Custom(customActivity.className, customActivity.title);
                 }, this);
 
                 var itemInstancesClassicStandouts = this.itemClassNames.map(function (className, index) {

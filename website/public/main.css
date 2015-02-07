@@ -4859,24 +4859,35 @@ form {
     display: block;
     margin: auto; }
 
-#content {
+#content,
+nav[role="navigation"],
+#register-reminder {
   margin: 0 auto;
   padding: 0 14px; }
   @media screen and (min-width: 640px) {
-    #content {
+    #content,
+    nav[role="navigation"],
+    #register-reminder {
       max-width: 640px; } }
   @media screen and (min-width: 960px) {
-    #content {
+    #content,
+    nav[role="navigation"],
+    #register-reminder {
       max-width: 960px; } }
 
-.alert-success {
-  display: none; }
+.tab-pane {
+  margin-top: 14px; }
 
 html {
   font-size: 14px; }
 
-[role="navigation"] > a {
-  display: none; }
+#header-links {
+  text-align: center;
+  padding: 14px 0;
+  margin-bottom: 14px; }
+  #header-links > a {
+    display: none;
+    margin: 0 14px; }
 
 #modal form .form-group {
   float: none;

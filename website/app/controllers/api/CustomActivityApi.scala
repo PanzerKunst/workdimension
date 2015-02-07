@@ -16,7 +16,7 @@ object CustomActivityApi extends Controller {
           case None => BadRequest("No account found for email '" + customActivity.accountEmailAddress + "'")
 
           case Some(account) =>
-            CustomActivityDto.create(account.id.get, customActivity.className, customActivity.title, customActivity.mainText, customActivity.accountDataKey)
+            CustomActivityDto.create(account.id.get, customActivity.className, customActivity.title, customActivity.mainText)
 
             Ok
         }

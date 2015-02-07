@@ -42,7 +42,7 @@ CS.Controllers.Standouts = P(function (c) {
             dataType: "json",
             success: function (data, textStatus, jqXHR) {
                 var itemInstancesCustomStandouts = data.map(function (customActivity, index) {
-                    return CS.Standouts.Custom(customActivity.className, customActivity.title, customActivity.accountDataKey);
+                    return CS.Standouts.Custom(customActivity.className, customActivity.title);
                 }, this);
 
                 var itemInstancesClassicStandouts = this.itemClassNames.map(function (className, index) {
