@@ -73,8 +73,8 @@ module.exports = function (grunt) {
                     // Common
 
                     // Services
-                    "javascripts/services/string.js",
                     "javascripts/services/validator.js",
+                    "javascripts/services/animator.js",
 
                     // Models
                     "javascripts/models/activity.js",

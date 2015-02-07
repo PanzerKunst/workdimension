@@ -4717,6 +4717,9 @@ html {
   overflow-y: scroll;
   box-sizing: border-box; }
 
+body {
+  min-height: 100%; }
+
 h1,
 h2 {
   text-rendering: optimizelegibility;
@@ -4825,7 +4828,8 @@ form {
       form .form-group > label.mdnz-polyfill {
         display: none; }
   form .field-error {
-    display: none;
+    height: 0;
+    overflow: hidden;
     font-style: italic;
     font-weight: bold;
     font-size: 12px;
@@ -4879,18 +4883,39 @@ nav[role="navigation"],
   display: none; }
 
 .tab-pane {
-  margin-top: 14px; }
+  background-color: white;
+  padding: 14px 14px 14px 14px; }
 
 html {
   font-size: 14px; }
 
+body {
+  background-color: #fafafa; }
+
+.nav-tabs {
+  border-color: white; }
+  .nav-tabs > li.active > a,
+  .nav-tabs > li.active > a:focus,
+  .nav-tabs > li.active > a:hover {
+    border-color: white; }
+
+.modal-header {
+  padding-right: 7.5px; }
+  .modal-header > .close {
+    padding: 0 7.5px;
+    margin-top: -6px; }
+
 #header-links {
   text-align: center;
-  padding: 14px 0;
-  margin-bottom: 14px; }
+  background-color: #ff8a38;
+  padding: 7px 0;
+  margin-bottom: 28px; }
   #header-links > a {
     display: none;
-    margin: 0 14px; }
+    margin: 0 14px;
+    color: white; }
+    #header-links > a:visited, #header-links > a:hover, #header-links > a:focus {
+      color: white; }
 
 #modal form .form-group {
   float: none;
@@ -4899,8 +4924,26 @@ html {
 #modal form [type="submit"] {
   display: none; }
 
+footer {
+  min-height: 42px; }
+
 #activities .well.done {
   opacity: 0.4; }
+#activities #c1-and-activity-feed li:before, #activities #c1-and-activity-feed li:after {
+  content: " ";
+  display: table; }
+#activities #c1-and-activity-feed li:after {
+  clear: both; }
+#activities #c1-and-activity-feed li > h2 {
+  margin-bottom: 0; }
+  @media screen and (min-width: 640px) {
+    #activities #c1-and-activity-feed li > h2 {
+      float: left; } }
+#activities #c1-and-activity-feed li > button {
+  margin-top: 3px; }
+  @media screen and (min-width: 640px) {
+    #activities #c1-and-activity-feed li > button {
+      float: right; } }
 
 #custom-activity #content {
   margin-top: 10vw; }

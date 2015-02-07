@@ -47,7 +47,7 @@ CS.Controllers.ActivityFeed = P(function (c) {
         this._initElements();
     };
 
-    c._initElements = function() {
+    c._initElements = function () {
         this.$registerReminderAlert = $("#register-reminder").children();
     };
 
@@ -104,7 +104,7 @@ CS.Controllers.ActivityFeed = P(function (c) {
         var doneActivities = [];
 
         activityData.forEach(function (activity) {
-            var instance = _.find(this.feedItemInstances, function(instans) {
+            var instance = _.find(this.feedItemInstances, function (instans) {
                 return instans.getClassName() === activity.className;
             });
 
@@ -124,14 +124,14 @@ CS.Controllers.ActivityFeed = P(function (c) {
         }, this);
 
         // We handle instances which didn't have any activity data
-        this.feedItemInstances.forEach(function(instance, index) {
-            var isTodo = _.isEmpty(_.find(doneActivities, function(activity) {
+        this.feedItemInstances.forEach(function (instance, index) {
+            var isTodo = _.isEmpty(_.find(doneActivities, function (activity) {
                 return activity.instance.getClassName() === instance.getClassName();
             }));
 
             if (isTodo && instance.isDoable()) {
                 // Is it already is among the undoneActivities?
-                var isAlreadyInTheList = _.find(undoneActivities, function(activity) {
+                var isAlreadyInTheList = _.find(undoneActivities, function (activity) {
                     return activity.instance.getClassName() === instance.getClassName();
                 });
 
@@ -150,11 +150,11 @@ CS.Controllers.ActivityFeed = P(function (c) {
         this.reactInstance.replaceState({ data: _.union(undoneActivities, doneActivities) });
     };
 
-    c._showOrHideRegisterReminder = function(doneActivitiesCount) {
+    c._showOrHideRegisterReminder = function (doneActivitiesCount) {
         if (CS.Controllers.isTemporaryAccount() && doneActivitiesCount > 0) {
-            this.$registerReminderAlert.show();
+            CS.Services.Animator.fadeIn(this.$registerReminderAlert);
         } else {
-            this.$registerReminderAlert.hide();
+            CS.Services.Animator.fadeOut(this.$registerReminderAlert);
         }
     };
 });

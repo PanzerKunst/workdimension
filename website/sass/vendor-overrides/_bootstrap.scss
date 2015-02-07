@@ -1,3 +1,28 @@
 html {
   font-size: $font-size-base;
 }
+
+body {
+  background-color: $background-body-color;
+}
+
+.nav-tabs {
+  border-color: $tab-pane-color;
+
+  > li.active > a,
+  > li.active > a:focus,
+  > li.active > a:hover {
+    border-color: $tab-pane-color;
+  }
+}
+
+.modal-header {
+  // We reduce the padding-right, because we'll add some to the close button, to make it more easily clickable
+  padding-right: $alert-padding / 2;
+
+  > .close {
+    padding: 0 $alert-padding/2;
+
+    margin-top: -6px;
+  }
+}

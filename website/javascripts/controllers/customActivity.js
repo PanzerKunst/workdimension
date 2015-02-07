@@ -38,7 +38,7 @@ CS.Controllers.CustomActivity = P(function (c) {
     c._handleSubmit = function (e) {
         e.preventDefault();
 
-        this.$successAlert.hide();
+        CS.Services.Animator.fadeOut(this.$successAlert);
 
         if (this.validator.isValid()) {
             this._checkIfAccountExists(null, function () {
@@ -60,7 +60,8 @@ CS.Controllers.CustomActivity = P(function (c) {
                     success: function (data, textStatus, jqXHR) {
                         this.$submitBtn.button('reset');
                         this.$form[0].reset();
-                        this.$successAlert.show();
+
+                        CS.Services.Animator.fadeIn(this.$successAlert);
                     }.bind(this),
                     error: function (jqXHR, textStatus, errorThrown) {
                         this.$submitBtn.button('reset');
@@ -76,7 +77,7 @@ CS.Controllers.CustomActivity = P(function (c) {
 
         if (emailAddress) {
             this.$formGroupEmail.removeClass("has-error");
-            this.$noAccountFoundForThisEmailError.hide();
+            this.validator.hideErrorMessage(this.$noAccountFoundForThisEmailError);
 
             var type = "GET";
             var url = "/api/accounts";
@@ -87,7 +88,7 @@ CS.Controllers.CustomActivity = P(function (c) {
                 success: function (data, textStatus, jqXHR) {
                     if (jqXHR.status === CS.Controllers.httpStatusCode.noContent) {
                         this.$formGroupEmail.addClass("has-error");
-                        this.$noAccountFoundForThisEmailError.show();
+                        this.validator.hideErrorMessage(this.$noAccountFoundForThisEmailError);
                     } else {
                         this.$formGroupEmail.addClass("has-success");
 

@@ -106,18 +106,20 @@ CS.C1s = {};
 CS.accountId = null;
 CS.accountData = null;
 CS.router = new Grapnel();
-;CS.Services.Validator = P(function (s) {
-    s.checkEmpty = "empty";
-    s.checkEmail = "email";
-    s.checkUsername = "username";
-    s.checkDateInFuture = "in-future";
-    s.checkMinLength = "min-length";
-    s.checkMaxLength = "max-length";
-    s.checkInteger = "integer";
-    s.checkDecimal = "decimal";
-    s.checkUrl = "url";
+CS.defaultAnimationDuration = 0.5;;CS.Services.Validator = P(function (c) {
+    c.errorMessageHeight = "21px";
 
-    s.init = function (fieldIds) {
+    c.checkEmpty = "empty";
+    c.checkEmail = "email";
+    c.checkUsername = "username";
+    c.checkDateInFuture = "in-future";
+    c.checkMinLength = "min-length";
+    c.checkMaxLength = "max-length";
+    c.checkInteger = "integer";
+    c.checkDecimal = "decimal";
+    c.checkUrl = "url";
+
+    c.init = function (fieldIds) {
         this.fieldIds = fieldIds;
 
         for (var i = 0; i < this.fieldIds.length; i++) {
@@ -132,7 +134,7 @@ CS.router = new Grapnel();
         }
     };
 
-    s.isValid = function () {
+    c.isValid = function () {
         var result = true;
         var isFocusOnFirstInvalidFieldDone = false;
         var $field;
@@ -154,99 +156,111 @@ CS.router = new Grapnel();
         return result;
     };
 
-    s.flagValid = function ($field) {
+    c.flagValid = function ($field) {
         var $wrapper = $field.parent();
         $wrapper.removeClass("has-error");
         //$wrapper.addClass("has-success");
     };
 
-    s.flagInvalid = function ($field) {
+    c.flagInvalid = function ($field) {
         var $wrapper = $field.parent();
         //$wrapper.removeClass("has-success");
         $wrapper.addClass("has-error");
     };
 
-    s.isFlaggedInvalid = function ($field) {
+    c.isFlaggedInvalid = function ($field) {
         return $field.parent().hasClass("has-error");
     };
 
-    s._get$empty = function ($field) {
+    c.showErrorMessage = function($errorMsg) {
+        if ($errorMsg.html()) {
+            TweenLite.to($errorMsg, 0.5, {height: this.errorMessageHeight});
+        }
+    };
+    
+    c.hideErrorMessage = function($errorMsg) {
+        if ($errorMsg.html()) {
+            TweenLite.to($errorMsg, 0.5, {height: 0});
+        }
+    };
+
+    c._get$empty = function ($field) {
         return this._get$error($field, this.checkEmpty);
     };
 
-    s._get$email = function ($field) {
+    c._get$email = function ($field) {
         return this._get$error($field, this.checkEmail);
     };
 
-    s._get$username = function ($field) {
+    c._get$username = function ($field) {
         return this._get$error($field, this.checkUsername);
     };
 
-    s._get$inFuture = function ($field) {
+    c._get$inFuture = function ($field) {
         return this._get$error($field, this.checkDateInFuture);
     };
 
-    s._get$minLength = function ($field) {
+    c._get$minLength = function ($field) {
         return this._get$error($field, this.checkMinLength);
     };
 
-    s._get$maxLength = function ($field) {
+    c._get$maxLength = function ($field) {
         return this._get$error($field, this.checkMaxLength);
     };
 
-    s._get$integer = function ($field) {
+    c._get$integer = function ($field) {
         return this._get$error($field, this.checkInteger);
     };
 
-    s._get$decimal = function ($field) {
+    c._get$decimal = function ($field) {
         return this._get$error($field, this.checkDecimal);
     };
 
-    s._get$url = function ($field) {
+    c._get$url = function ($field) {
         return this._get$error($field, this.checkUrl);
     };
 
-    s._get$error = function ($field, checkType) {
+    c._get$error = function ($field, checkType) {
         return $field.parent().find("p[data-check=" + checkType + "]");
     };
 
-    s._isToCheckIfEmpty = function ($field) {
+    c._isToCheckIfEmpty = function ($field) {
         return this._get$empty($field).length === 1;
     };
 
-    s._isToCheckIfEmail = function ($field) {
+    c._isToCheckIfEmail = function ($field) {
         return this._get$email($field).length === 1;
     };
 
-    s._isToCheckIfUsername = function ($field) {
+    c._isToCheckIfUsername = function ($field) {
         return this._get$username($field).length === 1;
     };
 
-    s._isToCheckIfInFuture = function ($field) {
+    c._isToCheckIfInFuture = function ($field) {
         return this._get$inFuture($field).length === 1;
     };
 
-    s._isToCheckIfMinLength = function ($field) {
+    c._isToCheckIfMinLength = function ($field) {
         return this._get$minLength($field).length === 1;
     };
 
-    s._isToCheckIfMaxLength = function ($field) {
+    c._isToCheckIfMaxLength = function ($field) {
         return this._get$maxLength($field).length === 1;
     };
 
-    s._isToCheckIfInteger = function ($field) {
+    c._isToCheckIfInteger = function ($field) {
         return this._get$integer($field).length === 1;
     };
 
-    s._isToCheckIfDecimal = function ($field) {
+    c._isToCheckIfDecimal = function ($field) {
         return this._get$decimal($field).length === 1;
     };
 
-    s._isToCheckIfUrl = function ($field) {
+    c._isToCheckIfUrl = function ($field) {
         return this._get$url($field).length === 1;
     };
 
-    s._isEmail = function (email) {
+    c._isEmail = function (email) {
         if (email === "")
             return true;
 
@@ -254,12 +268,12 @@ CS.router = new Grapnel();
         return reg.test(email);
     };
 
-    s._isUsername = function (username) {
+    c._isUsername = function (username) {
         var reg = /^([a-z0-9_\-])+$/i;
         return reg.test(username);
     };
 
-    s._isInFuture = function (dateStr) {
+    c._isInFuture = function (dateStr) {
         var yearMonthDay = dateStr.split("-");
         var year = parseInt(yearMonthDay[0], 10);
         var month = parseInt(yearMonthDay[1], 10);
@@ -274,34 +288,34 @@ CS.router = new Grapnel();
         return nbDaysDifference > 0;
     };
 
-    s._isMinLength = function (value, minLength) {
+    c._isMinLength = function (value, minLength) {
         if (value === null || value === undefined || value === "")
             return true;
         return value.length >= minLength;
     };
 
-    s._isMaxLength = function (value, maxLength) {
+    c._isMaxLength = function (value, maxLength) {
         if (value === null || value === undefined || value === "")
             return true;
         return value.length <= maxLength;
     };
 
-    s._isInteger = function (value) {
+    c._isInteger = function (value) {
         var reg = /^\d*$/;
         return reg.test(value);
     };
 
-    s._isDecimal = function (value) {
+    c._isDecimal = function (value) {
         var reg = /^\d*\.?\d*$/;
         return reg.test(value);
     };
 
-    s._isUrl = function(url) {
+    c._isUrl = function(url) {
         var reg = /^((https?|ftp|irc):\/\/)?(www\d?|[a-z0-9]+)?\.[a-z0-9-]+(\:|\.)([a-z0-9.]+|(\d+)?)([/?:].*)?$/i;
         return reg.test(url);
     };
 
-    s._validateField = function ($field, isOnBlur) {
+    c._validateField = function ($field, isOnBlur) {
 
         // Empty?
         if (this._isToCheckIfEmpty($field)) {
@@ -309,100 +323,100 @@ CS.router = new Grapnel();
                 $field.children(".active").length === 0) {
 
                 this.flagInvalid($field);
-                this._slideDownErrorMessage(this._get$empty($field));
+                this.showErrorMessage(this._get$empty($field));
                 return false;
             }
             if (!$field.hasClass("nav-pills") && !$field.val().trim()) {
 
                 if (!isOnBlur) {
                     this.flagInvalid($field);
-                    this._slideDownErrorMessage(this._get$empty($field));
+                    this.showErrorMessage(this._get$empty($field));
                 }
                 return false;
             }
 
-            this._slideUpErrorMessage(this._get$empty($field));
+            this.hideErrorMessage(this._get$empty($field));
         }
 
         // Email?
         if (this._isToCheckIfEmail($field)) {
             if (!this._isEmail($field.val().trim())) {
                 this.flagInvalid($field);
-                this._slideDownErrorMessage(this._get$email($field));
+                this.showErrorMessage(this._get$email($field));
                 return false;
             }
 
-            this._slideUpErrorMessage(this._get$email($field));
+            this.hideErrorMessage(this._get$email($field));
         }
 
         // Username?
         if (this._isToCheckIfUsername($field)) {
             if (!this._isUsername($field.val().trim())) {
                 this.flagInvalid($field);
-                this._slideDownErrorMessage(this._get$username($field));
+                this.showErrorMessage(this._get$username($field));
                 return false;
             }
-            this._slideUpErrorMessage(this._get$username($field));
+            this.hideErrorMessage(this._get$username($field));
         }
 
         // In the future?
         if (this._isToCheckIfInFuture($field)) {
             if (!this._isInFuture($field.val().trim())) {
                 this.flagInvalid($field);
-                this._slideDownErrorMessage(this._get$inFuture($field));
+                this.showErrorMessage(this._get$inFuture($field));
                 return false;
             }
-            this._slideUpErrorMessage(this._get$inFuture($field));
+            this.hideErrorMessage(this._get$inFuture($field));
         }
 
         // Min length?
         if (this._isToCheckIfMinLength($field)) {
             if (!this._isMinLength($field.val().trim(), $field.data("min-length"))) {
                 this.flagInvalid($field);
-                this._slideDownErrorMessage(this._get$minLength($field));
+                this.showErrorMessage(this._get$minLength($field));
                 return false;
             }
-            this._slideUpErrorMessage(this._get$minLength($field));
+            this.hideErrorMessage(this._get$minLength($field));
         }
 
         // Max length?
         if (this._isToCheckIfMaxLength($field)) {
             if (!this._isMaxLength($field.val().trim(), $field.attr("maxlength"))) {
                 this.flagInvalid($field);
-                this._slideDownErrorMessage(this._get$maxLength($field));
+                this.showErrorMessage(this._get$maxLength($field));
                 return false;
             }
-            this._slideUpErrorMessage(this._get$maxLength($field));
+            this.hideErrorMessage(this._get$maxLength($field));
         }
 
         // Integer number?
         if (this._isToCheckIfInteger($field)) {
             if (!this._isInteger($field.val().trim())) {
                 this.flagInvalid($field);
-                this._slideDownErrorMessage(this._get$integer($field));
+                this.showErrorMessage(this._get$integer($field));
                 return false;
             }
-            this._slideUpErrorMessage(this._get$integer($field));
+            this.hideErrorMessage(this._get$integer($field));
         }
 
         // Decimal number?
         if (this._isToCheckIfDecimal($field)) {
             if (!this._isDecimal($field.val().trim())) {
                 this.flagInvalid($field);
-                this._slideDownErrorMessage(this._get$decimal($field));
+                this.showErrorMessage(this._get$decimal($field));
                 return false;
             }
-            this._slideUpErrorMessage(this._get$decimal($field));
+            this.hideErrorMessage(this._get$decimal($field));
         }
 
         // URL?
         if (this._isToCheckIfUrl($field)) {
             if (!this._isUrl($field.val().trim())) {
                 this.flagInvalid($field);
-                this._slideDownErrorMessage(this._get$url($field));
+                this.showErrorMessage(this._get$url($field));
                 return false;
             }
-            this._slideUpErrorMessage(this._get$url($field));
+            this.hideErrorMessage(this._get$url($field));
         }
 
         this.flagValid($field);
@@ -410,36 +424,40 @@ CS.router = new Grapnel();
         return true;
     };
 
-    s._addBlurEvent = function ($field) {
+    c._addBlurEvent = function ($field) {
         $field.blur(function () {
             this._validateField($field, true);
         }.bind(this));
     };
 
-    s._addValueChangedEvent = function ($field) {
+    c._addValueChangedEvent = function ($field) {
         $field.change(function () {
             this._validateField($field);
         }.bind(this));
     };
 
-    s._addClickEvents = function ($field) {
+    c._addClickEvents = function ($field) {
         $field.find("a").bind("active-toggled", function () {
             this._validateField($field);
         }.bind(this));
     };
-
-    s._slideDownErrorMessage = function ($errorMsgEl) {
-        if ($errorMsgEl.html()) {
-            $errorMsgEl.show(); // TODO: animate
-        }
-    };
-
-    s._slideUpErrorMessage = function ($errorMsgEl) {
-        if ($errorMsgEl.html()) {
-            $errorMsgEl.hide(); // TODO: animate
-        }
-    };
 });
+;CS.Services.Animator = {
+    fadeIn: function ($el) {
+        if (!$el.is(":visible")) {
+            TweenLite.set($el, {display: "block", alpha: 0});
+            TweenLite.to($el, CS.defaultAnimationDuration, {alpha: 1});
+        }
+    },
+    fadeOut: function ($el) {
+        TweenLite.to($el, CS.defaultAnimationDuration, {
+            alpha: 0,
+            onComplete: function () {
+                $el.hide();
+            }.bind(this)
+        });
+    }
+};
 ;CS.Models.Activity = {
     state: {
         todo: "TODO",
@@ -686,7 +704,7 @@ CS.router = new Grapnel();
     c.handleSubmit = function (e) {
         e.preventDefault();
 
-        this.$otherFormErrors.hide();
+        this.validator.hideErrorMessage(this.$otherFormErrors);
 
         if (this.validator.isValid() && this._arePasswordsMatching()) {
             this.$submitBtn.button('loading');
@@ -707,7 +725,7 @@ CS.router = new Grapnel();
                 success: function (data, textStatus, jqXHR) {
                     if (jqXHR.status === CS.Controllers.httpStatusCode.emailAlreadyRegistered) {
                         this.$submitBtn.button('reset');
-                        this.$emailAlreadyRegisteredError.show();
+                        this.validator.showErrorMessage(this.$emailAlreadyRegisteredError);
                     } else {
                         this.onFormSubmitSuccess(data);
                     }
@@ -729,7 +747,7 @@ CS.router = new Grapnel();
         var isValid = this.$passwordField.val().trim() === this.$passwordConfirmationField.val().trim();
 
         if (!isValid) {
-            this.$passwordsNotMatchingError.show();
+            this.validator.showErrorMessage(this.$passwordsNotMatchingError);
         }
 
         return isValid;
@@ -764,7 +782,7 @@ CS.router = new Grapnel();
     c.handleSubmit = function (e) {
         e.preventDefault();
 
-        this.$wrongCredentialsError.hide();
+        this.validator.hideErrorMessage(this.$wrongCredentialsError);
 
         if (this.validator.isValid()) {
             this.$submitBtn.button('loading');
@@ -785,7 +803,7 @@ CS.router = new Grapnel();
                 success: function (data, textStatus, jqXHR) {
                     if (jqXHR.status === CS.Controllers.httpStatusCode.noContent) {
                         this.$submitBtn.button('reset');
-                        this.$wrongCredentialsError.show();
+                        this.validator.showErrorMessage(this.$wrongCredentialsError);
                     } else {
                         this.onFormSubmitSuccess(data);
                     }
@@ -863,7 +881,7 @@ CS.router = new Grapnel();
     c._handleSubmit = function (e) {
         e.preventDefault();
 
-        this.$successAlert.hide();
+        CS.Services.Animator.fadeOut(this.$successAlert);
 
         if (this.validator.isValid()) {
             this._checkIfAccountExists(null, function () {
@@ -885,7 +903,8 @@ CS.router = new Grapnel();
                     success: function (data, textStatus, jqXHR) {
                         this.$submitBtn.button('reset');
                         this.$form[0].reset();
-                        this.$successAlert.show();
+
+                        CS.Services.Animator.fadeIn(this.$successAlert);
                     }.bind(this),
                     error: function (jqXHR, textStatus, errorThrown) {
                         this.$submitBtn.button('reset');
@@ -901,7 +920,7 @@ CS.router = new Grapnel();
 
         if (emailAddress) {
             this.$formGroupEmail.removeClass("has-error");
-            this.$noAccountFoundForThisEmailError.hide();
+            this.validator.hideErrorMessage(this.$noAccountFoundForThisEmailError);
 
             var type = "GET";
             var url = "/api/accounts";
@@ -912,7 +931,7 @@ CS.router = new Grapnel();
                 success: function (data, textStatus, jqXHR) {
                     if (jqXHR.status === CS.Controllers.httpStatusCode.noContent) {
                         this.$formGroupEmail.addClass("has-error");
-                        this.$noAccountFoundForThisEmailError.show();
+                        this.validator.hideErrorMessage(this.$noAccountFoundForThisEmailError);
                     } else {
                         this.$formGroupEmail.addClass("has-success");
 
@@ -977,7 +996,7 @@ CS.router = new Grapnel();
         this._initElements();
     };
 
-    c._initElements = function() {
+    c._initElements = function () {
         this.$registerReminderAlert = $("#register-reminder").children();
     };
 
@@ -1034,7 +1053,7 @@ CS.router = new Grapnel();
         var doneActivities = [];
 
         activityData.forEach(function (activity) {
-            var instance = _.find(this.feedItemInstances, function(instans) {
+            var instance = _.find(this.feedItemInstances, function (instans) {
                 return instans.getClassName() === activity.className;
             });
 
@@ -1054,14 +1073,14 @@ CS.router = new Grapnel();
         }, this);
 
         // We handle instances which didn't have any activity data
-        this.feedItemInstances.forEach(function(instance, index) {
-            var isTodo = _.isEmpty(_.find(doneActivities, function(activity) {
+        this.feedItemInstances.forEach(function (instance, index) {
+            var isTodo = _.isEmpty(_.find(doneActivities, function (activity) {
                 return activity.instance.getClassName() === instance.getClassName();
             }));
 
             if (isTodo && instance.isDoable()) {
                 // Is it already is among the undoneActivities?
-                var isAlreadyInTheList = _.find(undoneActivities, function(activity) {
+                var isAlreadyInTheList = _.find(undoneActivities, function (activity) {
                     return activity.instance.getClassName() === instance.getClassName();
                 });
 
@@ -1080,11 +1099,11 @@ CS.router = new Grapnel();
         this.reactInstance.replaceState({ data: _.union(undoneActivities, doneActivities) });
     };
 
-    c._showOrHideRegisterReminder = function(doneActivitiesCount) {
+    c._showOrHideRegisterReminder = function (doneActivitiesCount) {
         if (CS.Controllers.isTemporaryAccount() && doneActivitiesCount > 0) {
-            this.$registerReminderAlert.show();
+            CS.Services.Animator.fadeIn(this.$registerReminderAlert);
         } else {
-            this.$registerReminderAlert.hide();
+            CS.Services.Animator.fadeOut(this.$registerReminderAlert);
         }
     };
 });
@@ -1239,11 +1258,23 @@ CS.Activities.Base = P(function (c) {
         this.$feedSection.hide();
         this.$currentC1OrActivitySection.show();
 
-        this.$el.children().hide();
-        this.controllers[route].render(data);
+        this._hidePagesAndDisplayNext(route, data);
+    };
+
+    c._hidePagesAndDisplayNext = function(route, data) {
+        var $pages = this.$el.children();
+
+        TweenLite.to($pages, CS.Activities.Base.pageAnimationDuration, {
+            alpha: 0,
+            onComplete: function() {
+                $pages.hide();
+                this.controllers[route].render(data);
+            }.bind(this)
+        });
     };
 });
-;CS.Activities.Controller = P(function (c) {
+
+CS.Activities.Base.pageAnimationDuration = 0.15;;CS.Activities.Controller = P(function (c) {
     c.init = function (route, activity) {
         this.route = route;
         this.activity = activity;
@@ -1271,7 +1302,8 @@ CS.Activities.Base = P(function (c) {
 
         this.onReRender();
 
-        this.$el.show();
+        TweenLite.set(this.$el, {display: "block", alpha: 0});
+        TweenLite.to(this.$el, CS.Activities.Base.pageAnimationDuration, {alpha: 1});
     };
 
     c.navigateTo = function(route) {

@@ -1,13 +1,25 @@
 #header-links {
   text-align: center;
 
-  padding: $spacer-unit-size 0;
-  margin-bottom: $spacer-unit-size;
+  background-color: $action-color;
+
+  padding: $spacer-unit-size/2 0;
+  margin-bottom: $spacer-unit-size * 2;
 
   > a {
     display: none;
 
     margin: 0 $spacer-unit-size;
+
+    $header-link-color: white;
+
+    color: $header-link-color;
+
+    &:visited,
+    &:hover,
+    &:focus {
+      color: $header-link-color;
+    }
   }
 }
 

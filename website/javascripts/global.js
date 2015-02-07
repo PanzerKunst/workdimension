@@ -23,3 +23,4 @@ CS.C1s = {};
 CS.accountId = null;
 CS.accountData = null;
 CS.router = new Grapnel();
+CS.defaultAnimationDuration = 0.5;

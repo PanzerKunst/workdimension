@@ -32,7 +32,7 @@ CS.Controllers.HeaderModal.Register = P(CS.Controllers.HeaderModal, function (c,
     c.handleSubmit = function (e) {
         e.preventDefault();
 
-        this.$otherFormErrors.hide();
+        this.validator.hideErrorMessage(this.$otherFormErrors);
 
         if (this.validator.isValid() && this._arePasswordsMatching()) {
             this.$submitBtn.button('loading');
@@ -53,7 +53,7 @@ CS.Controllers.HeaderModal.Register = P(CS.Controllers.HeaderModal, function (c,
                 success: function (data, textStatus, jqXHR) {
                     if (jqXHR.status === CS.Controllers.httpStatusCode.emailAlreadyRegistered) {
                         this.$submitBtn.button('reset');
-                        this.$emailAlreadyRegisteredError.show();
+                        this.validator.showErrorMessage(this.$emailAlreadyRegisteredError);
                     } else {
                         this.onFormSubmitSuccess(data);
                     }
@@ -75,7 +75,7 @@ CS.Controllers.HeaderModal.Register = P(CS.Controllers.HeaderModal, function (c,
         var isValid = this.$passwordField.val().trim() === this.$passwordConfirmationField.val().trim();
 
         if (!isValid) {
-            this.$passwordsNotMatchingError.show();
+            this.validator.showErrorMessage(this.$passwordsNotMatchingError);
         }
 
         return isValid;

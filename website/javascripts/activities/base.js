@@ -49,7 +49,20 @@ CS.Activities.Base = P(function (c) {
         this.$feedSection.hide();
         this.$currentC1OrActivitySection.show();
 
-        this.$el.children().hide();
-        this.controllers[route].render(data);
+        this._hidePagesAndDisplayNext(route, data);
+    };
+
+    c._hidePagesAndDisplayNext = function(route, data) {
+        var $pages = this.$el.children();
+
+        TweenLite.to($pages, CS.Activities.Base.pageAnimationDuration, {
+            alpha: 0,
+            onComplete: function() {
+                $pages.hide();
+                this.controllers[route].render(data);
+            }.bind(this)
+        });
     };
 });
+
+CS.Activities.Base.pageAnimationDuration = 0.15;

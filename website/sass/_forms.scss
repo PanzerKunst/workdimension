@@ -58,7 +58,8 @@ form {
   }
 
   .field-error {
-    display: none;
+    height: 0;
+    overflow: hidden;
 
     font-style: italic;
     font-weight: bold;

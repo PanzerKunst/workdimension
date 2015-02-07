@@ -17,5 +17,6 @@ nav[role="navigation"],
 }
 
 .tab-pane {
-  margin-top: $spacer-unit-size;
+  background-color: $tab-pane-color;
+  padding: $spacer-unit-size $spacer-unit-size $spacer-unit-size $spacer-unit-size;
 }

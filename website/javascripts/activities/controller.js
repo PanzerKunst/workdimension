@@ -26,7 +26,8 @@ CS.Activities.Controller = P(function (c) {
 
         this.onReRender();
 
-        this.$el.show();
+        TweenLite.set(this.$el, {display: "block", alpha: 0});
+        TweenLite.to(this.$el, CS.Activities.Base.pageAnimationDuration, {alpha: 1});
     };
 
     c.navigateTo = function(route) {

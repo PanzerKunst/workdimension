@@ -27,7 +27,7 @@ CS.Controllers.HeaderModal.SignIn = P(CS.Controllers.HeaderModal, function (c, b
     c.handleSubmit = function (e) {
         e.preventDefault();
 
-        this.$wrongCredentialsError.hide();
+        this.validator.hideErrorMessage(this.$wrongCredentialsError);
 
         if (this.validator.isValid()) {
             this.$submitBtn.button('loading');
@@ -48,7 +48,7 @@ CS.Controllers.HeaderModal.SignIn = P(CS.Controllers.HeaderModal, function (c, b
                 success: function (data, textStatus, jqXHR) {
                     if (jqXHR.status === CS.Controllers.httpStatusCode.noContent) {
                         this.$submitBtn.button('reset');
-                        this.$wrongCredentialsError.show();
+                        this.validator.showErrorMessage(this.$wrongCredentialsError);
                     } else {
                         this.onFormSubmitSuccess(data);
                     }
