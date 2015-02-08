@@ -2,7 +2,6 @@
 nav[role="navigation"],
 #register-reminder {
   margin: 0 auto;
-  padding: 0 $spacer-unit-size;
 
   @include medium-screen {
     max-width: $medium-content-width;

@@ -931,7 +931,7 @@ CS.defaultAnimationDuration = 0.5;;CS.Services.Validator = P(function (c) {
                 success: function (data, textStatus, jqXHR) {
                     if (jqXHR.status === CS.Controllers.httpStatusCode.noContent) {
                         this.$formGroupEmail.addClass("has-error");
-                        this.validator.hideErrorMessage(this.$noAccountFoundForThisEmailError);
+                        this.validator.showErrorMessage(this.$noAccountFoundForThisEmailError);
                     } else {
                         this.$formGroupEmail.addClass("has-success");
 
