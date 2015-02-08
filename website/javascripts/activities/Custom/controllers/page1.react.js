@@ -5,7 +5,7 @@ CS.Activities.Custom.Controllers.Page1 = P(CS.Activities.Controller, function (c
                 <form role="form">
                     <div className="form-group">
                         <p>{this.props.text}</p>
-                        <textarea id="custom-activity-answer" class="form-control"></textarea>
+                        <textarea id="custom-activity-answer" className="form-control"></textarea>
 
                         <p className="field-error" data-check="empty"></p>
                     </div>

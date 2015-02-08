@@ -1422,7 +1422,7 @@ CS.Activities.GlobalFindYourStrengths2.Controllers = {};
                 React.createElement("form", {role: "form"}, 
                     React.createElement("div", {className: "form-group"}, 
                         React.createElement("p", null, this.props.text), 
-                        React.createElement("textarea", {id: "custom-activity-answer", class: "form-control"}), 
+                        React.createElement("textarea", {id: "custom-activity-answer", className: "form-control"}), 
 
                         React.createElement("p", {className: "field-error", "data-check": "empty"})
                     ), 

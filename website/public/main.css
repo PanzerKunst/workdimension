@@ -4771,6 +4771,9 @@ a:hover,
 a:focus {
   color: #ff8a38; }
 
+textarea {
+  min-height: 5em; }
+
 blockquote {
   margin: 0; }
 

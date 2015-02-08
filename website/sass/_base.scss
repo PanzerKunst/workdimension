@@ -79,6 +79,10 @@ a:focus {
   color: $action-color;
 }
 
+textarea {
+  min-height: 5em;
+}
+
 blockquote {
   margin: 0;
 }
