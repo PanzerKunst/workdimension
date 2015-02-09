@@ -5,11 +5,15 @@ CS.Services.Animator = {
             TweenLite.to($el, CS.defaultAnimationDuration, {alpha: 1});
         }
     },
-    fadeOut: function ($el) {
+    fadeOut: function ($el, onComplete) {
         TweenLite.to($el, CS.defaultAnimationDuration, {
             alpha: 0,
             onComplete: function () {
-                $el.hide();
+                if (onComplete) {
+                    onComplete();
+                } else {
+                    $el.hide();
+                }
             }.bind(this)
         });
     }

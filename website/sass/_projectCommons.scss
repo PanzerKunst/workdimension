@@ -17,5 +17,14 @@ nav[role="navigation"],
 
 .tab-pane {
   background-color: $tab-pane-color;
-  padding: $spacer-unit-size $spacer-unit-size $spacer-unit-size $spacer-unit-size;
+
+  padding: $spacer-unit-size;
+
+  @include medium-screen {
+    padding: $spacer-unit-size * $medium-screen-ratio;
+  }
+
+  @include large-screen {
+    padding: $spacer-unit-size * $large-screen-ratio;
+  }
 }

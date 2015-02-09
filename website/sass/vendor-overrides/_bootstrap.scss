@@ -4,6 +4,8 @@ html {
 
 body {
   background-color: $background-body-color;
+
+  @include adaptive-font-size;
 }
 
 .nav-tabs {
@@ -16,13 +18,95 @@ body {
   }
 }
 
+button.close {
+  padding: 0 $alert-padding/2;
+
+  > .close {
+    margin-top: -6px;
+
+    @include medium-screen {
+      margin-top: 2px;
+    }
+    @include large-screen {
+      margin-top: 4px;
+    }
+  }
+}
+
 .modal-header {
-  // We reduce the padding-right, because we'll add some to the close button, to make it more easily clickable
+  // We reduce the padding-right, because we have added some to the close button, to make it more easily clickable
   padding-right: $alert-padding / 2;
 
   > .close {
-    padding: 0 $alert-padding/2;
-
     margin-top: -6px;
+
+    @include medium-screen {
+      margin-top: 0;
+    }
+    @include large-screen {
+      margin-top: 3px;
+    }
+  }
+}
+
+.form-control,
+.btn {
+  @include adaptive-font-size;
+}
+
+.form-control {
+  @include medium-screen {
+    height: 39px;
+  }
+
+  @include large-screen {
+    height: 45px;
+  }
+}
+
+
+h1, .h1,
+h2, .h2,
+h3, .h3 {
+  $default-h123-margin-top: $line-height-computed;
+  $default-h123-margin-bottom: ($line-height-computed / 2);
+
+  @include medium-screen {
+    margin-top: $default-h123-margin-top * $medium-screen-ratio;
+    margin-bottom: $default-h123-margin-bottom * $medium-screen-ratio;
+  }
+
+  @include large-screen {
+    margin-top: $default-h123-margin-top * $large-screen-ratio;
+    margin-bottom: $default-h123-margin-bottom * $large-screen-ratio;
+  }
+}
+
+h4, .h4,
+h5, .h5,
+h6, .h6 {
+  $default-h456-margin-top: ($line-height-computed / 2);
+  $default-h456-margin-bottom: ($line-height-computed / 2);
+
+  @include medium-screen {
+    margin-top: $default-h456-margin-top * $medium-screen-ratio;
+    margin-bottom: $default-h456-margin-bottom * $medium-screen-ratio;
+  }
+
+  @include large-screen {
+    margin-top: $default-h456-margin-top * $large-screen-ratio;
+    margin-bottom: $default-h456-margin-bottom * $large-screen-ratio;
+  }
+}
+
+p {
+  $default-p-margin-bottom: ($line-height-computed / 2);
+
+  @include medium-screen {
+    margin-bottom: $default-p-margin-bottom * $medium-screen-ratio;
+  }
+
+  @include large-screen {
+    margin-bottom: $default-p-margin-bottom * $large-screen-ratio;
   }
 }

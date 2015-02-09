@@ -1,5 +1,4 @@
 /* apply a natural box layout model to all elements, but allowing components to change */
-*,
 *:before,
 *:after {
   box-sizing: inherit;
@@ -22,6 +21,14 @@ html {
   overflow-y: scroll;
 
   box-sizing: border-box;
+
+  @include medium-screen {
+    @include defineBreakpoint("GLOBAL_MEDIUM_SCREEN_BREAKPOINT");
+  }
+
+  @include large-screen {
+    @include defineBreakpoint("GLOBAL_LARGE_SCREEN_BREAKPOINT");
+  }
 }
 
 body {
@@ -35,19 +42,13 @@ h2 {
 }
 
 h1 {
-  @include adaptive-font-size(6);
+  @include adaptive-font-size(22px);
 
   text-align: center;
 }
 
 h2 {
-  @include adaptive-font-size(4);
-
-  margin-top: 0;
-}
-
-h3 {
-  margin-bottom: 0.5em;
+  @include adaptive-font-size(18px);
 }
 
 p,
@@ -64,6 +65,23 @@ ul {
   &.styleless {
     padding-left: 0;
     list-style-type: none;
+  }
+}
+
+@mixin styleless-btn {
+  border: none;
+  box-shadow: none;
+  border-radius: 0;
+  background-color: transparent;
+}
+
+button {
+  &.styleless {
+    @include styleless-btn;
+
+    &:focus {
+      @include styleless-btn;
+    }
   }
 }
 
@@ -89,4 +107,33 @@ blockquote {
 
 .centered-contents {
   text-align: center;
+}
+
+.tag {
+  background-color: $gray-lighter;
+  border-radius: $border-radius-base;
+
+  padding-left: $spacer-unit-size / 2;
+
+  > span {
+    vertical-align: top;
+
+    margin-top: 5px;
+
+    @include medium-screen {
+      margin-top: 2px;
+    }
+    @include large-screen {
+      margin-top: 0;
+    }
+  }
+
+  > .close {
+    vertical-align: top;
+    float: none;
+
+    @include large-screen {
+      margin-top: 1px;
+    }
+  }
 }

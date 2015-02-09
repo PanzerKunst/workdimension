@@ -36,6 +36,11 @@ CS.Controllers.ActivityFeed = P(function (c) {
                 packageName: CS.Controllers.ActivityFeed.packageName.activity,
                 className: "GlobalFindYourStrengths",
                 title: "Find my strengths"
+            },
+            {
+                packageName: CS.Controllers.ActivityFeed.packageName.activity,
+                className: "IdentifyStrengths",
+                title: "Identifiera mina egenskaper"
             }
         ];
 
@@ -176,7 +181,7 @@ CS.Controllers.ActivityFeedItem = React.createClass({displayName: "ActivityFeedI
         return (
             React.createElement("li", {className: liClasses}, 
                 React.createElement("h2", null, this.props.c1OrActivity.title), 
-                React.createElement("button", {onClick: this._handleClick}, buttonText)
+                React.createElement("button", {className: "btn btn-default", onClick: this._handleClick}, buttonText)
             )
             );
     },

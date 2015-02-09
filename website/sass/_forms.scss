@@ -3,42 +3,23 @@ form {
     @include clearfix;
   }
 
-  /* TODO
-  $form-width-medium-screen: $medium-content-width - 2*$spacer-unit-size;
-  $form-width-large-screen: $large-content-width - 2*$spacer-unit-size;
-  $form-group-separating-margin: 2*$spacer-unit-size; */
-
   .form-group {
+    $default-margin-bottom: 15px;
+
     @include medium-screen {
-      width: $small-content-width;
+      margin-bottom: $default-margin-bottom * $medium-screen-font-ratio;
+
+      width: ($small-content-width + $medium-content-width) / 2;
 
       margin-left: auto;
       margin-right: auto;
     }
 
-    /* TODO
-    @include medium-screen {
-      float: left;
-
-      width: ($form-width-medium-screen - $form-group-separating-margin) / 2;
-
-      &:nth-child(odd) {
-        margin-right: $form-group-separating-margin;
-      }
-    }
-
     @include large-screen {
-      width: ($form-width-large-screen - $form-group-separating-margin * 2) / 3;
+      margin-bottom: $default-margin-bottom * $large-screen-font-ratio;
 
-      &:nth-child(even),
-      &:nth-child(odd) {
-        margin-right: $form-group-separating-margin;
-      }
-
-      &:nth-child(3n+3) {
-        margin-right: 0;
-      }
-    } */
+      width: $medium-content-width;
+    }
 
     > label,
     > input,
@@ -63,14 +44,23 @@ form {
 
     font-style: italic;
     font-weight: bold;
-    font-size: 12px;
+    @include adaptive-font-size(12px);
     color: $state-danger-text;
 
     margin-bottom: 0;
 
     &.other-form-error {
-      font-size: $font-size-base;
+      @include adaptive-font-size($font-size-base);
+
       margin-bottom: $line-height-computed / 2; // Same as a normal <p>
+
+      @include medium-screen {
+        margin-bottom: $line-height-computed / 2 * $medium-screen-ratio;
+      }
+
+      @include large-screen {
+        margin-bottom: $line-height-computed / 2 * $large-screen-ratio;
+      }
 
       text-align: center;
       clear: both;
@@ -105,12 +95,30 @@ form {
   padding-top: $line-height-project;
 
   @include medium-screen {
+    padding-top: $line-height-project * $medium-screen-ratio;
+  }
+
+  @include large-screen {
+    padding-top: $line-height-project * $large-screen-ratio;
+  }
+
+  text-align: center;
+
+  @include medium-screen {
     clear: both;
     padding-top: 0;
   }
 
-  > [type=submit] {
-    display: block;
-    margin: auto;
+  > [type="button"],
+  > [type="submit"] {
+    margin: 0 $spacer-unit-size/2;
+
+    @include medium-screen {
+      margin: $spacer-unit-size/2 * $medium-screen-ratio;
+    }
+
+    @include large-screen {
+      margin: $spacer-unit-size/2 * $large-screen-ratio;
+    }
   }
 }

@@ -66,6 +66,7 @@ module.exports = function (grunt) {
                     // Non-CDN libs
                     "libs/p.js",
                     "libs/grapnel.min.js",
+                    "libs/js-breakpoints/breakpoints.js",
 
                     // Global
                     "javascripts/global.js",
@@ -73,6 +74,7 @@ module.exports = function (grunt) {
                     // Common
 
                     // Services
+                    "javascripts/services/browser.js",
                     "javascripts/services/validator.js",
                     "javascripts/services/animator.js",
 
@@ -104,6 +106,7 @@ module.exports = function (grunt) {
 
                     // Non-React
                     "javascripts/activities/Custom/activity.js",
+                    "javascripts/activities/IdentifyStrengths/activity.js",
                     "javascripts/activities/GlobalFindYourStrengths/activity.js",
                     "javascripts/activities/GlobalFindYourStrengths2/activity.js",
 

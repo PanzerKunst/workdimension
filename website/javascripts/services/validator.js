@@ -1,5 +1,7 @@
 CS.Services.Validator = P(function (c) {
     c.errorMessageHeight = "21px";
+    c.errorMessageHeightMediumScreen = "28px";
+    c.errorMessageHeightLargeScreen = "33px";
 
     c.checkEmpty = "empty";
     c.checkEmail = "email";
@@ -66,7 +68,14 @@ CS.Services.Validator = P(function (c) {
 
     c.showErrorMessage = function($errorMsg) {
         if ($errorMsg.html()) {
-            TweenLite.to($errorMsg, 0.5, {height: this.errorMessageHeight});
+            var height = this.errorMessageHeight;
+            if (CS.Browser.isMediumScreen()) {
+                height = this.errorMessageHeightMediumScreen;
+            } else if (CS.Browser.isLargeScreen()) {
+                height = this.errorMessageHeightLargeScreen;
+            }
+
+            TweenLite.to($errorMsg, 0.5, {height: height});
         }
     };
     
@@ -113,7 +122,7 @@ CS.Services.Validator = P(function (c) {
     };
 
     c._get$error = function ($field, checkType) {
-        return $field.parent().find("p[data-check=" + checkType + "]");
+        return $field.parents(".form-group").children("p[data-check=" + checkType + "]");
     };
 
     c._isToCheckIfEmpty = function ($field) {

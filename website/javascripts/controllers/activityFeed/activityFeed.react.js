@@ -36,6 +36,11 @@ CS.Controllers.ActivityFeed = P(function (c) {
                 packageName: CS.Controllers.ActivityFeed.packageName.activity,
                 className: "GlobalFindYourStrengths",
                 title: "Find my strengths"
+            },
+            {
+                packageName: CS.Controllers.ActivityFeed.packageName.activity,
+                className: "IdentifyStrengths",
+                title: "Identifiera mina egenskaper"
             }
         ];
 

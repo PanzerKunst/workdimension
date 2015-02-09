@@ -44,9 +44,24 @@
 }
 
 // Button sizes
-@mixin button-size($padding-vertical, $padding-horizontal, $font-size, $line-height, $border-radius) {
+// This whole change is due to issue https://github.com/sass/sass/issues/1122
+@mixin button-size($padding-vertical, $padding-horizontal, $font-size, $border-radius) {
   padding: $padding-vertical $padding-horizontal;
   font-size: $font-size;
-  line-height: $line-height;
+  line-height: 1.428571429;
+  border-radius: $border-radius;
+}
+
+@mixin button-size-lg($padding-vertical, $padding-horizontal, $font-size, $border-radius) {
+  padding: $padding-vertical $padding-horizontal;
+  font-size: $font-size;
+  line-height: 1.3333333;
+  border-radius: $border-radius;
+}
+
+@mixin button-size-sm($padding-vertical, $padding-horizontal, $font-size, $border-radius) {
+  padding: $padding-vertical $padding-horizontal;
+  font-size: $font-size;
+  line-height: $line-height-small;
   border-radius: $border-radius;
 }

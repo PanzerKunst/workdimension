@@ -9,10 +9,10 @@ CS.Activities.Controller = P(function (c) {
         if (!this.isRendered) {
             var uniqueId = _.uniqueId();
 
-            this.activity.$el.append('<div class="activity-page" id="' + uniqueId + '"></div>');
+            this.activity.$el.append('<div class="activity-page ' + this.activity.model.className + '" id="' + uniqueId + '"></div>');
             this.$el = $("#" + uniqueId);
 
-            React.render(
+            this.reactInstance = React.render(
                 React.createElement(this.reactClass, data),
                 this.$el[0]
             );

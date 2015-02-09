@@ -1,0 +1,13 @@
+.IdentifyStrengths {
+  #strength-tags {
+    > li {
+      margin-top: $spacer-unit-size;
+      @include medium-screen {
+        margin-top: $spacer-unit-size * $medium-screen-font-ratio;
+      }
+      @include large-screen {
+        margin-top: $spacer-unit-size * $large-screen-font-ratio;
+      }
+    }
+  }
+}

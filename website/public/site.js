@@ -81,7 +81,150 @@ var P = (function(prototype, ownProperty, undefined) {
  * Released under MIT License. See LICENSE.txt or http://opensource.org/licenses/MIT
 */
 
-!function(a){function b(b){"use strict";var c=this;return this.events={},this.params=[],this.state=null,this.options=b||{},this.options.usePushState=!!(c.options.pushState&&a.history&&a.history.pushState),this.version="0.5.1",this.fragment=this.anchor=this.hash={get:function(){var b;return b=c.options.usePushState?a.location.pathname.replace(c.options.root,""):a.location.hash?a.location.hash.split("#")[1]:""},set:function(b){return c.options.usePushState?(b=c.options.root?c.options.root+b:b,a.history.pushState({},null,b)):a.location.hash=b,c},clear:function(){return c.options.usePushState?a.history.pushState({},null,c.options.root||"/"):a.location.hash="",c}},this._forEach=function(a,b){return"function"==typeof Array.prototype.forEach?Array.prototype.forEach.call(a,b):function(a,b){for(var c=0,d=this.length;d>c;++c)a.call(b,this[c],c,this)}.call(a,b)},this.trigger=function(a){var b=Array.prototype.slice.call(arguments,1);return this.events[a]&&this._forEach(this.events[a],function(a){a.apply(c,b)}),this},"function"==typeof a.onhashchange&&this.on("hashchange",a.onhashchange),"function"==typeof a.onpopstate&&this.on("navigate",a.onpopstate),a.onhashchange=function(){c.trigger("hashchange")},a.onpopstate=function(){c.trigger("navigate")},this}b.regexRoute=function(a,b,c,d){return a instanceof RegExp?a:(a instanceof Array&&(a="("+a.join("|")+")"),a=a.concat(d?"":"/?").replace(/\/\(/g,"(?:/").replace(/\+/g,"__plus__").replace(/(\/)?(\.)?:(\w+)(?:(\(.*?\)))?(\?)?/g,function(a,c,d,e,f,g){return b.push({name:e,optional:!!g}),c=c||"",""+(g?"":c)+"(?:"+(g?c:"")+(d||"")+(f||d&&"([^/.]+?)"||"([^/]+?)")+")"+(g||"")}).replace(/([\/.])/g,"\\$1").replace(/__plus__/g,"(.+)").replace(/\*/g,"(.*)"),new RegExp("^"+a+"$",c?"":"i"))},b.prototype.get=b.prototype.add=function(a,c){var d=this,e=[],f=b.regexRoute(a,e),g=function(){var b=d.fragment.get().match(f);if(b){var g={params:{},keys:e,matches:b.slice(1)};d._forEach(g.matches,function(a,b){var c=e[b]&&e[b].name?e[b].name:b;g.params[c]=a?decodeURIComponent(a):void 0});var h={route:a,value:d.fragment.get(),params:g.params,regex:b,propagateEvent:!0,previousState:d.state,preventDefault:function(){this.propagateEvent=!1},callback:function(){c.call(d,g,h)}};if(d.trigger("match",h),!h.propagateEvent)return d;d.state=h,h.callback()}return d};return g().on(d.options.usePushState?"navigate":"hashchange",g)},b.prototype.on=b.prototype.bind=function(a,b){var c=this,d=a.split(" ");return this._forEach(d,function(a){c.events[a]?c.events[a].push(b):c.events[a]=[b]}),this},b.Router=b.prototype.router=b,b.prototype.context=function(a){var b=this;return function(c,d){var e="/"!==a.slice(-1)?a+"/":a,f=e+c;return b.get.call(b,f,d)}},b.prototype.navigate=function(a){return this.fragment.set(a),this.trigger("navigate")},b.listen=function(){var a,c;return arguments[0]&&arguments[1]?(a=arguments[0],c=arguments[1]):c=arguments[0],function(){for(var a in c)this.get.call(this,a,c[a]);return this}.call(new b(a||{}))},"function"==typeof a.define?a.define(function(){return b}):"object"==typeof exports?exports.Grapnel=b:a.Grapnel=b}.call({},window);;if (typeof String.prototype.startsWith !== 'function') {
+!function(a){function b(b){"use strict";var c=this;return this.events={},this.params=[],this.state=null,this.options=b||{},this.options.usePushState=!!(c.options.pushState&&a.history&&a.history.pushState),this.version="0.5.1",this.fragment=this.anchor=this.hash={get:function(){var b;return b=c.options.usePushState?a.location.pathname.replace(c.options.root,""):a.location.hash?a.location.hash.split("#")[1]:""},set:function(b){return c.options.usePushState?(b=c.options.root?c.options.root+b:b,a.history.pushState({},null,b)):a.location.hash=b,c},clear:function(){return c.options.usePushState?a.history.pushState({},null,c.options.root||"/"):a.location.hash="",c}},this._forEach=function(a,b){return"function"==typeof Array.prototype.forEach?Array.prototype.forEach.call(a,b):function(a,b){for(var c=0,d=this.length;d>c;++c)a.call(b,this[c],c,this)}.call(a,b)},this.trigger=function(a){var b=Array.prototype.slice.call(arguments,1);return this.events[a]&&this._forEach(this.events[a],function(a){a.apply(c,b)}),this},"function"==typeof a.onhashchange&&this.on("hashchange",a.onhashchange),"function"==typeof a.onpopstate&&this.on("navigate",a.onpopstate),a.onhashchange=function(){c.trigger("hashchange")},a.onpopstate=function(){c.trigger("navigate")},this}b.regexRoute=function(a,b,c,d){return a instanceof RegExp?a:(a instanceof Array&&(a="("+a.join("|")+")"),a=a.concat(d?"":"/?").replace(/\/\(/g,"(?:/").replace(/\+/g,"__plus__").replace(/(\/)?(\.)?:(\w+)(?:(\(.*?\)))?(\?)?/g,function(a,c,d,e,f,g){return b.push({name:e,optional:!!g}),c=c||"",""+(g?"":c)+"(?:"+(g?c:"")+(d||"")+(f||d&&"([^/.]+?)"||"([^/]+?)")+")"+(g||"")}).replace(/([\/.])/g,"\\$1").replace(/__plus__/g,"(.+)").replace(/\*/g,"(.*)"),new RegExp("^"+a+"$",c?"":"i"))},b.prototype.get=b.prototype.add=function(a,c){var d=this,e=[],f=b.regexRoute(a,e),g=function(){var b=d.fragment.get().match(f);if(b){var g={params:{},keys:e,matches:b.slice(1)};d._forEach(g.matches,function(a,b){var c=e[b]&&e[b].name?e[b].name:b;g.params[c]=a?decodeURIComponent(a):void 0});var h={route:a,value:d.fragment.get(),params:g.params,regex:b,propagateEvent:!0,previousState:d.state,preventDefault:function(){this.propagateEvent=!1},callback:function(){c.call(d,g,h)}};if(d.trigger("match",h),!h.propagateEvent)return d;d.state=h,h.callback()}return d};return g().on(d.options.usePushState?"navigate":"hashchange",g)},b.prototype.on=b.prototype.bind=function(a,b){var c=this,d=a.split(" ");return this._forEach(d,function(a){c.events[a]?c.events[a].push(b):c.events[a]=[b]}),this},b.Router=b.prototype.router=b,b.prototype.context=function(a){var b=this;return function(c,d){var e="/"!==a.slice(-1)?a+"/":a,f=e+c;return b.get.call(b,f,d)}},b.prototype.navigate=function(a){return this.fragment.set(a),this.trigger("navigate")},b.listen=function(){var a,c;return arguments[0]&&arguments[1]?(a=arguments[0],c=arguments[1]):c=arguments[0],function(){for(var a in c)this.get.call(this,a,c[a]);return this}.call(new b(a||{}))},"function"==typeof a.define?a.define(function(){return b}):"object"==typeof exports?exports.Grapnel=b:a.Grapnel=b}.call({},window);;/*global window:true */
+
+window.Breakpoints = (function (window, document) {
+	'use strict';
+
+	var B = {},
+	resizingTimeout = 200,
+	breakpoints = [],
+	hasFullComputedStyleSupport = null,
+
+	TEST_FULL_GETCOMPUTEDSTYLE_SUPPORT = 'js-breakpoints-getComputedStyleTest',
+	TEST_FALLBACK_PROPERTY = 'position',
+	TEST_FALLBACK_VALUE = 'absolute',
+
+	// thanks John Resig
+	addEvent = function (obj, type, fn) {
+	  if (obj.attachEvent) {
+	    obj['e'+type+fn] = fn;
+	    obj[type+fn] = function () {obj['e'+type+fn]( window.event );};
+	    obj.attachEvent('on'+type, obj[type+fn]);
+	  } else {
+	    obj.addEventListener(type, fn, false);
+	  }
+	},
+
+	debounce = function (func, wait, immediate) {
+		var timeout, result;
+		return function() {
+
+			var context = this, args = arguments;
+			var later = function() {
+				timeout = null;
+				if (!immediate) result = func.apply(context, args);
+			};
+
+			var callNow = immediate && !timeout;
+			clearTimeout(timeout);
+			timeout = setTimeout(later, wait);
+			if (callNow) result = func.apply(context, args);
+			return result;
+		};
+	},
+
+	injectElementWithClassName = function (parent, className, callback) {
+		var div = document.createElement('div');
+		div.className = 'js-breakpoints-' + className;
+		parent.appendChild(div);
+		callback(div);
+		div.parentNode.removeChild(div);
+	},
+
+	check = function (breakpoint) {
+		var match = B.isMatched(breakpoint);
+
+		if (match && !breakpoint.isMatched) {
+			breakpoint.matched.call(breakpoint.context);
+			breakpoint.isMatched = true;
+		} else if (!match && breakpoint.isMatched) {
+			breakpoint.exit.call(breakpoint.context);
+			breakpoint.isMatched = false;
+		}
+		return breakpoint;
+	},
+
+	onWindowResize = function () {
+		for( var i = 0; i < breakpoints.length; i++ ) {
+			check(breakpoints[i]);
+		}
+	},
+
+	getStyle = function (el, pseudo, property) {
+		if (window.getComputedStyle) {
+			return window.getComputedStyle(el, pseudo).getPropertyValue(property);
+		}
+		else if (el.currentStyle && pseudo.length === 0) {
+			return el.currentStyle[property];
+		}
+		return '';
+	},
+
+	/*
+	 * If not already checked:
+	 * 1. check if we have getComputedStyle and check if we can read pseudo elements
+	 */
+	checkComputedStyleSupport = function () {
+		if (hasFullComputedStyleSupport !== null) {
+			return;
+		}
+
+		hasFullComputedStyleSupport = false;
+		
+		if (window.getComputedStyle) {
+			var content = window.getComputedStyle(document.documentElement, ':after').getPropertyValue('content');
+			hasFullComputedStyleSupport = content.replace(/\"/g, "") === TEST_FULL_GETCOMPUTEDSTYLE_SUPPORT;
+		}
+	},
+
+	init = function () {
+		var debounceResize = debounce( onWindowResize, resizingTimeout);
+		addEvent(window, 'resize', debounceResize);
+		addEvent(window, 'orientationchange', debounceResize);
+		return B;
+	};
+
+	B.isMatched = function(breakpoint) {
+		var el = breakpoint.el || document.body,
+		    matched = false,
+		    value;
+
+		if (hasFullComputedStyleSupport) {
+			value = getStyle(el, ':after', 'content');
+			matched = value.replace(/\"/g, "") === breakpoint.name;
+		}
+		else {
+			injectElementWithClassName(el, breakpoint.name, function (el) {
+				value = getStyle(el, '', TEST_FALLBACK_PROPERTY);
+				matched = value === TEST_FALLBACK_VALUE;
+			});
+		}
+
+		return matched;
+	};
+
+	B.on = function(breakpoint) {
+		checkComputedStyleSupport();
+		breakpoints.push(breakpoint);
+		breakpoint.isMatched = false;
+		breakpoint.matched = breakpoint.matched || function() {};
+		breakpoint.exit = breakpoint.exit || function() {};
+		breakpoint.context = breakpoint.context || breakpoint;
+		return check(breakpoint);
+	};
+
+	B.off = function (breakpoint) {
+		var i = breakpoints.indexOf(breakpoint);
+		if (i > -1) {
+			breakpoints.splice(i, 1);
+		}
+	};
+
+	return init();
+
+})(window, document);
+;if (typeof String.prototype.startsWith !== 'function') {
     String.prototype.startsWith = function (str) {
         return this.slice(0, str.length) === str;
     };
@@ -106,8 +249,33 @@ CS.C1s = {};
 CS.accountId = null;
 CS.accountData = null;
 CS.router = new Grapnel();
-CS.defaultAnimationDuration = 0.5;;CS.Services.Validator = P(function (c) {
+CS.defaultAnimationDuration = 0.5;
+;CS.Browser = {
+    isMediumScreen: function () {
+        var content = window.getComputedStyle(
+            document.querySelector("html"), ":after"
+        ).getPropertyValue("content");
+
+        // In some browsers like Firefox, "content" is wrapped by double-quotes, that's why doing "return content === "GLOBAL_MEDIUM_SCREEN_BREAKPOINT" would be false.
+        return _.contains(content, "GLOBAL_MEDIUM_SCREEN_BREAKPOINT");
+    },
+
+    isLargeScreen: function () {
+        var content = window.getComputedStyle(
+            document.querySelector("html"), ":after"
+        ).getPropertyValue("content");
+
+        return _.contains(content, "GLOBAL_LARGE_SCREEN_BREAKPOINT");
+    },
+
+    isSmallScreen: function () {
+        return !this.isMediumScreen() && !this.isLargeScreen();
+    }
+};
+;CS.Services.Validator = P(function (c) {
     c.errorMessageHeight = "21px";
+    c.errorMessageHeightMediumScreen = "28px";
+    c.errorMessageHeightLargeScreen = "33px";
 
     c.checkEmpty = "empty";
     c.checkEmail = "email";
@@ -174,7 +342,14 @@ CS.defaultAnimationDuration = 0.5;;CS.Services.Validator = P(function (c) {
 
     c.showErrorMessage = function($errorMsg) {
         if ($errorMsg.html()) {
-            TweenLite.to($errorMsg, 0.5, {height: this.errorMessageHeight});
+            var height = this.errorMessageHeight;
+            if (CS.Browser.isMediumScreen()) {
+                height = this.errorMessageHeightMediumScreen;
+            } else if (CS.Browser.isLargeScreen()) {
+                height = this.errorMessageHeightLargeScreen;
+            }
+
+            TweenLite.to($errorMsg, 0.5, {height: height});
         }
     };
     
@@ -221,7 +396,7 @@ CS.defaultAnimationDuration = 0.5;;CS.Services.Validator = P(function (c) {
     };
 
     c._get$error = function ($field, checkType) {
-        return $field.parent().find("p[data-check=" + checkType + "]");
+        return $field.parents(".form-group").children("p[data-check=" + checkType + "]");
     };
 
     c._isToCheckIfEmpty = function ($field) {
@@ -449,11 +624,15 @@ CS.defaultAnimationDuration = 0.5;;CS.Services.Validator = P(function (c) {
             TweenLite.to($el, CS.defaultAnimationDuration, {alpha: 1});
         }
     },
-    fadeOut: function ($el) {
+    fadeOut: function ($el, onComplete) {
         TweenLite.to($el, CS.defaultAnimationDuration, {
             alpha: 0,
             onComplete: function () {
-                $el.hide();
+                if (onComplete) {
+                    onComplete();
+                } else {
+                    $el.hide();
+                }
             }.bind(this)
         });
     }
@@ -985,6 +1164,11 @@ CS.defaultAnimationDuration = 0.5;;CS.Services.Validator = P(function (c) {
                 packageName: CS.Controllers.ActivityFeed.packageName.activity,
                 className: "GlobalFindYourStrengths",
                 title: "Find my strengths"
+            },
+            {
+                packageName: CS.Controllers.ActivityFeed.packageName.activity,
+                className: "IdentifyStrengths",
+                title: "Identifiera mina egenskaper"
             }
         ];
 
@@ -1125,7 +1309,7 @@ CS.Controllers.ActivityFeedItem = React.createClass({displayName: "ActivityFeedI
         return (
             React.createElement("li", {className: liClasses}, 
                 React.createElement("h2", null, this.props.c1OrActivity.title), 
-                React.createElement("button", {onClick: this._handleClick}, buttonText)
+                React.createElement("button", {className: "btn btn-default", onClick: this._handleClick}, buttonText)
             )
             );
     },

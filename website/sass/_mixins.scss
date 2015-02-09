@@ -29,12 +29,12 @@
   @return $w/2 $h/2;
 }
 
-@mixin adaptive-font-size($font-size) {
-  font-size: #{$font-size * 4}px; // Initially "#{$font-size}vw", but doesn't work well on the iOS Safari
+@mixin adaptive-font-size($font-size: 14px) {
+  font-size: $font-size; // Initially "#{$font-size}vw", but doesn't work well on the iOS Safari
   @include medium-screen {
-    font-size: #{$font-size * 6.4}px;
+    font-size: round($font-size * $medium-screen-font-ratio);
   }
   @include large-screen {
-    font-size: #{$font-size * 8}px;
+    font-size: round($font-size * $large-screen-font-ratio);
   }
 }
