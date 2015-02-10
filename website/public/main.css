@@ -4990,12 +4990,13 @@ html {
       position: absolute; } }
 
 body {
-  min-height: 100%; }
+  min-height: 100%;
+  font-family: "Lato", sans-serif;
+  -webkit-font-smoothing: antialiased; }
 
 h1,
 h2 {
-  text-rendering: optimizelegibility;
-  font-smoothing: antialiased; }
+  text-rendering: optimizelegibility; }
 
 h1 {
   font-size: 22px;

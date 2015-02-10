@@ -5,15 +5,11 @@ CS.Controllers.ActivityFeed = P(function (c) {
         },
 
         render: function () {
-            var listItems = this.state.data.map(function (c1OrActivity) {
-                return (
-                    React.createElement(CS.Controllers.ActivityFeedItem, {c1OrActivity: c1OrActivity})
-                    );
-            }.bind(this));
-
             return (
                 React.createElement("ul", {className: "styleless"}, 
-                    listItems
+                    this.state.data.map(function (c1OrActivity) {
+                        return React.createElement(CS.Controllers.ActivityFeedItem, {key: c1OrActivity.instance.className, c1OrActivity: c1OrActivity});
+                    })
                 )
                 );
         }
@@ -61,11 +57,11 @@ CS.Controllers.ActivityFeed = P(function (c) {
             success: function (data, textStatus, jqXHR) {
                 var feedItemInstancesCustomActivities = data.map(function (customActivity, index) {
                     return CS.Activities.Custom(customActivity.className, customActivity.title, customActivity.mainText);
-                }, this);
+                }.bind(this));
 
                 var feedItemInstancesClassicActivities = this.feedItems.map(function (item, index) {
                     return CS[item.packageName][item.className](item.className, item.title);
-                }, this);
+                }.bind(this));
 
                 this.feedItemInstances = _.union(feedItemInstancesCustomActivities, feedItemInstancesClassicActivities);
 
@@ -116,7 +112,7 @@ CS.Controllers.ActivityFeed = P(function (c) {
                     instance: instance
                 });
             }
-        }, this);
+        }.bind(this));
 
         // We handle instances which didn't have any activity data
         this.feedItemInstances.forEach(function (instance, index) {
@@ -138,7 +134,7 @@ CS.Controllers.ActivityFeed = P(function (c) {
                     });
                 }
             }
-        }, this);
+        }.bind(this));
 
         this._showOrHideRegisterReminder(doneActivities.length);
 
@@ -195,15 +191,11 @@ CS.Controllers.Standouts = P(function (c) {
         },
 
         render: function () {
-            var listItems = this.state.data.map(function (standout) {
-                return (
-                    React.createElement("li", {id: standout.className, className: "well"})
-                    );
-            }.bind(this));
-
             return (
                 React.createElement("ul", {className: "styleless"}, 
-                    listItems
+                    this.state.data.map(function (standout) {
+                        return React.createElement("li", {key: standout.className, id: standout.className, className: "well"});
+                    })
                 )
                 );
         }
@@ -233,11 +225,11 @@ CS.Controllers.Standouts = P(function (c) {
             success: function (data, textStatus, jqXHR) {
                 var itemInstancesCustomStandouts = data.map(function (customActivity, index) {
                     return CS.Standouts.Custom(customActivity.className, customActivity.title);
-                }, this);
+                }.bind(this));
 
                 var itemInstancesClassicStandouts = this.itemClassNames.map(function (className, index) {
                     return CS.Standouts[className](className);
-                }, this);
+                }.bind(this));
 
                 var allItemInstances = _.union(itemInstancesCustomStandouts, itemInstancesClassicStandouts);
 
@@ -245,7 +237,7 @@ CS.Controllers.Standouts = P(function (c) {
 
                 allItemInstances.forEach(function(instance, index) {
                     instance.render();
-                }, this);
+                }.bind(this));
             }.bind(this),
             error: function (jqXHR, textStatus, errorThrown) {
                 alert('AJAX failure doing a ' + type + ' request to "' + url + '"');

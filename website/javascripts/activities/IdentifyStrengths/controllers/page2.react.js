@@ -5,27 +5,17 @@ CS.Activities.IdentifyStrengths.Controllers.Page2 = P(CS.Activities.Controller, 
                 <form role="form">
                     <h1>Hur väl stämmer det här in på dig&#63;</h1>
 
-                    <p>Det kan t.ex. vara hur dina vänner skille beskriva dig eller styrkor du fått fram i ett Strengths
-                        Finder-test.</p>
-
-                    <div className="form-group">
-                        <div className="input-group">
-                            <input type="text" id="strength" className="form-control" placeholder="t.ex. strategisk, eller 'ett öga för god design'." />
-                            <span className="input-group-btn">
-                                <button type="submit" className="btn btn-default">+ Lägg till</button>
-                            </span>
-                        </div>
-
-                        <p className="field-error" data-check="empty"></p>
-                    </div>
-
-                    <ul className="styleless" id="strength-taglist">
-                        {listItems}
-                    </ul>
+                    {this.props.strengths.map(function (strength) {
+                        return (
+                            <div className="form-group">
+                                <label>{strength}</label>
+                                <input type="range" min="1" max="4" />
+                            </div>
+                            );
+                    })}
 
                     <div className="submit-wrapper">
-                        <button type="button" className="btn btn-default">Tillbaka</button>
-                        <button type="button" id="go-next-step" className="btn btn-primary">Gå vidare</button>
+                        <button type="submit" className="btn btn-primary">Gå vidare</button>
                     </div>
                 </form>
                 );
@@ -34,41 +24,33 @@ CS.Activities.IdentifyStrengths.Controllers.Page2 = P(CS.Activities.Controller, 
 
     c.initElements = function () {
         this.$form = this.$el.find("form");
-        this.$strengthField = this.$form.find("#strength");
-        this.$strengthTagList = this.$form.find("#strength-taglist");
-        this.$goNextStepBtn = this.$form.find("#go-next-step");
-    };
+        this.$rangeInputs = this.$form.find('[type="range"]');
 
-    c.initValidation = function () {
-        this.validator = CS.Services.Validator([
-            "strength"
-        ]);
+        this._initRangeInputs();
     };
 
     c.initEvents = function () {
-        this.$form.submit($.proxy(this._addStrengthToList, this));
-        this.$goNextStepBtn.click($.proxy(this._saveAndNavigateNext, this));
+        this.$form.submit($.proxy(this._saveAndNavigateNext, this));
     };
 
-    c._addStrengthToList = function (e) {
-        e.preventDefault();
-
-        if (this.validator.isValid()) {
-            var strength = this.$strengthField.val().trim();
-            var data = this.reactInstance.state.data;
-            data.push(strength);
-
-            this.reactInstance.replaceState({ data: data });
-
-            this.$strengthField.val("");
-        }
+    c._initRangeInputs = function() {
+        this.$rangeInputs.slider({
+            min: 1,
+            max: 4,
+            value: 3,
+            tooltip: "always",
+            formatter: function(num) {
+                switch(num) {
+                    case 1: return "Sådär";
+                    case 2: return "Hyfsat";
+                    case 3: return "Ganska väl";
+                    case 4: return "Fullständigt";
+                }
+            }
+        });
     };
 
     c._saveAndNavigateNext = function (e) {
-        this.activity.model.accountData.strengths = this.$strengthTagList.children().find(".tag").children("span").map(function($span, index) {
-            return $span.html();
-        }, this);
-
-        this.navigateTo(this.activity.page2Controller.route);
+        this.navigateTo(this.activity.page3Controller.route);
     };
 });

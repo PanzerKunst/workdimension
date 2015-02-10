@@ -33,12 +33,14 @@ html {
 
 body {
   min-height: 100%;
+
+  font-family: "Lato", sans-serif;
+  -webkit-font-smoothing: antialiased;
 }
 
 h1,
 h2 {
   text-rendering: optimizelegibility;
-  font-smoothing: antialiased;
 }
 
 h1 {

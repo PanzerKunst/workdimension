@@ -5,15 +5,11 @@ CS.Controllers.Standouts = P(function (c) {
         },
 
         render: function () {
-            var listItems = this.state.data.map(function (standout) {
-                return (
-                    <li id={standout.className} className="well"></li>
-                    );
-            }.bind(this));
-
             return (
                 <ul className="styleless">
-                    {listItems}
+                    {this.state.data.map(function (standout) {
+                        return <li key={standout.className} id={standout.className} className="well"></li>;
+                    })}
                 </ul>
                 );
         }
@@ -43,11 +39,11 @@ CS.Controllers.Standouts = P(function (c) {
             success: function (data, textStatus, jqXHR) {
                 var itemInstancesCustomStandouts = data.map(function (customActivity, index) {
                     return CS.Standouts.Custom(customActivity.className, customActivity.title);
-                }, this);
+                }.bind(this));
 
                 var itemInstancesClassicStandouts = this.itemClassNames.map(function (className, index) {
                     return CS.Standouts[className](className);
-                }, this);
+                }.bind(this));
 
                 var allItemInstances = _.union(itemInstancesCustomStandouts, itemInstancesClassicStandouts);
 
@@ -55,7 +51,7 @@ CS.Controllers.Standouts = P(function (c) {
 
                 allItemInstances.forEach(function(instance, index) {
                     instance.render();
-                }, this);
+                }.bind(this));
             }.bind(this),
             error: function (jqXHR, textStatus, errorThrown) {
                 alert('AJAX failure doing a ' + type + ' request to "' + url + '"');

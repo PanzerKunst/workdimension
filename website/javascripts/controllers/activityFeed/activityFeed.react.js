@@ -5,15 +5,11 @@ CS.Controllers.ActivityFeed = P(function (c) {
         },
 
         render: function () {
-            var listItems = this.state.data.map(function (c1OrActivity) {
-                return (
-                    <CS.Controllers.ActivityFeedItem c1OrActivity={c1OrActivity}/>
-                    );
-            }.bind(this));
-
             return (
                 <ul className="styleless">
-                    {listItems}
+                    {this.state.data.map(function (c1OrActivity) {
+                        return <CS.Controllers.ActivityFeedItem key={c1OrActivity.instance.className} c1OrActivity={c1OrActivity}/>;
+                    })}
                 </ul>
                 );
         }
@@ -61,11 +57,11 @@ CS.Controllers.ActivityFeed = P(function (c) {
             success: function (data, textStatus, jqXHR) {
                 var feedItemInstancesCustomActivities = data.map(function (customActivity, index) {
                     return CS.Activities.Custom(customActivity.className, customActivity.title, customActivity.mainText);
-                }, this);
+                }.bind(this));
 
                 var feedItemInstancesClassicActivities = this.feedItems.map(function (item, index) {
                     return CS[item.packageName][item.className](item.className, item.title);
-                }, this);
+                }.bind(this));
 
                 this.feedItemInstances = _.union(feedItemInstancesCustomActivities, feedItemInstancesClassicActivities);
 
@@ -116,7 +112,7 @@ CS.Controllers.ActivityFeed = P(function (c) {
                     instance: instance
                 });
             }
-        }, this);
+        }.bind(this));
 
         // We handle instances which didn't have any activity data
         this.feedItemInstances.forEach(function (instance, index) {
@@ -138,7 +134,7 @@ CS.Controllers.ActivityFeed = P(function (c) {
                     });
                 }
             }
-        }, this);
+        }.bind(this));
 
         this._showOrHideRegisterReminder(doneActivities.length);
 

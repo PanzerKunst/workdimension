@@ -67,6 +67,7 @@ module.exports = function (grunt) {
                     "libs/p.js",
                     "libs/grapnel.min.js",
                     "libs/js-breakpoints/breakpoints.js",
+                    "libs/bootstrap-slider/bootstrap-slider.min.js",
 
                     // Global
                     "javascripts/global.js",
@@ -171,6 +172,7 @@ module.exports = function (grunt) {
                 src: [
                     // Libs
                     'libs/h5bp/normalize.css',
+                    "libs/bootstrap-slider/bootstrap-slider.css",
 
                     // Rest
                     'public/<%= pkg.name %>.css'
