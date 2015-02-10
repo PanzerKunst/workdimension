@@ -1673,7 +1673,7 @@ CS.Activities.IdentifyStrengths.Controllers.Page1 = P(CS.Activities.Controller, 
                                     )
                                 )
                                 );
-                        })
+                        }.bind(this))
                     ), 
 
                     React.createElement("div", {className: "submit-wrapper"}, 

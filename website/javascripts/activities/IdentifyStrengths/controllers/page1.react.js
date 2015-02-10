@@ -35,7 +35,7 @@ CS.Activities.IdentifyStrengths.Controllers.Page1 = P(CS.Activities.Controller, 
                                     </span>
                                 </li>
                                 );
-                        })}
+                        }.bind(this))}
                     </ul>
 
                     <div className="submit-wrapper">
