@@ -5258,35 +5258,36 @@ button.close {
 
 @media screen and (min-width: 640px) {
   .form-control {
-    height: 39px; } }
-@media screen and (min-width: 960px) {
-  .form-control {
-    height: 45px; } }
+    height: 100%; } }
+
+h1, .h1,
+h2, .h2,
+h3, .h3,
+h4, .h4,
+h5, .h5,
+h6, .h6 {
+  margin-top: 0; }
 
 @media screen and (min-width: 640px) {
   h1, .h1,
   h2, .h2,
   h3, .h3 {
-    margin-top: 33.8px;
     margin-bottom: 16.9px; } }
 @media screen and (min-width: 960px) {
   h1, .h1,
   h2, .h2,
   h3, .h3 {
-    margin-top: 51.2px;
     margin-bottom: 25.6px; } }
 
 @media screen and (min-width: 640px) {
   h4, .h4,
   h5, .h5,
   h6, .h6 {
-    margin-top: 16.9px;
     margin-bottom: 16.9px; } }
 @media screen and (min-width: 960px) {
   h4, .h4,
   h5, .h5,
   h6, .h6 {
-    margin-top: 25.6px;
     margin-bottom: 25.6px; } }
 
 @media screen and (min-width: 640px) {
@@ -5342,13 +5343,13 @@ footer {
     #custom-activity #content {
       margin-top: 98px; } }
 
-.IdentifyStrengths #strength-tags > li {
+.IdentifyStrengths #strength-taglist > li {
   margin-top: 14px; }
   @media screen and (min-width: 640px) {
-    .IdentifyStrengths #strength-tags > li {
+    .IdentifyStrengths #strength-taglist > li {
       margin-top: 18.2px; } }
   @media screen and (min-width: 960px) {
-    .IdentifyStrengths #strength-tags > li {
+    .IdentifyStrengths #strength-taglist > li {
       margin-top: 22.4px; } }
 
 /*# sourceMappingURL=main.css.map */

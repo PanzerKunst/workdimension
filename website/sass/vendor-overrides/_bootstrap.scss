@@ -56,28 +56,29 @@ button.close {
 
 .form-control {
   @include medium-screen {
-    height: 39px;
-  }
-
-  @include large-screen {
-    height: 45px;
+    height: 100%;
   }
 }
 
+h1, .h1,
+h2, .h2,
+h3, .h3,
+h4, .h4,
+h5, .h5,
+h6, .h6 {
+  margin-top: 0;
+}
 
 h1, .h1,
 h2, .h2,
 h3, .h3 {
-  $default-h123-margin-top: $line-height-computed;
   $default-h123-margin-bottom: ($line-height-computed / 2);
 
   @include medium-screen {
-    margin-top: $default-h123-margin-top * $medium-screen-ratio;
     margin-bottom: $default-h123-margin-bottom * $medium-screen-ratio;
   }
 
   @include large-screen {
-    margin-top: $default-h123-margin-top * $large-screen-ratio;
     margin-bottom: $default-h123-margin-bottom * $large-screen-ratio;
   }
 }
@@ -85,16 +86,13 @@ h3, .h3 {
 h4, .h4,
 h5, .h5,
 h6, .h6 {
-  $default-h456-margin-top: ($line-height-computed / 2);
   $default-h456-margin-bottom: ($line-height-computed / 2);
 
   @include medium-screen {
-    margin-top: $default-h456-margin-top * $medium-screen-ratio;
     margin-bottom: $default-h456-margin-bottom * $medium-screen-ratio;
   }
 
   @include large-screen {
-    margin-top: $default-h456-margin-top * $large-screen-ratio;
     margin-bottom: $default-h456-margin-bottom * $large-screen-ratio;
   }
 }

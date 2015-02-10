@@ -1157,16 +1157,6 @@ CS.defaultAnimationDuration = 0.5;
              className: "JobApplicationPosition"
              },*/{
                 packageName: CS.Controllers.ActivityFeed.packageName.activity,
-                className: "GlobalFindYourStrengths2",
-                title: "Find my über strengths"
-            },
-            {
-                packageName: CS.Controllers.ActivityFeed.packageName.activity,
-                className: "GlobalFindYourStrengths",
-                title: "Find my strengths"
-            },
-            {
-                packageName: CS.Controllers.ActivityFeed.packageName.activity,
                 className: "IdentifyStrengths",
                 title: "Identifiera mina egenskaper"
             }

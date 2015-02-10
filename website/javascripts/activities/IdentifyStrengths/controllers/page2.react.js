@@ -1,24 +1,9 @@
-CS.Activities.IdentifyStrengths.Controllers.Page1 = P(CS.Activities.Controller, function (c, base) {
+CS.Activities.IdentifyStrengths.Controllers.Page2 = P(CS.Activities.Controller, function (c, base) {
     c.reactClass = React.createClass({
-        getInitialState: function () {
-            return {data: []};
-        },
-
         render: function () {
-            var listItems = this.state.data.map(function (strength) {
-                return (
-                    <li>
-                        <span className="tag">
-                            <span>{strength}</span>
-                            <button type="button" className="close" aria-label="Close" onClick={this._handleRemoveStrengthClick}><span aria-hidden="true">&times;</span></button>
-                        </span>
-                    </li>
-                    );
-            }.bind(this));
-
             return (
                 <form role="form">
-                    <h1>Finns det några egenskaper du vill framhäva som inte direkt efterfrågas&#63;</h1>
+                    <h1>Hur väl stämmer det här in på dig&#63;</h1>
 
                     <p>Det kan t.ex. vara hur dina vänner skille beskriva dig eller styrkor du fått fram i ett Strengths
                         Finder-test.</p>
@@ -44,14 +29,6 @@ CS.Activities.IdentifyStrengths.Controllers.Page1 = P(CS.Activities.Controller, 
                     </div>
                 </form>
                 );
-        },
-
-        _handleRemoveStrengthClick: function(e) {
-            var $li = $(e.currentTarget).parent().parent();
-
-            CS.Services.Animator.fadeOut($li, function() {
-                $li.remove();
-            });
         }
     });
 

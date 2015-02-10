@@ -107,8 +107,6 @@ module.exports = function (grunt) {
                     // Non-React
                     "javascripts/activities/Custom/activity.js",
                     "javascripts/activities/IdentifyStrengths/activity.js",
-                    "javascripts/activities/GlobalFindYourStrengths/activity.js",
-                    "javascripts/activities/GlobalFindYourStrengths2/activity.js",
 
                     // React
                     "public/react-activities.js"
