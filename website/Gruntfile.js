@@ -96,6 +96,17 @@ module.exports = function (grunt) {
                 ],
                 dest: 'public/site.js'
             },
+            c1s: {
+                options: {
+                    separator:';'
+                },
+                src: [
+                    "javascripts/c1s/base.js",
+                    "javascripts/c1s/employer.js",
+                    "javascripts/c1s/position.js"
+                ],
+                dest: 'public/c1s.js'
+            },
             activities: {
                 options: {
                     separator:';'
@@ -135,10 +146,13 @@ module.exports = function (grunt) {
                     // Site
                     "public/site.js",
 
+                    // C1s
+                    "public/c1s.js",
+
                     // Activities
                     "public/activities.js",
 
-                    // Activities
+                    // Standouts
                     "public/standouts.js"
                 ],
                 dest: 'public/<%= pkg.name %>.js'
@@ -185,7 +199,9 @@ module.exports = function (grunt) {
             js: {
                 files: [
                     '<%= concat.site.src %>',
+                    '<%= concat.c1s.src %>',
                     '<%= concat.activities.src %>',
+                    '<%= concat.standouts.src %>',
                     'javascripts/controllers/**/*.react.js',
                     'javascripts/activities/**/*.react.js',
                     'javascripts/standouts/**/*.react.js'
@@ -203,6 +219,6 @@ module.exports = function (grunt) {
     });
 
     grunt.registerTask('default', ['buildjs', 'buildcss']);
-    grunt.registerTask('buildjs',  ['jshint', 'react:site', 'react:activities', 'react:standouts', 'concat:site', 'concat:activities', 'concat:standouts', 'concat:all']);
+    grunt.registerTask('buildjs',  ['jshint', 'react:site', 'react:activities', 'react:standouts', 'concat:site', 'concat:c1s', 'concat:activities', 'concat:standouts', 'concat:all']);
     grunt.registerTask('buildcss',  ['sass', 'cssmin']);
 };

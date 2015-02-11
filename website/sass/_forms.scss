@@ -7,7 +7,7 @@ form {
     $default-margin-bottom: 15px;
 
     @include medium-screen {
-      margin-bottom: $default-margin-bottom * $medium-screen-font-ratio;
+      margin-bottom: $default-margin-bottom * $medium-screen-ratio-m;
 
       width: ($small-content-width + $medium-content-width) / 2;
 
@@ -16,7 +16,7 @@ form {
     }
 
     @include large-screen {
-      margin-bottom: $default-margin-bottom * $large-screen-font-ratio;
+      margin-bottom: $default-margin-bottom * $large-screen-ratio-m;
 
       width: $medium-content-width;
     }
@@ -55,11 +55,11 @@ form {
       margin-bottom: $line-height-computed / 2; // Same as a normal <p>
 
       @include medium-screen {
-        margin-bottom: $line-height-computed / 2 * $medium-screen-ratio;
+        margin-bottom: $line-height-computed / 2 * $medium-screen-ratio-l;
       }
 
       @include large-screen {
-        margin-bottom: $line-height-computed / 2 * $large-screen-ratio;
+        margin-bottom: $line-height-computed / 2 * $large-screen-ratio-l;
       }
 
       text-align: center;
@@ -95,11 +95,11 @@ form {
   padding-top: $line-height-project;
 
   @include medium-screen {
-    padding-top: $line-height-project * $medium-screen-ratio;
+    padding-top: $line-height-project * $medium-screen-ratio-l;
   }
 
   @include large-screen {
-    padding-top: $line-height-project * $large-screen-ratio;
+    padding-top: $line-height-project * $large-screen-ratio-l;
   }
 
   text-align: center;
@@ -114,11 +114,11 @@ form {
     margin: 0 $spacer-unit-size/2;
 
     @include medium-screen {
-      margin: $spacer-unit-size/2 * $medium-screen-ratio;
+      margin: $spacer-unit-size/2 * $medium-screen-ratio-l;
     }
 
     @include large-screen {
-      margin: $spacer-unit-size/2 * $large-screen-ratio;
+      margin: $spacer-unit-size/2 * $large-screen-ratio-l;
     }
   }
 }

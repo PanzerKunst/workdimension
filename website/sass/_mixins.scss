@@ -32,9 +32,9 @@
 @mixin adaptive-font-size($font-size: 14px) {
   font-size: $font-size; // Initially "#{$font-size}vw", but doesn't work well on the iOS Safari
   @include medium-screen {
-    font-size: round($font-size * $medium-screen-font-ratio);
+    font-size: round($font-size * $medium-screen-ratio-m);
   }
   @include large-screen {
-    font-size: round($font-size * $large-screen-font-ratio);
+    font-size: round($font-size * $large-screen-ratio-m);
   }
 }

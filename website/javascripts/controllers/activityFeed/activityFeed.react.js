@@ -8,7 +8,10 @@ CS.Controllers.ActivityFeed = P(function (c) {
             return (
                 <ul className="styleless">
                     {this.state.data.map(function (c1OrActivity) {
-                        return <CS.Controllers.ActivityFeedItem key={c1OrActivity.instance.className} c1OrActivity={c1OrActivity}/>;
+                        if (c1OrActivity.type === CS.Controllers.ActivityFeed.itemType.c1) {
+                            return <CS.Controllers.C1FeedItem key={c1OrActivity.instance.className} c1={c1OrActivity}/>;
+                        }
+                        return <CS.Controllers.ActivityFeedItem key={c1OrActivity.instance.className} activity={c1OrActivity}/>;
                     })}
                 </ul>
                 );
@@ -16,26 +19,34 @@ CS.Controllers.ActivityFeed = P(function (c) {
     });
 
     c.init = function () {
-        this.feedItems = [
-            /* TODO {
-             packageName: CS.Controllers.ActivityFeed.packageName.c1,
-             className: "JobApplicationEmployer"
-             },{
-             packageName: CS.Controllers.ActivityFeed.packageName.c1,
-             className: "JobApplicationPosition"
-             },*/{
-                packageName: CS.Controllers.ActivityFeed.packageName.activity,
-                className: "IdentifyStrengths",
-                title: "Identifiera mina egenskaper"
-            }
-        ];
-
         this.reactInstance = React.render(
             React.createElement(this.reactClass),
             document.getElementById("c1-and-activity-feed")
         );
 
         this._initElements();
+
+        this.c1FeedItems = [
+            {
+                className: "Employer",
+                title: "Arbetsgivare:"
+            },
+            {
+                className: "Position",
+                title: "Tjänst:"
+            }
+        ];
+
+        this.activityFeedItems = [
+            {
+                className: "IdentifyStrengths",
+                title: "Identifiera egenskaper"
+            }
+        ];
+
+        this.c1Instances = this.c1FeedItems.map(function (item, index) {
+            return CS.C1s[item.className](item.className, item.title);
+        }.bind(this));
     };
 
     c._initElements = function () {
@@ -55,15 +66,15 @@ CS.Controllers.ActivityFeed = P(function (c) {
             type: type,
             dataType: "json",
             success: function (data, textStatus, jqXHR) {
-                var feedItemInstancesCustomActivities = data.map(function (customActivity, index) {
+                var customActivityInstances = data.map(function (customActivity, index) {
                     return CS.Activities.Custom(customActivity.className, customActivity.title, customActivity.mainText);
                 }.bind(this));
 
-                var feedItemInstancesClassicActivities = this.feedItems.map(function (item, index) {
-                    return CS[item.packageName][item.className](item.className, item.title);
+                var classicActivityInstances = this.activityFeedItems.map(function (item, index) {
+                    return CS.Activities[item.className](item.className, item.title);
                 }.bind(this));
 
-                this.feedItemInstances = _.union(feedItemInstancesCustomActivities, feedItemInstancesClassicActivities);
+                this.activityInstances = _.union(customActivityInstances, classicActivityInstances);
 
                 this._fetchActivities();
             }.bind(this),
@@ -91,54 +102,71 @@ CS.Controllers.ActivityFeed = P(function (c) {
     };
 
     c._orderFeedItems = function (activityData) {
-        var undoneActivities = [];
-        var doneActivities = [];
+        var undoneC1sAndActivities = [];
+        var doneC1sAndActivities = [];
+
+        this.c1Instances.forEach(function(c1Instance, index) {
+            var isDone = CS.accountData && CS.accountData[c1Instance.getClassName()];
+
+            if (isDone) {
+                doneC1sAndActivities.push({
+                    type: CS.Controllers.ActivityFeed.itemType.c1,
+                    instance: c1Instance
+                });
+            } else {
+                undoneC1sAndActivities.push({
+                    type: CS.Controllers.ActivityFeed.itemType.c1,
+                    instance: c1Instance
+                });
+            }
+        }.bind(this));
 
         activityData.forEach(function (activity) {
-            var instance = _.find(this.feedItemInstances, function (instans) {
+            var instance = _.find(this.activityInstances, function (instans) {
                 return instans.getClassName() === activity.className;
             });
 
             if (activity.state === CS.Models.Activity.state.done) {
-                doneActivities.push({
-                    title: instance.getTitle(),
-                    isDone: true,
-                    instance: instance
+                doneC1sAndActivities.push({
+                    type: CS.Controllers.ActivityFeed.itemType.activity,
+                    instance: instance,
+                    isDone: true
                 });
             } else if (instance.isDoable()) {
-                undoneActivities.push({
+                undoneC1sAndActivities.push({
+                    type: CS.Controllers.ActivityFeed.itemType.activity,
                     title: instance.getTitle(),
-                    isDone: false,
-                    instance: instance
+                    instance: instance,
+                    isDone: false
                 });
             }
         }.bind(this));
 
         // We handle instances which didn't have any activity data
-        this.feedItemInstances.forEach(function (instance, index) {
-            var isTodo = _.isEmpty(_.find(doneActivities, function (activity) {
+        this.activityInstances.forEach(function (instance, index) {
+            var isTodo = _.isEmpty(_.find(doneC1sAndActivities, function (activity) {
                 return activity.instance.getClassName() === instance.getClassName();
             }));
 
             if (isTodo && instance.isDoable()) {
                 // Is it already is among the undoneActivities?
-                var isAlreadyInTheList = _.find(undoneActivities, function (activity) {
+                var isAlreadyInTheList = _.find(undoneC1sAndActivities, function (activity) {
                     return activity.instance.getClassName() === instance.getClassName();
                 });
 
                 if (!isAlreadyInTheList) {
-                    undoneActivities.push({
-                        title: instance.getTitle(),
-                        isDone: false,
-                        instance: instance
+                    undoneC1sAndActivities.push({
+                        type: CS.Controllers.ActivityFeed.itemType.activity,
+                        instance: instance,
+                        isDone: false
                     });
                 }
             }
         }.bind(this));
 
-        this._showOrHideRegisterReminder(doneActivities.length);
+        this._showOrHideRegisterReminder(doneC1sAndActivities.length);
 
-        this.reactInstance.replaceState({ data: _.union(undoneActivities, doneActivities) });
+        this.reactInstance.replaceState({ data: _.union(undoneC1sAndActivities, doneC1sAndActivities) });
     };
 
     c._showOrHideRegisterReminder = function (doneActivitiesCount) {
@@ -150,7 +178,7 @@ CS.Controllers.ActivityFeed = P(function (c) {
     };
 });
 
-CS.Controllers.ActivityFeed.packageName = {
-    c1: "C1s",
-    activity: "Activities"
+CS.Controllers.ActivityFeed.itemType = {
+    c1: "c1",
+    activity: "activity"
 };

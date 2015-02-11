@@ -1,0 +1,17 @@
+.tooltip-inner {
+  $default-slider-tooltip-font-size: 12px;
+
+  @include adaptive-font-size($default-slider-tooltip-font-size);
+}
+
+.slider .tooltip.top {
+  $default-tooltip-top-margin: -36px;
+
+  @include medium-screen {
+    margin-top: $default-tooltip-top-margin * $medium-screen-ratio-s;
+  }
+
+  @include large-screen {
+    margin-top: $default-tooltip-top-margin * $large-screen-ratio-s;
+  }
+}

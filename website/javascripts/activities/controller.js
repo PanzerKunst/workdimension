@@ -34,6 +34,10 @@ CS.Activities.Controller = P(function (c) {
         location.hash = route;
     };
 
+    c.navigateBack = function() {
+        history.back();
+    };
+
     c.postData = function() {
         var type = "POST";
         var url = "/api/activities";

@@ -3,11 +3,43 @@
     > li {
       margin-top: $spacer-unit-size;
       @include medium-screen {
-        margin-top: $spacer-unit-size * $medium-screen-font-ratio;
+        margin-top: $spacer-unit-size * $medium-screen-ratio-m;
       }
       @include large-screen {
-        margin-top: $spacer-unit-size * $large-screen-font-ratio;
+        margin-top: $spacer-unit-size * $large-screen-ratio-m;
       }
+    }
+  }
+
+  .how-well {
+    .form-group {
+      .slider {
+        $slider-margin-top: 30px;
+
+        margin-top: $slider-margin-top;
+        @include medium-screen {
+          margin-top: $slider-margin-top * $medium-screen-ratio-m;
+        }
+        @include large-screen {
+          margin-top: $slider-margin-top * $large-screen-ratio-m;
+        }
+      }
+
+      /* TODO
+      @include medium-screen {
+        display: inline-block;
+
+        > label,
+        > [type="range"],
+        > .slider {
+          display: inline-block;
+          padding: 0 $spacer-unit-size;
+        }
+
+        > label {
+          width: auto;
+        }
+      } */
     }
   }
 }

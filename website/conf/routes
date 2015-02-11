@@ -23,3 +23,5 @@ DELETE  /api/auth                                   controllers.api.AuthApi.sign
 
 GET     /api/custom-activities                      controllers.api.CustomActivityApi.get
 POST    /api/custom-activities                      controllers.api.CustomActivityApi.create
+
+POST    /api/account-data                           controllers.api.AccountDataApi.add

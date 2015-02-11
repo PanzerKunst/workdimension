@@ -2,26 +2,32 @@
   .well.done {
     opacity: 0.4;
   }
+}
 
-  #c1-and-activity-feed {
-    li {
-      @include clearfix;
+#c1-and-activity-feed {
+  li {
+    @include clearfix;
 
-      > h2 {
-        @include medium-screen {
-          float: left;
-        }
-
-        margin-bottom: 0;
+    > h2 {
+      @include medium-screen {
+        float: left;
       }
 
-      > button {
-        @include medium-screen {
-          float: right;
-        }
-
-        margin-top: 3px;
-      }
+      margin-bottom: 0;
     }
+
+    > button {
+      @include medium-screen {
+        float: right;
+      }
+
+      margin-top: 3px;
+    }
+  }
+}
+
+#current-c1-or-activity {
+  .tooltip {
+    z-index: $zindex-modal - 1;
   }
 }

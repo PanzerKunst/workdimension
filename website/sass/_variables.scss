@@ -17,8 +17,11 @@ $default-spacer-size-large-screen: $spacer-unit-size * 7;
 // From Bootstrap
 $font-size-base: 14px;
 
-$medium-screen-font-ratio: 1.3;
-$large-screen-font-ratio: 1.6;
+$medium-screen-ratio-s: 1.2;
+$large-screen-ratio-s: 1.4;
 
-$medium-screen-ratio: $medium-screen-font-ratio * $medium-screen-font-ratio;
-$large-screen-ratio: $large-screen-font-ratio * $large-screen-font-ratio;
+$medium-screen-ratio-m: 1.3;
+$large-screen-ratio-m: 1.6;
+
+$medium-screen-ratio-l: 1.7;
+$large-screen-ratio-l: 2.5;
