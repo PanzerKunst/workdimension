@@ -274,8 +274,11 @@ CS.Services = {};
 CS.C1s = {};
 
 // Global objects
-CS.accountId = null;
-CS.accountData = null;
+CS.account = {
+    id: null,
+    email: null,
+    data: null
+};
 CS.router = new Grapnel();
 CS.defaultAnimationDuration = 0.5;
 ;CS.Browser = {
@@ -682,13 +685,14 @@ CS.defaultAnimationDuration = 0.5;
         emailAlreadyRegistered: 230
     },
     isTemporaryAccount: function () {
-        return CS.accountId < 0;
+        return CS.account.id < 0;
     }
 };
 ;CS.Controllers.Index = P(function (c) {
-    c.init = function (accountId, accountData) {
-        CS.accountId = accountId;
-        CS.accountData = accountData;
+    c.init = function (accountId, accountEmail, accountData) {
+        CS.account.id = accountId;
+        CS.account.email = accountEmail;
+        CS.account.data = accountData;
 
         this.activityFeedController = CS.Controllers.ActivityFeed();
         this.standoutsController = CS.Controllers.Standouts();
@@ -835,8 +839,9 @@ CS.defaultAnimationDuration = 0.5;
         this.$headerLinks.hide();
         this.$signOutLink.show();
 
-        CS.accountId = data.accountId;
-        CS.accountData = data.accountData;
+        CS.account.id = data.accountId;
+        CS.account.email = data.accountEmail;
+        CS.account.data = data.accountData;
 
         this.$registerReminderAlert.hide();
 
@@ -1271,7 +1276,7 @@ CS.defaultAnimationDuration = 0.5;
         var doneC1sAndActivities = [];
 
         this.c1Instances.forEach(function(c1Instance, index) {
-            var isDone = CS.accountData && CS.accountData[c1Instance.getClassName()];
+            var isDone = CS.account.data && CS.account.data[c1Instance.getClassName()];
 
             if (isDone) {
                 doneC1sAndActivities.push({
@@ -1379,16 +1384,16 @@ CS.Controllers.ActivityFeedItem = React.createClass({displayName: "ActivityFeedI
 
 CS.Controllers.C1FeedItem = React.createClass({displayName: "C1FeedItem",
     getInitialState: function() {
-        return {inputValue: CS.accountData ? CS.accountData[this._getClassName()] : null};
+        return {inputValue: CS.account.data ? CS.account.data[this._getClassName()] : null};
     },
 
     render: function () {
         var liClasses = React.addons.classSet({
             "well": true,
-            "done": CS.accountData && CS.accountData[this._getClassName()]
+            "done": CS.account.data && CS.account.data[this._getClassName()]
         });
 
-        var buttonText = CS.accountData && CS.accountData[this._getClassName()] ? "Ändra" : "Spara";
+        var buttonText = CS.account.data && CS.account.data[this._getClassName()] ? "Ändra" : "Spara";
 
         return (
             React.createElement("li", {className: liClasses, onSubmit: this._handleSubmit}, 
@@ -1416,7 +1421,9 @@ CS.Controllers.C1FeedItem = React.createClass({displayName: "C1FeedItem",
     },
 
     componentDidMount: function (prevProps, prevState) {
-        this.accountData = CS.accountData || {};
+        this.account = {
+            data: _.clone(CS.account.data, true) || {}
+        };
 
         this._initElements();
         this._initValidation();
@@ -1444,7 +1451,7 @@ CS.Controllers.C1FeedItem = React.createClass({displayName: "C1FeedItem",
         if (this.validator.isValid()) {
             this.$submitBtn.button('loading');
 
-            this.accountData[this._getClassName()] = this.$inputField.val().trim();
+            this.account.data[this._getClassName()] = this.$inputField.val().trim();
 
             var type = "POST";
             var url = "/api/account-data";
@@ -1453,7 +1460,7 @@ CS.Controllers.C1FeedItem = React.createClass({displayName: "C1FeedItem",
                 url: url,
                 type: type,
                 contentType: "application/json",
-                data: JSON.stringify(this.accountData),
+                data: JSON.stringify(this.account.data),
                 success: function (data, textStatus, jqXHR) {
                     location.reload();
                 }.bind(this),

@@ -274,8 +274,11 @@ CS.Services = {};
 CS.C1s = {};
 
 // Global objects
-CS.accountId = null;
-CS.accountData = null;
+CS.account = {
+    id: null,
+    email: null,
+    data: null
+};
 CS.router = new Grapnel();
 CS.defaultAnimationDuration = 0.5;
 ;CS.Browser = {
@@ -682,13 +685,14 @@ CS.defaultAnimationDuration = 0.5;
         emailAlreadyRegistered: 230
     },
     isTemporaryAccount: function () {
-        return CS.accountId < 0;
+        return CS.account.id < 0;
     }
 };
 ;CS.Controllers.Index = P(function (c) {
-    c.init = function (accountId, accountData) {
-        CS.accountId = accountId;
-        CS.accountData = accountData;
+    c.init = function (accountId, accountEmail, accountData) {
+        CS.account.id = accountId;
+        CS.account.email = accountEmail;
+        CS.account.data = accountData;
 
         this.activityFeedController = CS.Controllers.ActivityFeed();
         this.standoutsController = CS.Controllers.Standouts();
@@ -835,8 +839,9 @@ CS.defaultAnimationDuration = 0.5;
         this.$headerLinks.hide();
         this.$signOutLink.show();
 
-        CS.accountId = data.accountId;
-        CS.accountData = data.accountData;
+        CS.account.id = data.accountId;
+        CS.account.email = data.accountEmail;
+        CS.account.data = data.accountData;
 
         this.$registerReminderAlert.hide();
 
@@ -1271,7 +1276,7 @@ CS.defaultAnimationDuration = 0.5;
         var doneC1sAndActivities = [];
 
         this.c1Instances.forEach(function(c1Instance, index) {
-            var isDone = CS.accountData && CS.accountData[c1Instance.getClassName()];
+            var isDone = CS.account.data && CS.account.data[c1Instance.getClassName()];
 
             if (isDone) {
                 doneC1sAndActivities.push({
@@ -1379,16 +1384,16 @@ CS.Controllers.ActivityFeedItem = React.createClass({displayName: "ActivityFeedI
 
 CS.Controllers.C1FeedItem = React.createClass({displayName: "C1FeedItem",
     getInitialState: function() {
-        return {inputValue: CS.accountData ? CS.accountData[this._getClassName()] : null};
+        return {inputValue: CS.account.data ? CS.account.data[this._getClassName()] : null};
     },
 
     render: function () {
         var liClasses = React.addons.classSet({
             "well": true,
-            "done": CS.accountData && CS.accountData[this._getClassName()]
+            "done": CS.account.data && CS.account.data[this._getClassName()]
         });
 
-        var buttonText = CS.accountData && CS.accountData[this._getClassName()] ? "Ändra" : "Spara";
+        var buttonText = CS.account.data && CS.account.data[this._getClassName()] ? "Ändra" : "Spara";
 
         return (
             React.createElement("li", {className: liClasses, onSubmit: this._handleSubmit}, 
@@ -1416,7 +1421,9 @@ CS.Controllers.C1FeedItem = React.createClass({displayName: "C1FeedItem",
     },
 
     componentDidMount: function (prevProps, prevState) {
-        this.accountData = CS.accountData || {};
+        this.account = {
+            data: _.clone(CS.account.data, true) || {}
+        };
 
         this._initElements();
         this._initValidation();
@@ -1444,7 +1451,7 @@ CS.Controllers.C1FeedItem = React.createClass({displayName: "C1FeedItem",
         if (this.validator.isValid()) {
             this.$submitBtn.button('loading');
 
-            this.accountData[this._getClassName()] = this.$inputField.val().trim();
+            this.account.data[this._getClassName()] = this.$inputField.val().trim();
 
             var type = "POST";
             var url = "/api/account-data";
@@ -1453,7 +1460,7 @@ CS.Controllers.C1FeedItem = React.createClass({displayName: "C1FeedItem",
                 url: url,
                 type: type,
                 contentType: "application/json",
-                data: JSON.stringify(this.accountData),
+                data: JSON.stringify(this.account.data),
                 success: function (data, textStatus, jqXHR) {
                     location.reload();
                 }.bind(this),
@@ -1557,12 +1564,14 @@ CS.Activities.Base = P(function (c) {
     c.$el = $("#current-c1-or-activity");
     c.controllers = {};
 
-    c.init = function(className, title) {
+    c.init = function (className, title) {
         this.title = title;
 
         this.model = {
             className: className,
-            accountData: _.clone(CS.accountData, true) || {}
+            account: {
+                data: _.clone(CS.account.data, true) || {}
+            }
         };
 
         this.$el.empty();
@@ -1570,7 +1579,7 @@ CS.Activities.Base = P(function (c) {
         this._initElements();
     };
 
-    c._initElements = function() {
+    c._initElements = function () {
         this.$activitiesTab = $("#activities-tab");
 
         this.$tabPanels = $('[role="tabpanel"]');
@@ -1580,20 +1589,20 @@ CS.Activities.Base = P(function (c) {
         this.$currentC1OrActivitySection = this.$activitiesPanel.children("#current-c1-or-activity");
     };
 
-    c.getClassName = function() {
+    c.getClassName = function () {
         return this.model.className;
     };
 
-    c.getTitle = function() {
+    c.getTitle = function () {
         return this.title;
     };
 
-    c.registerController = function(controllerClass, route) {
+    c.registerController = function (controllerClass, route) {
         this.controllers[route] = controllerClass;
     };
 
-    c.preLaunch = function(controllers) {
-        controllers.forEach(function(controller, index) {
+    c.preLaunch = function (controllers) {
+        controllers.forEach(function (controller, index) {
             CS.router.get(controller.route, function (req) {
                 this.renderController(controller.route);
             }.bind(this));
@@ -1613,12 +1622,12 @@ CS.Activities.Base = P(function (c) {
         this._hidePagesAndDisplayNext(route, data);
     };
 
-    c._hidePagesAndDisplayNext = function(route, data) {
+    c._hidePagesAndDisplayNext = function (route, data) {
         var $pages = this.$el.children();
 
         TweenLite.to($pages, CS.Activities.Base.pageAnimationDuration, {
             alpha: 0,
-            onComplete: function() {
+            onComplete: function () {
                 $pages.hide();
                 this.controllers[route].render(data);
             }.bind(this)
@@ -1677,7 +1686,7 @@ CS.Activities.Base.pageAnimationDuration = 0.15;
             contentType: "application/json",
             data: JSON.stringify(this.activity.model),
             success: function (data, textStatus, jqXHR) {
-                CS.accountData = this.activity.model.accountData;
+                CS.account.data = this.activity.model.account.data;
 
                 if (callback) {
                     callback();
@@ -1708,7 +1717,7 @@ CS.Activities.Base.pageAnimationDuration = 0.15;
 
         this.text = text;
 
-        this.model.accountData.custom = this.model.accountData.custom || {};
+        this.model.account.data.custom = this.model.account.data.custom || {};
     };
 
     c.isDoable = function () {
@@ -1732,7 +1741,7 @@ CS.Activities.Custom.Controllers = {};
     };
 
     c.isDoable = function() {
-        return this.model.accountData.Employer && this.model.accountData.Position;
+        return this.model.account.data.Employer && this.model.account.data.Position;
     };
 
     c.preLaunch = function() {
@@ -1762,10 +1771,10 @@ CS.Activities.IdentifyStrengths.Controllers = {};
     };
 
     c.isDoable = function() {
-        return this.model.accountData.Employer &&
-            this.model.accountData.Position &&
-            this.model.accountData.strengths &&
-            this.model.accountData.strengths.length > 0;
+        return this.model.account.data.Employer &&
+            this.model.account.data.Position &&
+            this.model.account.data.strengths &&
+            this.model.account.data.strengths.length > 0;
     };
 
     c.preLaunch = function() {
@@ -1837,7 +1846,7 @@ CS.Activities.SpecifyTop1Strength.Controllers = {};
         if (this.validator.isValid()) {
             this.$submitBtn.button('loading');
 
-            this.activity.model.accountData.custom[this.activity.model.className] = this.$textarea.val().trim();
+            this.activity.model.account.data.custom[this.activity.model.className] = this.$textarea.val().trim();
 
             this.postData();
         }
@@ -1874,7 +1883,7 @@ CS.Activities.IdentifyStrengths.Controllers.Intro = P(CS.Activities.Controller, 
     };
 
     c._navigateNext = function (e) {
-        this.activity.model.accountData.strengths = this.activity.model.accountData.strengths || [];
+        this.activity.model.account.data.strengths = this.activity.model.account.data.strengths || [];
 
         this.navigateTo(this.activity.step1Controller.route);
     };
@@ -1970,7 +1979,7 @@ CS.Activities.IdentifyStrengths.Controllers.Step1 = P(CS.Activities.Controller, 
 
     c._saveAndNavigateNext = function (e) {
         // Because "map()" returns an object, see http://xahlee.info/js/js_convert_array-like.html
-        this.activity.model.accountData.strengths = Array.prototype.slice.call(
+        this.activity.model.account.data.strengths = Array.prototype.slice.call(
             this.$strengthTagList.children().find(".tag").children("span").map(function (index) {
                 return {"name": this.innerHTML};
             })
@@ -2034,7 +2043,7 @@ CS.Activities.IdentifyStrengths.Controllers.Step2 = P(CS.Activities.Controller, 
     };
 
     c.onReRender = function () {
-        this.reactInstance.replaceState({strengths: this.activity.model.accountData.strengths});
+        this.reactInstance.replaceState({strengths: this.activity.model.account.data.strengths});
     };
 
     c._initSliders = function () {
@@ -2066,7 +2075,7 @@ CS.Activities.IdentifyStrengths.Controllers.Step2 = P(CS.Activities.Controller, 
     c._saveAndNavigateNext = function (e) {
         e.preventDefault();
 
-        this.activity.model.accountData.strengths = this.activity.model.accountData.strengths.map(function (strength, index) {
+        this.activity.model.account.data.strengths = this.activity.model.account.data.strengths.map(function (strength, index) {
             var howWellItApplies = parseInt($(this.$sliders[index]).val(), 10);
 
             return {
@@ -2074,9 +2083,6 @@ CS.Activities.IdentifyStrengths.Controllers.Step2 = P(CS.Activities.Controller, 
                 "howWellItApplies": howWellItApplies
             };
         }.bind(this));
-
-        // TODO: remove
-        console.log(CS.accountData);
 
         this.navigateTo(this.activity.step3Controller.route);
     };
@@ -2130,7 +2136,7 @@ CS.Activities.IdentifyStrengths.Controllers.Step3 = P(CS.Activities.Controller, 
     };
 
     c.onReRender = function () {
-        this.reactInstance.replaceState({strengths: this.activity.model.accountData.strengths});
+        this.reactInstance.replaceState({strengths: this.activity.model.account.data.strengths});
     };
 
     c._initSliders = function () {
@@ -2157,7 +2163,7 @@ CS.Activities.IdentifyStrengths.Controllers.Step3 = P(CS.Activities.Controller, 
     c._saveAndNavigateNext = function (e) {
         e.preventDefault();
 
-        this.activity.model.accountData.strengths = this.activity.model.accountData.strengths.map(function (strength, index) {
+        this.activity.model.account.data.strengths = this.activity.model.account.data.strengths.map(function (strength, index) {
             var howImportantForEmployer = parseInt($(this.$sliders[index]).val(), 10);
 
             return {
@@ -2246,7 +2252,7 @@ CS.Activities.IdentifyStrengths.Controllers.Step4 = P(CS.Activities.Controller, 
     };
 
     c.onReRender = function () {
-        this.reactInstance.replaceState({strengths: this.activity.model.accountData.strengths});
+        this.reactInstance.replaceState({strengths: this.activity.model.account.data.strengths});
 
         // The submit button may still be in loading state when navigating back. We make sure it doesn't happen
         this.$submitBtn.button('reset');
@@ -2291,7 +2297,7 @@ CS.Activities.SpecifyTop1Strength.Controllers.Intro = P(CS.Activities.Controller
     };
 
     c._navigateNext = function (e) {
-        this.activity.model.accountData.strengths[0].specify = this.activity.model.accountData.strengths[0].specify || {};
+        this.activity.model.account.data.strengths[0].specify = this.activity.model.account.data.strengths[0].specify || {};
 
         this.navigateTo(this.activity.step1Controller.route);
     };
@@ -2346,14 +2352,14 @@ CS.Activities.SpecifyTop1Strength.Controllers.Step1 = P(CS.Activities.Controller
     };
 
     c.onReRender = function () {
-        this.reactInstance.replaceState({strengthName: this.activity.model.accountData.strengths[0].name});
+        this.reactInstance.replaceState({strengthName: this.activity.model.account.data.strengths[0].name});
     };
 
     c._saveAndNavigateNext = function (e) {
         e.preventDefault();
 
         if (this.validator.isValid()) {
-            this.activity.model.accountData.strengths[0].specify.whatItMeans = this.$whatItMeansField.val().trim();
+            this.activity.model.account.data.strengths[0].specify.whatItMeans = this.$whatItMeansField.val().trim();
 
             this.navigateTo(this.activity.step2Controller.route);
         }
@@ -2408,7 +2414,7 @@ CS.Activities.SpecifyTop1Strength.Controllers.Step2 = P(CS.Activities.Controller
     };
 
     c.onReRender = function () {
-        var whatItMeansAsHtml = CS.Services.String.textToHtml(this.activity.model.accountData.strengths[0].specify.whatItMeans);
+        var whatItMeansAsHtml = CS.Services.String.textToHtml(this.activity.model.account.data.strengths[0].specify.whatItMeans);
 
         this.reactInstance.replaceState({whatItMeans: whatItMeansAsHtml});
     };
@@ -2417,7 +2423,7 @@ CS.Activities.SpecifyTop1Strength.Controllers.Step2 = P(CS.Activities.Controller
         e.preventDefault();
 
         if (this.validator.isValid()) {
-            this.activity.model.accountData.strengths[0].specify.howWellItApplies = this.$howWellItAppliesField.val().trim();
+            this.activity.model.account.data.strengths[0].specify.howWellItApplies = this.$howWellItAppliesField.val().trim();
 
             this.navigateTo(this.activity.step3Controller.route);
         }
@@ -2474,8 +2480,8 @@ CS.Activities.SpecifyTop1Strength.Controllers.Step3 = P(CS.Activities.Controller
 
     c.onReRender = function () {
         this.reactInstance.replaceState({ data: {
-            position: this.activity.model.accountData.Position,
-            employer: this.activity.model.accountData.Employer
+            position: this.activity.model.account.data.Position,
+            employer: this.activity.model.account.data.Employer
         }});
     };
 
@@ -2483,7 +2489,7 @@ CS.Activities.SpecifyTop1Strength.Controllers.Step3 = P(CS.Activities.Controller
         e.preventDefault();
 
         if (this.validator.isValid()) {
-            this.activity.model.accountData.strengths[0].specify.strengthForPosition = this.$strengthForPositionField.val().trim();
+            this.activity.model.account.data.strengths[0].specify.strengthForPosition = this.$strengthForPositionField.val().trim();
 
             this.postData(function() {
                 this.navigateTo(this.activity.step4Controller.route);
@@ -2536,7 +2542,7 @@ CS.Activities.SpecifyTop1Strength.Controllers.Step4 = P(CS.Activities.Controller
     };
 
     c.onReRender = function () {
-        var strength = this.activity.model.accountData.strengths[0];
+        var strength = this.activity.model.account.data.strengths[0];
 
         var howWellItAppliesAsHtml = CS.Services.String.textToHtml(strength.specify.howWellItApplies);
         var strengthForPositionAsHtml = CS.Services.String.textToHtml(strength.specify.strengthForPosition);
@@ -2587,8 +2593,8 @@ CS.Standouts.Base = P(function (c) {
     c.render = function () {
         var data = null;
 
-        if (CS.accountData && CS.accountData.custom) {
-            data = CS.accountData.custom[this.className];
+        if (CS.account.data && CS.account.data.custom) {
+            data = CS.account.data.custom[this.className];
         }
 
         base.render.call(this, {
@@ -2601,50 +2607,11 @@ CS.Standouts.Base = P(function (c) {
 CS.Standouts.Strengths = P(CS.Standouts.Base, function (c, base) {
     c.reactClass = React.createClass({displayName: "reactClass",
         render: function () {
-            var listItemStrength1, listItemStrength2, listItemStrength3, listItemStrength4, listItemStrength5, listItemStrength6;
-
-            if (this.props.strength1) {
-                listItemStrength1 = (
-                    React.createElement("li", null, this.props.strength1)
-                    );
-            }
-            if (this.props.strength2) {
-                listItemStrength2 = (
-                    React.createElement("li", null, this.props.strength2)
-                    );
-            }
-            if (this.props.strength3) {
-                listItemStrength3 = (
-                    React.createElement("li", null, this.props.strength3)
-                    );
-            }
-            if (this.props.strength4) {
-                listItemStrength4 = (
-                    React.createElement("li", null, this.props.strength4)
-                    );
-            }
-            if (this.props.strength5) {
-                listItemStrength5 = (
-                    React.createElement("li", null, this.props.strength5)
-                    );
-            }
-            if (this.props.strength6) {
-                listItemStrength6 = (
-                    React.createElement("li", null, this.props.strength6)
-                    );
-            }
+            var titleContent = this.props.email ? this.props.email : "Anonymous user";
 
             return (
                 React.createElement("div", null, 
-                    React.createElement("h2", null, "My strengths"), 
-                    React.createElement("ul", null, 
-                        listItemStrength1, 
-                        listItemStrength2, 
-                        listItemStrength3, 
-                        listItemStrength4, 
-                        listItemStrength5, 
-                        listItemStrength6
-                    )
+                    React.createElement("h2", null, titleContent)
                 )
                 );
         }
@@ -2655,7 +2622,13 @@ CS.Standouts.Strengths = P(CS.Standouts.Base, function (c, base) {
     };
 
     c.render = function () {
-        var data = CS.accountData ? CS.accountData.strengths : null;
+        var data = {
+            email: CS.account.email,
+            strengths: CS.account.data && CS.account.data.strengths ? CS.account.data.strengths.map(function (strength) {
+                return strength.name;
+            }) :
+                null
+        };
 
         base.render.call(this, data);
     };

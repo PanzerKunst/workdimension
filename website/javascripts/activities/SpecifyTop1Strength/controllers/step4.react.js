@@ -42,7 +42,7 @@ CS.Activities.SpecifyTop1Strength.Controllers.Step4 = P(CS.Activities.Controller
     };
 
     c.onReRender = function () {
-        var strength = this.activity.model.accountData.strengths[0];
+        var strength = this.activity.model.account.data.strengths[0];
 
         var howWellItAppliesAsHtml = CS.Services.String.textToHtml(strength.specify.howWellItApplies);
         var strengthForPositionAsHtml = CS.Services.String.textToHtml(strength.specify.strengthForPosition);

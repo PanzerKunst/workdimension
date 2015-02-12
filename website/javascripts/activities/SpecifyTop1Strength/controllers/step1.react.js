@@ -47,14 +47,14 @@ CS.Activities.SpecifyTop1Strength.Controllers.Step1 = P(CS.Activities.Controller
     };
 
     c.onReRender = function () {
-        this.reactInstance.replaceState({strengthName: this.activity.model.accountData.strengths[0].name});
+        this.reactInstance.replaceState({strengthName: this.activity.model.account.data.strengths[0].name});
     };
 
     c._saveAndNavigateNext = function (e) {
         e.preventDefault();
 
         if (this.validator.isValid()) {
-            this.activity.model.accountData.strengths[0].specify.whatItMeans = this.$whatItMeansField.val().trim();
+            this.activity.model.account.data.strengths[0].specify.whatItMeans = this.$whatItMeansField.val().trim();
 
             this.navigateTo(this.activity.step2Controller.route);
         }

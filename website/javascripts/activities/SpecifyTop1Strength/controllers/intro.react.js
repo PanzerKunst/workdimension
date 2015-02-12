@@ -30,7 +30,7 @@ CS.Activities.SpecifyTop1Strength.Controllers.Intro = P(CS.Activities.Controller
     };
 
     c._navigateNext = function (e) {
-        this.activity.model.accountData.strengths[0].specify = this.activity.model.accountData.strengths[0].specify || {};
+        this.activity.model.account.data.strengths[0].specify = this.activity.model.account.data.strengths[0].specify || {};
 
         this.navigateTo(this.activity.step1Controller.route);
     };

@@ -16,6 +16,7 @@ object AuthApi extends Controller {
 
             val jsonToReturn = JsObject(Seq(
               "accountId" -> JsNumber(accountId),
+              "accountEmail" -> JsString(signInData.emailAddress),
               "accountData" -> AccountDataDto.getOfAccountId(accountId).getOrElse(JsNull)
             ))
 

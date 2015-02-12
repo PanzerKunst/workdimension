@@ -4,10 +4,10 @@ CS.Activities.SpecifyTop1Strength = P(CS.Activities.Base, function (c, base) {
     };
 
     c.isDoable = function() {
-        return this.model.accountData.Employer &&
-            this.model.accountData.Position &&
-            this.model.accountData.strengths &&
-            this.model.accountData.strengths.length > 0;
+        return this.model.account.data.Employer &&
+            this.model.account.data.Position &&
+            this.model.account.data.strengths &&
+            this.model.account.data.strengths.length > 0;
     };
 
     c.preLaunch = function() {

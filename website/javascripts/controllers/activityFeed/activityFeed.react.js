@@ -110,7 +110,7 @@ CS.Controllers.ActivityFeed = P(function (c) {
         var doneC1sAndActivities = [];
 
         this.c1Instances.forEach(function(c1Instance, index) {
-            var isDone = CS.accountData && CS.accountData[c1Instance.getClassName()];
+            var isDone = CS.account.data && CS.account.data[c1Instance.getClassName()];
 
             if (isDone) {
                 doneC1sAndActivities.push({

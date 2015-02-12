@@ -48,7 +48,7 @@ CS.Activities.Controller = P(function (c) {
             contentType: "application/json",
             data: JSON.stringify(this.activity.model),
             success: function (data, textStatus, jqXHR) {
-                CS.accountData = this.activity.model.accountData;
+                CS.account.data = this.activity.model.account.data;
 
                 if (callback) {
                     callback();

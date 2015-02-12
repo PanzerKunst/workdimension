@@ -46,7 +46,7 @@ CS.Activities.Custom.Controllers.Page1 = P(CS.Activities.Controller, function (c
         if (this.validator.isValid()) {
             this.$submitBtn.button('loading');
 
-            this.activity.model.accountData.custom[this.activity.model.className] = this.$textarea.val().trim();
+            this.activity.model.account.data.custom[this.activity.model.className] = this.$textarea.val().trim();
 
             this.postData();
         }

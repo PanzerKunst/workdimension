@@ -1,4 +1,4 @@
-@(accountId: Long, accountData: Option[play.api.libs.json.JsObject])
+@(accountId: Long, accountEmail: Option[String], accountData: Option[play.api.libs.json.JsObject])
 @main("Work Dimension", "index") {
 <!--
     Header
@@ -24,7 +24,9 @@
 <script type="text/javascript">
     document.addEventListener("DOMContentLoaded", function () {
         CS.Controllers.Index(@accountId,
-        @Html(play.api.libs.json.Json.toJson(accountData).toString));
+                @if(accountEmail.isDefined) { "@accountEmail.get"} else { null },
+                @Html(play.api.libs.json.Json.toJson(accountData).toString)
+        );
     });
 </script>
 

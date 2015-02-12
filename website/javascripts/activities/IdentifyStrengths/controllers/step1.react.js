@@ -88,7 +88,7 @@ CS.Activities.IdentifyStrengths.Controllers.Step1 = P(CS.Activities.Controller, 
 
     c._saveAndNavigateNext = function (e) {
         // Because "map()" returns an object, see http://xahlee.info/js/js_convert_array-like.html
-        this.activity.model.accountData.strengths = Array.prototype.slice.call(
+        this.activity.model.account.data.strengths = Array.prototype.slice.call(
             this.$strengthTagList.children().find(".tag").children("span").map(function (index) {
                 return {"name": this.innerHTML};
             })

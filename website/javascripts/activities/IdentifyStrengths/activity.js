@@ -4,7 +4,7 @@ CS.Activities.IdentifyStrengths = P(CS.Activities.Base, function (c, base) {
     };
 
     c.isDoable = function() {
-        return this.model.accountData.Employer && this.model.accountData.Position;
+        return this.model.account.data.Employer && this.model.account.data.Position;
     };
 
     c.preLaunch = function() {

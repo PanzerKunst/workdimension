@@ -110,7 +110,7 @@ CS.Controllers.ActivityFeed = P(function (c) {
         var doneC1sAndActivities = [];
 
         this.c1Instances.forEach(function(c1Instance, index) {
-            var isDone = CS.accountData && CS.accountData[c1Instance.getClassName()];
+            var isDone = CS.account.data && CS.account.data[c1Instance.getClassName()];
 
             if (isDone) {
                 doneC1sAndActivities.push({
@@ -218,16 +218,16 @@ CS.Controllers.ActivityFeedItem = React.createClass({displayName: "ActivityFeedI
 
 CS.Controllers.C1FeedItem = React.createClass({displayName: "C1FeedItem",
     getInitialState: function() {
-        return {inputValue: CS.accountData ? CS.accountData[this._getClassName()] : null};
+        return {inputValue: CS.account.data ? CS.account.data[this._getClassName()] : null};
     },
 
     render: function () {
         var liClasses = React.addons.classSet({
             "well": true,
-            "done": CS.accountData && CS.accountData[this._getClassName()]
+            "done": CS.account.data && CS.account.data[this._getClassName()]
         });
 
-        var buttonText = CS.accountData && CS.accountData[this._getClassName()] ? "Ändra" : "Spara";
+        var buttonText = CS.account.data && CS.account.data[this._getClassName()] ? "Ändra" : "Spara";
 
         return (
             React.createElement("li", {className: liClasses, onSubmit: this._handleSubmit}, 
@@ -255,7 +255,9 @@ CS.Controllers.C1FeedItem = React.createClass({displayName: "C1FeedItem",
     },
 
     componentDidMount: function (prevProps, prevState) {
-        this.accountData = CS.accountData || {};
+        this.account = {
+            data: _.clone(CS.account.data, true) || {}
+        };
 
         this._initElements();
         this._initValidation();
@@ -283,7 +285,7 @@ CS.Controllers.C1FeedItem = React.createClass({displayName: "C1FeedItem",
         if (this.validator.isValid()) {
             this.$submitBtn.button('loading');
 
-            this.accountData[this._getClassName()] = this.$inputField.val().trim();
+            this.account.data[this._getClassName()] = this.$inputField.val().trim();
 
             var type = "POST";
             var url = "/api/account-data";
@@ -292,7 +294,7 @@ CS.Controllers.C1FeedItem = React.createClass({displayName: "C1FeedItem",
                 url: url,
                 type: type,
                 contentType: "application/json",
-                data: JSON.stringify(this.accountData),
+                data: JSON.stringify(this.account.data),
                 success: function (data, textStatus, jqXHR) {
                     location.reload();
                 }.bind(this),

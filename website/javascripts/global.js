@@ -20,7 +20,10 @@ CS.Services = {};
 CS.C1s = {};
 
 // Global objects
-CS.accountId = null;
-CS.accountData = null;
+CS.account = {
+    id: null,
+    email: null,
+    data: null
+};
 CS.router = new Grapnel();
 CS.defaultAnimationDuration = 0.5;

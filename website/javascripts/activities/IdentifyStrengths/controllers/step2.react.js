@@ -52,7 +52,7 @@ CS.Activities.IdentifyStrengths.Controllers.Step2 = P(CS.Activities.Controller, 
     };
 
     c.onReRender = function () {
-        this.reactInstance.replaceState({strengths: this.activity.model.accountData.strengths});
+        this.reactInstance.replaceState({strengths: this.activity.model.account.data.strengths});
     };
 
     c._initSliders = function () {
@@ -84,7 +84,7 @@ CS.Activities.IdentifyStrengths.Controllers.Step2 = P(CS.Activities.Controller, 
     c._saveAndNavigateNext = function (e) {
         e.preventDefault();
 
-        this.activity.model.accountData.strengths = this.activity.model.accountData.strengths.map(function (strength, index) {
+        this.activity.model.account.data.strengths = this.activity.model.account.data.strengths.map(function (strength, index) {
             var howWellItApplies = parseInt($(this.$sliders[index]).val(), 10);
 
             return {
@@ -92,9 +92,6 @@ CS.Activities.IdentifyStrengths.Controllers.Step2 = P(CS.Activities.Controller, 
                 "howWellItApplies": howWellItApplies
             };
         }.bind(this));
-
-        // TODO: remove
-        console.log(CS.accountData);
 
         this.navigateTo(this.activity.step3Controller.route);
     };

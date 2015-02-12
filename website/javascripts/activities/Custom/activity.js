@@ -4,7 +4,7 @@ CS.Activities.Custom = P(CS.Activities.Base, function (c, base) {
 
         this.text = text;
 
-        this.model.accountData.custom = this.model.accountData.custom || {};
+        this.model.account.data.custom = this.model.account.data.custom || {};
     };
 
     c.isDoable = function () {

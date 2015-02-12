@@ -48,8 +48,8 @@ CS.Activities.SpecifyTop1Strength.Controllers.Step3 = P(CS.Activities.Controller
 
     c.onReRender = function () {
         this.reactInstance.replaceState({ data: {
-            position: this.activity.model.accountData.Position,
-            employer: this.activity.model.accountData.Employer
+            position: this.activity.model.account.data.Position,
+            employer: this.activity.model.account.data.Employer
         }});
     };
 
@@ -57,7 +57,7 @@ CS.Activities.SpecifyTop1Strength.Controllers.Step3 = P(CS.Activities.Controller
         e.preventDefault();
 
         if (this.validator.isValid()) {
-            this.activity.model.accountData.strengths[0].specify.strengthForPosition = this.$strengthForPositionField.val().trim();
+            this.activity.model.account.data.strengths[0].specify.strengthForPosition = this.$strengthForPositionField.val().trim();
 
             this.postData(function() {
                 this.navigateTo(this.activity.step4Controller.route);

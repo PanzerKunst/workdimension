@@ -73,7 +73,7 @@ CS.Activities.IdentifyStrengths.Controllers.Step4 = P(CS.Activities.Controller, 
     };
 
     c.onReRender = function () {
-        this.reactInstance.replaceState({strengths: this.activity.model.accountData.strengths});
+        this.reactInstance.replaceState({strengths: this.activity.model.account.data.strengths});
 
         // The submit button may still be in loading state when navigating back. We make sure it doesn't happen
         this.$submitBtn.button('reset');

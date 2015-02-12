@@ -37,6 +37,7 @@ object AccountApi extends Controller {
 
                   val jsonToReturn = JsObject(Seq(
                     "accountId" -> JsNumber(newAccountId),
+                    "accountEmail" -> JsString(frontendAccount.emailAddress),
                     "accountData" -> AccountDataDto.getOfAccountId(newAccountId).getOrElse(JsNull)
                   ))
 

@@ -4,6 +4,6 @@ CS.Controllers = {
         emailAlreadyRegistered: 230
     },
     isTemporaryAccount: function () {
-        return CS.accountId < 0;
+        return CS.account.id < 0;
     }
 };

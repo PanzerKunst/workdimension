@@ -4,12 +4,14 @@ CS.Activities.Base = P(function (c) {
     c.$el = $("#current-c1-or-activity");
     c.controllers = {};
 
-    c.init = function(className, title) {
+    c.init = function (className, title) {
         this.title = title;
 
         this.model = {
             className: className,
-            accountData: _.clone(CS.accountData, true) || {}
+            account: {
+                data: _.clone(CS.account.data, true) || {}
+            }
         };
 
         this.$el.empty();
@@ -17,7 +19,7 @@ CS.Activities.Base = P(function (c) {
         this._initElements();
     };
 
-    c._initElements = function() {
+    c._initElements = function () {
         this.$activitiesTab = $("#activities-tab");
 
         this.$tabPanels = $('[role="tabpanel"]');
@@ -27,20 +29,20 @@ CS.Activities.Base = P(function (c) {
         this.$currentC1OrActivitySection = this.$activitiesPanel.children("#current-c1-or-activity");
     };
 
-    c.getClassName = function() {
+    c.getClassName = function () {
         return this.model.className;
     };
 
-    c.getTitle = function() {
+    c.getTitle = function () {
         return this.title;
     };
 
-    c.registerController = function(controllerClass, route) {
+    c.registerController = function (controllerClass, route) {
         this.controllers[route] = controllerClass;
     };
 
-    c.preLaunch = function(controllers) {
-        controllers.forEach(function(controller, index) {
+    c.preLaunch = function (controllers) {
+        controllers.forEach(function (controller, index) {
             CS.router.get(controller.route, function (req) {
                 this.renderController(controller.route);
             }.bind(this));
@@ -60,12 +62,12 @@ CS.Activities.Base = P(function (c) {
         this._hidePagesAndDisplayNext(route, data);
     };
 
-    c._hidePagesAndDisplayNext = function(route, data) {
+    c._hidePagesAndDisplayNext = function (route, data) {
         var $pages = this.$el.children();
 
         TweenLite.to($pages, CS.Activities.Base.pageAnimationDuration, {
             alpha: 0,
-            onComplete: function() {
+            onComplete: function () {
                 $pages.hide();
                 this.controllers[route].render(data);
             }.bind(this)
@@ -124,7 +126,7 @@ CS.Activities.Base.pageAnimationDuration = 0.15;
             contentType: "application/json",
             data: JSON.stringify(this.activity.model),
             success: function (data, textStatus, jqXHR) {
-                CS.accountData = this.activity.model.accountData;
+                CS.account.data = this.activity.model.account.data;
 
                 if (callback) {
                     callback();
@@ -155,7 +157,7 @@ CS.Activities.Base.pageAnimationDuration = 0.15;
 
         this.text = text;
 
-        this.model.accountData.custom = this.model.accountData.custom || {};
+        this.model.account.data.custom = this.model.account.data.custom || {};
     };
 
     c.isDoable = function () {
@@ -179,7 +181,7 @@ CS.Activities.Custom.Controllers = {};
     };
 
     c.isDoable = function() {
-        return this.model.accountData.Employer && this.model.accountData.Position;
+        return this.model.account.data.Employer && this.model.account.data.Position;
     };
 
     c.preLaunch = function() {
@@ -209,10 +211,10 @@ CS.Activities.IdentifyStrengths.Controllers = {};
     };
 
     c.isDoable = function() {
-        return this.model.accountData.Employer &&
-            this.model.accountData.Position &&
-            this.model.accountData.strengths &&
-            this.model.accountData.strengths.length > 0;
+        return this.model.account.data.Employer &&
+            this.model.account.data.Position &&
+            this.model.account.data.strengths &&
+            this.model.account.data.strengths.length > 0;
     };
 
     c.preLaunch = function() {
@@ -284,7 +286,7 @@ CS.Activities.SpecifyTop1Strength.Controllers = {};
         if (this.validator.isValid()) {
             this.$submitBtn.button('loading');
 
-            this.activity.model.accountData.custom[this.activity.model.className] = this.$textarea.val().trim();
+            this.activity.model.account.data.custom[this.activity.model.className] = this.$textarea.val().trim();
 
             this.postData();
         }
@@ -321,7 +323,7 @@ CS.Activities.IdentifyStrengths.Controllers.Intro = P(CS.Activities.Controller, 
     };
 
     c._navigateNext = function (e) {
-        this.activity.model.accountData.strengths = this.activity.model.accountData.strengths || [];
+        this.activity.model.account.data.strengths = this.activity.model.account.data.strengths || [];
 
         this.navigateTo(this.activity.step1Controller.route);
     };
@@ -417,7 +419,7 @@ CS.Activities.IdentifyStrengths.Controllers.Step1 = P(CS.Activities.Controller, 
 
     c._saveAndNavigateNext = function (e) {
         // Because "map()" returns an object, see http://xahlee.info/js/js_convert_array-like.html
-        this.activity.model.accountData.strengths = Array.prototype.slice.call(
+        this.activity.model.account.data.strengths = Array.prototype.slice.call(
             this.$strengthTagList.children().find(".tag").children("span").map(function (index) {
                 return {"name": this.innerHTML};
             })
@@ -481,7 +483,7 @@ CS.Activities.IdentifyStrengths.Controllers.Step2 = P(CS.Activities.Controller, 
     };
 
     c.onReRender = function () {
-        this.reactInstance.replaceState({strengths: this.activity.model.accountData.strengths});
+        this.reactInstance.replaceState({strengths: this.activity.model.account.data.strengths});
     };
 
     c._initSliders = function () {
@@ -513,7 +515,7 @@ CS.Activities.IdentifyStrengths.Controllers.Step2 = P(CS.Activities.Controller, 
     c._saveAndNavigateNext = function (e) {
         e.preventDefault();
 
-        this.activity.model.accountData.strengths = this.activity.model.accountData.strengths.map(function (strength, index) {
+        this.activity.model.account.data.strengths = this.activity.model.account.data.strengths.map(function (strength, index) {
             var howWellItApplies = parseInt($(this.$sliders[index]).val(), 10);
 
             return {
@@ -521,9 +523,6 @@ CS.Activities.IdentifyStrengths.Controllers.Step2 = P(CS.Activities.Controller, 
                 "howWellItApplies": howWellItApplies
             };
         }.bind(this));
-
-        // TODO: remove
-        console.log(CS.accountData);
 
         this.navigateTo(this.activity.step3Controller.route);
     };
@@ -577,7 +576,7 @@ CS.Activities.IdentifyStrengths.Controllers.Step3 = P(CS.Activities.Controller, 
     };
 
     c.onReRender = function () {
-        this.reactInstance.replaceState({strengths: this.activity.model.accountData.strengths});
+        this.reactInstance.replaceState({strengths: this.activity.model.account.data.strengths});
     };
 
     c._initSliders = function () {
@@ -604,7 +603,7 @@ CS.Activities.IdentifyStrengths.Controllers.Step3 = P(CS.Activities.Controller, 
     c._saveAndNavigateNext = function (e) {
         e.preventDefault();
 
-        this.activity.model.accountData.strengths = this.activity.model.accountData.strengths.map(function (strength, index) {
+        this.activity.model.account.data.strengths = this.activity.model.account.data.strengths.map(function (strength, index) {
             var howImportantForEmployer = parseInt($(this.$sliders[index]).val(), 10);
 
             return {
@@ -693,7 +692,7 @@ CS.Activities.IdentifyStrengths.Controllers.Step4 = P(CS.Activities.Controller, 
     };
 
     c.onReRender = function () {
-        this.reactInstance.replaceState({strengths: this.activity.model.accountData.strengths});
+        this.reactInstance.replaceState({strengths: this.activity.model.account.data.strengths});
 
         // The submit button may still be in loading state when navigating back. We make sure it doesn't happen
         this.$submitBtn.button('reset');
@@ -738,7 +737,7 @@ CS.Activities.SpecifyTop1Strength.Controllers.Intro = P(CS.Activities.Controller
     };
 
     c._navigateNext = function (e) {
-        this.activity.model.accountData.strengths[0].specify = this.activity.model.accountData.strengths[0].specify || {};
+        this.activity.model.account.data.strengths[0].specify = this.activity.model.account.data.strengths[0].specify || {};
 
         this.navigateTo(this.activity.step1Controller.route);
     };
@@ -793,14 +792,14 @@ CS.Activities.SpecifyTop1Strength.Controllers.Step1 = P(CS.Activities.Controller
     };
 
     c.onReRender = function () {
-        this.reactInstance.replaceState({strengthName: this.activity.model.accountData.strengths[0].name});
+        this.reactInstance.replaceState({strengthName: this.activity.model.account.data.strengths[0].name});
     };
 
     c._saveAndNavigateNext = function (e) {
         e.preventDefault();
 
         if (this.validator.isValid()) {
-            this.activity.model.accountData.strengths[0].specify.whatItMeans = this.$whatItMeansField.val().trim();
+            this.activity.model.account.data.strengths[0].specify.whatItMeans = this.$whatItMeansField.val().trim();
 
             this.navigateTo(this.activity.step2Controller.route);
         }
@@ -855,7 +854,7 @@ CS.Activities.SpecifyTop1Strength.Controllers.Step2 = P(CS.Activities.Controller
     };
 
     c.onReRender = function () {
-        var whatItMeansAsHtml = CS.Services.String.textToHtml(this.activity.model.accountData.strengths[0].specify.whatItMeans);
+        var whatItMeansAsHtml = CS.Services.String.textToHtml(this.activity.model.account.data.strengths[0].specify.whatItMeans);
 
         this.reactInstance.replaceState({whatItMeans: whatItMeansAsHtml});
     };
@@ -864,7 +863,7 @@ CS.Activities.SpecifyTop1Strength.Controllers.Step2 = P(CS.Activities.Controller
         e.preventDefault();
 
         if (this.validator.isValid()) {
-            this.activity.model.accountData.strengths[0].specify.howWellItApplies = this.$howWellItAppliesField.val().trim();
+            this.activity.model.account.data.strengths[0].specify.howWellItApplies = this.$howWellItAppliesField.val().trim();
 
             this.navigateTo(this.activity.step3Controller.route);
         }
@@ -921,8 +920,8 @@ CS.Activities.SpecifyTop1Strength.Controllers.Step3 = P(CS.Activities.Controller
 
     c.onReRender = function () {
         this.reactInstance.replaceState({ data: {
-            position: this.activity.model.accountData.Position,
-            employer: this.activity.model.accountData.Employer
+            position: this.activity.model.account.data.Position,
+            employer: this.activity.model.account.data.Employer
         }});
     };
 
@@ -930,7 +929,7 @@ CS.Activities.SpecifyTop1Strength.Controllers.Step3 = P(CS.Activities.Controller
         e.preventDefault();
 
         if (this.validator.isValid()) {
-            this.activity.model.accountData.strengths[0].specify.strengthForPosition = this.$strengthForPositionField.val().trim();
+            this.activity.model.account.data.strengths[0].specify.strengthForPosition = this.$strengthForPositionField.val().trim();
 
             this.postData(function() {
                 this.navigateTo(this.activity.step4Controller.route);
@@ -983,7 +982,7 @@ CS.Activities.SpecifyTop1Strength.Controllers.Step4 = P(CS.Activities.Controller
     };
 
     c.onReRender = function () {
-        var strength = this.activity.model.accountData.strengths[0];
+        var strength = this.activity.model.account.data.strengths[0];
 
         var howWellItAppliesAsHtml = CS.Services.String.textToHtml(strength.specify.howWellItApplies);
         var strengthForPositionAsHtml = CS.Services.String.textToHtml(strength.specify.strengthForPosition);

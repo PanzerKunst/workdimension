@@ -32,8 +32,9 @@ CS.Controllers.HeaderModal = P(function (c) {
         this.$headerLinks.hide();
         this.$signOutLink.show();
 
-        CS.accountId = data.accountId;
-        CS.accountData = data.accountData;
+        CS.account.id = data.accountId;
+        CS.account.email = data.accountEmail;
+        CS.account.data = data.accountData;
 
         this.$registerReminderAlert.hide();
 

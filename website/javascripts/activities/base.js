@@ -4,12 +4,14 @@ CS.Activities.Base = P(function (c) {
     c.$el = $("#current-c1-or-activity");
     c.controllers = {};
 
-    c.init = function(className, title) {
+    c.init = function (className, title) {
         this.title = title;
 
         this.model = {
             className: className,
-            accountData: _.clone(CS.accountData, true) || {}
+            account: {
+                data: _.clone(CS.account.data, true) || {}
+            }
         };
 
         this.$el.empty();
@@ -17,7 +19,7 @@ CS.Activities.Base = P(function (c) {
         this._initElements();
     };
 
-    c._initElements = function() {
+    c._initElements = function () {
         this.$activitiesTab = $("#activities-tab");
 
         this.$tabPanels = $('[role="tabpanel"]');
@@ -27,20 +29,20 @@ CS.Activities.Base = P(function (c) {
         this.$currentC1OrActivitySection = this.$activitiesPanel.children("#current-c1-or-activity");
     };
 
-    c.getClassName = function() {
+    c.getClassName = function () {
         return this.model.className;
     };
 
-    c.getTitle = function() {
+    c.getTitle = function () {
         return this.title;
     };
 
-    c.registerController = function(controllerClass, route) {
+    c.registerController = function (controllerClass, route) {
         this.controllers[route] = controllerClass;
     };
 
-    c.preLaunch = function(controllers) {
-        controllers.forEach(function(controller, index) {
+    c.preLaunch = function (controllers) {
+        controllers.forEach(function (controller, index) {
             CS.router.get(controller.route, function (req) {
                 this.renderController(controller.route);
             }.bind(this));
@@ -60,12 +62,12 @@ CS.Activities.Base = P(function (c) {
         this._hidePagesAndDisplayNext(route, data);
     };
 
-    c._hidePagesAndDisplayNext = function(route, data) {
+    c._hidePagesAndDisplayNext = function (route, data) {
         var $pages = this.$el.children();
 
         TweenLite.to($pages, CS.Activities.Base.pageAnimationDuration, {
             alpha: 0,
-            onComplete: function() {
+            onComplete: function () {
                 $pages.hide();
                 this.controllers[route].render(data);
             }.bind(this)

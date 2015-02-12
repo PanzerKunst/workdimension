@@ -28,7 +28,7 @@ CS.Activities.IdentifyStrengths.Controllers.Intro = P(CS.Activities.Controller, 
     };
 
     c._navigateNext = function (e) {
-        this.activity.model.accountData.strengths = this.activity.model.accountData.strengths || [];
+        this.activity.model.account.data.strengths = this.activity.model.account.data.strengths || [];
 
         this.navigateTo(this.activity.step1Controller.route);
     };

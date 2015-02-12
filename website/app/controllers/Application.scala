@@ -9,12 +9,17 @@ object Application extends Controller {
   val doNotCachePage = Array(CACHE_CONTROL -> "no-cache, no-store")
 
   def index = Action { request =>
-    val accountId = getAccountId(request.session) match {
-      case None => generateTempAccountIdAndInitialiseTables(request.session)
-      case Some(id) => id
+    val (accountId, accountEmail) = getAccountId(request.session) match {
+      case None => (generateTempAccountIdAndInitialiseTables(request.session), None)
+
+      case Some(id) =>
+        AccountDto.getOfId(id) match {
+          case Some(account) => (id, account.emailAddress)
+          case None => (id, None)
+        }
     }
 
-    Ok(views.html.index(accountId, AccountDataDto.getOfAccountId(accountId))).withSession(request.session
+    Ok(views.html.index(accountId, accountEmail, AccountDataDto.getOfAccountId(accountId))).withSession(request.session
       +("accountId", accountId.toString)
     )
   }

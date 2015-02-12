@@ -33,8 +33,8 @@ CS.Standouts.Base = P(function (c) {
     c.render = function () {
         var data = null;
 
-        if (CS.accountData && CS.accountData.custom) {
-            data = CS.accountData.custom[this.className];
+        if (CS.account.data && CS.account.data.custom) {
+            data = CS.account.data.custom[this.className];
         }
 
         base.render.call(this, {
@@ -47,50 +47,11 @@ CS.Standouts.Base = P(function (c) {
 CS.Standouts.Strengths = P(CS.Standouts.Base, function (c, base) {
     c.reactClass = React.createClass({displayName: "reactClass",
         render: function () {
-            var listItemStrength1, listItemStrength2, listItemStrength3, listItemStrength4, listItemStrength5, listItemStrength6;
-
-            if (this.props.strength1) {
-                listItemStrength1 = (
-                    React.createElement("li", null, this.props.strength1)
-                    );
-            }
-            if (this.props.strength2) {
-                listItemStrength2 = (
-                    React.createElement("li", null, this.props.strength2)
-                    );
-            }
-            if (this.props.strength3) {
-                listItemStrength3 = (
-                    React.createElement("li", null, this.props.strength3)
-                    );
-            }
-            if (this.props.strength4) {
-                listItemStrength4 = (
-                    React.createElement("li", null, this.props.strength4)
-                    );
-            }
-            if (this.props.strength5) {
-                listItemStrength5 = (
-                    React.createElement("li", null, this.props.strength5)
-                    );
-            }
-            if (this.props.strength6) {
-                listItemStrength6 = (
-                    React.createElement("li", null, this.props.strength6)
-                    );
-            }
+            var titleContent = this.props.email ? this.props.email : "Anonymous user";
 
             return (
                 React.createElement("div", null, 
-                    React.createElement("h2", null, "My strengths"), 
-                    React.createElement("ul", null, 
-                        listItemStrength1, 
-                        listItemStrength2, 
-                        listItemStrength3, 
-                        listItemStrength4, 
-                        listItemStrength5, 
-                        listItemStrength6
-                    )
+                    React.createElement("h2", null, titleContent)
                 )
                 );
         }
@@ -101,7 +62,13 @@ CS.Standouts.Strengths = P(CS.Standouts.Base, function (c, base) {
     };
 
     c.render = function () {
-        var data = CS.accountData ? CS.accountData.strengths : null;
+        var data = {
+            email: CS.account.email,
+            strengths: CS.account.data && CS.account.data.strengths ? CS.account.data.strengths.map(function (strength) {
+                return strength.name;
+            }) :
+                null
+        };
 
         base.render.call(this, data);
     };

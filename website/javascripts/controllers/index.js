@@ -1,7 +1,8 @@
 CS.Controllers.Index = P(function (c) {
-    c.init = function (accountId, accountData) {
-        CS.accountId = accountId;
-        CS.accountData = accountData;
+    c.init = function (accountId, accountEmail, accountData) {
+        CS.account.id = accountId;
+        CS.account.email = accountEmail;
+        CS.account.data = accountData;
 
         this.activityFeedController = CS.Controllers.ActivityFeed();
         this.standoutsController = CS.Controllers.Standouts();

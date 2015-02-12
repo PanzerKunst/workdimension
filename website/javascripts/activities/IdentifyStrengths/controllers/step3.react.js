@@ -46,7 +46,7 @@ CS.Activities.IdentifyStrengths.Controllers.Step3 = P(CS.Activities.Controller, 
     };
 
     c.onReRender = function () {
-        this.reactInstance.replaceState({strengths: this.activity.model.accountData.strengths});
+        this.reactInstance.replaceState({strengths: this.activity.model.account.data.strengths});
     };
 
     c._initSliders = function () {
@@ -73,7 +73,7 @@ CS.Activities.IdentifyStrengths.Controllers.Step3 = P(CS.Activities.Controller, 
     c._saveAndNavigateNext = function (e) {
         e.preventDefault();
 
-        this.activity.model.accountData.strengths = this.activity.model.accountData.strengths.map(function (strength, index) {
+        this.activity.model.account.data.strengths = this.activity.model.account.data.strengths.map(function (strength, index) {
             var howImportantForEmployer = parseInt($(this.$sliders[index]).val(), 10);
 
             return {

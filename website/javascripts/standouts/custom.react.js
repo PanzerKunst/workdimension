@@ -19,8 +19,8 @@ CS.Standouts.Custom = P(CS.Standouts.Base, function (c, base) {
     c.render = function () {
         var data = null;
 
-        if (CS.accountData && CS.accountData.custom) {
-            data = CS.accountData.custom[this.className];
+        if (CS.account.data && CS.account.data.custom) {
+            data = CS.account.data.custom[this.className];
         }
 
         base.render.call(this, {
