@@ -13,10 +13,10 @@ CS.Activities.Custom = P(CS.Activities.Base, function (c, base) {
 
     c.preLaunch = function () {
         // Initialising all app controllers
-        this.controller = CS.Activities.Custom.Controllers.Page1("activities/" + this.model.className, this);
+        var controller = CS.Activities.Custom.Controllers.Page1("activities/" + this.model.className, this);
 
-        CS.router.get(this.controller.route, function (req) {
-            this.renderController(this.controller.route, { text: this.text});
+        CS.router.get(controller.route, function (req) {
+            this.renderController(controller.route, { text: this.text});
         }.bind(this));
     };
 });

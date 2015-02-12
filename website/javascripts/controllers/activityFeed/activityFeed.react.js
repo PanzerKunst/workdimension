@@ -29,18 +29,22 @@ CS.Controllers.ActivityFeed = P(function (c) {
         this.c1FeedItems = [
             {
                 className: "Employer",
-                title: "Arbetsgivare:"
+                title: "Arbetsgivare"
             },
             {
                 className: "Position",
-                title: "Tjänst:"
+                title: "Tjänst"
             }
         ];
 
         this.activityFeedItems = [
             {
                 className: "IdentifyStrengths",
-                title: "Identifiera egenskaper"
+                title: "Förstå vad de söker"
+            },
+            {
+                className: "SpecifyTop1Strength",
+                title: "Stick ut från mängden"
             }
         ];
 

@@ -30,15 +30,15 @@ CS.Activities.Controller = P(function (c) {
         TweenLite.to(this.$el, CS.Activities.Base.pageAnimationDuration, {alpha: 1});
     };
 
-    c.navigateTo = function(route) {
+    c.navigateTo = function (route) {
         location.hash = route;
     };
 
-    c.navigateBack = function() {
+    c.navigateBack = function () {
         history.back();
     };
 
-    c.postData = function() {
+    c.postData = function (callback) {
         var type = "POST";
         var url = "/api/activities";
 
@@ -49,7 +49,12 @@ CS.Activities.Controller = P(function (c) {
             data: JSON.stringify(this.activity.model),
             success: function (data, textStatus, jqXHR) {
                 CS.accountData = this.activity.model.accountData;
-                location.href = "/#standouts";
+
+                if (callback) {
+                    callback();
+                } else {
+                    location.href = "/#standouts";
+                }
             }.bind(this),
             error: function (jqXHR, textStatus, errorThrown) {
                 this.$submitBtn.button('reset');
@@ -59,8 +64,12 @@ CS.Activities.Controller = P(function (c) {
     };
 
     // Child functions are call instead if exist
-    c.initElements = function() {};
-    c.initValidation = function() {};
-    c.initEvents = function() {};
-    c.onReRender = function() {};
+    c.initElements = function () {
+    };
+    c.initValidation = function () {
+    };
+    c.initEvents = function () {
+    };
+    c.onReRender = function () {
+    };
 });

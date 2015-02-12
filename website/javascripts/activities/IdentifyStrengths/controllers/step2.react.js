@@ -1,4 +1,4 @@
-CS.Activities.IdentifyStrengths.Controllers.Page3 = P(CS.Activities.Controller, function (c, base) {
+CS.Activities.IdentifyStrengths.Controllers.Step2 = P(CS.Activities.Controller, function (c, base) {
     c.reactClass = React.createClass({
         getInitialState: function () {
             return {strengths: []};
@@ -19,7 +19,7 @@ CS.Activities.IdentifyStrengths.Controllers.Page3 = P(CS.Activities.Controller, 
                     })}
 
                     <div className="submit-wrapper">
-                        <button type="button" className="btn btn-default go-back">Tillbaka</button>
+                        <button type="button" className="btn btn-default">Tillbaka</button>
                         <button type="submit" className="btn btn-primary">Gå vidare</button>
                     </div>
                 </form>
@@ -30,7 +30,7 @@ CS.Activities.IdentifyStrengths.Controllers.Page3 = P(CS.Activities.Controller, 
     c.initElements = function () {
         this.$form = this.$el.find("form");
         this.$rangeInputs = this.$form.find('[type="range"]');
-        this.$goBackBtn = this.$form.find(".go-back");
+        this.$goBackBtn = this.$form.find(".btn-default");
     };
 
     c.initEvents = function () {
@@ -85,14 +85,17 @@ CS.Activities.IdentifyStrengths.Controllers.Page3 = P(CS.Activities.Controller, 
         e.preventDefault();
 
         this.activity.model.accountData.strengths = this.activity.model.accountData.strengths.map(function (strength, index) {
-            var howWellDoesItApply = parseInt(this.$sliders[index].val(), 10);
+            var howWellItApplies = parseInt($(this.$sliders[index]).val(), 10);
 
             return {
                 "name": strength.name,
-                "howWellDoesItApply": howWellDoesItApply
+                "howWellItApplies": howWellItApplies
             };
         }.bind(this));
 
-        this.navigateTo(this.activity.page4Controller.route);
+        // TODO: remove
+        console.log(CS.accountData);
+
+        this.navigateTo(this.activity.step3Controller.route);
     };
 });

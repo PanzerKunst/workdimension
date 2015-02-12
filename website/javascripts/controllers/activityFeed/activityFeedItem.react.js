@@ -5,12 +5,12 @@ CS.Controllers.ActivityFeedItem = React.createClass({
             "done": this.props.activity.isDone
         });
 
-        var buttonText = this.props.activity.isDone ? "Starta om" : "Starta";
+        var buttonText = this.props.activity.isDone ? "Gör om" : "Gör detta";
 
         return (
             <li className={liClasses}>
                 <h2>{this.props.activity.instance.getTitle()}</h2>
-                <button className="btn btn-default" onClick={this._handleClick}>{buttonText}</button>
+                <button className="btn btn-primary" onClick={this._handleClick}>{buttonText}</button>
             </li>
             );
     },

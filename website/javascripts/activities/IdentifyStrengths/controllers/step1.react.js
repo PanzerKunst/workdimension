@@ -1,4 +1,4 @@
-CS.Activities.IdentifyStrengths.Controllers.Page2 = P(CS.Activities.Controller, function (c, base) {
+CS.Activities.IdentifyStrengths.Controllers.Step1 = P(CS.Activities.Controller, function (c, base) {
     c.reactClass = React.createClass({
         getInitialState: function () {
             return {data: []};
@@ -7,7 +7,7 @@ CS.Activities.IdentifyStrengths.Controllers.Page2 = P(CS.Activities.Controller, 
         render: function () {
             return (
                 <form role="form">
-                    <p>Börja med att identifiera efterfrågade egenskaper i jobbannonsen.</p>
+                    <p>Finns det några egenskaper du vill framhäva som inte direkt efterfrågas&#63;</p>
 
                     <div className="form-group">
                         <div className="input-group">
@@ -37,7 +37,7 @@ CS.Activities.IdentifyStrengths.Controllers.Page2 = P(CS.Activities.Controller, 
 
                     <div className="submit-wrapper">
                         <button type="button" className="btn btn-default go-back">Tillbaka</button>
-                        <button type="button" className="btn btn-primary go-next-step">Gå vidare</button>
+                        <button type="button" className="btn btn-primary">Gå vidare</button>
                     </div>
                 </form>
                 );
@@ -57,7 +57,7 @@ CS.Activities.IdentifyStrengths.Controllers.Page2 = P(CS.Activities.Controller, 
         this.$strengthField = this.$form.find("#strength");
         this.$strengthTagList = this.$form.find("#strength-taglist");
         this.$goBackBtn = this.$form.find(".go-back");
-        this.$goNextStepBtn = this.$form.find(".go-next-step");
+        this.$goNextStepBtn = this.$form.find(".btn-primary");
     };
 
     c.initValidation = function () {
@@ -94,6 +94,6 @@ CS.Activities.IdentifyStrengths.Controllers.Page2 = P(CS.Activities.Controller, 
             })
         );
 
-        this.navigateTo(this.activity.page3Controller.route);
+        this.navigateTo(this.activity.step2Controller.route);
     };
 });

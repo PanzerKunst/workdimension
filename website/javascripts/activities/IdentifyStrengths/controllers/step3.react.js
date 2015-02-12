@@ -1,4 +1,4 @@
-CS.Activities.IdentifyStrengths.Controllers.Page4 = P(CS.Activities.Controller, function (c, base) {
+CS.Activities.IdentifyStrengths.Controllers.Step3 = P(CS.Activities.Controller, function (c, base) {
     c.reactClass = React.createClass({
         getInitialState: function () {
             return {strengths: []};
@@ -7,7 +7,7 @@ CS.Activities.IdentifyStrengths.Controllers.Page4 = P(CS.Activities.Controller, 
         render: function () {
             return (
                 <form role="form" className="how-well">
-                    <p>Hur viktigt är det här för arbetsgivaren och rollen du söker&#63;</p>
+                    <p>Hur viktiga är de här egenskaperna för arbetsgivaren och rollen du söker&#63;</p>
 
                     {this.state.strengths.map(function (strength) {
                         return (
@@ -19,7 +19,7 @@ CS.Activities.IdentifyStrengths.Controllers.Page4 = P(CS.Activities.Controller, 
                     })}
 
                     <div className="submit-wrapper">
-                        <button type="button" className="btn btn-default go-back">Tillbaka</button>
+                        <button type="button" className="btn btn-default">Tillbaka</button>
                         <button type="submit" className="btn btn-primary">Gå vidare</button>
                     </div>
                 </form>
@@ -30,14 +30,14 @@ CS.Activities.IdentifyStrengths.Controllers.Page4 = P(CS.Activities.Controller, 
     c.initElements = function () {
         this.$form = this.$el.find("form");
         this.$rangeInputs = this.$form.find('[type="range"]');
-        this.$goBackBtn = this.$form.find(".go-back");
+        this.$goBackBtn = this.$form.find(".btn-default");
     };
 
     c.initEvents = function () {
         this.$form.submit($.proxy(this._saveAndNavigateNext, this));
         this.$goBackBtn.click($.proxy(this.navigateBack, this));
 
-        this.reactInstance.componentDidUpdate = function(prevProps, prevState) {
+        this.reactInstance.componentDidUpdate = function (prevProps, prevState) {
             this.initElements();
             this._initSliders();
         }.bind(this);
@@ -45,22 +45,26 @@ CS.Activities.IdentifyStrengths.Controllers.Page4 = P(CS.Activities.Controller, 
         this.onReRender();
     };
 
-    c.onReRender = function() {
+    c.onReRender = function () {
         this.reactInstance.replaceState({strengths: this.activity.model.accountData.strengths});
     };
 
-    c._initSliders = function() {
+    c._initSliders = function () {
         this.$sliders = this.$rangeInputs.slider({
             min: 1,
             max: 4,
             value: 3,
             tooltip: "always",
-            formatter: function(num) {
-                switch(num) {
-                    case 1: return "Sådär";
-                    case 2: return "Hyfsat";
-                    case 3: return "Ganska väl";
-                    case 4: return "Fullständigt";
+            formatter: function (num) {
+                switch (num) {
+                    case 1:
+                        return "Sådär";
+                    case 2:
+                        return "Viktigt";
+                    case 3:
+                        return "En stark fördel";
+                    case 4:
+                        return "Avgörande";
                 }
             }
         });
@@ -70,15 +74,15 @@ CS.Activities.IdentifyStrengths.Controllers.Page4 = P(CS.Activities.Controller, 
         e.preventDefault();
 
         this.activity.model.accountData.strengths = this.activity.model.accountData.strengths.map(function (strength, index) {
-            var howImportantForEmployer = parseInt(this.$sliders[index].val(), 10);
+            var howImportantForEmployer = parseInt($(this.$sliders[index]).val(), 10);
 
             return {
                 "name": strength.name,
-                "howWellDoesItApply": strength.howWellDoesItApply,
+                "howWellItApplies": strength.howWellItApplies,
                 "howImportantForEmployer": howImportantForEmployer
             };
         }.bind(this));
 
-        this.navigateTo(this.activity.page4Controller.route);
+        this.navigateTo(this.activity.step4Controller.route);
     };
 });

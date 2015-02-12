@@ -114,11 +114,11 @@ form {
     margin: 0 $spacer-unit-size/2;
 
     @include medium-screen {
-      margin: $spacer-unit-size/2 * $medium-screen-ratio-l;
+      margin: 0 $spacer-unit-size/2 * $medium-screen-ratio-l;
     }
 
     @include large-screen {
-      margin: $spacer-unit-size/2 * $large-screen-ratio-l;
+      margin: 0 $spacer-unit-size/2 * $large-screen-ratio-l;
     }
   }
 }

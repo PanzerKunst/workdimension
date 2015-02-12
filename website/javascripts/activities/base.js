@@ -9,7 +9,7 @@ CS.Activities.Base = P(function (c) {
 
         this.model = {
             className: className,
-            accountData: CS.accountData || {}
+            accountData: _.clone(CS.accountData, true) || {}
         };
 
         this.$el.empty();
@@ -37,6 +37,14 @@ CS.Activities.Base = P(function (c) {
 
     c.registerController = function(controllerClass, route) {
         this.controllers[route] = controllerClass;
+    };
+
+    c.preLaunch = function(controllers) {
+        controllers.forEach(function(controller, index) {
+            CS.router.get(controller.route, function (req) {
+                this.renderController(controller.route);
+            }.bind(this));
+        }.bind(this));
     };
 
     c.renderController = function (route, data) {

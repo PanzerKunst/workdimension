@@ -31,3 +31,15 @@
     z-index: $zindex-modal - 1;
   }
 }
+
+.centered-contents {
+  > button {
+    margin: 0 $spacer-unit-size/2;
+    @include medium-screen {
+      margin: 0 $spacer-unit-size/2 * $medium-screen-ratio-l;
+    }
+    @include large-screen {
+      margin: 0 $spacer-unit-size/2 * $large-screen-ratio-l;
+    }
+  }
+}

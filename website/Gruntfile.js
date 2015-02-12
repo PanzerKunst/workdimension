@@ -78,6 +78,7 @@ module.exports = function (grunt) {
                     "javascripts/services/browser.js",
                     "javascripts/services/validator.js",
                     "javascripts/services/animator.js",
+                    "javascripts/services/string.js",
 
                     // Models
                     "javascripts/models/activity.js",
@@ -119,6 +120,7 @@ module.exports = function (grunt) {
                     // Non-React
                     "javascripts/activities/Custom/activity.js",
                     "javascripts/activities/IdentifyStrengths/activity.js",
+                    "javascripts/activities/SpecifyTop1Strength/activity.js",
 
                     // React
                     "public/react-activities.js"

@@ -42,4 +42,16 @@
       } */
     }
   }
+
+  article {
+    $strength-article-top-margin: $spacer-unit-size * 1.5;
+
+    margin-top: $strength-article-top-margin;
+    @include medium-screen {
+      margin-top: $strength-article-top-margin * $medium-screen-ratio-m;
+    }
+    @include large-screen {
+      margin-top: $strength-article-top-margin * $large-screen-ratio-m;
+    }
+  }
 }
