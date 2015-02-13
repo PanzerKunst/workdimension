@@ -10,7 +10,7 @@ CS.Activities.Custom.Controllers.Page1 = P(CS.Activities.Controller, function (c
                         <p className="field-error" data-check="empty"></p>
                     </div>
                     <div className="submit-wrapper">
-                        <button type="submit" className="btn btn-primary" data-loading-text="Saving...">Done</button>
+                        <button type="submit" className="btn btn-primary" data-loading-text="Sparar...">Spara</button>
                     </div>
                 </form>
                 );

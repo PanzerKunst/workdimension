@@ -5,12 +5,9 @@ CS.Activities.SpecifyTop1Strength.Controllers.Step1 = P(CS.Activities.Controller
         },
 
         render: function () {
-            var paragraph = "Vi börjar med att specificera egenskapen lite mer. Vad betyder <strong>" + this.state.strengthName +
-                "</strong> för dig&#63;";
-
             return (
                 <form role="form">
-                    <p dangerouslySetInnerHTML={{__html: paragraph}} />
+                    <p>Vi börjar med att specificera egenskapen lite mer. Vad betyder <strong>{this.state.strengthName}</strong> för dig&#63;</p>
 
                     <div className="form-group">
                         <textarea id="what-this-strength-means" className="form-control"></textarea>

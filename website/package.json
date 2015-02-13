@@ -4,6 +4,7 @@
   "devDependencies": {
     "grunt": "~0.4.5",
     "grunt-contrib-concat": "*",
+    "grunt-contrib-copy": "*",
     "grunt-contrib-cssmin": "*",
     "grunt-contrib-sass": "*",
     "grunt-contrib-watch": "*",

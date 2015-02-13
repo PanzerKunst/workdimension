@@ -1,6 +1,6 @@
 // Libs
 @import "../libs/bourbon/bourbon";
-@import "../libs/bootstrap/bootstrap";
+@import "../libs/bootstrap/stylesheets/bootstrap";
 @import "../libs/js-breakpoints/breakpoints";
 
 // Global
@@ -18,7 +18,11 @@
 @import "partials/header";
 @import "partials/footer";
 @import "partials/activities";
+@import "partials/standouts";
 @import "partials/customActivity";
 
 // Activities
 @import "partials/activities/identifyStrengths";
+
+// Standouts
+@import "partials/standouts/strengths";

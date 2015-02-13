@@ -47,11 +47,52 @@ CS.Standouts.Base = P(function (c) {
 CS.Standouts.Strengths = P(CS.Standouts.Base, function (c, base) {
     c.reactClass = React.createClass({displayName: "reactClass",
         render: function () {
-            var titleContent = this.props.email ? this.props.email : "Anonymous user";
+            var employerAndPosition;
+            if (this.props.employer && this.props.position) {
+                employerAndPosition = (
+                    React.createElement("h1", null, this.props.position, " på ", this.props.employer)
+                    );
+            }
+
+            var sections = this.props.strengths.map(function (strength) {
+                if (strength.specify) {
+                    return [(
+                        React.createElement("section", {className: "section-top with-specify"}, 
+                            React.createElement("h2", null, strength.name), 
+                            React.createElement("span", {className: "glyphicon glyphicon-eye-open", "aria-hidden": "true"})
+                        )
+                        ), (
+                        React.createElement("section", {className: "section-bottom"}, 
+                            React.createElement("span", null, 
+                                React.createElement("span", {className: "glyphicon glyphicon-ok", "aria-hidden": "true"}), 
+                            "Definition"), 
+                            React.createElement("span", null, 
+                                React.createElement("span", {className: "glyphicon glyphicon-ok", "aria-hidden": "true"}), 
+                            "Värde")
+                        )
+                        )];
+                } else {
+                    return [(
+                        React.createElement("section", {className: "section-top"}, 
+                            React.createElement("h2", null, strength.name)
+                        )
+                        ), (
+                        React.createElement("section", {className: "section-bottom"}, 
+                            React.createElement("button", {className: "btn btn-primary"}, "Börja utforska")
+                        )
+                        )];
+                }
+            });
 
             return (
                 React.createElement("div", null, 
-                    React.createElement("h2", null, titleContent)
+                    employerAndPosition, 
+
+                    React.createElement("p", null, "Detta är dina främsta styrkor för rollen."), 
+
+                    sections.map(function (section) {
+                        return (React.createElement("article", null, section));
+                    })
                 )
                 );
         }
@@ -63,10 +104,10 @@ CS.Standouts.Strengths = P(CS.Standouts.Base, function (c, base) {
 
     c.render = function () {
         var data = {
-            email: CS.account.email,
-            strengths: CS.account.data && CS.account.data.strengths ? CS.account.data.strengths.map(function (strength) {
-                return strength.name;
-            }) :
+            employer: CS.account.data.Employer,
+            position: CS.account.data.Position,
+            strengths: CS.account.data && CS.account.data.strengths ?
+                CS.Models.Strength.sort(CS.account.data.strengths) :
                 null
         };
 

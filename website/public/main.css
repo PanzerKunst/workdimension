@@ -253,8 +253,8 @@ th {
     border: 1px solid #ddd !important; } }
 @font-face {
   font-family: 'Glyphicons Halflings';
-  src: url("../fonts/bootstrap/glyphicons-halflings-regular.eot");
-  src: url("../fonts/bootstrap/glyphicons-halflings-regular.eot?#iefix") format("embedded-opentype"), url("../fonts/bootstrap/glyphicons-halflings-regular.woff2") format("woff2"), url("../fonts/bootstrap/glyphicons-halflings-regular.woff") format("woff"), url("../fonts/bootstrap/glyphicons-halflings-regular.ttf") format("truetype"), url("../fonts/bootstrap/glyphicons-halflings-regular.svg#glyphicons_halflingsregular") format("svg"); }
+  src: url("fonts/bootstrap/glyphicons-halflings-regular.eot");
+  src: url("fonts/bootstrap/glyphicons-halflings-regular.eot?#iefix") format("embedded-opentype"), url("fonts/bootstrap/glyphicons-halflings-regular.woff2") format("woff2"), url("fonts/bootstrap/glyphicons-halflings-regular.woff") format("woff"), url("fonts/bootstrap/glyphicons-halflings-regular.ttf") format("truetype"), url("fonts/bootstrap/glyphicons-halflings-regular.svg#glyphicons_halflingsregular") format("svg"); }
 .glyphicon {
   position: relative;
   top: 1px;
@@ -4965,8 +4965,7 @@ iframe,
 embed {
   max-width: 100%; }
 
-a,
-span {
+a {
   display: inline-block; }
 
 html {
@@ -5422,5 +5421,29 @@ footer {
   @media screen and (min-width: 960px) {
     .IdentifyStrengths article {
       margin-top: 33.6px; } }
+
+#Strengths article {
+  border-radius: 4px;
+  border: 1px solid #777777;
+  margin-bottom: 14px; }
+  @media screen and (min-width: 640px) {
+    #Strengths article {
+      margin-bottom: 23.8px; } }
+  @media screen and (min-width: 960px) {
+    #Strengths article {
+      margin-bottom: 35px; } }
+
+.section-top.with-specify:before, .section-top.with-specify:after {
+  content: " ";
+  display: table; }
+.section-top.with-specify:after {
+  clear: both; }
+.section-top.with-specify > h2 {
+  float: left; }
+.section-top.with-specify > .glyphicon-eye-open {
+  float: right; }
+
+.section-bottom {
+  background-color: #eeeeee; }
 
 /*# sourceMappingURL=main.css.map */

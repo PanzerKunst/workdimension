@@ -5,12 +5,9 @@ CS.Activities.SpecifyTop1Strength.Controllers.Step3 = P(CS.Activities.Controller
         },
 
         render: function () {
-            var paragraph = "På vilket sätt kommer det att vara en styrka i rollen som <strong>" + this.state.data.position +
-                "</strong> på <strong>" + this.state.data.employer + "</strong> &#63;";
-
             return (
                 <form role="form">
-                    <p className="well" dangerouslySetInnerHTML={{__html: paragraph}} />
+                    <p className="well">På vilket sätt kommer det att vara en styrka i rollen som <strong>{this.state.data.position}</strong> på <strong>{this.state.data.employer}</strong>&#63;</p>
 
                     <div className="form-group">
                         <textarea id="strength-for-position" className="form-control"></textarea>
@@ -59,7 +56,7 @@ CS.Activities.SpecifyTop1Strength.Controllers.Step3 = P(CS.Activities.Controller
         if (this.validator.isValid()) {
             this.activity.model.account.data.strengths[0].specify.strengthForPosition = this.$strengthForPositionField.val().trim();
 
-            this.postData(function() {
+            this.postData(function () {
                 this.navigateTo(this.activity.step4Controller.route);
             }.bind(this));
         }

@@ -46,13 +46,17 @@ CS.Activities.Controller = P(function (c) {
             url: url,
             type: type,
             contentType: "application/json",
-            data: JSON.stringify(this.activity.model),
+            data: JSON.stringify({
+                className: this.activity.model.className,
+                accountData: this.activity.model.account.data
+            }),
             success: function (data, textStatus, jqXHR) {
                 CS.account.data = this.activity.model.account.data;
 
                 if (callback) {
                     callback();
                 } else {
+                    // TODO this.navigateTo(this.activity.outroController.route);
                     location.href = "/#standouts";
                 }
             }.bind(this),

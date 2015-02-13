@@ -5,12 +5,9 @@ CS.Activities.SpecifyTop1Strength.Controllers.Step4 = P(CS.Activities.Controller
         },
 
         render: function () {
-            var paragraph = "Jättebra! Du har nu definierat hur just du är <strong>" + this.state.data.strengthName +
-                "</strong> och vilket värde det har för jobbet du söker.";
-
             return (
                 <div>
-                    <p className="well" dangerouslySetInnerHTML={{__html: paragraph}} />
+                    <p className="well">Jättebra! Du har nu definierat hur just du är <strong>{this.state.data.strengthName}</strong> och vilket värde det har för jobbet du söker.</p>
 
                     <h2>Definition</h2>
 

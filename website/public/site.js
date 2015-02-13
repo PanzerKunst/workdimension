@@ -679,6 +679,13 @@ CS.defaultAnimationDuration = 0.5;
         done: "DONE"
     }
 };
+;CS.Models.Strength = {
+    sort: function (unsortedStrength) {
+        return _.sortBy(unsortedStrength, function (strength) {
+            return -strength.howWellItApplies - strength.howImportantForEmployer;
+        });
+    }
+};
 ;CS.Controllers = {
     httpStatusCode: {
         noContent: 204,
@@ -1483,7 +1490,7 @@ CS.Controllers.Standouts = P(function (c) {
             return (
                 React.createElement("ul", {className: "styleless"}, 
                     this.state.data.map(function (standout) {
-                        return React.createElement("li", {key: standout.className, id: standout.className, className: "well"});
+                        return React.createElement("li", {key: standout.className, id: standout.className});
                     })
                 )
                 );

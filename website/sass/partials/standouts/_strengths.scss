@@ -1,0 +1,34 @@
+#Strengths {
+  article {
+    border-radius: $border-radius-base;
+    border: 1px solid $gray-light;
+
+    margin-bottom: $spacer-unit-size;
+
+    @include medium-screen {
+      margin-bottom: $spacer-unit-size * $medium-screen-ratio-l;
+    }
+
+    @include large-screen {
+      margin-bottom: $spacer-unit-size * $large-screen-ratio-l;
+    }
+  }
+}
+
+.section-top {
+  &.with-specify {
+    @include clearfix;
+
+    > h2 {
+      float: left;
+    }
+
+    > .glyphicon-eye-open {
+      float: right;
+    }
+  }
+}
+
+.section-bottom {
+  background-color: $gray-lighter;
+}

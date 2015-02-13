@@ -5,29 +5,24 @@ CS.Activities.IdentifyStrengths.Controllers.Step4 = P(CS.Activities.Controller, 
         },
 
         render: function () {
-            var sortedStrengths = _.sortBy(this.state.strengths, function (strength) {
-                return -strength.howWellItApplies - strength.howImportantForEmployer;
-            });
+            var sortedStrengths = CS.Models.Strength.sort(this.state.strengths);
 
             return (
                 <div>
                     <p>Toppen! Du har nu gjort en prioritering av dina starkaste egenskaper för din ansökan.</p>
 
                     {sortedStrengths.map(function (strength) {
-                        var paragraph = "Stämmer <strong>" + this._howWellDoesItApplyFormatter(strength.howWellItApplies) + "</strong> in på dig och är <strong>" +
-                            this._howImportantForEmployerformatter(strength.howImportantForEmployer) + "</strong> för jobbet.";
-
                         return (
                             <article>
                                 <h2>{strength.name}</h2>
-                                <p dangerouslySetInnerHTML={{__html: paragraph}} />
+                                <p>Stämmer <strong>{this._howWellDoesItApplyFormatter(strength.howWellItApplies)}</strong> in på dig och är <strong>{this._howImportantForEmployerformatter(strength.howImportantForEmployer)}</strong> för jobbet.</p>
                             </article>
                             );
                     }.bind(this))}
 
                     <div className="centered-contents">
                         <button type="button" className="btn btn-default">Tillbaka</button>
-                        <button type="button" className="btn btn-primary">Spara</button>
+                        <button type="button" className="btn btn-primary" data-loading-text="Sparar...">Spara</button>
                     </div>
                 </div>
                 );

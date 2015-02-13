@@ -317,7 +317,7 @@ CS.Controllers.Standouts = P(function (c) {
             return (
                 React.createElement("ul", {className: "styleless"}, 
                     this.state.data.map(function (standout) {
-                        return React.createElement("li", {key: standout.className, id: standout.className, className: "well"});
+                        return React.createElement("li", {key: standout.className, id: standout.className});
                     })
                 )
                 );

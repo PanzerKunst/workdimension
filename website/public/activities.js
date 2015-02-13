@@ -124,13 +124,17 @@ CS.Activities.Base.pageAnimationDuration = 0.15;
             url: url,
             type: type,
             contentType: "application/json",
-            data: JSON.stringify(this.activity.model),
+            data: JSON.stringify({
+                className: this.activity.model.className,
+                accountData: this.activity.model.account.data
+            }),
             success: function (data, textStatus, jqXHR) {
                 CS.account.data = this.activity.model.account.data;
 
                 if (callback) {
                     callback();
                 } else {
+                    // TODO this.navigateTo(this.activity.outroController.route);
                     location.href = "/#standouts";
                 }
             }.bind(this),
@@ -250,7 +254,7 @@ CS.Activities.SpecifyTop1Strength.Controllers = {};
                         React.createElement("p", {className: "field-error", "data-check": "empty"})
                     ), 
                     React.createElement("div", {className: "submit-wrapper"}, 
-                        React.createElement("button", {type: "submit", className: "btn btn-primary", "data-loading-text": "Saving..."}, "Done")
+                        React.createElement("button", {type: "submit", className: "btn btn-primary", "data-loading-text": "Sparar..."}, "Spara")
                     )
                 )
                 );
@@ -327,6 +331,39 @@ CS.Activities.IdentifyStrengths.Controllers.Intro = P(CS.Activities.Controller, 
 
         this.navigateTo(this.activity.step1Controller.route);
     };
+});
+
+CS.Activities.IdentifyStrengths.Controllers.Outro = P(CS.Activities.Controller, function (c, base) {
+    c.reactClass = React.createClass({displayName: "reactClass",
+        getInitialState: function () {
+            return {strengths: []};
+        },
+
+        render: function () {
+            var sortedStrengths = CS.Models.Strength.sort(this.state.strengths);
+
+            return (
+                React.createElement("div", null, 
+                    React.createElement("p", null, "Snyggt jobbat! De här egenskaperna sparas ner till dina smalade insikter och vi kan börja definiera" + ' ' +
+                    "dem närmre."), 
+
+                    React.createElement("ol", null, 
+                        sortedStrengths.map(function (strength) {
+                            return (
+                                React.createElement("li", null, strength.name)
+                                );
+                        }.bind(this))
+                    ), 
+
+                    React.createElement("section", null, 
+                        React.createElement("span", null, "Nästa steg"), 
+                        React.createElement("div", {className: "centered-contents"}
+                        )
+                    )
+                )
+                );
+        }
+    });
 });
 
 CS.Activities.IdentifyStrengths.Controllers.Step1 = P(CS.Activities.Controller, function (c, base) {
@@ -624,29 +661,24 @@ CS.Activities.IdentifyStrengths.Controllers.Step4 = P(CS.Activities.Controller, 
         },
 
         render: function () {
-            var sortedStrengths = _.sortBy(this.state.strengths, function (strength) {
-                return -strength.howWellItApplies - strength.howImportantForEmployer;
-            });
+            var sortedStrengths = CS.Models.Strength.sort(this.state.strengths);
 
             return (
                 React.createElement("div", null, 
                     React.createElement("p", null, "Toppen! Du har nu gjort en prioritering av dina starkaste egenskaper för din ansökan."), 
 
                     sortedStrengths.map(function (strength) {
-                        var paragraph = "Stämmer <strong>" + this._howWellDoesItApplyFormatter(strength.howWellItApplies) + "</strong> in på dig och är <strong>" +
-                            this._howImportantForEmployerformatter(strength.howImportantForEmployer) + "</strong> för jobbet.";
-
                         return (
                             React.createElement("article", null, 
                                 React.createElement("h2", null, strength.name), 
-                                React.createElement("p", {dangerouslySetInnerHTML: {__html: paragraph}})
+                                React.createElement("p", null, "Stämmer ", React.createElement("strong", null, this._howWellDoesItApplyFormatter(strength.howWellItApplies)), " in på dig och är ", React.createElement("strong", null, this._howImportantForEmployerformatter(strength.howImportantForEmployer)), " för jobbet.")
                             )
                             );
                     }.bind(this)), 
 
                     React.createElement("div", {className: "centered-contents"}, 
                         React.createElement("button", {type: "button", className: "btn btn-default"}, "Tillbaka"), 
-                        React.createElement("button", {type: "button", className: "btn btn-primary"}, "Spara")
+                        React.createElement("button", {type: "button", className: "btn btn-primary", "data-loading-text": "Sparar..."}, "Spara")
                     )
                 )
                 );
@@ -750,12 +782,9 @@ CS.Activities.SpecifyTop1Strength.Controllers.Step1 = P(CS.Activities.Controller
         },
 
         render: function () {
-            var paragraph = "Vi börjar med att specificera egenskapen lite mer. Vad betyder <strong>" + this.state.strengthName +
-                "</strong> för dig&#63;";
-
             return (
                 React.createElement("form", {role: "form"}, 
-                    React.createElement("p", {dangerouslySetInnerHTML: {__html: paragraph}}), 
+                    React.createElement("p", null, "Vi börjar med att specificera egenskapen lite mer. Vad betyder ", React.createElement("strong", null, this.state.strengthName), " för dig?"), 
 
                     React.createElement("div", {className: "form-group"}, 
                         React.createElement("textarea", {id: "what-this-strength-means", className: "form-control"}), 
@@ -877,12 +906,9 @@ CS.Activities.SpecifyTop1Strength.Controllers.Step3 = P(CS.Activities.Controller
         },
 
         render: function () {
-            var paragraph = "På vilket sätt kommer det att vara en styrka i rollen som <strong>" + this.state.data.position +
-                "</strong> på <strong>" + this.state.data.employer + "</strong> &#63;";
-
             return (
                 React.createElement("form", {role: "form"}, 
-                    React.createElement("p", {className: "well", dangerouslySetInnerHTML: {__html: paragraph}}), 
+                    React.createElement("p", {className: "well"}, "På vilket sätt kommer det att vara en styrka i rollen som ", React.createElement("strong", null, this.state.data.position), " på ", React.createElement("strong", null, this.state.data.employer), "?"), 
 
                     React.createElement("div", {className: "form-group"}, 
                         React.createElement("textarea", {id: "strength-for-position", className: "form-control"}), 
@@ -931,7 +957,7 @@ CS.Activities.SpecifyTop1Strength.Controllers.Step3 = P(CS.Activities.Controller
         if (this.validator.isValid()) {
             this.activity.model.account.data.strengths[0].specify.strengthForPosition = this.$strengthForPositionField.val().trim();
 
-            this.postData(function() {
+            this.postData(function () {
                 this.navigateTo(this.activity.step4Controller.route);
             }.bind(this));
         }
@@ -945,12 +971,9 @@ CS.Activities.SpecifyTop1Strength.Controllers.Step4 = P(CS.Activities.Controller
         },
 
         render: function () {
-            var paragraph = "Jättebra! Du har nu definierat hur just du är <strong>" + this.state.data.strengthName +
-                "</strong> och vilket värde det har för jobbet du söker.";
-
             return (
                 React.createElement("div", null, 
-                    React.createElement("p", {className: "well", dangerouslySetInnerHTML: {__html: paragraph}}), 
+                    React.createElement("p", {className: "well"}, "Jättebra! Du har nu definierat hur just du är ", React.createElement("strong", null, this.state.data.strengthName), " och vilket värde det har för jobbet du söker."), 
 
                     React.createElement("h2", null, "Definition"), 
 

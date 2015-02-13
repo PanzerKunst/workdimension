@@ -82,6 +82,7 @@ module.exports = function (grunt) {
 
                     // Models
                     "javascripts/models/activity.js",
+                    "javascripts/models/strength.js",
 
                     // Controllers
                     "javascripts/controllers/base.js",
@@ -197,6 +198,19 @@ module.exports = function (grunt) {
             }
         },
 
+        copy: {
+            glyphicons: {
+                files: [
+                    {
+                        expand: true,
+                        cwd: "libs/bootstrap/fonts/bootstrap/",
+                        src: ['*'],
+                        dest: 'public/fonts/bootstrap'
+                    }
+                ]
+            }
+        },
+
         watch: {
             js: {
                 files: [
@@ -220,7 +234,7 @@ module.exports = function (grunt) {
         }
     });
 
-    grunt.registerTask('default', ['buildjs', 'buildcss']);
+    grunt.registerTask('default', ['buildjs', 'buildcss', 'copy']);
     grunt.registerTask('buildjs',  ['jshint', 'react:site', 'react:activities', 'react:standouts', 'concat:site', 'concat:c1s', 'concat:activities', 'concat:standouts', 'concat:all']);
     grunt.registerTask('buildcss',  ['sass', 'cssmin']);
 };
