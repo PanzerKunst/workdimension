@@ -67,6 +67,7 @@ CS.Activities.IdentifyStrengths.Controllers.Intro = P(CS.Activities.Controller, 
                     "och på vilket sätt de bidrar till dig sätt att vara."), 
 
                     React.createElement("div", {className: "centered-contents"}, 
+                        React.createElement("button", {type: "button", className: "btn btn-default"}, "Tillbaka"), 
                         React.createElement("button", {type: "button", className: "btn btn-primary"}, "Sätt igång")
                     )
                 )
@@ -75,10 +76,12 @@ CS.Activities.IdentifyStrengths.Controllers.Intro = P(CS.Activities.Controller, 
     });
 
     c.initElements = function () {
+        this.$goBackBtn = this.$el.find(".btn-default");
         this.$goNextStepBtn = this.$el.find(".btn-primary");
     };
 
     c.initEvents = function () {
+        this.$goBackBtn.click($.proxy(this.navigateBack, this));
         this.$goNextStepBtn.click($.proxy(this._navigateNext, this));
     };
 
@@ -509,6 +512,7 @@ CS.Activities.SpecifyTop1Strength.Controllers.Intro = P(CS.Activities.Controller
                     "tillämpas på din roll för att kunna påvisa värdet av den för din framtida arbetsgivare."), 
 
                     React.createElement("div", {className: "centered-contents"}, 
+                        React.createElement("button", {type: "button", className: "btn btn-default"}, "Tillbaka"), 
                         React.createElement("button", {type: "button", className: "btn btn-primary"}, "Sätt igång")
                     )
                 )
@@ -517,10 +521,12 @@ CS.Activities.SpecifyTop1Strength.Controllers.Intro = P(CS.Activities.Controller
     });
 
     c.initElements = function () {
+        this.$goBackBtn = this.$el.find(".btn-default");
         this.$goNextStepBtn = this.$el.find(".btn-primary");
     };
 
     c.initEvents = function () {
+        this.$goBackBtn.click($.proxy(this.navigateBack, this));
         this.$goNextStepBtn.click($.proxy(this._navigateNext, this));
     };
 

@@ -729,7 +729,10 @@ CS.defaultAnimationDuration = 0.5;
         this.$standoutsPanel = this.$tabPanels.filter("#standouts");
 
         this.$feedSection = this.$activitiesPanel.children("#c1-and-activity-feed");
-        this.$currentC1OrActivitySection = this.$activitiesPanel.children("#current-c1-or-activity");
+        this.$currentActivitySection = this.$activitiesPanel.children("#current-activity");
+
+        this.$standoutListSection = this.$standoutsPanel.children("#standout-list");
+        this.$standoutDetailSection = this.$standoutsPanel.children("#standout-detail");
     };
 
     c._initHeaderLinks = function () {
@@ -791,8 +794,11 @@ CS.defaultAnimationDuration = 0.5;
         this.activityFeedController.refreshData();
         this.standoutsController.refreshData();
 
-        this.$currentC1OrActivitySection.hide();
+        this.$currentActivitySection.hide();
         this.$feedSection.show();
+
+        this.$standoutDetailSection.hide();
+        this.$standoutListSection.show();
     };
 
     c._signOut = function (e) {
@@ -1385,7 +1391,7 @@ CS.Controllers.ActivityFeedItem = React.createClass({displayName: "ActivityFeedI
         location.hash = "activities/" + instance.getClassName();
 
         $("#c1-and-activity-feed").hide();
-        $("#current-c1-or-activity").show();
+        $("#current-activity").show();
     }
 });
 
@@ -1502,7 +1508,7 @@ CS.Controllers.Standouts = P(function (c) {
 
         this.reactInstance = React.render(
             React.createElement(this.reactClass),
-            document.getElementById("standouts")
+            document.getElementById("standout-list")
         );
     };
 
@@ -1532,7 +1538,7 @@ CS.Controllers.Standouts = P(function (c) {
                 this.reactInstance.replaceState({ data: allItemInstances });
 
                 allItemInstances.forEach(function(instance, index) {
-                    instance.render();
+                    instance.run();
                 }.bind(this));
             }.bind(this),
             error: function (jqXHR, textStatus, errorThrown) {

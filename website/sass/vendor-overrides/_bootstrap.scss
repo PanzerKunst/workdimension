@@ -18,17 +18,19 @@ body {
   }
 }
 
-button.close {
-  padding: 0 $alert-padding/2;
+button {
+  &.close {
+    padding: 0 $alert-padding/2;
 
-  > .close {
-    margin-top: -6px;
+    > .close {
+      margin-top: -6px;
 
-    @include medium-screen {
-      margin-top: 2px;
-    }
-    @include large-screen {
-      margin-top: 4px;
+      @include medium-screen {
+        margin-top: 2px;
+      }
+      @include large-screen {
+        margin-top: 4px;
+      }
     }
   }
 }

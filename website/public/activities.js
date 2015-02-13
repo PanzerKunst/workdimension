@@ -1,7 +1,7 @@
 CS.Activities = {};
 
 CS.Activities.Base = P(function (c) {
-    c.$el = $("#current-c1-or-activity");
+    c.$el = $("#current-activity");
     c.controllers = {};
 
     c.init = function (className, title) {
@@ -26,7 +26,7 @@ CS.Activities.Base = P(function (c) {
         this.$activitiesPanel = this.$tabPanels.filter("#activities");
 
         this.$feedSection = this.$activitiesPanel.children("#c1-and-activity-feed");
-        this.$currentC1OrActivitySection = this.$activitiesPanel.children("#current-c1-or-activity");
+        this.$currentActivitySection = this.$activitiesPanel.children("#current-activity");
     };
 
     c.getClassName = function () {
@@ -57,7 +57,7 @@ CS.Activities.Base = P(function (c) {
         }
 
         this.$feedSection.hide();
-        this.$currentC1OrActivitySection.show();
+        this.$currentActivitySection.show();
 
         this._hidePagesAndDisplayNext(route, data);
     };
@@ -169,7 +169,7 @@ CS.Activities.Base.pageAnimationDuration = 0.15;
     };
 
     c.preLaunch = function () {
-        // Initialising all app controllers
+        // Initialising all activity controllers
         var controller = CS.Activities.Custom.Controllers.Page1("activities/" + this.model.className, this);
 
         CS.router.get(controller.route, function (req) {
@@ -189,7 +189,7 @@ CS.Activities.Custom.Controllers = {};
     };
 
     c.preLaunch = function() {
-        // Initialising all app controllers
+        // Initialising all activity controllers
         this.introController = CS.Activities.IdentifyStrengths.Controllers.Intro("activities/" + this.model.className, this);
         this.step1Controller = CS.Activities.IdentifyStrengths.Controllers.Step1("activities/" + this.model.className + "/1", this);
         this.step2Controller = CS.Activities.IdentifyStrengths.Controllers.Step2("activities/" + this.model.className + "/2", this);
@@ -222,7 +222,7 @@ CS.Activities.IdentifyStrengths.Controllers = {};
     };
 
     c.preLaunch = function() {
-        // Initialising all app controllers
+        // Initialising all activity controllers
         this.introController = CS.Activities.SpecifyTop1Strength.Controllers.Intro("activities/" + this.model.className, this);
         this.step1Controller = CS.Activities.SpecifyTop1Strength.Controllers.Step1("activities/" + this.model.className + "/1", this);
         this.step2Controller = CS.Activities.SpecifyTop1Strength.Controllers.Step2("activities/" + this.model.className + "/2", this);
@@ -311,6 +311,7 @@ CS.Activities.IdentifyStrengths.Controllers.Intro = P(CS.Activities.Controller, 
                     "och på vilket sätt de bidrar till dig sätt att vara."), 
 
                     React.createElement("div", {className: "centered-contents"}, 
+                        React.createElement("button", {type: "button", className: "btn btn-default"}, "Tillbaka"), 
                         React.createElement("button", {type: "button", className: "btn btn-primary"}, "Sätt igång")
                     )
                 )
@@ -319,10 +320,12 @@ CS.Activities.IdentifyStrengths.Controllers.Intro = P(CS.Activities.Controller, 
     });
 
     c.initElements = function () {
+        this.$goBackBtn = this.$el.find(".btn-default");
         this.$goNextStepBtn = this.$el.find(".btn-primary");
     };
 
     c.initEvents = function () {
+        this.$goBackBtn.click($.proxy(this.navigateBack, this));
         this.$goNextStepBtn.click($.proxy(this._navigateNext, this));
     };
 
@@ -753,6 +756,7 @@ CS.Activities.SpecifyTop1Strength.Controllers.Intro = P(CS.Activities.Controller
                     "tillämpas på din roll för att kunna påvisa värdet av den för din framtida arbetsgivare."), 
 
                     React.createElement("div", {className: "centered-contents"}, 
+                        React.createElement("button", {type: "button", className: "btn btn-default"}, "Tillbaka"), 
                         React.createElement("button", {type: "button", className: "btn btn-primary"}, "Sätt igång")
                     )
                 )
@@ -761,10 +765,12 @@ CS.Activities.SpecifyTop1Strength.Controllers.Intro = P(CS.Activities.Controller
     });
 
     c.initElements = function () {
+        this.$goBackBtn = this.$el.find(".btn-default");
         this.$goNextStepBtn = this.$el.find(".btn-primary");
     };
 
     c.initEvents = function () {
+        this.$goBackBtn.click($.proxy(this.navigateBack, this));
         this.$goNextStepBtn.click($.proxy(this._navigateNext, this));
     };
 

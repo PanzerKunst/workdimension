@@ -136,6 +136,9 @@ module.exports = function (grunt) {
                     // Base
                     "javascripts/standouts/base.js",
 
+                    // Non-React
+                    "javascripts/standouts/Strengths/standout.js",
+
                     // React
                     "public/react-standouts.js"
                 ],

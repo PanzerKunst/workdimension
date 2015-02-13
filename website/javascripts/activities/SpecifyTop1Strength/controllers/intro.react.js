@@ -14,6 +14,7 @@ CS.Activities.SpecifyTop1Strength.Controllers.Intro = P(CS.Activities.Controller
                     tillämpas på din roll för att kunna påvisa värdet av den för din framtida arbetsgivare.</p>
 
                     <div className="centered-contents">
+                        <button type="button" className="btn btn-default">Tillbaka</button>
                         <button type="button" className="btn btn-primary">Sätt igång</button>
                     </div>
                 </div>
@@ -22,10 +23,12 @@ CS.Activities.SpecifyTop1Strength.Controllers.Intro = P(CS.Activities.Controller
     });
 
     c.initElements = function () {
+        this.$goBackBtn = this.$el.find(".btn-default");
         this.$goNextStepBtn = this.$el.find(".btn-primary");
     };
 
     c.initEvents = function () {
+        this.$goBackBtn.click($.proxy(this.navigateBack, this));
         this.$goNextStepBtn.click($.proxy(this._navigateNext, this));
     };
 

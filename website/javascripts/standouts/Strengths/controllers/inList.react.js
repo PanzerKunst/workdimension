@@ -1,10 +1,10 @@
-CS.Standouts.Strengths = P(CS.Standouts.Base, function (c, base) {
+CS.Standouts.Strengths.Controllers.InList = P(function (c) {
     c.reactClass = React.createClass({
         render: function () {
             var employerAndPosition;
             if (this.props.employer && this.props.position) {
                 employerAndPosition = (
-                    <h1>{this.props.position}&nbsp;på&nbsp;{this.props.employer}</h1>
+                    <h1>{this.props.position} på {this.props.employer}</h1>
                     );
             }
 
@@ -13,16 +13,14 @@ CS.Standouts.Strengths = P(CS.Standouts.Base, function (c, base) {
                     return [(
                         <section className="section-top with-specify">
                             <h2>{strength.name}</h2>
-                            <span className="glyphicon glyphicon-eye-open" aria-hidden="true"></span>
+                            <button className="btn btn-default btn-xs">Detaljer</button>
                         </section>
                         ), (
                         <section className="section-bottom">
-                            <span>
-                                <span className="glyphicon glyphicon-ok" aria-hidden="true"></span>
-                            Definition</span>
-                            <span>
-                                <span className="glyphicon glyphicon-ok" aria-hidden="true"></span>
-                            Värde</span>
+                            <span className="glyphicon glyphicon-ok" aria-hidden="true"></span>
+                            <span>Definition</span>
+                            <span className="glyphicon glyphicon-ok" aria-hidden="true"></span>
+                            <span>Värde</span>
                         </section>
                         )];
                 } else {
@@ -38,7 +36,10 @@ CS.Standouts.Strengths = P(CS.Standouts.Base, function (c, base) {
                 }
             });
 
-            return (
+            return _.isEmpty(this.props.strengths) ?
+                (
+                    <div></div>
+                    ) : (
                 <div>
                     {employerAndPosition}
 
@@ -52,19 +53,41 @@ CS.Standouts.Strengths = P(CS.Standouts.Base, function (c, base) {
         }
     });
 
-    c.init = function (className) {
-        base.init.call(this, className);
+    c.init = function (className, detailsController) {
+        this.detailsController = detailsController;
+
+        this.$el = $("#" + className);
+
+        this.render(className);
     };
 
-    c.render = function () {
+    c.render = function (className) {
         var data = {
-            employer: CS.account.data.Employer,
-            position: CS.account.data.Position,
+            employer: CS.account.data && CS.account.data.Employer,
+            position: CS.account.data && CS.account.data.Position,
             strengths: CS.account.data && CS.account.data.strengths ?
                 CS.Models.Strength.sort(CS.account.data.strengths) :
-                null
+                []
         };
 
-        base.render.call(this, data);
+        this.reactInstance = React.render(
+            React.createElement(this.reactClass, data),
+            document.getElementById(className)
+        );
+
+        this._initElements();
+        this._initEvents();
+    };
+
+    c._initElements = function () {
+        this.$detailsBtn = this.$el.find(".btn-xs");
+    };
+
+    c._initEvents = function () {
+        this.$detailsBtn.click($.proxy(this._showDetails, this));
+    };
+
+    c._showDetails = function () {
+        location.hash = this.detailsController.route;
     };
 });

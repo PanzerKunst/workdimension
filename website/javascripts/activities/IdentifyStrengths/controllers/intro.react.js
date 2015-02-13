@@ -12,6 +12,7 @@ CS.Activities.IdentifyStrengths.Controllers.Intro = P(CS.Activities.Controller, 
                     och på vilket sätt de bidrar till dig sätt att vara.</p>
 
                     <div className="centered-contents">
+                        <button type="button" className="btn btn-default">Tillbaka</button>
                         <button type="button" className="btn btn-primary">Sätt igång</button>
                     </div>
                 </div>
@@ -20,10 +21,12 @@ CS.Activities.IdentifyStrengths.Controllers.Intro = P(CS.Activities.Controller, 
     });
 
     c.initElements = function () {
+        this.$goBackBtn = this.$el.find(".btn-default");
         this.$goNextStepBtn = this.$el.find(".btn-primary");
     };
 
     c.initEvents = function () {
+        this.$goBackBtn.click($.proxy(this.navigateBack, this));
         this.$goNextStepBtn.click($.proxy(this._navigateNext, this));
     };
 

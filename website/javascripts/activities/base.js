@@ -1,7 +1,7 @@
 CS.Activities = {};
 
 CS.Activities.Base = P(function (c) {
-    c.$el = $("#current-c1-or-activity");
+    c.$el = $("#current-activity");
     c.controllers = {};
 
     c.init = function (className, title) {
@@ -26,7 +26,7 @@ CS.Activities.Base = P(function (c) {
         this.$activitiesPanel = this.$tabPanels.filter("#activities");
 
         this.$feedSection = this.$activitiesPanel.children("#c1-and-activity-feed");
-        this.$currentC1OrActivitySection = this.$activitiesPanel.children("#current-c1-or-activity");
+        this.$currentActivitySection = this.$activitiesPanel.children("#current-activity");
     };
 
     c.getClassName = function () {
@@ -57,7 +57,7 @@ CS.Activities.Base = P(function (c) {
         }
 
         this.$feedSection.hide();
-        this.$currentC1OrActivitySection.show();
+        this.$currentActivitySection.show();
 
         this._hidePagesAndDisplayNext(route, data);
     };

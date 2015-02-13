@@ -20,7 +20,7 @@ CS.Controllers.Standouts = P(function (c) {
 
         this.reactInstance = React.render(
             React.createElement(this.reactClass),
-            document.getElementById("standouts")
+            document.getElementById("standout-list")
         );
     };
 
@@ -50,7 +50,7 @@ CS.Controllers.Standouts = P(function (c) {
                 this.reactInstance.replaceState({ data: allItemInstances });
 
                 allItemInstances.forEach(function(instance, index) {
-                    instance.render();
+                    instance.run();
                 }.bind(this));
             }.bind(this),
             error: function (jqXHR, textStatus, errorThrown) {

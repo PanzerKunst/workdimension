@@ -5363,7 +5363,7 @@ footer {
     #c1-and-activity-feed li > button {
       float: right; } }
 
-#current-c1-or-activity .tooltip {
+#current-activity .tooltip {
   z-index: 1039; }
 
 .centered-contents > button {
@@ -5440,7 +5440,7 @@ footer {
   clear: both; }
 .section-top.with-specify > h2 {
   float: left; }
-.section-top.with-specify > .glyphicon-eye-open {
+.section-top.with-specify > button {
   float: right; }
 
 .section-bottom {

@@ -212,7 +212,7 @@ CS.Controllers.ActivityFeedItem = React.createClass({displayName: "ActivityFeedI
         location.hash = "activities/" + instance.getClassName();
 
         $("#c1-and-activity-feed").hide();
-        $("#current-c1-or-activity").show();
+        $("#current-activity").show();
     }
 });
 
@@ -329,7 +329,7 @@ CS.Controllers.Standouts = P(function (c) {
 
         this.reactInstance = React.render(
             React.createElement(this.reactClass),
-            document.getElementById("standouts")
+            document.getElementById("standout-list")
         );
     };
 
@@ -359,7 +359,7 @@ CS.Controllers.Standouts = P(function (c) {
                 this.reactInstance.replaceState({ data: allItemInstances });
 
                 allItemInstances.forEach(function(instance, index) {
-                    instance.render();
+                    instance.run();
                 }.bind(this));
             }.bind(this),
             error: function (jqXHR, textStatus, errorThrown) {

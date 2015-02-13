@@ -1,4 +1,4 @@
-CS.Standouts.Custom = P(CS.Standouts.Base, function (c, base) {
+CS.Standouts.Custom = P(function (c) {
     c.reactClass = React.createClass({
         render: function () {
             return (
@@ -11,8 +11,7 @@ CS.Standouts.Custom = P(CS.Standouts.Base, function (c, base) {
     });
 
     c.init = function (className, title) {
-        base.init.call(this, className);
-
+        this.className = className;
         this.title = title;
     };
 
@@ -23,9 +22,16 @@ CS.Standouts.Custom = P(CS.Standouts.Base, function (c, base) {
             data = CS.account.data.custom[this.className];
         }
 
-        base.render.call(this, {
-            title: this.title,
-            data: data
-        });
+        this.reactInstance = React.render(
+            React.createElement(this.reactClass, {
+                title: this.title,
+                data: data
+            }),
+            document.getElementById(this.className)
+        );
+    };
+
+    c.run = function() {
+        this.render();
     };
 });

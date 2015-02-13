@@ -8,7 +8,7 @@ CS.Activities.IdentifyStrengths = P(CS.Activities.Base, function (c, base) {
     };
 
     c.preLaunch = function() {
-        // Initialising all app controllers
+        // Initialising all activity controllers
         this.introController = CS.Activities.IdentifyStrengths.Controllers.Intro("activities/" + this.model.className, this);
         this.step1Controller = CS.Activities.IdentifyStrengths.Controllers.Step1("activities/" + this.model.className + "/1", this);
         this.step2Controller = CS.Activities.IdentifyStrengths.Controllers.Step2("activities/" + this.model.className + "/2", this);
