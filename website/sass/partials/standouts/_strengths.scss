@@ -35,10 +35,6 @@ $strengths-standout-section-margin: 9px;
 } */
 
 .section-top {
-  > h2 {
-
-  }
-
   &.with-specify {
     @include clearfix;
 

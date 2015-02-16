@@ -1,7 +1,7 @@
 CS.Activities.IdentifyStrengths.Controllers.Step1 = P(CS.Activities.Controller, function (c, base) {
     c.reactClass = React.createClass({
         getInitialState: function () {
-            return {data: []};
+            return {strengths: []};
         },
 
         render: function () {
@@ -24,7 +24,7 @@ CS.Activities.IdentifyStrengths.Controllers.Step1 = P(CS.Activities.Controller, 
                     <p className="field-error other-form-error" id="strength-already-added">Denna egenskap har redan lagt</p>
 
                     <ul className="styleless" id="strength-taglist">
-                        {this.state.data.map(function (strength) {
+                        {this.state.strengths.map(function (strength) {
                             return (
                                 <li>
                                     <span className="tag">
@@ -92,10 +92,10 @@ CS.Activities.IdentifyStrengths.Controllers.Step1 = P(CS.Activities.Controller, 
             if (this._isStrengthAlreadyInList(strength)) {
                 this.validator.showErrorMessage(this.$strengthAlreadyAddedError);
             } else {
-                var data = this.reactInstance.state.data;
-                data.push(strength);
+                var strengths = this.reactInstance.state.strengths;
+                strengths.push(strength);
 
-                this.reactInstance.replaceState({ data: data });
+                this.reactInstance.replaceState({ strengths: strengths });
 
                 this.$strengthField.val("");
             }

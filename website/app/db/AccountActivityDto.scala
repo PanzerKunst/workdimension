@@ -12,10 +12,11 @@ object AccountActivityDto {
   def getOfAccountId(accountId: Long): List[ActivitySentToFrontend] = {
     DB.withConnection { implicit c =>
       val query = """
-          select distinct activity_class_name, activity_state, max(creation_timestamp)
+          select distinct activity_class_name, activity_state, max(creation_timestamp) creation_timestamp
           from account_activity
           where account_id = """ + accountId + """
-          group by activity_class_name, activity_state;"""
+          group by activity_class_name, activity_state
+          order by creation_timestamp desc;"""
 
       Logger.info("AccountActivityDto.getOfAccountId():" + query)
 

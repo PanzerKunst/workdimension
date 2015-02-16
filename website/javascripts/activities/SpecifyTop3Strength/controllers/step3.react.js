@@ -1,13 +1,16 @@
 CS.Activities.SpecifyTop3Strength.Controllers.Step3 = P(CS.Activities.Controller, function (c, base) {
     c.reactClass = React.createClass({
         getInitialState: function () {
-            return {data: {}};
+            return {
+                position: null,
+                employer: null
+            };
         },
 
         render: function () {
             return (
                 <form role="form">
-                    <p className="well">På vilket sätt kommer det att vara en styrka i rollen som <strong>{this.state.data.position}</strong> på <strong>{this.state.data.employer}</strong>&#63;</p>
+                    <p className="well">På vilket sätt kommer det att vara en styrka i rollen som <strong>{this.state.position}</strong> på <strong>{this.state.employer}</strong>&#63;</p>
 
                     <div className="form-group">
                         <textarea id="strength-for-position" className="form-control"></textarea>
@@ -48,10 +51,10 @@ CS.Activities.SpecifyTop3Strength.Controllers.Step3 = P(CS.Activities.Controller
         // The submit button may still be in loading state when navigating back. We make sure it doesn't happen
         this.$submitBtn.button('reset');
 
-        this.reactInstance.replaceState({ data: {
+        this.reactInstance.replaceState({
             position: this.activity.model.account.data.Position,
             employer: this.activity.model.account.data.Employer
-        }});
+        });
     };
 
     c._saveAndNavigateNext = function (e) {

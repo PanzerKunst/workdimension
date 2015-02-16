@@ -10,7 +10,9 @@ CS.Controllers.ActivityFeedItem = React.createClass({
         return (
             <li className={liClasses}>
                 <h2>{this.props.activity.instance.getTitle()}</h2>
-                <button className="btn btn-primary" onClick={this._handleClick}>{buttonText}</button>
+                <div className="centered-contents">
+                    <button className="btn btn-primary" onClick={this._handleClick}>{buttonText}</button>
+                </div>
             </li>
             );
     },

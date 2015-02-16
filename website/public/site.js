@@ -1236,18 +1236,41 @@ CS.defaultAnimationDuration = 0.5;
 ;CS.Controllers.ActivityFeed = P(CS.Controllers.Base, function (c, base) {
     c.reactClass = React.createClass({displayName: "reactClass",
         getInitialState: function () {
-            return {data: []};
+            return {
+                undoneC1sAndActivities: [],
+                doneC1sAndActivities: []
+            };
         },
 
         render: function () {
+            var finishedActivitiesTitle;
+            if (!_.isEmpty(this.state.doneC1sAndActivities)) {
+                finishedActivitiesTitle = (
+                    React.createElement("h3", null, "Utförda   aktiviteter")
+                    );
+            }
+
             return (
-                React.createElement("ul", {className: "styleless"}, 
-                    this.state.data.map(function (c1OrActivity) {
+                React.createElement("div", null, 
+                    React.createElement("ul", {className: "styleless"}, 
+                    this.state.undoneC1sAndActivities.map(function (c1OrActivity) {
                         if (c1OrActivity.type === CS.Controllers.ActivityFeed.itemType.c1) {
                             return React.createElement(CS.Controllers.C1FeedItem, {key: c1OrActivity.instance.className, c1: c1OrActivity});
                         }
                         return React.createElement(CS.Controllers.ActivityFeedItem, {key: c1OrActivity.instance.className, activity: c1OrActivity});
                     })
+                    ), 
+
+                    finishedActivitiesTitle, 
+
+                    React.createElement("ul", {className: "styleless"}, 
+                    this.state.doneC1sAndActivities.map(function (c1OrActivity) {
+                        if (c1OrActivity.type === CS.Controllers.ActivityFeed.itemType.c1) {
+                            return React.createElement(CS.Controllers.C1FeedItem, {key: c1OrActivity.instance.className, c1: c1OrActivity});
+                        }
+                        return React.createElement(CS.Controllers.ActivityFeedItem, {key: c1OrActivity.instance.className, activity: c1OrActivity});
+                    })
+                    )
                 )
                 );
         }
@@ -1368,22 +1391,6 @@ CS.defaultAnimationDuration = 0.5;
         var undoneC1sAndActivities = [];
         var doneC1sAndActivities = [];
 
-        this.c1Instances.forEach(function (c1Instance, index) {
-            var isDone = CS.account.data && CS.account.data[c1Instance.getClassName()];
-
-            if (isDone) {
-                doneC1sAndActivities.push({
-                    type: CS.Controllers.ActivityFeed.itemType.c1,
-                    instance: c1Instance
-                });
-            } else {
-                undoneC1sAndActivities.push({
-                    type: CS.Controllers.ActivityFeed.itemType.c1,
-                    instance: c1Instance
-                });
-            }
-        }.bind(this));
-
         activityData.forEach(function (activity) {
             var instance = _.find(this.activityInstances, function (instans) {
                 return instans.getClassName() === activity.className;
@@ -1401,6 +1408,22 @@ CS.defaultAnimationDuration = 0.5;
                     title: instance.getTitle(),
                     instance: instance,
                     isDone: false
+                });
+            }
+        }.bind(this));
+
+        this.c1Instances.forEach(function (c1Instance, index) {
+            var isDone = CS.account.data && CS.account.data[c1Instance.getClassName()];
+
+            if (isDone) {
+                doneC1sAndActivities.push({
+                    type: CS.Controllers.ActivityFeed.itemType.c1,
+                    instance: c1Instance
+                });
+            } else {
+                undoneC1sAndActivities.push({
+                    type: CS.Controllers.ActivityFeed.itemType.c1,
+                    instance: c1Instance
                 });
             }
         }.bind(this));
@@ -1429,7 +1452,10 @@ CS.defaultAnimationDuration = 0.5;
 
         this._showOrHideRegisterReminder(doneC1sAndActivities.length);
 
-        this.reactInstance.replaceState({ data: _.union(undoneC1sAndActivities, doneC1sAndActivities) });
+        this.reactInstance.replaceState({
+            undoneC1sAndActivities: undoneC1sAndActivities,
+            doneC1sAndActivities: doneC1sAndActivities
+        });
     };
 
     c._showOrHideRegisterReminder = function (doneActivitiesCount) {
@@ -1458,7 +1484,9 @@ CS.Controllers.ActivityFeedItem = React.createClass({displayName: "ActivityFeedI
         return (
             React.createElement("li", {className: liClasses}, 
                 React.createElement("h2", null, this.props.activity.instance.getTitle()), 
-                React.createElement("button", {className: "btn btn-primary", onClick: this._handleClick}, buttonText)
+                React.createElement("div", {className: "centered-contents"}, 
+                    React.createElement("button", {className: "btn btn-primary", onClick: this._handleClick}, buttonText)
+                )
             )
             );
     },
@@ -1567,13 +1595,13 @@ CS.Controllers.C1FeedItem = React.createClass({displayName: "C1FeedItem",
 CS.Controllers.Standouts = P(function (c) {
     c.reactClass = React.createClass({displayName: "reactClass",
         getInitialState: function () {
-            return {data: []};
+            return {standoutInstances: []};
         },
 
         render: function () {
             return (
                 React.createElement("ul", {className: "styleless"}, 
-                    this.state.data.map(function (standout) {
+                    this.state.standoutInstances.map(function (standout) {
                         return React.createElement("li", {key: standout.className, id: standout.className});
                     })
                 )
@@ -1613,7 +1641,7 @@ CS.Controllers.Standouts = P(function (c) {
 
                 var allItemInstances = _.union(itemInstancesCustomStandouts, itemInstancesClassicStandouts);
 
-                this.reactInstance.replaceState({ data: allItemInstances });
+                this.reactInstance.replaceState({ standoutInstances: allItemInstances });
 
                 allItemInstances.forEach(function(instance, index) {
                     instance.run();

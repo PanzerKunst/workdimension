@@ -1,13 +1,13 @@
 CS.Controllers.Standouts = P(function (c) {
     c.reactClass = React.createClass({
         getInitialState: function () {
-            return {data: []};
+            return {standoutInstances: []};
         },
 
         render: function () {
             return (
                 <ul className="styleless">
-                    {this.state.data.map(function (standout) {
+                    {this.state.standoutInstances.map(function (standout) {
                         return <li key={standout.className} id={standout.className}></li>;
                     })}
                 </ul>
@@ -47,7 +47,7 @@ CS.Controllers.Standouts = P(function (c) {
 
                 var allItemInstances = _.union(itemInstancesCustomStandouts, itemInstancesClassicStandouts);
 
-                this.reactInstance.replaceState({ data: allItemInstances });
+                this.reactInstance.replaceState({ standoutInstances: allItemInstances });
 
                 allItemInstances.forEach(function(instance, index) {
                     instance.run();

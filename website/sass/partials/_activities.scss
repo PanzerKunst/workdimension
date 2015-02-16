@@ -5,6 +5,19 @@
 }
 
 #c1-and-activity-feed {
+  > div {
+    > h3 {
+      text-align: center;
+      text-transform: uppercase;
+
+      margin-top: $default-spacer-size;
+
+      @include large-screen {
+        margin-top: $default-spacer-size-large-screen;
+      }
+    }
+  }
+
   li {
     @include clearfix;
 
@@ -16,7 +29,7 @@
       margin-bottom: 0;
     }
 
-    > button {
+    > .centered-contents {
       @include medium-screen {
         float: right;
       }
