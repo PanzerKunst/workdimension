@@ -5187,21 +5187,18 @@ form .field-error {
 
 #content,
 nav[role="navigation"],
-#register-reminder {
+#header-alerts {
   margin: 0 auto; }
   @media screen and (min-width: 640px) {
     #content,
     nav[role="navigation"],
-    #register-reminder {
+    #header-alerts {
       max-width: 640px; } }
   @media screen and (min-width: 960px) {
     #content,
     nav[role="navigation"],
-    #register-reminder {
+    #header-alerts {
       max-width: 960px; } }
-
-.alert {
-  display: none; }
 
 .tab-pane {
   background-color: white;
@@ -5263,6 +5260,15 @@ button.close {
     @media screen and (min-width: 960px) {
       button.close > .close {
         margin-top: 4px; } }
+
+.alert > .close {
+  margin-top: -10px; }
+  @media screen and (min-width: 640px) {
+    .alert > .close {
+      margin-top: -5.88235px; } }
+  @media screen and (min-width: 960px) {
+    .alert > .close {
+      margin-top: -4px; } }
 
 .modal-header {
   padding-right: 7.5px; }
@@ -5363,6 +5369,9 @@ h6, .h6 {
 #modal form [type="submit"] {
   display: none; }
 
+#header-alerts > .alert {
+  display: none; }
+
 footer {
   min-height: 42px; }
 
@@ -5402,6 +5411,9 @@ footer {
   @media screen and (min-width: 960px) {
     #custom-activity #content {
       margin-top: 98px; } }
+
+#custom-activity-saved {
+  display: none; }
 
 .IdentifyStrengths #strength-taglist > li {
   margin-top: 14px; }
@@ -5444,6 +5456,8 @@ footer {
     .IdentifyStrengths article {
       margin-top: 33.6px; } }
 
+#Strengths .alert {
+  display: none; }
 #Strengths article {
   border-radius: 4px;
   border: 1px solid #777777;
@@ -5455,6 +5469,18 @@ footer {
     #Strengths article {
       margin-bottom: 35px; } }
 
+/* TODO .section-top > h2,
+.section-bottom > .glyphicon {
+  margin: $strengths-standout-section-margin 0 0 $strengths-standout-section-margin;
+
+  @include medium-screen {
+    margin: $strengths-standout-section-margin*$medium-screen-ratio-l 0 0 $strengths-standout-section-margin*$medium-screen-ratio-l;
+  }
+
+  @include large-screen {
+    margin: $strengths-standout-section-margin*$large-screen-ratio-l 0 0 $strengths-standout-section-margin*$large-screen-ratio-l;
+  }
+} */
 .section-top.with-specify:before, .section-top.with-specify:after {
   content: " ";
   display: table; }

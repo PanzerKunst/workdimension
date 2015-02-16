@@ -30,7 +30,7 @@ CS.Standouts.Strengths.Controllers.InList = P(CS.Controllers.OnePageWebapp, func
                         </section>
                         ), (
                         <section className="section-bottom centered-contents">
-                            <button className="btn btn-primary">Börja utforska</button>
+                            <button className="btn btn-primary btn-xs">Börja utforska</button>
                         </section>
                         )];
                 }
@@ -41,6 +41,20 @@ CS.Standouts.Strengths.Controllers.InList = P(CS.Controllers.OnePageWebapp, func
                     <div></div>
                     ) : (
                 <div>
+                    <div className="alert alert-info">
+                        <button type="button" className="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+
+                        <h2>Styrkor</h2>
+
+                        <p>Alla styrkor som du har hittat sparas här.</p>
+
+                        <p>Varje styrka har ett kort som kan öppnas upp för att visa hur du har definierat styrkan och vilket värde den kan tillföra föreget.</p>
+
+                        <p>Om styrkan har hittats men inte definierats så sparas den också här så du ser vad du ska jobba vidare med!</p>
+                    </div>
+
                     {employerAndPosition}
 
                     <p>Detta är dina främsta styrkor för rollen.</p>
@@ -91,13 +105,31 @@ CS.Standouts.Strengths.Controllers.InList = P(CS.Controllers.OnePageWebapp, func
         this.$tabPanels = $('[role="tabpanel"]');
         this.$activitiesPanel = this.$tabPanels.filter("#activities");
 
+        this.$alert = this.$el.find(".alert");
+
         this.$detailsBtn = this.$el.find(".btn-xs");
         this.$startExploringBtn = this.$el.find(".btn-primary");
+
+        this._displayAlertIfNeverClosed();
     };
 
     c._initEvents = function () {
+        this.$alert.on('close.bs.alert', $.proxy(this._onAlertClose, this));
         this.$detailsBtn.click($.proxy(this._showDetails, this));
         this.$startExploringBtn.click($.proxy(this._activateActivitiesTabAndNavigateToActivity, this));
+    };
+
+    c._displayAlertIfNeverClosed = function() {
+        if (!this.getFromLocalStorage("is-strengths-explanation-alert-closed")) {
+            CS.Services.Animator.fadeIn(this.$alert);
+        }
+    };
+
+    c._onAlertClose = function(e) {
+        e.preventDefault();
+
+        CS.Services.Animator.fadeOut(this.$alert);
+        this.saveInLocalStorage("is-strengths-explanation-alert-closed", true);
     };
 
     c._showDetails = function (e) {
@@ -113,7 +145,7 @@ CS.Standouts.Strengths.Controllers.InList = P(CS.Controllers.OnePageWebapp, func
         this.navigateTo(this.standout.detailsController.route);
     };
 
-    c._activateActivitiesTabAndNavigateToActivity = function(e) {
+    c._activateActivitiesTabAndNavigateToActivity = function (e) {
         var $article = $(e.currentTarget).parent().parent();
 
         var sortedStrengthIndex = parseInt($article.data("strength-index"), 10);

@@ -129,11 +129,14 @@ CS.Activities.Base.pageAnimationDuration = 0.15;
                     callback();
                 } else {
                     // TODO this.navigateTo(this.activity.outroController.route);
-                    this.navigateTo("standouts");
+                    this.navigateTo("insights");
                 }
             }.bind(this),
             error: function (jqXHR, textStatus, errorThrown) {
-                this.$submitBtn.button('reset');
+                if (this.$submitBtn) {
+                    this.$submitBtn.button('reset');
+                }
+
                 alert('AJAX failure doing a ' + type + ' request to "' + url + '"');
             }.bind(this)
         });
@@ -450,7 +453,7 @@ CS.Activities.IdentifyStrengths.Controllers.Step1 = P(CS.Activities.Controller, 
                         React.createElement("p", {className: "field-error", "data-check": "empty"})
                     ), 
 
-                    React.createElement("p", {className: "field-error other-form-error", id: "one-strength-min"}, "Du bör lägga till minst en egensklap"), 
+                    React.createElement("p", {className: "field-error other-form-error", id: "one-strength-min"}, "Minst en egenskap ska läggas till"), 
                     React.createElement("p", {className: "field-error other-form-error", id: "strength-already-added"}, "Denna egenskap har redan lagt"), 
 
                     React.createElement("ul", {className: "styleless", id: "strength-taglist"}, 
@@ -1025,7 +1028,7 @@ CS.Activities.SpecifyTop1Strength.Controllers.Step3 = P(CS.Activities.Controller
 
                     React.createElement("div", {className: "submit-wrapper"}, 
                         React.createElement("button", {type: "button", className: "btn btn-default"}, "Tillbaka"), 
-                        React.createElement("button", {type: "submit", className: "btn btn-primary"}, "Gå vidare")
+                        React.createElement("button", {type: "submit", className: "btn btn-primary", "data-loading-text": "Sparar..."}, "Gå vidare")
                     )
                 )
                 );
@@ -1036,6 +1039,7 @@ CS.Activities.SpecifyTop1Strength.Controllers.Step3 = P(CS.Activities.Controller
         this.$form = this.$el.find("form");
         this.$strengthForPositionField = this.$form.find("#strength-for-position");
         this.$goBackBtn = this.$form.find(".btn-default");
+        this.$submitBtn =  this.$form.find(".btn-primary");
     };
 
     c.initValidation = function () {
@@ -1052,6 +1056,9 @@ CS.Activities.SpecifyTop1Strength.Controllers.Step3 = P(CS.Activities.Controller
     };
 
     c.onReRender = function () {
+        // The submit button may still be in loading state when navigating back. We make sure it doesn't happen
+        this.$submitBtn.button('reset');
+
         this.reactInstance.replaceState({ data: {
             position: this.activity.model.account.data.Position,
             employer: this.activity.model.account.data.Employer
@@ -1060,6 +1067,8 @@ CS.Activities.SpecifyTop1Strength.Controllers.Step3 = P(CS.Activities.Controller
 
     c._saveAndNavigateNext = function (e) {
         e.preventDefault();
+
+        this.$submitBtn.button("loading");
 
         if (this.validator.isValid()) {
             this.activity.model.account.data.strengths[0].specify.strengthForPosition = this.$strengthForPositionField.val().trim();
@@ -1324,6 +1333,7 @@ CS.Activities.SpecifyTop2Strength.Controllers.Step3 = P(CS.Activities.Controller
         this.$form = this.$el.find("form");
         this.$strengthForPositionField = this.$form.find("#strength-for-position");
         this.$goBackBtn = this.$form.find(".btn-default");
+        this.$submitBtn =  this.$form.find(".btn-primary");
     };
 
     c.initValidation = function () {
@@ -1340,6 +1350,9 @@ CS.Activities.SpecifyTop2Strength.Controllers.Step3 = P(CS.Activities.Controller
     };
 
     c.onReRender = function () {
+        // The submit button may still be in loading state when navigating back. We make sure it doesn't happen
+        this.$submitBtn.button('reset');
+
         this.reactInstance.replaceState({ data: {
             position: this.activity.model.account.data.Position,
             employer: this.activity.model.account.data.Employer
@@ -1348,6 +1361,8 @@ CS.Activities.SpecifyTop2Strength.Controllers.Step3 = P(CS.Activities.Controller
 
     c._saveAndNavigateNext = function (e) {
         e.preventDefault();
+
+        this.$submitBtn.button("loading");
 
         if (this.validator.isValid()) {
             this.activity.model.account.data.strengths[1].specify.strengthForPosition = this.$strengthForPositionField.val().trim();
@@ -1612,6 +1627,7 @@ CS.Activities.SpecifyTop3Strength.Controllers.Step3 = P(CS.Activities.Controller
         this.$form = this.$el.find("form");
         this.$strengthForPositionField = this.$form.find("#strength-for-position");
         this.$goBackBtn = this.$form.find(".btn-default");
+        this.$submitBtn =  this.$form.find(".btn-primary");
     };
 
     c.initValidation = function () {
@@ -1628,6 +1644,9 @@ CS.Activities.SpecifyTop3Strength.Controllers.Step3 = P(CS.Activities.Controller
     };
 
     c.onReRender = function () {
+        // The submit button may still be in loading state when navigating back. We make sure it doesn't happen
+        this.$submitBtn.button('reset');
+
         this.reactInstance.replaceState({ data: {
             position: this.activity.model.account.data.Position,
             employer: this.activity.model.account.data.Employer
@@ -1636,6 +1655,8 @@ CS.Activities.SpecifyTop3Strength.Controllers.Step3 = P(CS.Activities.Controller
 
     c._saveAndNavigateNext = function (e) {
         e.preventDefault();
+
+        this.$submitBtn.button("loading");
 
         if (this.validator.isValid()) {
             this.activity.model.account.data.strengths[2].specify.strengthForPosition = this.$strengthForPositionField.val().trim();

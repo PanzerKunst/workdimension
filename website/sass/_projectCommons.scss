@@ -1,6 +1,6 @@
 #content,
 nav[role="navigation"],
-#register-reminder {
+#header-alerts {
   margin: 0 auto;
 
   @include medium-screen {
@@ -9,10 +9,6 @@ nav[role="navigation"],
   @include large-screen {
     max-width: $large-content-width;
   }
-}
-
-.alert {
-  display: none;
 }
 
 .tab-pane {

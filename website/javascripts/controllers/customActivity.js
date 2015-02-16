@@ -86,7 +86,7 @@ CS.Controllers.CustomActivity = P(function (c) {
                 url: url + "?emailAddress=" + emailAddress,
                 type: type,
                 success: function (data, textStatus, jqXHR) {
-                    if (jqXHR.status === CS.Controllers.httpStatusCode.noContent) {
+                    if (jqXHR.status === this.httpStatusCode.noContent) {
                         this.$formGroupEmail.addClass("has-error");
                         this.validator.showErrorMessage(this.$noAccountFoundForThisEmailError);
                     } else {

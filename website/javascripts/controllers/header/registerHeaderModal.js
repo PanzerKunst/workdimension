@@ -51,7 +51,7 @@ CS.Controllers.HeaderModal.Register = P(CS.Controllers.HeaderModal, function (c,
                 contentType: "application/json",
                 data: JSON.stringify(data),
                 success: function (data, textStatus, jqXHR) {
-                    if (jqXHR.status === CS.Controllers.httpStatusCode.emailAlreadyRegistered) {
+                    if (jqXHR.status === this.httpStatusCode.emailAlreadyRegistered) {
                         this.$submitBtn.button('reset');
                         this.validator.showErrorMessage(this.$emailAlreadyRegisteredError);
                     } else {

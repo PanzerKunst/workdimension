@@ -46,7 +46,7 @@ CS.Controllers.HeaderModal.SignIn = P(CS.Controllers.HeaderModal, function (c, b
                 contentType: "application/json",
                 data: JSON.stringify(data),
                 success: function (data, textStatus, jqXHR) {
-                    if (jqXHR.status === CS.Controllers.httpStatusCode.noContent) {
+                    if (jqXHR.status === this.httpStatusCode.noContent) {
                         this.$submitBtn.button('reset');
                         this.validator.showErrorMessage(this.$wrongCredentialsError);
                     } else {

@@ -686,16 +686,35 @@ CS.defaultAnimationDuration = 0.5;
         });
     }
 };
-;CS.Controllers = {
-    httpStatusCode: {
+;CS.Controllers.Base = P(function(c) {
+    c.httpStatusCode = {
         noContent: 204,
         emailAlreadyRegistered: 230
-    },
-    isTemporaryAccount: function () {
+    };
+
+    c.isTemporaryAccount = function () {
         return CS.account.id < 0;
-    }
-};
-;CS.Controllers.OnePageWebapp = P(function (c) {
+    };
+
+    c.saveInLocalStorage = function (key, value) {
+        if (Modernizr.localstorage) {
+            localStorage.setItem(key, JSON.stringify(value));
+        }
+    };
+
+    c.getFromLocalStorage = function (key) {
+        if (Modernizr.localstorage) {
+            return JSON.parse(localStorage.getItem(key));
+        }
+    };
+
+    c.removeFromLocalStorage = function (key) {
+        if (Modernizr.localstorage) {
+            localStorage.removeItem(key);
+        }
+    };
+});
+;CS.Controllers.OnePageWebapp = P(CS.Controllers.Base, function (c, base) {
     c.navigateTo = function (route) {
         location.hash = route;
     };
@@ -704,7 +723,7 @@ CS.defaultAnimationDuration = 0.5;
         history.back();
     };
 });
-;CS.Controllers.Index = P(function (c) {
+;CS.Controllers.Index = P(CS.Controllers.OnePageWebapp, function (c, base) {
     c.init = function (accountId, accountEmail, accountData) {
         CS.account.id = accountId;
         CS.account.email = accountEmail;
@@ -733,6 +752,10 @@ CS.defaultAnimationDuration = 0.5;
         this.$activitiesTab = this.$headerNav.find("#activities-tab");
         this.$standoutsTab = this.$headerNav.find("#standouts-tab");
 
+        this.$headerAlerts = $("#header-alerts");
+        this.$welcomeAlert = this.$headerAlerts.children("#welcome-alert");
+        this.$introToActivitiesAlert = this.$headerAlerts.children("#intro-to-activities-alert");
+
         this.$tabPanels = $('[role="tabpanel"]');
         this.$activitiesPanel = this.$tabPanels.filter("#activities");
         this.$standoutsPanel = this.$tabPanels.filter("#standouts");
@@ -742,10 +765,27 @@ CS.defaultAnimationDuration = 0.5;
 
         this.$standoutListSection = this.$standoutsPanel.children("#standout-list");
         this.$standoutDetailSection = this.$standoutsPanel.children("#standout-detail");
+
+        this._displayWelcomeAlertIfNeeded();
+        this._displayIntroToActivitiesAlertIfNeeded();
+    };
+
+    c._initEvents = function () {
+        this.$activitiesTab.click(function (e) {
+            this.navigateTo("activities");
+        }.bind(this));
+
+        this.$standoutsTab.click(function (e) {
+            this.navigateTo("insights");
+        }.bind(this));
+
+        this.$signOutLink.click($.proxy(this._signOut, this));
+
+        this.$introToActivitiesAlert.on('close.bs.alert', $.proxy(this._onIntroToActivitiesAlertClose, this));
     };
 
     c._initHeaderLinks = function () {
-        if (CS.Controllers.isTemporaryAccount()) {
+        if (this.isTemporaryAccount()) {
             this.$headerLinks.show();
             this.$signOutLink.hide();
         } else {
@@ -753,16 +793,16 @@ CS.defaultAnimationDuration = 0.5;
         }
     };
 
-    c._initEvents = function () {
-        this.$activitiesTab.click(function (e) {
-            location.hash = "activities";
-        });
+    c._displayWelcomeAlertIfNeeded = function () {
+        if (!CS.account.data || !CS.account.data.Employer || !CS.account.data.Position) {
+            CS.Services.Animator.fadeIn(this.$welcomeAlert);
+        }
+    };
 
-        this.$standoutsTab.click(function (e) {
-            location.hash = "standouts";
-        });
-
-        this.$signOutLink.click($.proxy(this._signOut, this));
+    c._displayIntroToActivitiesAlertIfNeeded = function () {
+        if (CS.account.data && CS.account.data.Employer && CS.account.data.Position && !this.getFromLocalStorage("is-intro-to-activities-alert-closed")) {
+            CS.Services.Animator.fadeIn(this.$introToActivitiesAlert);
+        }
     };
 
     c._initRouter = function () {
@@ -774,7 +814,7 @@ CS.defaultAnimationDuration = 0.5;
             this._activateActivitiesPanel();
         }.bind(this));
 
-        CS.router.get("standouts", function (req) {
+        CS.router.get("insights", function (req) {
             this._activateStandoutsPanel();
         }.bind(this));
     };
@@ -799,7 +839,7 @@ CS.defaultAnimationDuration = 0.5;
         this._handlePanelActivated();
     };
 
-    c._handlePanelActivated = function() {
+    c._handlePanelActivated = function () {
         this.activityFeedController.refreshData();
         this.standoutsController.refreshData();
 
@@ -825,6 +865,13 @@ CS.defaultAnimationDuration = 0.5;
             }.bind(this)
         });
     };
+
+    c._onIntroToActivitiesAlertClose = function(e) {
+        e.preventDefault();
+
+        CS.Services.Animator.fadeOut(this.$introToActivitiesAlert);
+        this.saveInLocalStorage("is-intro-to-activities-alert-closed", true);
+    };
 });
 
 ;CS.Controllers.HeaderModal = P(CS.Controllers.OnePageWebapp, function (c, base) {
@@ -846,7 +893,7 @@ CS.defaultAnimationDuration = 0.5;
         this.$modalForms = this.$modal.find("form");
         this.$modalSubmitButtons = this.$modal.find(".modal-footer").find("button");
 
-        this.$registerReminderAlert = $("#register-reminder").children();
+        this.$registerReminderAlert = $("#register-reminder-alert");
     };
 
     c.initEvents = function () {
@@ -962,7 +1009,7 @@ CS.defaultAnimationDuration = 0.5;
                 contentType: "application/json",
                 data: JSON.stringify(data),
                 success: function (data, textStatus, jqXHR) {
-                    if (jqXHR.status === CS.Controllers.httpStatusCode.emailAlreadyRegistered) {
+                    if (jqXHR.status === this.httpStatusCode.emailAlreadyRegistered) {
                         this.$submitBtn.button('reset');
                         this.validator.showErrorMessage(this.$emailAlreadyRegisteredError);
                     } else {
@@ -1040,7 +1087,7 @@ CS.defaultAnimationDuration = 0.5;
                 contentType: "application/json",
                 data: JSON.stringify(data),
                 success: function (data, textStatus, jqXHR) {
-                    if (jqXHR.status === CS.Controllers.httpStatusCode.noContent) {
+                    if (jqXHR.status === this.httpStatusCode.noContent) {
                         this.$submitBtn.button('reset');
                         this.validator.showErrorMessage(this.$wrongCredentialsError);
                     } else {
@@ -1069,7 +1116,7 @@ CS.defaultAnimationDuration = 0.5;
     c.initElements = function () {
         this.$mainRegisterLink = $("#register-link");
 
-        this.$registerLink = $("#register-reminder").find("a");
+        this.$registerLink = $("#register-reminder-alert").find("a");
     };
 
     c.initEvents = function () {
@@ -1168,7 +1215,7 @@ CS.defaultAnimationDuration = 0.5;
                 url: url + "?emailAddress=" + emailAddress,
                 type: type,
                 success: function (data, textStatus, jqXHR) {
-                    if (jqXHR.status === CS.Controllers.httpStatusCode.noContent) {
+                    if (jqXHR.status === this.httpStatusCode.noContent) {
                         this.$formGroupEmail.addClass("has-error");
                         this.validator.showErrorMessage(this.$noAccountFoundForThisEmailError);
                     } else {
@@ -1186,7 +1233,7 @@ CS.defaultAnimationDuration = 0.5;
         }
     };
 });
-;CS.Controllers.ActivityFeed = P(function (c) {
+;CS.Controllers.ActivityFeed = P(CS.Controllers.Base, function (c, base) {
     c.reactClass = React.createClass({displayName: "reactClass",
         getInitialState: function () {
             return {data: []};
@@ -1250,7 +1297,7 @@ CS.defaultAnimationDuration = 0.5;
     };
 
     c._initElements = function () {
-        this.$registerReminderAlert = $("#register-reminder").children();
+        this.$registerReminderAlert = $("#register-reminder-alert");
     };
 
     c.refreshData = function () {
@@ -1386,7 +1433,7 @@ CS.defaultAnimationDuration = 0.5;
     };
 
     c._showOrHideRegisterReminder = function (doneActivitiesCount) {
-        if (CS.Controllers.isTemporaryAccount() && doneActivitiesCount > 0) {
+        if (this.isTemporaryAccount() && doneActivitiesCount > 0) {
             CS.Services.Animator.fadeIn(this.$registerReminderAlert);
         } else {
             CS.Services.Animator.fadeOut(this.$registerReminderAlert);
@@ -1733,11 +1780,14 @@ CS.Activities.Base.pageAnimationDuration = 0.15;
                     callback();
                 } else {
                     // TODO this.navigateTo(this.activity.outroController.route);
-                    this.navigateTo("standouts");
+                    this.navigateTo("insights");
                 }
             }.bind(this),
             error: function (jqXHR, textStatus, errorThrown) {
-                this.$submitBtn.button('reset');
+                if (this.$submitBtn) {
+                    this.$submitBtn.button('reset');
+                }
+
                 alert('AJAX failure doing a ' + type + ' request to "' + url + '"');
             }.bind(this)
         });
@@ -2054,7 +2104,7 @@ CS.Activities.IdentifyStrengths.Controllers.Step1 = P(CS.Activities.Controller, 
                         React.createElement("p", {className: "field-error", "data-check": "empty"})
                     ), 
 
-                    React.createElement("p", {className: "field-error other-form-error", id: "one-strength-min"}, "Du bör lägga till minst en egensklap"), 
+                    React.createElement("p", {className: "field-error other-form-error", id: "one-strength-min"}, "Minst en egenskap ska läggas till"), 
                     React.createElement("p", {className: "field-error other-form-error", id: "strength-already-added"}, "Denna egenskap har redan lagt"), 
 
                     React.createElement("ul", {className: "styleless", id: "strength-taglist"}, 
@@ -2629,7 +2679,7 @@ CS.Activities.SpecifyTop1Strength.Controllers.Step3 = P(CS.Activities.Controller
 
                     React.createElement("div", {className: "submit-wrapper"}, 
                         React.createElement("button", {type: "button", className: "btn btn-default"}, "Tillbaka"), 
-                        React.createElement("button", {type: "submit", className: "btn btn-primary"}, "Gå vidare")
+                        React.createElement("button", {type: "submit", className: "btn btn-primary", "data-loading-text": "Sparar..."}, "Gå vidare")
                     )
                 )
                 );
@@ -2640,6 +2690,7 @@ CS.Activities.SpecifyTop1Strength.Controllers.Step3 = P(CS.Activities.Controller
         this.$form = this.$el.find("form");
         this.$strengthForPositionField = this.$form.find("#strength-for-position");
         this.$goBackBtn = this.$form.find(".btn-default");
+        this.$submitBtn =  this.$form.find(".btn-primary");
     };
 
     c.initValidation = function () {
@@ -2656,6 +2707,9 @@ CS.Activities.SpecifyTop1Strength.Controllers.Step3 = P(CS.Activities.Controller
     };
 
     c.onReRender = function () {
+        // The submit button may still be in loading state when navigating back. We make sure it doesn't happen
+        this.$submitBtn.button('reset');
+
         this.reactInstance.replaceState({ data: {
             position: this.activity.model.account.data.Position,
             employer: this.activity.model.account.data.Employer
@@ -2664,6 +2718,8 @@ CS.Activities.SpecifyTop1Strength.Controllers.Step3 = P(CS.Activities.Controller
 
     c._saveAndNavigateNext = function (e) {
         e.preventDefault();
+
+        this.$submitBtn.button("loading");
 
         if (this.validator.isValid()) {
             this.activity.model.account.data.strengths[0].specify.strengthForPosition = this.$strengthForPositionField.val().trim();
@@ -2928,6 +2984,7 @@ CS.Activities.SpecifyTop2Strength.Controllers.Step3 = P(CS.Activities.Controller
         this.$form = this.$el.find("form");
         this.$strengthForPositionField = this.$form.find("#strength-for-position");
         this.$goBackBtn = this.$form.find(".btn-default");
+        this.$submitBtn =  this.$form.find(".btn-primary");
     };
 
     c.initValidation = function () {
@@ -2944,6 +3001,9 @@ CS.Activities.SpecifyTop2Strength.Controllers.Step3 = P(CS.Activities.Controller
     };
 
     c.onReRender = function () {
+        // The submit button may still be in loading state when navigating back. We make sure it doesn't happen
+        this.$submitBtn.button('reset');
+
         this.reactInstance.replaceState({ data: {
             position: this.activity.model.account.data.Position,
             employer: this.activity.model.account.data.Employer
@@ -2952,6 +3012,8 @@ CS.Activities.SpecifyTop2Strength.Controllers.Step3 = P(CS.Activities.Controller
 
     c._saveAndNavigateNext = function (e) {
         e.preventDefault();
+
+        this.$submitBtn.button("loading");
 
         if (this.validator.isValid()) {
             this.activity.model.account.data.strengths[1].specify.strengthForPosition = this.$strengthForPositionField.val().trim();
@@ -3216,6 +3278,7 @@ CS.Activities.SpecifyTop3Strength.Controllers.Step3 = P(CS.Activities.Controller
         this.$form = this.$el.find("form");
         this.$strengthForPositionField = this.$form.find("#strength-for-position");
         this.$goBackBtn = this.$form.find(".btn-default");
+        this.$submitBtn =  this.$form.find(".btn-primary");
     };
 
     c.initValidation = function () {
@@ -3232,6 +3295,9 @@ CS.Activities.SpecifyTop3Strength.Controllers.Step3 = P(CS.Activities.Controller
     };
 
     c.onReRender = function () {
+        // The submit button may still be in loading state when navigating back. We make sure it doesn't happen
+        this.$submitBtn.button('reset');
+
         this.reactInstance.replaceState({ data: {
             position: this.activity.model.account.data.Position,
             employer: this.activity.model.account.data.Employer
@@ -3240,6 +3306,8 @@ CS.Activities.SpecifyTop3Strength.Controllers.Step3 = P(CS.Activities.Controller
 
     c._saveAndNavigateNext = function (e) {
         e.preventDefault();
+
+        this.$submitBtn.button("loading");
 
         if (this.validator.isValid()) {
             this.activity.model.account.data.strengths[2].specify.strengthForPosition = this.$strengthForPositionField.val().trim();
@@ -3331,6 +3399,20 @@ CS.Standouts.Strengths.Controllers = {};
         render: function () {
             return (
                 React.createElement("div", null, 
+                    React.createElement("div", {className: "modal fade"}, 
+                        React.createElement("div", {className: "modal-dialog"}, 
+                            React.createElement("div", {className: "modal-content"}, 
+                                React.createElement("div", {className: "modal-body"}, 
+                                    React.createElement("p", null, "Ta bort styrka ", React.createElement("strong", null, this.props.strengthName), "?")
+                                ), 
+                                React.createElement("div", {className: "modal-footer"}, 
+                                    React.createElement("button", {type: "button", className: "btn btn-default", "data-dismiss": "modal"}, "Cancel"), 
+                                    React.createElement("button", {type: "button", className: "btn btn-primary js-confirm-delete", "data-loading-text": "Tar bort..."}, "Ta bort styrkan")
+                                )
+                            )
+                        )
+                    ), 
+
                     React.createElement("h1", null, this.props.strengthName), 
 
                     React.createElement("article", {className: "well"}, 
@@ -3350,13 +3432,13 @@ CS.Standouts.Strengths.Controllers = {};
                     ), 
 
                     React.createElement("div", {className: "centered-contents"}, 
-                        React.createElement("button", {type: "button", className: "btn btn-primary"}, 
+                        React.createElement("button", {type: "button", className: "btn btn-primary js-go-back"}, 
                             React.createElement("span", {className: "glyphicon glyphicon-chevron-left", "aria-hidden": "true"}), 
                         "Tillbaka"), 
-                        React.createElement("button", {type: "button", className: "btn btn-default"}, 
+                        React.createElement("button", {type: "button", className: "btn btn-default js-redo-activity"}, 
                             React.createElement("span", {className: "glyphicon glyphicon-repeat", "aria-hidden": "true"}), 
                         "Gör om aktiviteten"), 
-                        React.createElement("button", {type: "button", className: "btn btn-warning", "data-loading-text": "Tar bort..."}, 
+                        React.createElement("button", {type: "button", className: "btn btn-warning"}, 
                             React.createElement("span", {className: "glyphicon glyphicon-trash", "aria-hidden": "true"}), 
                         "Ta bort styrkan")
                     )
@@ -3412,15 +3494,19 @@ CS.Standouts.Strengths.Controllers = {};
         this.$tabPanels = $('[role="tabpanel"]');
         this.$activitiesPanel = this.$tabPanels.filter("#activities");
 
-        this.$goBackBtn = this.$el.find(".btn-primary");
-        this.$redoActivityBtn = this.$el.find(".btn-default");
+        this.$goBackBtn = this.$el.find(".js-go-back");
+        this.$redoActivityBtn = this.$el.find(".js-redo-activity");
         this.$removeStrengthBtn = this.$el.find(".btn-warning");
+
+        this.$modal = this.$el.find(".modal");
+        this.$confirmDeleteBtn = this.$modal.find(".js-confirm-delete");
     };
 
     c._initEvents = function () {
         this.$goBackBtn.click($.proxy(this.navigateBack, this));
         this.$redoActivityBtn.click($.proxy(this._activateActivitiesTabAndNavigateToActivity, this));
-        this.$removeStrengthBtn.click($.proxy(this._removeStrengthAndNavigateBack, this));
+        this.$removeStrengthBtn.click($.proxy(this._showDeletePopup, this));
+        this.$confirmDeleteBtn.click($.proxy(this._removeStrengthAndNavigateBack, this));
     };
 
     c._activateActivitiesTabAndNavigateToActivity = function(e) {
@@ -3433,12 +3519,16 @@ CS.Standouts.Strengths.Controllers = {};
         $("#current-activity").show();
     };
 
-    c._removeStrengthAndNavigateBack = function () {
+    c._showDeletePopup = function(e) {
+        this.$modal.modal();
+    };
+
+    c._removeStrengthAndNavigateBack = function (e) {
         var accountData = _.clone(CS.account.data, true);
 
         accountData.strengths.splice(this.standout.detailData.strengthIndex, 1);
 
-        this.$removeStrengthBtn.button('loading');
+        this.$confirmDeleteBtn.button('loading');
 
         var type = "POST";
         var url = "/api/account-data";
@@ -3453,7 +3543,7 @@ CS.Standouts.Strengths.Controllers = {};
                 this.navigateBack();
             }.bind(this),
             error: function (jqXHR, textStatus, errorThrown) {
-                this.$removeStrengthBtn.button('reset');
+                this.$confirmDeleteBtn.button('reset');
                 alert('AJAX failure doing a ' + type + ' request to "' + url + '"');
             }.bind(this)
         });
@@ -3492,7 +3582,7 @@ CS.Standouts.Strengths.Controllers.InList = P(CS.Controllers.OnePageWebapp, func
                         )
                         ), (
                         React.createElement("section", {className: "section-bottom centered-contents"}, 
-                            React.createElement("button", {className: "btn btn-primary"}, "Börja utforska")
+                            React.createElement("button", {className: "btn btn-primary btn-xs"}, "Börja utforska")
                         )
                         )];
                 }
@@ -3503,6 +3593,20 @@ CS.Standouts.Strengths.Controllers.InList = P(CS.Controllers.OnePageWebapp, func
                     React.createElement("div", null)
                     ) : (
                 React.createElement("div", null, 
+                    React.createElement("div", {className: "alert alert-info"}, 
+                        React.createElement("button", {type: "button", className: "close", "data-dismiss": "alert", "aria-label": "Close"}, 
+                            React.createElement("span", {"aria-hidden": "true"}, "×")
+                        ), 
+
+                        React.createElement("h2", null, "Styrkor"), 
+
+                        React.createElement("p", null, "Alla styrkor som du har hittat sparas här."), 
+
+                        React.createElement("p", null, "Varje styrka har ett kort som kan öppnas upp för att visa hur du har definierat styrkan och vilket värde den kan tillföra föreget."), 
+
+                        React.createElement("p", null, "Om styrkan har hittats men inte definierats så sparas den också här så du ser vad du ska jobba vidare med!")
+                    ), 
+
                     employerAndPosition, 
 
                     React.createElement("p", null, "Detta är dina främsta styrkor för rollen."), 
@@ -3553,13 +3657,31 @@ CS.Standouts.Strengths.Controllers.InList = P(CS.Controllers.OnePageWebapp, func
         this.$tabPanels = $('[role="tabpanel"]');
         this.$activitiesPanel = this.$tabPanels.filter("#activities");
 
+        this.$alert = this.$el.find(".alert");
+
         this.$detailsBtn = this.$el.find(".btn-xs");
         this.$startExploringBtn = this.$el.find(".btn-primary");
+
+        this._displayAlertIfNeverClosed();
     };
 
     c._initEvents = function () {
+        this.$alert.on('close.bs.alert', $.proxy(this._onAlertClose, this));
         this.$detailsBtn.click($.proxy(this._showDetails, this));
         this.$startExploringBtn.click($.proxy(this._activateActivitiesTabAndNavigateToActivity, this));
+    };
+
+    c._displayAlertIfNeverClosed = function() {
+        if (!this.getFromLocalStorage("is-strengths-explanation-alert-closed")) {
+            CS.Services.Animator.fadeIn(this.$alert);
+        }
+    };
+
+    c._onAlertClose = function(e) {
+        e.preventDefault();
+
+        CS.Services.Animator.fadeOut(this.$alert);
+        this.saveInLocalStorage("is-strengths-explanation-alert-closed", true);
     };
 
     c._showDetails = function (e) {
@@ -3575,7 +3697,7 @@ CS.Standouts.Strengths.Controllers.InList = P(CS.Controllers.OnePageWebapp, func
         this.navigateTo(this.standout.detailsController.route);
     };
 
-    c._activateActivitiesTabAndNavigateToActivity = function(e) {
+    c._activateActivitiesTabAndNavigateToActivity = function (e) {
         var $article = $(e.currentTarget).parent().parent();
 
         var sortedStrengthIndex = parseInt($article.data("strength-index"), 10);

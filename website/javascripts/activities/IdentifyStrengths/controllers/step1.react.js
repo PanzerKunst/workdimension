@@ -20,7 +20,7 @@ CS.Activities.IdentifyStrengths.Controllers.Step1 = P(CS.Activities.Controller, 
                         <p className="field-error" data-check="empty"></p>
                     </div>
 
-                    <p className="field-error other-form-error" id="one-strength-min">Du bör lägga till minst en egensklap</p>
+                    <p className="field-error other-form-error" id="one-strength-min">Minst en egenskap ska läggas till</p>
                     <p className="field-error other-form-error" id="strength-already-added">Denna egenskap har redan lagt</p>
 
                     <ul className="styleless" id="strength-taglist">

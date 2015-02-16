@@ -1,4 +1,4 @@
-CS.Controllers.Index = P(function (c) {
+CS.Controllers.Index = P(CS.Controllers.OnePageWebapp, function (c, base) {
     c.init = function (accountId, accountEmail, accountData) {
         CS.account.id = accountId;
         CS.account.email = accountEmail;
@@ -27,6 +27,10 @@ CS.Controllers.Index = P(function (c) {
         this.$activitiesTab = this.$headerNav.find("#activities-tab");
         this.$standoutsTab = this.$headerNav.find("#standouts-tab");
 
+        this.$headerAlerts = $("#header-alerts");
+        this.$welcomeAlert = this.$headerAlerts.children("#welcome-alert");
+        this.$introToActivitiesAlert = this.$headerAlerts.children("#intro-to-activities-alert");
+
         this.$tabPanels = $('[role="tabpanel"]');
         this.$activitiesPanel = this.$tabPanels.filter("#activities");
         this.$standoutsPanel = this.$tabPanels.filter("#standouts");
@@ -36,10 +40,27 @@ CS.Controllers.Index = P(function (c) {
 
         this.$standoutListSection = this.$standoutsPanel.children("#standout-list");
         this.$standoutDetailSection = this.$standoutsPanel.children("#standout-detail");
+
+        this._displayWelcomeAlertIfNeeded();
+        this._displayIntroToActivitiesAlertIfNeeded();
+    };
+
+    c._initEvents = function () {
+        this.$activitiesTab.click(function (e) {
+            this.navigateTo("activities");
+        }.bind(this));
+
+        this.$standoutsTab.click(function (e) {
+            this.navigateTo("insights");
+        }.bind(this));
+
+        this.$signOutLink.click($.proxy(this._signOut, this));
+
+        this.$introToActivitiesAlert.on('close.bs.alert', $.proxy(this._onIntroToActivitiesAlertClose, this));
     };
 
     c._initHeaderLinks = function () {
-        if (CS.Controllers.isTemporaryAccount()) {
+        if (this.isTemporaryAccount()) {
             this.$headerLinks.show();
             this.$signOutLink.hide();
         } else {
@@ -47,16 +68,16 @@ CS.Controllers.Index = P(function (c) {
         }
     };
 
-    c._initEvents = function () {
-        this.$activitiesTab.click(function (e) {
-            location.hash = "activities";
-        });
+    c._displayWelcomeAlertIfNeeded = function () {
+        if (!CS.account.data || !CS.account.data.Employer || !CS.account.data.Position) {
+            CS.Services.Animator.fadeIn(this.$welcomeAlert);
+        }
+    };
 
-        this.$standoutsTab.click(function (e) {
-            location.hash = "standouts";
-        });
-
-        this.$signOutLink.click($.proxy(this._signOut, this));
+    c._displayIntroToActivitiesAlertIfNeeded = function () {
+        if (CS.account.data && CS.account.data.Employer && CS.account.data.Position && !this.getFromLocalStorage("is-intro-to-activities-alert-closed")) {
+            CS.Services.Animator.fadeIn(this.$introToActivitiesAlert);
+        }
     };
 
     c._initRouter = function () {
@@ -68,7 +89,7 @@ CS.Controllers.Index = P(function (c) {
             this._activateActivitiesPanel();
         }.bind(this));
 
-        CS.router.get("standouts", function (req) {
+        CS.router.get("insights", function (req) {
             this._activateStandoutsPanel();
         }.bind(this));
     };
@@ -93,7 +114,7 @@ CS.Controllers.Index = P(function (c) {
         this._handlePanelActivated();
     };
 
-    c._handlePanelActivated = function() {
+    c._handlePanelActivated = function () {
         this.activityFeedController.refreshData();
         this.standoutsController.refreshData();
 
@@ -118,6 +139,13 @@ CS.Controllers.Index = P(function (c) {
                 alert('AJAX failure doing a ' + type + ' request to "' + url + '"');
             }.bind(this)
         });
+    };
+
+    c._onIntroToActivitiesAlertClose = function(e) {
+        e.preventDefault();
+
+        CS.Services.Animator.fadeOut(this.$introToActivitiesAlert);
+        this.saveInLocalStorage("is-intro-to-activities-alert-closed", true);
     };
 });
 

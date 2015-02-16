@@ -49,11 +49,14 @@ CS.Activities.Controller = P(CS.Controllers.OnePageWebapp, function (c, base) {
                     callback();
                 } else {
                     // TODO this.navigateTo(this.activity.outroController.route);
-                    this.navigateTo("standouts");
+                    this.navigateTo("insights");
                 }
             }.bind(this),
             error: function (jqXHR, textStatus, errorThrown) {
-                this.$submitBtn.button('reset');
+                if (this.$submitBtn) {
+                    this.$submitBtn.button('reset');
+                }
+
                 alert('AJAX failure doing a ' + type + ' request to "' + url + '"');
             }.bind(this)
         });

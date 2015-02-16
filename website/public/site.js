@@ -686,16 +686,35 @@ CS.defaultAnimationDuration = 0.5;
         });
     }
 };
-;CS.Controllers = {
-    httpStatusCode: {
+;CS.Controllers.Base = P(function(c) {
+    c.httpStatusCode = {
         noContent: 204,
         emailAlreadyRegistered: 230
-    },
-    isTemporaryAccount: function () {
+    };
+
+    c.isTemporaryAccount = function () {
         return CS.account.id < 0;
-    }
-};
-;CS.Controllers.OnePageWebapp = P(function (c) {
+    };
+
+    c.saveInLocalStorage = function (key, value) {
+        if (Modernizr.localstorage) {
+            localStorage.setItem(key, JSON.stringify(value));
+        }
+    };
+
+    c.getFromLocalStorage = function (key) {
+        if (Modernizr.localstorage) {
+            return JSON.parse(localStorage.getItem(key));
+        }
+    };
+
+    c.removeFromLocalStorage = function (key) {
+        if (Modernizr.localstorage) {
+            localStorage.removeItem(key);
+        }
+    };
+});
+;CS.Controllers.OnePageWebapp = P(CS.Controllers.Base, function (c, base) {
     c.navigateTo = function (route) {
         location.hash = route;
     };
@@ -704,7 +723,7 @@ CS.defaultAnimationDuration = 0.5;
         history.back();
     };
 });
-;CS.Controllers.Index = P(function (c) {
+;CS.Controllers.Index = P(CS.Controllers.OnePageWebapp, function (c, base) {
     c.init = function (accountId, accountEmail, accountData) {
         CS.account.id = accountId;
         CS.account.email = accountEmail;
@@ -733,6 +752,10 @@ CS.defaultAnimationDuration = 0.5;
         this.$activitiesTab = this.$headerNav.find("#activities-tab");
         this.$standoutsTab = this.$headerNav.find("#standouts-tab");
 
+        this.$headerAlerts = $("#header-alerts");
+        this.$welcomeAlert = this.$headerAlerts.children("#welcome-alert");
+        this.$introToActivitiesAlert = this.$headerAlerts.children("#intro-to-activities-alert");
+
         this.$tabPanels = $('[role="tabpanel"]');
         this.$activitiesPanel = this.$tabPanels.filter("#activities");
         this.$standoutsPanel = this.$tabPanels.filter("#standouts");
@@ -742,10 +765,27 @@ CS.defaultAnimationDuration = 0.5;
 
         this.$standoutListSection = this.$standoutsPanel.children("#standout-list");
         this.$standoutDetailSection = this.$standoutsPanel.children("#standout-detail");
+
+        this._displayWelcomeAlertIfNeeded();
+        this._displayIntroToActivitiesAlertIfNeeded();
+    };
+
+    c._initEvents = function () {
+        this.$activitiesTab.click(function (e) {
+            this.navigateTo("activities");
+        }.bind(this));
+
+        this.$standoutsTab.click(function (e) {
+            this.navigateTo("insights");
+        }.bind(this));
+
+        this.$signOutLink.click($.proxy(this._signOut, this));
+
+        this.$introToActivitiesAlert.on('close.bs.alert', $.proxy(this._onIntroToActivitiesAlertClose, this));
     };
 
     c._initHeaderLinks = function () {
-        if (CS.Controllers.isTemporaryAccount()) {
+        if (this.isTemporaryAccount()) {
             this.$headerLinks.show();
             this.$signOutLink.hide();
         } else {
@@ -753,16 +793,16 @@ CS.defaultAnimationDuration = 0.5;
         }
     };
 
-    c._initEvents = function () {
-        this.$activitiesTab.click(function (e) {
-            location.hash = "activities";
-        });
+    c._displayWelcomeAlertIfNeeded = function () {
+        if (!CS.account.data || !CS.account.data.Employer || !CS.account.data.Position) {
+            CS.Services.Animator.fadeIn(this.$welcomeAlert);
+        }
+    };
 
-        this.$standoutsTab.click(function (e) {
-            location.hash = "standouts";
-        });
-
-        this.$signOutLink.click($.proxy(this._signOut, this));
+    c._displayIntroToActivitiesAlertIfNeeded = function () {
+        if (CS.account.data && CS.account.data.Employer && CS.account.data.Position && !this.getFromLocalStorage("is-intro-to-activities-alert-closed")) {
+            CS.Services.Animator.fadeIn(this.$introToActivitiesAlert);
+        }
     };
 
     c._initRouter = function () {
@@ -774,7 +814,7 @@ CS.defaultAnimationDuration = 0.5;
             this._activateActivitiesPanel();
         }.bind(this));
 
-        CS.router.get("standouts", function (req) {
+        CS.router.get("insights", function (req) {
             this._activateStandoutsPanel();
         }.bind(this));
     };
@@ -799,7 +839,7 @@ CS.defaultAnimationDuration = 0.5;
         this._handlePanelActivated();
     };
 
-    c._handlePanelActivated = function() {
+    c._handlePanelActivated = function () {
         this.activityFeedController.refreshData();
         this.standoutsController.refreshData();
 
@@ -825,6 +865,13 @@ CS.defaultAnimationDuration = 0.5;
             }.bind(this)
         });
     };
+
+    c._onIntroToActivitiesAlertClose = function(e) {
+        e.preventDefault();
+
+        CS.Services.Animator.fadeOut(this.$introToActivitiesAlert);
+        this.saveInLocalStorage("is-intro-to-activities-alert-closed", true);
+    };
 });
 
 ;CS.Controllers.HeaderModal = P(CS.Controllers.OnePageWebapp, function (c, base) {
@@ -846,7 +893,7 @@ CS.defaultAnimationDuration = 0.5;
         this.$modalForms = this.$modal.find("form");
         this.$modalSubmitButtons = this.$modal.find(".modal-footer").find("button");
 
-        this.$registerReminderAlert = $("#register-reminder").children();
+        this.$registerReminderAlert = $("#register-reminder-alert");
     };
 
     c.initEvents = function () {
@@ -962,7 +1009,7 @@ CS.defaultAnimationDuration = 0.5;
                 contentType: "application/json",
                 data: JSON.stringify(data),
                 success: function (data, textStatus, jqXHR) {
-                    if (jqXHR.status === CS.Controllers.httpStatusCode.emailAlreadyRegistered) {
+                    if (jqXHR.status === this.httpStatusCode.emailAlreadyRegistered) {
                         this.$submitBtn.button('reset');
                         this.validator.showErrorMessage(this.$emailAlreadyRegisteredError);
                     } else {
@@ -1040,7 +1087,7 @@ CS.defaultAnimationDuration = 0.5;
                 contentType: "application/json",
                 data: JSON.stringify(data),
                 success: function (data, textStatus, jqXHR) {
-                    if (jqXHR.status === CS.Controllers.httpStatusCode.noContent) {
+                    if (jqXHR.status === this.httpStatusCode.noContent) {
                         this.$submitBtn.button('reset');
                         this.validator.showErrorMessage(this.$wrongCredentialsError);
                     } else {
@@ -1069,7 +1116,7 @@ CS.defaultAnimationDuration = 0.5;
     c.initElements = function () {
         this.$mainRegisterLink = $("#register-link");
 
-        this.$registerLink = $("#register-reminder").find("a");
+        this.$registerLink = $("#register-reminder-alert").find("a");
     };
 
     c.initEvents = function () {
@@ -1168,7 +1215,7 @@ CS.defaultAnimationDuration = 0.5;
                 url: url + "?emailAddress=" + emailAddress,
                 type: type,
                 success: function (data, textStatus, jqXHR) {
-                    if (jqXHR.status === CS.Controllers.httpStatusCode.noContent) {
+                    if (jqXHR.status === this.httpStatusCode.noContent) {
                         this.$formGroupEmail.addClass("has-error");
                         this.validator.showErrorMessage(this.$noAccountFoundForThisEmailError);
                     } else {
@@ -1186,7 +1233,7 @@ CS.defaultAnimationDuration = 0.5;
         }
     };
 });
-;CS.Controllers.ActivityFeed = P(function (c) {
+;CS.Controllers.ActivityFeed = P(CS.Controllers.Base, function (c, base) {
     c.reactClass = React.createClass({displayName: "reactClass",
         getInitialState: function () {
             return {data: []};
@@ -1250,7 +1297,7 @@ CS.defaultAnimationDuration = 0.5;
     };
 
     c._initElements = function () {
-        this.$registerReminderAlert = $("#register-reminder").children();
+        this.$registerReminderAlert = $("#register-reminder-alert");
     };
 
     c.refreshData = function () {
@@ -1386,7 +1433,7 @@ CS.defaultAnimationDuration = 0.5;
     };
 
     c._showOrHideRegisterReminder = function (doneActivitiesCount) {
-        if (CS.Controllers.isTemporaryAccount() && doneActivitiesCount > 0) {
+        if (this.isTemporaryAccount() && doneActivitiesCount > 0) {
             CS.Services.Animator.fadeIn(this.$registerReminderAlert);
         } else {
             CS.Services.Animator.fadeOut(this.$registerReminderAlert);

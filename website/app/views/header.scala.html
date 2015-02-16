@@ -1,7 +1,7 @@
 <section id="header-links">
-    <a id="register-link">Register</a>
-    <a id="sign-in-link">Sign in</a>
-    <a id="sign-out-link">Sign out</a>
+    <a id="register-link">Registrera mig</a>
+    <a id="sign-in-link">Logga in</a>
+    <a id="sign-out-link">Logga ut</a>
 </section>
 
 <div class="modal fade" id="modal">
@@ -11,85 +11,107 @@
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
-                <h2 class="modal-title" id="register-modal-title">Register</h2>
-                <h2 class="modal-title" id="sign-in-modal-title">Sign in</h2>
+                <h2 class="modal-title" id="register-modal-title">Registrering</h2>
+                <h2 class="modal-title" id="sign-in-modal-title">Inloggning</h2>
             </div>
             <div class="modal-body">
                 <form role="form" id="register-form">
                     <div class="form-group">
-                        <label for="email-register">Email</label>
+                        <label for="email-register">Epost address</label>
                         <input type="text" id="email-register" class="form-control" />
 
                         <p class="field-error" data-check="empty"></p>
-                        <p class="field-error" data-check="email">This email address doesn't look right...</p>
+                        <p class="field-error" data-check="email">Detta epost ser konstigt ut...</p>
                     </div>
 
                     <div class="form-group">
-                        <label for="password-register">Password</label>
+                        <label for="password-register">Lösenord</label>
                         <input type="password" id="password-register" class="form-control" />
 
                         <p class="field-error" data-check="empty"></p>
                     </div>
 
                     <div class="form-group">
-                        <label for="password-confirmation">Confirm password</label>
+                        <label for="password-confirmation">Bekräfta lösenord</label>
                         <input type="password" id="password-confirmation" class="form-control" />
 
                         <p class="field-error" data-check="empty"></p>
                     </div>
 
-                    <p class="field-error other-form-error" id="password-do-not-match">The passwords do not match...</p>
-                    <p class="field-error other-form-error" id="email-already-registered">This email is already registered</p>
+                    <p class="field-error other-form-error" id="password-do-not-match">Lösenorden matchar inte</p>
+                    <p class="field-error other-form-error" id="email-already-registered">Denna epost address redan registreras</p>
 
                     <button type="submit"></button>
 
-                    <p>Already got an account&#63; <a class="switch-modal-link">Sign in</a></p>
+                    <p>Har du ett konto redan&#63; <a class="switch-modal-link">Logga in</a></p>
                 </form>
 
                 <form role="form" id="sign-in-form">
                     <div class="form-group">
-                        <label for="email-sign-in">Email</label>
+                        <label for="email-sign-in">Epost address</label>
                         <input type="text" id="email-sign-in" class="form-control" />
 
                         <p class="field-error" data-check="empty"></p>
-                        <p class="field-error" data-check="email">This email address doesn't look right...</p>
+                        <p class="field-error" data-check="email">Denna epost address ser konstigt ut...</p>
                     </div>
 
                     <div class="form-group">
-                        <label for="password-sign-in">Password</label>
+                        <label for="password-sign-in">Lösenord</label>
                         <input type="password" id="password-sign-in" class="form-control" />
 
                         <p class="field-error" data-check="empty"></p>
                     </div>
 
-                    <p class="field-error other-form-error">Wrong credentials :( Please try again!</p>
+                    <p class="field-error other-form-error">Inloggning misslyckades :( Kolla på epost address och lösenord, tack!</p>
 
                     <button type="submit"></button>
 
-                    <p>Having an issue signing in&#63; <a href="mailto:hello@@workdimension.com">Contact us</a></p>
+                    <p>Har du ett problem med att logga in&#63; <a href="mailto:hello@@workdimension.com">Kontakta oss</a></p>
 
-                    <p>No account yet&#63; <a class="switch-modal-link">Register</a></p>
+                    <p>Inget konto&#63; <a class="switch-modal-link">Registrera dig</a></p>
                 </form>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-primary" id="register-modal-submit-btn" data-loading-text="Registering...">Register</button>
-                <button type="button" class="btn btn-primary" id="sign-in-modal-submit-btn" data-loading-text="Signing in...">Sign in</button>
+                <button type="button" class="btn btn-primary" id="register-modal-submit-btn" data-loading-text="Registerar...">Registrera mig</button>
+                <button type="button" class="btn btn-primary" id="sign-in-modal-submit-btn" data-loading-text="Loggar in...">Logga in</button>
             </div>
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
 
-<section id="register-reminder">
-    <div class="alert alert-info">
-        <p>Congratulations! You have completed your first activity.</p>
-        <p>You can <a>register</a> to save your progress.</p>
+<section id="header-alerts">
+    <div class="alert alert-info" id="welcome-alert">
+        <h2>Välkommen till Workdimension!</h2>
+
+        <p>Bla bla bla.</p>
+    </div>
+
+    <div class="alert alert-info" id="intro-to-activities-alert">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+
+        <h2>Aktiviteter att göra</h2>
+
+        <p>Det dyker upp ett kort i flödet så fort det finns något nytt att göra. Om kortet öppnas så startas en övning.</p>
+
+        <p>Den första övningen är hitta vilka styrkor som efterfrågas i annonsen till jobbet du söker.</p>
+
+        <p>När du hittat några styrkor kommer det nya övningar som handlar om beskriva styrkorna du just har hittat.</p>
+
+        <p>Det är bara att sätta igång!</p>
+    </div>
+
+    <div class="alert alert-info" id="register-reminder-alert">
+        <p>Grattis! Du har klarat din först aktivitet.</p>
+        <p>Du kan <a>registrera</a> dig för att skapa dina framsteg.</p>
     </div>
 </section>
 
 <nav role="navigation">
     <!-- TODO button>Menu</button -->
     <ul class="nav nav-tabs" role="tablist">
-        <li role="presentation" class="active"><a id="activities-tab" aria-controls="activities" role="tab" data-toggle="tab">Activities</a></li>
-        <li role="presentation"><a id="standouts-tab" aria-controls="standouts" role="tab" data-toggle="tab">Standouts</a></li>
+        <li role="presentation" class="active"><a id="activities-tab" aria-controls="activities" role="tab" data-toggle="tab">Aktiviteter</a></li>
+        <li role="presentation"><a id="standouts-tab" aria-controls="standouts" role="tab" data-toggle="tab">Insikter</a></li>
     </ul>
 </nav>

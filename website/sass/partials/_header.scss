@@ -37,3 +37,9 @@
     }
   }
 }
+
+#header-alerts {
+  > .alert {
+    display: none;
+  }
+}

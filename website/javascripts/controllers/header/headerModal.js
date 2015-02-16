@@ -17,7 +17,7 @@ CS.Controllers.HeaderModal = P(CS.Controllers.OnePageWebapp, function (c, base) 
         this.$modalForms = this.$modal.find("form");
         this.$modalSubmitButtons = this.$modal.find(".modal-footer").find("button");
 
-        this.$registerReminderAlert = $("#register-reminder").children();
+        this.$registerReminderAlert = $("#register-reminder-alert");
     };
 
     c.initEvents = function () {

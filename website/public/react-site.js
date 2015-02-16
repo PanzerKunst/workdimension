@@ -1,4 +1,4 @@
-CS.Controllers.ActivityFeed = P(function (c) {
+CS.Controllers.ActivityFeed = P(CS.Controllers.Base, function (c, base) {
     c.reactClass = React.createClass({displayName: "reactClass",
         getInitialState: function () {
             return {data: []};
@@ -62,7 +62,7 @@ CS.Controllers.ActivityFeed = P(function (c) {
     };
 
     c._initElements = function () {
-        this.$registerReminderAlert = $("#register-reminder").children();
+        this.$registerReminderAlert = $("#register-reminder-alert");
     };
 
     c.refreshData = function () {
@@ -198,7 +198,7 @@ CS.Controllers.ActivityFeed = P(function (c) {
     };
 
     c._showOrHideRegisterReminder = function (doneActivitiesCount) {
-        if (CS.Controllers.isTemporaryAccount() && doneActivitiesCount > 0) {
+        if (this.isTemporaryAccount() && doneActivitiesCount > 0) {
             CS.Services.Animator.fadeIn(this.$registerReminderAlert);
         } else {
             CS.Services.Animator.fadeOut(this.$registerReminderAlert);

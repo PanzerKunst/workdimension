@@ -3,6 +3,20 @@ CS.Standouts.Strengths.Controllers.Details = P(CS.Controllers.OnePageWebapp, fun
         render: function () {
             return (
                 React.createElement("div", null, 
+                    React.createElement("div", {className: "modal fade"}, 
+                        React.createElement("div", {className: "modal-dialog"}, 
+                            React.createElement("div", {className: "modal-content"}, 
+                                React.createElement("div", {className: "modal-body"}, 
+                                    React.createElement("p", null, "Ta bort styrka ", React.createElement("strong", null, this.props.strengthName), "?")
+                                ), 
+                                React.createElement("div", {className: "modal-footer"}, 
+                                    React.createElement("button", {type: "button", className: "btn btn-default", "data-dismiss": "modal"}, "Cancel"), 
+                                    React.createElement("button", {type: "button", className: "btn btn-primary js-confirm-delete", "data-loading-text": "Tar bort..."}, "Ta bort styrkan")
+                                )
+                            )
+                        )
+                    ), 
+
                     React.createElement("h1", null, this.props.strengthName), 
 
                     React.createElement("article", {className: "well"}, 
@@ -22,13 +36,13 @@ CS.Standouts.Strengths.Controllers.Details = P(CS.Controllers.OnePageWebapp, fun
                     ), 
 
                     React.createElement("div", {className: "centered-contents"}, 
-                        React.createElement("button", {type: "button", className: "btn btn-primary"}, 
+                        React.createElement("button", {type: "button", className: "btn btn-primary js-go-back"}, 
                             React.createElement("span", {className: "glyphicon glyphicon-chevron-left", "aria-hidden": "true"}), 
                         "Tillbaka"), 
-                        React.createElement("button", {type: "button", className: "btn btn-default"}, 
+                        React.createElement("button", {type: "button", className: "btn btn-default js-redo-activity"}, 
                             React.createElement("span", {className: "glyphicon glyphicon-repeat", "aria-hidden": "true"}), 
                         "Gör om aktiviteten"), 
-                        React.createElement("button", {type: "button", className: "btn btn-warning", "data-loading-text": "Tar bort..."}, 
+                        React.createElement("button", {type: "button", className: "btn btn-warning"}, 
                             React.createElement("span", {className: "glyphicon glyphicon-trash", "aria-hidden": "true"}), 
                         "Ta bort styrkan")
                     )
@@ -84,15 +98,19 @@ CS.Standouts.Strengths.Controllers.Details = P(CS.Controllers.OnePageWebapp, fun
         this.$tabPanels = $('[role="tabpanel"]');
         this.$activitiesPanel = this.$tabPanels.filter("#activities");
 
-        this.$goBackBtn = this.$el.find(".btn-primary");
-        this.$redoActivityBtn = this.$el.find(".btn-default");
+        this.$goBackBtn = this.$el.find(".js-go-back");
+        this.$redoActivityBtn = this.$el.find(".js-redo-activity");
         this.$removeStrengthBtn = this.$el.find(".btn-warning");
+
+        this.$modal = this.$el.find(".modal");
+        this.$confirmDeleteBtn = this.$modal.find(".js-confirm-delete");
     };
 
     c._initEvents = function () {
         this.$goBackBtn.click($.proxy(this.navigateBack, this));
         this.$redoActivityBtn.click($.proxy(this._activateActivitiesTabAndNavigateToActivity, this));
-        this.$removeStrengthBtn.click($.proxy(this._removeStrengthAndNavigateBack, this));
+        this.$removeStrengthBtn.click($.proxy(this._showDeletePopup, this));
+        this.$confirmDeleteBtn.click($.proxy(this._removeStrengthAndNavigateBack, this));
     };
 
     c._activateActivitiesTabAndNavigateToActivity = function(e) {
@@ -105,12 +123,16 @@ CS.Standouts.Strengths.Controllers.Details = P(CS.Controllers.OnePageWebapp, fun
         $("#current-activity").show();
     };
 
-    c._removeStrengthAndNavigateBack = function () {
+    c._showDeletePopup = function(e) {
+        this.$modal.modal();
+    };
+
+    c._removeStrengthAndNavigateBack = function (e) {
         var accountData = _.clone(CS.account.data, true);
 
         accountData.strengths.splice(this.standout.detailData.strengthIndex, 1);
 
-        this.$removeStrengthBtn.button('loading');
+        this.$confirmDeleteBtn.button('loading');
 
         var type = "POST";
         var url = "/api/account-data";
@@ -125,7 +147,7 @@ CS.Standouts.Strengths.Controllers.Details = P(CS.Controllers.OnePageWebapp, fun
                 this.navigateBack();
             }.bind(this),
             error: function (jqXHR, textStatus, errorThrown) {
-                this.$removeStrengthBtn.button('reset');
+                this.$confirmDeleteBtn.button('reset');
                 alert('AJAX failure doing a ' + type + ' request to "' + url + '"');
             }.bind(this)
         });
@@ -164,7 +186,7 @@ CS.Standouts.Strengths.Controllers.InList = P(CS.Controllers.OnePageWebapp, func
                         )
                         ), (
                         React.createElement("section", {className: "section-bottom centered-contents"}, 
-                            React.createElement("button", {className: "btn btn-primary"}, "Börja utforska")
+                            React.createElement("button", {className: "btn btn-primary btn-xs"}, "Börja utforska")
                         )
                         )];
                 }
@@ -175,6 +197,20 @@ CS.Standouts.Strengths.Controllers.InList = P(CS.Controllers.OnePageWebapp, func
                     React.createElement("div", null)
                     ) : (
                 React.createElement("div", null, 
+                    React.createElement("div", {className: "alert alert-info"}, 
+                        React.createElement("button", {type: "button", className: "close", "data-dismiss": "alert", "aria-label": "Close"}, 
+                            React.createElement("span", {"aria-hidden": "true"}, "×")
+                        ), 
+
+                        React.createElement("h2", null, "Styrkor"), 
+
+                        React.createElement("p", null, "Alla styrkor som du har hittat sparas här."), 
+
+                        React.createElement("p", null, "Varje styrka har ett kort som kan öppnas upp för att visa hur du har definierat styrkan och vilket värde den kan tillföra föreget."), 
+
+                        React.createElement("p", null, "Om styrkan har hittats men inte definierats så sparas den också här så du ser vad du ska jobba vidare med!")
+                    ), 
+
                     employerAndPosition, 
 
                     React.createElement("p", null, "Detta är dina främsta styrkor för rollen."), 
@@ -225,13 +261,31 @@ CS.Standouts.Strengths.Controllers.InList = P(CS.Controllers.OnePageWebapp, func
         this.$tabPanels = $('[role="tabpanel"]');
         this.$activitiesPanel = this.$tabPanels.filter("#activities");
 
+        this.$alert = this.$el.find(".alert");
+
         this.$detailsBtn = this.$el.find(".btn-xs");
         this.$startExploringBtn = this.$el.find(".btn-primary");
+
+        this._displayAlertIfNeverClosed();
     };
 
     c._initEvents = function () {
+        this.$alert.on('close.bs.alert', $.proxy(this._onAlertClose, this));
         this.$detailsBtn.click($.proxy(this._showDetails, this));
         this.$startExploringBtn.click($.proxy(this._activateActivitiesTabAndNavigateToActivity, this));
+    };
+
+    c._displayAlertIfNeverClosed = function() {
+        if (!this.getFromLocalStorage("is-strengths-explanation-alert-closed")) {
+            CS.Services.Animator.fadeIn(this.$alert);
+        }
+    };
+
+    c._onAlertClose = function(e) {
+        e.preventDefault();
+
+        CS.Services.Animator.fadeOut(this.$alert);
+        this.saveInLocalStorage("is-strengths-explanation-alert-closed", true);
     };
 
     c._showDetails = function (e) {
@@ -247,7 +301,7 @@ CS.Standouts.Strengths.Controllers.InList = P(CS.Controllers.OnePageWebapp, func
         this.navigateTo(this.standout.detailsController.route);
     };
 
-    c._activateActivitiesTabAndNavigateToActivity = function(e) {
+    c._activateActivitiesTabAndNavigateToActivity = function (e) {
         var $article = $(e.currentTarget).parent().parent();
 
         var sortedStrengthIndex = parseInt($article.data("strength-index"), 10);

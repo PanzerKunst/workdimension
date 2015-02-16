@@ -3,6 +3,20 @@ CS.Standouts.Strengths.Controllers.Details = P(CS.Controllers.OnePageWebapp, fun
         render: function () {
             return (
                 <div>
+                    <div className="modal fade">
+                        <div className="modal-dialog">
+                            <div className="modal-content">
+                                <div className="modal-body">
+                                    <p>Ta bort styrka <strong>{this.props.strengthName}</strong>&#63;</p>
+                                </div>
+                                <div className="modal-footer">
+                                    <button type="button" className="btn btn-default" data-dismiss="modal">Cancel</button>
+                                    <button type="button" className="btn btn-primary js-confirm-delete" data-loading-text="Tar bort...">Ta bort styrkan</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                     <h1>{this.props.strengthName}</h1>
 
                     <article className="well">
@@ -22,13 +36,13 @@ CS.Standouts.Strengths.Controllers.Details = P(CS.Controllers.OnePageWebapp, fun
                     </article>
 
                     <div className="centered-contents">
-                        <button type="button" className="btn btn-primary">
+                        <button type="button" className="btn btn-primary js-go-back">
                             <span className="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
                         Tillbaka</button>
-                        <button type="button" className="btn btn-default">
+                        <button type="button" className="btn btn-default js-redo-activity">
                             <span className="glyphicon glyphicon-repeat" aria-hidden="true"></span>
                         Gör om aktiviteten</button>
-                        <button type="button" className="btn btn-warning" data-loading-text="Tar bort...">
+                        <button type="button" className="btn btn-warning">
                             <span className="glyphicon glyphicon-trash" aria-hidden="true"></span>
                         Ta bort styrkan</button>
                     </div>
@@ -84,15 +98,19 @@ CS.Standouts.Strengths.Controllers.Details = P(CS.Controllers.OnePageWebapp, fun
         this.$tabPanels = $('[role="tabpanel"]');
         this.$activitiesPanel = this.$tabPanels.filter("#activities");
 
-        this.$goBackBtn = this.$el.find(".btn-primary");
-        this.$redoActivityBtn = this.$el.find(".btn-default");
+        this.$goBackBtn = this.$el.find(".js-go-back");
+        this.$redoActivityBtn = this.$el.find(".js-redo-activity");
         this.$removeStrengthBtn = this.$el.find(".btn-warning");
+
+        this.$modal = this.$el.find(".modal");
+        this.$confirmDeleteBtn = this.$modal.find(".js-confirm-delete");
     };
 
     c._initEvents = function () {
         this.$goBackBtn.click($.proxy(this.navigateBack, this));
         this.$redoActivityBtn.click($.proxy(this._activateActivitiesTabAndNavigateToActivity, this));
-        this.$removeStrengthBtn.click($.proxy(this._removeStrengthAndNavigateBack, this));
+        this.$removeStrengthBtn.click($.proxy(this._showDeletePopup, this));
+        this.$confirmDeleteBtn.click($.proxy(this._removeStrengthAndNavigateBack, this));
     };
 
     c._activateActivitiesTabAndNavigateToActivity = function(e) {
@@ -105,12 +123,16 @@ CS.Standouts.Strengths.Controllers.Details = P(CS.Controllers.OnePageWebapp, fun
         $("#current-activity").show();
     };
 
-    c._removeStrengthAndNavigateBack = function () {
+    c._showDeletePopup = function(e) {
+        this.$modal.modal();
+    };
+
+    c._removeStrengthAndNavigateBack = function (e) {
         var accountData = _.clone(CS.account.data, true);
 
         accountData.strengths.splice(this.standout.detailData.strengthIndex, 1);
 
-        this.$removeStrengthBtn.button('loading');
+        this.$confirmDeleteBtn.button('loading');
 
         var type = "POST";
         var url = "/api/account-data";
@@ -125,7 +147,7 @@ CS.Standouts.Strengths.Controllers.Details = P(CS.Controllers.OnePageWebapp, fun
                 this.navigateBack();
             }.bind(this),
             error: function (jqXHR, textStatus, errorThrown) {
-                this.$removeStrengthBtn.button('reset');
+                this.$confirmDeleteBtn.button('reset');
                 alert('AJAX failure doing a ' + type + ' request to "' + url + '"');
             }.bind(this)
         });

@@ -35,6 +35,21 @@ button {
   }
 }
 
+.alert {
+  > .close {
+    $alert-close-btn-margin-top: -10px;
+
+    margin-top: $alert-close-btn-margin-top;
+
+    @include medium-screen {
+      margin-top: $alert-close-btn-margin-top / $medium-screen-ratio-l;
+    }
+    @include large-screen {
+      margin-top: $alert-close-btn-margin-top / $large-screen-ratio-l;
+    }
+  }
+}
+
 .modal-header {
   // We reduce the padding-right, because we have added some to the close button, to make it more easily clickable
   padding-right: $alert-padding / 2;
