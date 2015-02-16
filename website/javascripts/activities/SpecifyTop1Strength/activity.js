@@ -6,11 +6,10 @@ CS.Activities.SpecifyTop1Strength = P(CS.Activities.Base, function (c, base) {
     c.isDoable = function() {
         return this.model.account.data.Employer &&
             this.model.account.data.Position &&
-            this.model.account.data.strengths &&
-            this.model.account.data.strengths.length > 0;
+            !_.isEmpty(this.model.account.data.strengths);
     };
 
-    c.preLaunch = function() {
+    c.initControllers = function() {
         // Initialising all activity controllers
         this.introController = CS.Activities.SpecifyTop1Strength.Controllers.Intro("activities/" + this.model.className, this);
         this.step1Controller = CS.Activities.SpecifyTop1Strength.Controllers.Step1("activities/" + this.model.className + "/1", this);
@@ -26,7 +25,7 @@ CS.Activities.SpecifyTop1Strength = P(CS.Activities.Base, function (c, base) {
             this.step4Controller
         ];
 
-        base.preLaunch.call(this, controllers);
+        this.initRouting(controllers);
     };
 });
 

@@ -695,6 +695,15 @@ CS.defaultAnimationDuration = 0.5;
         return CS.account.id < 0;
     }
 };
+;CS.Controllers.OnePageWebapp = P(function (c) {
+    c.navigateTo = function (route) {
+        location.hash = route;
+    };
+
+    c.navigateBack = function () {
+        history.back();
+    };
+});
 ;CS.Controllers.Index = P(function (c) {
     c.init = function (accountId, accountEmail, accountData) {
         CS.account.id = accountId;
@@ -818,7 +827,7 @@ CS.defaultAnimationDuration = 0.5;
     };
 });
 
-;CS.Controllers.HeaderModal = P(function (c) {
+;CS.Controllers.HeaderModal = P(CS.Controllers.OnePageWebapp, function (c, base) {
     c.init = function () {
         this.initElements();
         this.initValidation();
@@ -858,7 +867,7 @@ CS.defaultAnimationDuration = 0.5;
 
         this.$registerReminderAlert.hide();
 
-        location.hash = "activities";
+        this.navigateTo("activities");
 
         this.$modal.modal('hide');
 
@@ -1224,6 +1233,14 @@ CS.defaultAnimationDuration = 0.5;
             {
                 className: "SpecifyTop1Strength",
                 title: "Stick ut från mängden"
+            },
+            {
+                className: "SpecifyTop2Strength",
+                title: "Stick ut från mängden"
+            },
+            {
+                className: "SpecifyTop3Strength",
+                title: "Stick ut från mängden"
             }
         ];
 
@@ -1254,7 +1271,23 @@ CS.defaultAnimationDuration = 0.5;
                 }.bind(this));
 
                 var classicActivityInstances = this.activityFeedItems.map(function (item, index) {
-                    return CS.Activities[item.className](item.className, item.title);
+                    var title = item.title;
+                    if (item.className === "SpecifyTop1Strength" &&
+                        CS.account.data && !_.isEmpty(CS.account.data.strengths)) {
+                        title += ": " + CS.account.data.strengths[0].name;
+                    } else if (item.className === "SpecifyTop2Strength" &&
+                        CS.account.data &&
+                        CS.account.data.strengths &&
+                        CS.account.data.strengths.length > 1) {
+                        title += ": " + CS.account.data.strengths[1].name;
+                    } else if (item.className === "SpecifyTop3Strength" &&
+                        CS.account.data &&
+                        CS.account.data.strengths &&
+                        CS.account.data.strengths.length > 2) {
+                        title += ": " + CS.account.data.strengths[2].name;
+                    }
+
+                    return CS.Activities[item.className](item.className, title);
                 }.bind(this));
 
                 this.activityInstances = _.union(customActivityInstances, classicActivityInstances);
@@ -1288,7 +1321,7 @@ CS.defaultAnimationDuration = 0.5;
         var undoneC1sAndActivities = [];
         var doneC1sAndActivities = [];
 
-        this.c1Instances.forEach(function(c1Instance, index) {
+        this.c1Instances.forEach(function (c1Instance, index) {
             var isDone = CS.account.data && CS.account.data[c1Instance.getClassName()];
 
             if (isDone) {
@@ -1385,8 +1418,6 @@ CS.Controllers.ActivityFeedItem = React.createClass({displayName: "ActivityFeedI
     
     _handleClick: function (e) {
         var instance = this.props.activity.instance;
-
-        instance.preLaunch();
 
         location.hash = "activities/" + instance.getClassName();
 

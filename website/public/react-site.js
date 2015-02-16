@@ -45,6 +45,14 @@ CS.Controllers.ActivityFeed = P(function (c) {
             {
                 className: "SpecifyTop1Strength",
                 title: "Stick ut från mängden"
+            },
+            {
+                className: "SpecifyTop2Strength",
+                title: "Stick ut från mängden"
+            },
+            {
+                className: "SpecifyTop3Strength",
+                title: "Stick ut från mängden"
             }
         ];
 
@@ -75,7 +83,23 @@ CS.Controllers.ActivityFeed = P(function (c) {
                 }.bind(this));
 
                 var classicActivityInstances = this.activityFeedItems.map(function (item, index) {
-                    return CS.Activities[item.className](item.className, item.title);
+                    var title = item.title;
+                    if (item.className === "SpecifyTop1Strength" &&
+                        CS.account.data && !_.isEmpty(CS.account.data.strengths)) {
+                        title += ": " + CS.account.data.strengths[0].name;
+                    } else if (item.className === "SpecifyTop2Strength" &&
+                        CS.account.data &&
+                        CS.account.data.strengths &&
+                        CS.account.data.strengths.length > 1) {
+                        title += ": " + CS.account.data.strengths[1].name;
+                    } else if (item.className === "SpecifyTop3Strength" &&
+                        CS.account.data &&
+                        CS.account.data.strengths &&
+                        CS.account.data.strengths.length > 2) {
+                        title += ": " + CS.account.data.strengths[2].name;
+                    }
+
+                    return CS.Activities[item.className](item.className, title);
                 }.bind(this));
 
                 this.activityInstances = _.union(customActivityInstances, classicActivityInstances);
@@ -109,7 +133,7 @@ CS.Controllers.ActivityFeed = P(function (c) {
         var undoneC1sAndActivities = [];
         var doneC1sAndActivities = [];
 
-        this.c1Instances.forEach(function(c1Instance, index) {
+        this.c1Instances.forEach(function (c1Instance, index) {
             var isDone = CS.account.data && CS.account.data[c1Instance.getClassName()];
 
             if (isDone) {
@@ -206,8 +230,6 @@ CS.Controllers.ActivityFeedItem = React.createClass({displayName: "ActivityFeedI
     
     _handleClick: function (e) {
         var instance = this.props.activity.instance;
-
-        instance.preLaunch();
 
         location.hash = "activities/" + instance.getClassName();
 

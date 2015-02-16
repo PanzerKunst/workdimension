@@ -147,6 +147,9 @@ CS.Activities.IdentifyStrengths.Controllers.Step1 = P(CS.Activities.Controller, 
                         React.createElement("p", {className: "field-error", "data-check": "empty"})
                     ), 
 
+                    React.createElement("p", {className: "field-error other-form-error", id: "one-strength-min"}, "Du bör lägga till minst en egensklap"), 
+                    React.createElement("p", {className: "field-error other-form-error", id: "strength-already-added"}, "Denna egenskap har redan lagt"), 
+
                     React.createElement("ul", {className: "styleless", id: "strength-taglist"}, 
                         this.state.data.map(function (strength) {
                             return (
@@ -182,6 +185,10 @@ CS.Activities.IdentifyStrengths.Controllers.Step1 = P(CS.Activities.Controller, 
     c.initElements = function () {
         this.$form = this.$el.find("form");
         this.$strengthField = this.$form.find("#strength");
+
+        this.$oneStrengthMinError = this.$form.find("#one-strength-min");
+        this.$strengthAlreadyAddedError = this.$form.find("#strength-already-added");
+
         this.$strengthTagList = this.$form.find("#strength-taglist");
         this.$goBackBtn = this.$form.find(".go-back");
         this.$goNextStepBtn = this.$form.find(".btn-primary");
@@ -202,26 +209,62 @@ CS.Activities.IdentifyStrengths.Controllers.Step1 = P(CS.Activities.Controller, 
     c._addStrengthToList = function (e) {
         e.preventDefault();
 
+        this.validator.hideErrorMessage(this.$strengthAlreadyAddedError);
+
         if (this.validator.isValid()) {
+            this.validator.hideErrorMessage(this.$oneStrengthMinError);
+
             var strength = this.$strengthField.val().trim();
-            var data = this.reactInstance.state.data;
-            data.push(strength);
 
-            this.reactInstance.replaceState({ data: data });
+            if (this._isStrengthAlreadyInList(strength)) {
+                this.validator.showErrorMessage(this.$strengthAlreadyAddedError);
+            } else {
+                var data = this.reactInstance.state.data;
+                data.push(strength);
 
-            this.$strengthField.val("");
+                this.reactInstance.replaceState({ data: data });
+
+                this.$strengthField.val("");
+            }
         }
     };
 
-    c._saveAndNavigateNext = function (e) {
-        // Because "map()" returns an object, see http://xahlee.info/js/js_convert_array-like.html
-        this.activity.model.account.data.strengths = Array.prototype.slice.call(
-            this.$strengthTagList.children().find(".tag").children("span").map(function (index) {
-                return {"name": this.innerHTML};
-            })
-        );
+    c._isThereAtLeastOneStrengthInList = function ($l1stItems) {
+        var $listItems = $l1stItems || this.$strengthTagList.children();
 
-        this.navigateTo(this.activity.step2Controller.route);
+        return $listItems && $listItems.length > 0;
+    };
+
+    c._isStrengthAlreadyInList = function (strength) {
+        var $listItems = this.$strengthTagList.children();
+
+        if (!this._isThereAtLeastOneStrengthInList($listItems)) {
+            return false;
+        }
+
+        for (var i = 0; i < $listItems.length; i++) {
+            var span = $($listItems[i]).children().children("span")[0];
+            if (span.innerHTML === strength) {
+                return true;
+            }
+        }
+
+        return false;
+    };
+
+    c._saveAndNavigateNext = function (e) {
+        if (!this._isThereAtLeastOneStrengthInList()) {
+            this.validator.showErrorMessage(this.$oneStrengthMinError);
+        } else {
+            // Because jQuery's "map()" function returns an object, see http://xahlee.info/js/js_convert_array-like.html
+            this.activity.model.account.data.strengths = Array.prototype.slice.call(
+                this.$strengthTagList.children().children().children("span").map(function (index, span) {
+                    return {"name": span.innerHTML};
+                })
+            );
+
+            this.navigateTo(this.activity.step2Controller.route);
+        }
     };
 });
 
@@ -420,13 +463,11 @@ CS.Activities.IdentifyStrengths.Controllers.Step4 = P(CS.Activities.Controller, 
         },
 
         render: function () {
-            var sortedStrengths = CS.Models.Strength.sort(this.state.strengths);
-
             return (
                 React.createElement("div", null, 
                     React.createElement("p", null, "Toppen! Du har nu gjort en prioritering av dina starkaste egenskaper för din ansökan."), 
 
-                    sortedStrengths.map(function (strength) {
+                    this.state.strengths.map(function (strength) {
                         return (
                             React.createElement("article", null, 
                                 React.createElement("h2", null, strength.name), 
@@ -483,6 +524,7 @@ CS.Activities.IdentifyStrengths.Controllers.Step4 = P(CS.Activities.Controller, 
     };
 
     c.onReRender = function () {
+        this.activity.model.account.data.strengths = CS.Models.Strength.sort(this.activity.model.account.data.strengths);
         this.reactInstance.replaceState({strengths: this.activity.model.account.data.strengths});
 
         // The submit button may still be in loading state when navigating back. We make sure it doesn't happen
@@ -768,6 +810,582 @@ CS.Activities.SpecifyTop1Strength.Controllers.Step4 = P(CS.Activities.Controller
 
     c.onReRender = function () {
         var strength = this.activity.model.account.data.strengths[0];
+
+        var howWellItAppliesAsHtml = CS.Services.String.textToHtml(strength.specify.howWellItApplies);
+        var strengthForPositionAsHtml = CS.Services.String.textToHtml(strength.specify.strengthForPosition);
+
+        this.reactInstance.replaceState({ data: {
+            strengthName: strength.name,
+            howWellItApplies: howWellItAppliesAsHtml,
+            strengthForPosition: strengthForPositionAsHtml
+        }});
+    };
+
+    c._navigateHome = function (e) {
+        this.navigateTo("");
+    };
+});
+
+CS.Activities.SpecifyTop2Strength.Controllers.Intro = P(CS.Activities.Controller, function (c, base) {
+    c.reactClass = React.createClass({displayName: "reactClass",
+        render: function () {
+            return (
+                React.createElement("div", null, 
+                    React.createElement("h1", null, "Stick ut från mängden"), 
+
+                    React.createElement("p", null, "Visste du att de tre vanligast angivna egenskaperna i jobbansökningar är kreativ, analytisk och passionerad?"), 
+
+                    React.createElement("p", null, "Vi använder ofta vaga termer när vi beskriver oss själva. Dessutom är egenskaperna som efterfrågas i jobbannonser" + ' ' +
+                    "ofta ganska generiska eller tvetydigt formulerade."), 
+
+                    React.createElement("p", null, "I den här övningen hjälper vi dig att definiera vad en specifik egenskap ennebär för just dig och hur den kan" + ' ' +
+                    "tillämpas på din roll för att kunna påvisa värdet av den för din framtida arbetsgivare."), 
+
+                    React.createElement("div", {className: "centered-contents"}, 
+                        React.createElement("button", {type: "button", className: "btn btn-default"}, "Tillbaka"), 
+                        React.createElement("button", {type: "button", className: "btn btn-primary"}, "Sätt igång")
+                    )
+                )
+                );
+        }
+    });
+
+    c.initElements = function () {
+        this.$goBackBtn = this.$el.find(".btn-default");
+        this.$goNextStepBtn = this.$el.find(".btn-primary");
+    };
+
+    c.initEvents = function () {
+        this.$goBackBtn.click($.proxy(this.navigateBack, this));
+        this.$goNextStepBtn.click($.proxy(this._navigateNext, this));
+    };
+
+    c._navigateNext = function (e) {
+        this.activity.model.account.data.strengths[1].specify = this.activity.model.account.data.strengths[1].specify || {};
+
+        this.navigateTo(this.activity.step1Controller.route);
+    };
+});
+
+CS.Activities.SpecifyTop2Strength.Controllers.Step1 = P(CS.Activities.Controller, function (c, base) {
+    c.reactClass = React.createClass({displayName: "reactClass",
+        getInitialState: function () {
+            return {strengthName: {}};
+        },
+
+        render: function () {
+            return (
+                React.createElement("form", {role: "form"}, 
+                    React.createElement("p", null, "Vi börjar med att specificera egenskapen lite mer. Vad betyder ", React.createElement("strong", null, this.state.strengthName), " för dig?"), 
+
+                    React.createElement("div", {className: "form-group"}, 
+                        React.createElement("textarea", {id: "what-this-strength-means", className: "form-control"}), 
+
+                        React.createElement("p", {className: "field-error", "data-check": "empty"})
+                    ), 
+
+                    React.createElement("div", {className: "submit-wrapper"}, 
+                        React.createElement("button", {type: "button", className: "btn btn-default"}, "Tillbaka"), 
+                        React.createElement("button", {type: "submit", className: "btn btn-primary"}, "Gå vidare")
+                    )
+                )
+                );
+        }
+    });
+
+    c.initElements = function () {
+        this.$form = this.$el.find("form");
+        this.$whatItMeansField = this.$form.find("#what-this-strength-means");
+        this.$goBackBtn = this.$form.find(".btn-default");
+    };
+
+    c.initValidation = function () {
+        this.validator = CS.Services.Validator([
+            "what-this-strength-means"
+        ]);
+    };
+
+    c.initEvents = function () {
+        this.$form.submit($.proxy(this._saveAndNavigateNext, this));
+        this.$goBackBtn.click($.proxy(this.navigateBack, this));
+
+        this.onReRender();
+    };
+
+    c.onReRender = function () {
+        this.reactInstance.replaceState({strengthName: this.activity.model.account.data.strengths[1].name});
+    };
+
+    c._saveAndNavigateNext = function (e) {
+        e.preventDefault();
+
+        if (this.validator.isValid()) {
+            this.activity.model.account.data.strengths[1].specify.whatItMeans = this.$whatItMeansField.val().trim();
+
+            this.navigateTo(this.activity.step2Controller.route);
+        }
+    };
+});
+
+CS.Activities.SpecifyTop2Strength.Controllers.Step2 = P(CS.Activities.Controller, function (c, base) {
+    c.reactClass = React.createClass({displayName: "reactClass",
+        getInitialState: function () {
+            return {whatItMeans: {}};
+        },
+
+        render: function () {
+            return (
+                React.createElement("form", {role: "form"}, 
+                    React.createElement("p", null, "Gör nu definitionen till din egen. På vilket sätt stämmer det här in på dig?"), 
+
+                    React.createElement("p", {className: "well", dangerouslySetInnerHTML: {__html: this.state.whatItMeans}}), 
+
+                    React.createElement("div", {className: "form-group"}, 
+                        React.createElement("textarea", {id: "how-well-it-applies", className: "form-control"}), 
+
+                        React.createElement("p", {className: "field-error", "data-check": "empty"})
+                    ), 
+
+                    React.createElement("div", {className: "submit-wrapper"}, 
+                        React.createElement("button", {type: "button", className: "btn btn-default"}, "Tillbaka"), 
+                        React.createElement("button", {type: "submit", className: "btn btn-primary"}, "Gå vidare")
+                    )
+                )
+                );
+        }
+    });
+
+    c.initElements = function () {
+        this.$form = this.$el.find("form");
+        this.$howWellItAppliesField = this.$form.find("#how-well-it-applies");
+        this.$goBackBtn = this.$form.find(".btn-default");
+    };
+
+    c.initValidation = function () {
+        this.validator = CS.Services.Validator([
+            "how-well-it-applies"
+        ]);
+    };
+
+    c.initEvents = function () {
+        this.$form.submit($.proxy(this._saveAndNavigateNext, this));
+        this.$goBackBtn.click($.proxy(this.navigateBack, this));
+
+        this.onReRender();
+    };
+
+    c.onReRender = function () {
+        var whatItMeansAsHtml = CS.Services.String.textToHtml(this.activity.model.account.data.strengths[1].specify.whatItMeans);
+
+        this.reactInstance.replaceState({whatItMeans: whatItMeansAsHtml});
+    };
+
+    c._saveAndNavigateNext = function(e) {
+        e.preventDefault();
+
+        if (this.validator.isValid()) {
+            this.activity.model.account.data.strengths[1].specify.howWellItApplies = this.$howWellItAppliesField.val().trim();
+
+            this.navigateTo(this.activity.step3Controller.route);
+        }
+    };
+});
+
+CS.Activities.SpecifyTop2Strength.Controllers.Step3 = P(CS.Activities.Controller, function (c, base) {
+    c.reactClass = React.createClass({displayName: "reactClass",
+        getInitialState: function () {
+            return {data: {}};
+        },
+
+        render: function () {
+            return (
+                React.createElement("form", {role: "form"}, 
+                    React.createElement("p", {className: "well"}, "På vilket sätt kommer det att vara en styrka i rollen som ", React.createElement("strong", null, this.state.data.position), " på ", React.createElement("strong", null, this.state.data.employer), "?"), 
+
+                    React.createElement("div", {className: "form-group"}, 
+                        React.createElement("textarea", {id: "strength-for-position", className: "form-control"}), 
+
+                        React.createElement("p", {className: "field-error", "data-check": "empty"})
+                    ), 
+
+                    React.createElement("div", {className: "submit-wrapper"}, 
+                        React.createElement("button", {type: "button", className: "btn btn-default"}, "Tillbaka"), 
+                        React.createElement("button", {type: "submit", className: "btn btn-primary"}, "Gå vidare")
+                    )
+                )
+                );
+        }
+    });
+
+    c.initElements = function () {
+        this.$form = this.$el.find("form");
+        this.$strengthForPositionField = this.$form.find("#strength-for-position");
+        this.$goBackBtn = this.$form.find(".btn-default");
+    };
+
+    c.initValidation = function () {
+        this.validator = CS.Services.Validator([
+            "strength-for-position"
+        ]);
+    };
+
+    c.initEvents = function () {
+        this.$form.submit($.proxy(this._saveAndNavigateNext, this));
+        this.$goBackBtn.click($.proxy(this.navigateBack, this));
+
+        this.onReRender();
+    };
+
+    c.onReRender = function () {
+        this.reactInstance.replaceState({ data: {
+            position: this.activity.model.account.data.Position,
+            employer: this.activity.model.account.data.Employer
+        }});
+    };
+
+    c._saveAndNavigateNext = function (e) {
+        e.preventDefault();
+
+        if (this.validator.isValid()) {
+            this.activity.model.account.data.strengths[1].specify.strengthForPosition = this.$strengthForPositionField.val().trim();
+
+            this.postData(function () {
+                this.navigateTo(this.activity.step4Controller.route);
+            }.bind(this));
+        }
+    };
+});
+
+CS.Activities.SpecifyTop2Strength.Controllers.Step4 = P(CS.Activities.Controller, function (c, base) {
+    c.reactClass = React.createClass({displayName: "reactClass",
+        getInitialState: function () {
+            return {data: {}};
+        },
+
+        render: function () {
+            return (
+                React.createElement("div", null, 
+                    React.createElement("p", {className: "well"}, "Jättebra! Du har nu definierat hur just du är ", React.createElement("strong", null, this.state.data.strengthName), " och vilket värde det har för jobbet du söker."), 
+
+                    React.createElement("h2", null, "Definition"), 
+
+                    React.createElement("p", {className: "well", dangerouslySetInnerHTML: {__html: this.state.data.howWellItApplies}}), 
+
+                    React.createElement("h2", null, "Värde"), 
+
+                    React.createElement("p", {className: "well", dangerouslySetInnerHTML: {__html: this.state.data.strengthForPosition}}), 
+
+                    React.createElement("div", {className: "centered-contents"}, 
+                        React.createElement("button", {type: "button", className: "btn btn-default"}, "Tillbaka"), 
+                        React.createElement("button", {type: "button", className: "btn btn-primary"}, "Ok")
+                    )
+                )
+                );
+        }
+    });
+
+    c.initElements = function () {
+        this.$goBackBtn = this.$el.find(".btn-default");
+        this.$goNextStepBtn = this.$el.find(".btn-primary");
+    };
+
+    c.initEvents = function () {
+        this.$goBackBtn.click($.proxy(this.navigateBack, this));
+        this.$goNextStepBtn.click($.proxy(this._navigateHome, this));
+
+        this.onReRender();
+    };
+
+    c.onReRender = function () {
+        var strength = this.activity.model.account.data.strengths[1];
+
+        var howWellItAppliesAsHtml = CS.Services.String.textToHtml(strength.specify.howWellItApplies);
+        var strengthForPositionAsHtml = CS.Services.String.textToHtml(strength.specify.strengthForPosition);
+
+        this.reactInstance.replaceState({ data: {
+            strengthName: strength.name,
+            howWellItApplies: howWellItAppliesAsHtml,
+            strengthForPosition: strengthForPositionAsHtml
+        }});
+    };
+
+    c._navigateHome = function (e) {
+        this.navigateTo("");
+    };
+});
+
+CS.Activities.SpecifyTop3Strength.Controllers.Intro = P(CS.Activities.Controller, function (c, base) {
+    c.reactClass = React.createClass({displayName: "reactClass",
+        render: function () {
+            return (
+                React.createElement("div", null, 
+                    React.createElement("h1", null, "Stick ut från mängden"), 
+
+                    React.createElement("p", null, "Visste du att de tre vanligast angivna egenskaperna i jobbansökningar är kreativ, analytisk och passionerad?"), 
+
+                    React.createElement("p", null, "Vi använder ofta vaga termer när vi beskriver oss själva. Dessutom är egenskaperna som efterfrågas i jobbannonser" + ' ' +
+                    "ofta ganska generiska eller tvetydigt formulerade."), 
+
+                    React.createElement("p", null, "I den här övningen hjälper vi dig att definiera vad en specifik egenskap ennebär för just dig och hur den kan" + ' ' +
+                    "tillämpas på din roll för att kunna påvisa värdet av den för din framtida arbetsgivare."), 
+
+                    React.createElement("div", {className: "centered-contents"}, 
+                        React.createElement("button", {type: "button", className: "btn btn-default"}, "Tillbaka"), 
+                        React.createElement("button", {type: "button", className: "btn btn-primary"}, "Sätt igång")
+                    )
+                )
+                );
+        }
+    });
+
+    c.initElements = function () {
+        this.$goBackBtn = this.$el.find(".btn-default");
+        this.$goNextStepBtn = this.$el.find(".btn-primary");
+    };
+
+    c.initEvents = function () {
+        this.$goBackBtn.click($.proxy(this.navigateBack, this));
+        this.$goNextStepBtn.click($.proxy(this._navigateNext, this));
+    };
+
+    c._navigateNext = function (e) {
+        this.activity.model.account.data.strengths[2].specify = this.activity.model.account.data.strengths[2].specify || {};
+
+        this.navigateTo(this.activity.step1Controller.route);
+    };
+});
+
+CS.Activities.SpecifyTop3Strength.Controllers.Step1 = P(CS.Activities.Controller, function (c, base) {
+    c.reactClass = React.createClass({displayName: "reactClass",
+        getInitialState: function () {
+            return {strengthName: {}};
+        },
+
+        render: function () {
+            return (
+                React.createElement("form", {role: "form"}, 
+                    React.createElement("p", null, "Vi börjar med att specificera egenskapen lite mer. Vad betyder ", React.createElement("strong", null, this.state.strengthName), " för dig?"), 
+
+                    React.createElement("div", {className: "form-group"}, 
+                        React.createElement("textarea", {id: "what-this-strength-means", className: "form-control"}), 
+
+                        React.createElement("p", {className: "field-error", "data-check": "empty"})
+                    ), 
+
+                    React.createElement("div", {className: "submit-wrapper"}, 
+                        React.createElement("button", {type: "button", className: "btn btn-default"}, "Tillbaka"), 
+                        React.createElement("button", {type: "submit", className: "btn btn-primary"}, "Gå vidare")
+                    )
+                )
+                );
+        }
+    });
+
+    c.initElements = function () {
+        this.$form = this.$el.find("form");
+        this.$whatItMeansField = this.$form.find("#what-this-strength-means");
+        this.$goBackBtn = this.$form.find(".btn-default");
+    };
+
+    c.initValidation = function () {
+        this.validator = CS.Services.Validator([
+            "what-this-strength-means"
+        ]);
+    };
+
+    c.initEvents = function () {
+        this.$form.submit($.proxy(this._saveAndNavigateNext, this));
+        this.$goBackBtn.click($.proxy(this.navigateBack, this));
+
+        this.onReRender();
+    };
+
+    c.onReRender = function () {
+        this.reactInstance.replaceState({strengthName: this.activity.model.account.data.strengths[2].name});
+    };
+
+    c._saveAndNavigateNext = function (e) {
+        e.preventDefault();
+
+        if (this.validator.isValid()) {
+            this.activity.model.account.data.strengths[2].specify.whatItMeans = this.$whatItMeansField.val().trim();
+
+            this.navigateTo(this.activity.step2Controller.route);
+        }
+    };
+});
+
+CS.Activities.SpecifyTop3Strength.Controllers.Step2 = P(CS.Activities.Controller, function (c, base) {
+    c.reactClass = React.createClass({displayName: "reactClass",
+        getInitialState: function () {
+            return {whatItMeans: {}};
+        },
+
+        render: function () {
+            return (
+                React.createElement("form", {role: "form"}, 
+                    React.createElement("p", null, "Gör nu definitionen till din egen. På vilket sätt stämmer det här in på dig?"), 
+
+                    React.createElement("p", {className: "well", dangerouslySetInnerHTML: {__html: this.state.whatItMeans}}), 
+
+                    React.createElement("div", {className: "form-group"}, 
+                        React.createElement("textarea", {id: "how-well-it-applies", className: "form-control"}), 
+
+                        React.createElement("p", {className: "field-error", "data-check": "empty"})
+                    ), 
+
+                    React.createElement("div", {className: "submit-wrapper"}, 
+                        React.createElement("button", {type: "button", className: "btn btn-default"}, "Tillbaka"), 
+                        React.createElement("button", {type: "submit", className: "btn btn-primary"}, "Gå vidare")
+                    )
+                )
+                );
+        }
+    });
+
+    c.initElements = function () {
+        this.$form = this.$el.find("form");
+        this.$howWellItAppliesField = this.$form.find("#how-well-it-applies");
+        this.$goBackBtn = this.$form.find(".btn-default");
+    };
+
+    c.initValidation = function () {
+        this.validator = CS.Services.Validator([
+            "how-well-it-applies"
+        ]);
+    };
+
+    c.initEvents = function () {
+        this.$form.submit($.proxy(this._saveAndNavigateNext, this));
+        this.$goBackBtn.click($.proxy(this.navigateBack, this));
+
+        this.onReRender();
+    };
+
+    c.onReRender = function () {
+        var whatItMeansAsHtml = CS.Services.String.textToHtml(this.activity.model.account.data.strengths[2].specify.whatItMeans);
+
+        this.reactInstance.replaceState({whatItMeans: whatItMeansAsHtml});
+    };
+
+    c._saveAndNavigateNext = function(e) {
+        e.preventDefault();
+
+        if (this.validator.isValid()) {
+            this.activity.model.account.data.strengths[2].specify.howWellItApplies = this.$howWellItAppliesField.val().trim();
+
+            this.navigateTo(this.activity.step3Controller.route);
+        }
+    };
+});
+
+CS.Activities.SpecifyTop3Strength.Controllers.Step3 = P(CS.Activities.Controller, function (c, base) {
+    c.reactClass = React.createClass({displayName: "reactClass",
+        getInitialState: function () {
+            return {data: {}};
+        },
+
+        render: function () {
+            return (
+                React.createElement("form", {role: "form"}, 
+                    React.createElement("p", {className: "well"}, "På vilket sätt kommer det att vara en styrka i rollen som ", React.createElement("strong", null, this.state.data.position), " på ", React.createElement("strong", null, this.state.data.employer), "?"), 
+
+                    React.createElement("div", {className: "form-group"}, 
+                        React.createElement("textarea", {id: "strength-for-position", className: "form-control"}), 
+
+                        React.createElement("p", {className: "field-error", "data-check": "empty"})
+                    ), 
+
+                    React.createElement("div", {className: "submit-wrapper"}, 
+                        React.createElement("button", {type: "button", className: "btn btn-default"}, "Tillbaka"), 
+                        React.createElement("button", {type: "submit", className: "btn btn-primary"}, "Gå vidare")
+                    )
+                )
+                );
+        }
+    });
+
+    c.initElements = function () {
+        this.$form = this.$el.find("form");
+        this.$strengthForPositionField = this.$form.find("#strength-for-position");
+        this.$goBackBtn = this.$form.find(".btn-default");
+    };
+
+    c.initValidation = function () {
+        this.validator = CS.Services.Validator([
+            "strength-for-position"
+        ]);
+    };
+
+    c.initEvents = function () {
+        this.$form.submit($.proxy(this._saveAndNavigateNext, this));
+        this.$goBackBtn.click($.proxy(this.navigateBack, this));
+
+        this.onReRender();
+    };
+
+    c.onReRender = function () {
+        this.reactInstance.replaceState({ data: {
+            position: this.activity.model.account.data.Position,
+            employer: this.activity.model.account.data.Employer
+        }});
+    };
+
+    c._saveAndNavigateNext = function (e) {
+        e.preventDefault();
+
+        if (this.validator.isValid()) {
+            this.activity.model.account.data.strengths[2].specify.strengthForPosition = this.$strengthForPositionField.val().trim();
+
+            this.postData(function () {
+                this.navigateTo(this.activity.step4Controller.route);
+            }.bind(this));
+        }
+    };
+});
+
+CS.Activities.SpecifyTop3Strength.Controllers.Step4 = P(CS.Activities.Controller, function (c, base) {
+    c.reactClass = React.createClass({displayName: "reactClass",
+        getInitialState: function () {
+            return {data: {}};
+        },
+
+        render: function () {
+            return (
+                React.createElement("div", null, 
+                    React.createElement("p", {className: "well"}, "Jättebra! Du har nu definierat hur just du är ", React.createElement("strong", null, this.state.data.strengthName), " och vilket värde det har för jobbet du söker."), 
+
+                    React.createElement("h2", null, "Definition"), 
+
+                    React.createElement("p", {className: "well", dangerouslySetInnerHTML: {__html: this.state.data.howWellItApplies}}), 
+
+                    React.createElement("h2", null, "Värde"), 
+
+                    React.createElement("p", {className: "well", dangerouslySetInnerHTML: {__html: this.state.data.strengthForPosition}}), 
+
+                    React.createElement("div", {className: "centered-contents"}, 
+                        React.createElement("button", {type: "button", className: "btn btn-default"}, "Tillbaka"), 
+                        React.createElement("button", {type: "button", className: "btn btn-primary"}, "Ok")
+                    )
+                )
+                );
+        }
+    });
+
+    c.initElements = function () {
+        this.$goBackBtn = this.$el.find(".btn-default");
+        this.$goNextStepBtn = this.$el.find(".btn-primary");
+    };
+
+    c.initEvents = function () {
+        this.$goBackBtn.click($.proxy(this.navigateBack, this));
+        this.$goNextStepBtn.click($.proxy(this._navigateHome, this));
+
+        this.onReRender();
+    };
+
+    c.onReRender = function () {
+        var strength = this.activity.model.account.data.strengths[2];
 
         var howWellItAppliesAsHtml = CS.Services.String.textToHtml(strength.specify.howWellItApplies);
         var strengthForPositionAsHtml = CS.Services.String.textToHtml(strength.specify.strengthForPosition);

@@ -17,6 +17,8 @@ CS.Activities.Base = P(function (c) {
         this.$el.empty();
 
         this._initElements();
+
+        this.initControllers();
     };
 
     c._initElements = function () {
@@ -41,7 +43,7 @@ CS.Activities.Base = P(function (c) {
         this.controllers[route] = controllerClass;
     };
 
-    c.preLaunch = function (controllers) {
+    c.initRouting = function (controllers) {
         controllers.forEach(function (controller, index) {
             CS.router.get(controller.route, function (req) {
                 this.renderController(controller.route);

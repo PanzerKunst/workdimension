@@ -5,13 +5,11 @@ CS.Activities.IdentifyStrengths.Controllers.Step4 = P(CS.Activities.Controller, 
         },
 
         render: function () {
-            var sortedStrengths = CS.Models.Strength.sort(this.state.strengths);
-
             return (
                 <div>
                     <p>Toppen! Du har nu gjort en prioritering av dina starkaste egenskaper för din ansökan.</p>
 
-                    {sortedStrengths.map(function (strength) {
+                    {this.state.strengths.map(function (strength) {
                         return (
                             <article>
                                 <h2>{strength.name}</h2>
@@ -68,6 +66,7 @@ CS.Activities.IdentifyStrengths.Controllers.Step4 = P(CS.Activities.Controller, 
     };
 
     c.onReRender = function () {
+        this.activity.model.account.data.strengths = CS.Models.Strength.sort(this.activity.model.account.data.strengths);
         this.reactInstance.replaceState({strengths: this.activity.model.account.data.strengths});
 
         // The submit button may still be in loading state when navigating back. We make sure it doesn't happen

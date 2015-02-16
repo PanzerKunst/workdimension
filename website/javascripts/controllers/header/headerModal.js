@@ -1,4 +1,4 @@
-CS.Controllers.HeaderModal = P(function (c) {
+CS.Controllers.HeaderModal = P(CS.Controllers.OnePageWebapp, function (c, base) {
     c.init = function () {
         this.initElements();
         this.initValidation();
@@ -38,7 +38,7 @@ CS.Controllers.HeaderModal = P(function (c) {
 
         this.$registerReminderAlert.hide();
 
-        location.hash = "activities";
+        this.navigateTo("activities");
 
         this.$modal.modal('hide');
 

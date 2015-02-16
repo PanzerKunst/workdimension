@@ -121,7 +121,11 @@ blockquote {
 
   padding-left: $spacer-unit-size / 2;
 
+  display: inline-block;
+
   > span {
+    display: inline-block;
+
     vertical-align: top;
 
     margin-top: 5px;

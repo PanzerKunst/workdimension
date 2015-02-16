@@ -111,14 +111,14 @@ form {
 
   > [type="button"],
   > [type="submit"] {
-    margin: 0 $spacer-unit-size/2;
+    margin: $spacer-unit-size/2;
 
     @include medium-screen {
-      margin: 0 $spacer-unit-size/2 * $medium-screen-ratio-l;
+      margin: $spacer-unit-size/2 * $medium-screen-ratio-l;
     }
 
     @include large-screen {
-      margin: 0 $spacer-unit-size/2 * $large-screen-ratio-l;
+      margin: $spacer-unit-size/2 * $large-screen-ratio-l;
     }
   }
 }

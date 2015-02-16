@@ -1,4 +1,4 @@
-CS.Standouts.Strengths.Controllers.InList = P(function (c) {
+CS.Standouts.Strengths.Controllers.InList = P(CS.Controllers.OnePageWebapp, function (c, base) {
     c.reactClass = React.createClass({
         render: function () {
             var employerAndPosition;
@@ -29,7 +29,7 @@ CS.Standouts.Strengths.Controllers.InList = P(function (c) {
                             <h2>{strength.name}</h2>
                         </section>
                         ), (
-                        <section className="section-bottom">
+                        <section className="section-bottom centered-contents">
                             <button className="btn btn-primary">Börja utforska</button>
                         </section>
                         )];
@@ -45,34 +45,39 @@ CS.Standouts.Strengths.Controllers.InList = P(function (c) {
 
                     <p>Detta är dina främsta styrkor för rollen.</p>
 
-                    {sections.map(function (section) {
-                        return (<article>{section}</article>);
+                    {sections.map(function (section, index) {
+                        return (<article data-strength-index={index}>{section}</article>);
                     })}
                 </div>
                 );
         }
     });
 
-    c.init = function (className, detailsController) {
-        this.detailsController = detailsController;
+    c.init = function (standout) {
+        this.standout = standout;
 
-        this.$el = $("#" + className);
+        this.$el = $("#" + this.standout.className);
 
-        this.render(className);
+        this.render();
     };
 
-    c.render = function (className) {
+    c.render = function () {
+        this.strengths = CS.account.data && !_.isEmpty(CS.account.data.strengths) ?
+            CS.account.data.strengths :
+            [];
+
         var data = {
             employer: CS.account.data && CS.account.data.Employer,
             position: CS.account.data && CS.account.data.Position,
-            strengths: CS.account.data && CS.account.data.strengths ?
-                CS.Models.Strength.sort(CS.account.data.strengths) :
-                []
+            strengths: this.strengths
         };
+
+        // This is to avoid duplicate event bindings - TODO, and probably linked to https://github.com/EngineeringMode/Grapnel.js/issues/26
+        this.$el.empty();
 
         this.reactInstance = React.render(
             React.createElement(this.reactClass, data),
-            document.getElementById(className)
+            this.$el[0]
         );
 
         this._initElements();
@@ -80,14 +85,45 @@ CS.Standouts.Strengths.Controllers.InList = P(function (c) {
     };
 
     c._initElements = function () {
+        this.$headerNav = $('[role="navigation"]');
+        this.$activitiesTab = this.$headerNav.find("#activities-tab");
+
+        this.$tabPanels = $('[role="tabpanel"]');
+        this.$activitiesPanel = this.$tabPanels.filter("#activities");
+
         this.$detailsBtn = this.$el.find(".btn-xs");
+        this.$startExploringBtn = this.$el.find(".btn-primary");
     };
 
     c._initEvents = function () {
         this.$detailsBtn.click($.proxy(this._showDetails, this));
+        this.$startExploringBtn.click($.proxy(this._activateActivitiesTabAndNavigateToActivity, this));
     };
 
-    c._showDetails = function () {
-        location.hash = this.detailsController.route;
+    c._showDetails = function (e) {
+        var $article = $(e.currentTarget).parent().parent();
+
+        var strengthIndex = parseInt($article.data("strength-index"), 10);
+
+        this.standout.detailData = {
+            strengthIndex: strengthIndex,
+            strength: this.strengths[strengthIndex]
+        };
+
+        this.navigateTo(this.standout.detailsController.route);
+    };
+
+    c._activateActivitiesTabAndNavigateToActivity = function(e) {
+        var $article = $(e.currentTarget).parent().parent();
+
+        var sortedStrengthIndex = parseInt($article.data("strength-index"), 10);
+
+        this.navigateTo("activities/SpecifyTop" + (sortedStrengthIndex + 1) + "Strength");
+
+        this.$tabPanels.removeClass("active");
+        this.$activitiesTab.tab('show');
+        this.$activitiesPanel.addClass("active");
+        $("#c1-and-activity-feed").hide();
+        $("#current-activity").show();
     };
 });

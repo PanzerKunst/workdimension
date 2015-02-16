@@ -7,7 +7,7 @@ CS.Activities.IdentifyStrengths = P(CS.Activities.Base, function (c, base) {
         return this.model.account.data.Employer && this.model.account.data.Position;
     };
 
-    c.preLaunch = function() {
+    c.initControllers = function() {
         // Initialising all activity controllers
         this.introController = CS.Activities.IdentifyStrengths.Controllers.Intro("activities/" + this.model.className, this);
         this.step1Controller = CS.Activities.IdentifyStrengths.Controllers.Step1("activities/" + this.model.className + "/1", this);
@@ -23,7 +23,7 @@ CS.Activities.IdentifyStrengths = P(CS.Activities.Base, function (c, base) {
             this.step4Controller
         ];
 
-        base.preLaunch.call(this, controllers);
+        this.initRouting(controllers);
     };
 });
 

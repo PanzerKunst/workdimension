@@ -5071,8 +5071,10 @@ blockquote {
 .tag {
   background-color: #eeeeee;
   border-radius: 4px;
-  padding-left: 7px; }
+  padding-left: 7px;
+  display: inline-block; }
   .tag > span {
+    display: inline-block;
     vertical-align: top;
     margin-top: 5px; }
     @media screen and (min-width: 640px) {
@@ -5173,15 +5175,15 @@ form .field-error {
       padding-top: 0; } }
   .submit-wrapper > [type="button"],
   .submit-wrapper > [type="submit"] {
-    margin: 0 7px; }
+    margin: 7px; }
     @media screen and (min-width: 640px) {
       .submit-wrapper > [type="button"],
       .submit-wrapper > [type="submit"] {
-        margin: 0 11.9px; } }
+        margin: 11.9px; } }
     @media screen and (min-width: 960px) {
       .submit-wrapper > [type="button"],
       .submit-wrapper > [type="submit"] {
-        margin: 0 17.5px; } }
+        margin: 17.5px; } }
 
 #content,
 nav[role="navigation"],
@@ -5210,6 +5212,26 @@ nav[role="navigation"],
   @media screen and (min-width: 960px) {
     .tab-pane {
       padding: 35px; } }
+
+.glyphicon {
+  font-size: 9px;
+  vertical-align: top;
+  margin: 7px 4px;
+  margin-left: 0; }
+  @media screen and (min-width: 640px) {
+    .glyphicon {
+      font-size: 12px; } }
+  @media screen and (min-width: 960px) {
+    .glyphicon {
+      font-size: 14px; } }
+  @media screen and (min-width: 640px) {
+    .glyphicon {
+      margin: 9px 5.2px;
+      margin-left: 0; } }
+  @media screen and (min-width: 960px) {
+    .glyphicon {
+      margin: 12px 6.4px;
+      margin-left: 0; } }
 
 html {
   font-size: 14px; }
@@ -5367,13 +5389,13 @@ footer {
   z-index: 1039; }
 
 .centered-contents > button {
-  margin: 0 7px; }
+  margin: 7px; }
   @media screen and (min-width: 640px) {
     .centered-contents > button {
-      margin: 0 11.9px; } }
+      margin: 11.9px; } }
   @media screen and (min-width: 960px) {
     .centered-contents > button {
-      margin: 0 17.5px; } }
+      margin: 17.5px; } }
 
 #custom-activity #content {
   margin-top: 10vw; }

@@ -1,4 +1,4 @@
-CS.Activities.Controller = P(function (c) {
+CS.Activities.Controller = P(CS.Controllers.OnePageWebapp, function (c, base) {
     c.init = function (route, activity) {
         this.route = route;
         this.activity = activity;
@@ -30,14 +30,6 @@ CS.Activities.Controller = P(function (c) {
         TweenLite.to(this.$el, CS.Activities.Base.pageAnimationDuration, {alpha: 1});
     };
 
-    c.navigateTo = function (route) {
-        location.hash = route;
-    };
-
-    c.navigateBack = function () {
-        history.back();
-    };
-
     c.postData = function (callback) {
         var type = "POST";
         var url = "/api/activities";
@@ -57,7 +49,7 @@ CS.Activities.Controller = P(function (c) {
                     callback();
                 } else {
                     // TODO this.navigateTo(this.activity.outroController.route);
-                    location.href = "/#standouts";
+                    this.navigateTo("standouts");
                 }
             }.bind(this),
             error: function (jqXHR, textStatus, errorThrown) {

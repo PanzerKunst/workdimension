@@ -28,3 +28,24 @@ nav[role="navigation"],
     padding: $spacer-unit-size * $large-screen-ratio-l;
   }
 }
+
+.glyphicon {
+  @include adaptive-font-size(9px);
+
+  vertical-align: top;
+
+  $glyphicon-side-margin: 4px;
+
+  margin: 7px $glyphicon-side-margin;
+  margin-left: 0;
+
+  @include medium-screen {
+    margin: 9px $glyphicon-side-margin*$medium-screen-ratio-m;
+    margin-left: 0;
+  }
+
+  @include large-screen {
+    margin: 12px $glyphicon-side-margin*$large-screen-ratio-m;
+    margin-left: 0;
+  }
+}

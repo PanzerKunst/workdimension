@@ -86,6 +86,7 @@ module.exports = function (grunt) {
 
                     // Controllers
                     "javascripts/controllers/base.js",
+                    "javascripts/controllers/onePageWebapp.js",
                     "javascripts/controllers/index.js",
                     "javascripts/controllers/header/headerModal.js",
                     "javascripts/controllers/header/registerHeaderModal.js",
@@ -122,6 +123,8 @@ module.exports = function (grunt) {
                     "javascripts/activities/Custom/activity.js",
                     "javascripts/activities/IdentifyStrengths/activity.js",
                     "javascripts/activities/SpecifyTop1Strength/activity.js",
+                    "javascripts/activities/SpecifyTop2Strength/activity.js",
+                    "javascripts/activities/SpecifyTop3Strength/activity.js",
 
                     // React
                     "public/react-activities.js"
@@ -135,6 +138,7 @@ module.exports = function (grunt) {
                 src: [
                     // Base
                     "javascripts/standouts/base.js",
+                    "javascripts/standouts/controller.js",
 
                     // Non-React
                     "javascripts/standouts/Strengths/standout.js",
