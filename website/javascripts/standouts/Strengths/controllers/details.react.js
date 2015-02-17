@@ -96,7 +96,7 @@ CS.Standouts.Strengths.Controllers.Details = P(CS.Controllers.OnePageWebapp, fun
         this.$activitiesTab = this.$headerNav.find("#activities-tab");
 
         this.$tabPanels = $('[role="tabpanel"]');
-        this.$activitiesPanel = this.$tabPanels.filter("#activities");
+        this.$activitiesPanel = this.$tabPanels.filter("#activit1es");
 
         this.$goBackBtn = this.$el.find(".js-go-back");
         this.$redoActivityBtn = this.$el.find(".js-redo-activity");

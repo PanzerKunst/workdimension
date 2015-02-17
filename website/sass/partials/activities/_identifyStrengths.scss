@@ -1,12 +1,15 @@
 .IdentifyStrengths {
-  #strength-taglist {
-    > li {
-      margin-top: $spacer-unit-size;
-      @include medium-screen {
-        margin-top: $spacer-unit-size * $medium-screen-ratio-m;
-      }
-      @include large-screen {
-        margin-top: $spacer-unit-size * $large-screen-ratio-m;
+  .strength-taglist-container {
+    text-align: center;
+
+    > ul {
+      display: inline-block;
+
+      > li {
+        display: inline-block;
+
+        margin-top: 1em;
+        padding: 0 0.5em;
       }
     }
   }
@@ -14,15 +17,7 @@
   .how-well {
     .form-group {
       .slider {
-        $slider-margin-top: 30px;
-
-        margin-top: $slider-margin-top;
-        @include medium-screen {
-          margin-top: $slider-margin-top * $medium-screen-ratio-m;
-        }
-        @include large-screen {
-          margin-top: $slider-margin-top * $large-screen-ratio-m;
-        }
+        margin-top: 2em;
       }
 
       /* TODO
@@ -44,14 +39,6 @@
   }
 
   article {
-    $strength-article-top-margin: $spacer-unit-size * 1.5;
-
-    margin-top: $strength-article-top-margin;
-    @include medium-screen {
-      margin-top: $strength-article-top-margin * $medium-screen-ratio-m;
-    }
-    @include large-screen {
-      margin-top: $strength-article-top-margin * $large-screen-ratio-m;
-    }
+    margin-top: 1.5em;
   }
 }

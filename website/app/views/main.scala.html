@@ -46,11 +46,13 @@
         <!-- Project Javascripts -->
         <script src="@routes.Assets.at("main.js")"></script>
 
-        <!-- FastClick init -->
-        <script>
+        <script type="text/javascript">
+            // FastClick init
             window.addEventListener('load', function() {
                 FastClick.attach(document.body);
             }, false);
+
+            CS.Browser.addUserAgentAttributeToHtmlTag();
         </script>
 
         @javascript

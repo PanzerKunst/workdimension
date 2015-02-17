@@ -3,10 +3,10 @@ CS.Activities.IdentifyStrengths.Controllers.Intro = P(CS.Activities.Controller, 
         render: function () {
             return (
                 <div>
-                    <h1>Förstå vad de söker</h1>
+                    <h1>Analysera jobbannonsen</h1>
 
                     <p>Spännande att du har funnit en annons som du vill svara på! Här hjälper vi dig att ta fram de viktigaste
-                    egenskaperna som efterfrågas i annonsen samt matcha de kraven med dina egenskaper. </p>
+                    egenskaperna som efterfrågas i annonsen samt matcha de kraven med dina egenskaper.</p>
 
                     <p>Genom ett antal frågeställningar och övningar hoppas vi att du kommer at få insikter om just dina egenskaper
                     och på vilket sätt de bidrar till dig sätt att vara.</p>

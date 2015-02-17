@@ -282,6 +282,10 @@ CS.account = {
 CS.router = new Grapnel();
 CS.defaultAnimationDuration = 0.5;
 ;CS.Browser = {
+    addUserAgentAttributeToHtmlTag: function() {
+        document.documentElement.setAttribute('data-useragent', navigator.userAgent);
+    },
+
     isMediumScreen: function () {
         var content = window.getComputedStyle(
             document.querySelector("html"), ":after"
@@ -317,6 +321,8 @@ CS.defaultAnimationDuration = 0.5;
     c.checkInteger = "integer";
     c.checkDecimal = "decimal";
     c.checkUrl = "url";
+
+    c.errorMessagesToHide = [];
 
     c.init = function (fieldIds) {
         this.fieldIds = fieldIds;
@@ -371,7 +377,7 @@ CS.defaultAnimationDuration = 0.5;
         return $field.parent().hasClass("has-error");
     };
 
-    c.showErrorMessage = function($errorMsg) {
+    c.showErrorMessage = function ($errorMsg) {
         if ($errorMsg.html()) {
             var height = this.errorMessageHeight;
             if (CS.Browser.isMediumScreen()) {
@@ -380,13 +386,28 @@ CS.defaultAnimationDuration = 0.5;
                 height = this.errorMessageHeightLargeScreen;
             }
 
+            TweenLite.set($errorMsg, {display: "block"});
             TweenLite.to($errorMsg, 0.5, {height: height});
+
+            $errorMsg.each(function (index, element) {
+                _.pull(this.errorMessagesToHide, element.innerHTML);
+            }.bind(this));
         }
     };
-    
-    c.hideErrorMessage = function($errorMsg) {
+
+    c.hideErrorMessage = function ($errorMsg) {
         if ($errorMsg.html()) {
-            TweenLite.to($errorMsg, 0.5, {height: 0});
+            $errorMsg.each(function (index, element) {
+                this.errorMessagesToHide.push(element.innerHTML);
+            }.bind(this));
+
+            TweenLite.to($errorMsg, 0.5, {height: 0,
+                onComplete: function () {
+                    if (_.indexOf(this.errorMessagesToHide, $errorMsg[0].innerHTML) > -1) {
+                        $errorMsg.hide();
+                    }
+                }.bind(this)
+            });
         }
     };
 
@@ -516,7 +537,7 @@ CS.defaultAnimationDuration = 0.5;
         return reg.test(value);
     };
 
-    c._isUrl = function(url) {
+    c._isUrl = function (url) {
         var reg = /^((https?|ftp|irc):\/\/)?(www\d?|[a-z0-9]+)?\.[a-z0-9-]+(\:|\.)([a-z0-9.]+|(\d+)?)([/?:].*)?$/i;
         return reg.test(url);
     };
@@ -738,6 +759,7 @@ CS.defaultAnimationDuration = 0.5;
 
         this._initElements();
         this._initHeaderLinks();
+        this._initActivityTabText();
         this._initEvents();
 
         this._initRouter();
@@ -757,7 +779,7 @@ CS.defaultAnimationDuration = 0.5;
         this.$introToActivitiesAlert = this.$headerAlerts.children("#intro-to-activities-alert");
 
         this.$tabPanels = $('[role="tabpanel"]');
-        this.$activitiesPanel = this.$tabPanels.filter("#activities");
+        this.$activitiesPanel = this.$tabPanels.filter("#activit1es");
         this.$standoutsPanel = this.$tabPanels.filter("#standouts");
 
         this.$feedSection = this.$activitiesPanel.children("#c1-and-activity-feed");
@@ -790,6 +812,12 @@ CS.defaultAnimationDuration = 0.5;
             this.$signOutLink.hide();
         } else {
             this.$signOutLink.show();
+        }
+    };
+
+    c._initActivityTabText = function() {
+        if (!CS.account.data || !CS.account.data.Employer || !CS.account.data.Position) {
+            this.$activitiesTab.html("Din ansökan");
         }
     };
 
@@ -1298,19 +1326,21 @@ CS.defaultAnimationDuration = 0.5;
         this.activityFeedItems = [
             {
                 className: "IdentifyStrengths",
-                title: "Förstå vad de söker"
+                title: "Analysera jobbannonsen",
+                description: "Här får du hjälp att ta fram de viktigaste egenskaperna som efterfrågas och matcha kraven med dina styrkor.",
+                buttonText: "Kom igång"
             },
             {
                 className: "SpecifyTop1Strength",
-                title: "Stick ut från mängden"
+                title: "Styrkans innebörd"
             },
             {
                 className: "SpecifyTop2Strength",
-                title: "Stick ut från mängden"
+                title: "Styrkans innebörd"
             },
             {
                 className: "SpecifyTop3Strength",
-                title: "Stick ut från mängden"
+                title: "Styrkans innebörd"
             }
         ];
 

@@ -114,7 +114,7 @@ CS.Standouts.Strengths.Controllers = {};
         this.$activitiesTab = this.$headerNav.find("#activities-tab");
 
         this.$tabPanels = $('[role="tabpanel"]');
-        this.$activitiesPanel = this.$tabPanels.filter("#activities");
+        this.$activitiesPanel = this.$tabPanels.filter("#activit1es");
 
         this.$goBackBtn = this.$el.find(".js-go-back");
         this.$redoActivityBtn = this.$el.find(".js-redo-activity");
@@ -212,7 +212,7 @@ CS.Standouts.Strengths.Controllers.InList = P(CS.Controllers.OnePageWebapp, func
 
             return _.isEmpty(this.props.strengths) ?
                 (
-                    React.createElement("div", null)
+                    React.createElement("h3", null, "Gör styrka aktiviteter för att få insikter!")
                     ) : (
                 React.createElement("div", null, 
                     React.createElement("div", {className: "alert alert-info"}, 
@@ -277,7 +277,7 @@ CS.Standouts.Strengths.Controllers.InList = P(CS.Controllers.OnePageWebapp, func
         this.$activitiesTab = this.$headerNav.find("#activities-tab");
 
         this.$tabPanels = $('[role="tabpanel"]');
-        this.$activitiesPanel = this.$tabPanels.filter("#activities");
+        this.$activitiesPanel = this.$tabPanels.filter("#activit1es");
 
         this.$alert = this.$el.find(".alert");
 

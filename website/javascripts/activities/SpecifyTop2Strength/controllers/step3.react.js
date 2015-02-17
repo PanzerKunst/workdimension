@@ -20,7 +20,7 @@ CS.Activities.SpecifyTop2Strength.Controllers.Step3 = P(CS.Activities.Controller
 
                     <div className="submit-wrapper">
                         <button type="button" className="btn btn-default">Tillbaka</button>
-                        <button type="submit" className="btn btn-primary">Gå vidare</button>
+                        <button type="submit" className="btn btn-primary" data-loading-text="Sparar...">Gå vidare</button>
                     </div>
                 </form>
                 );
@@ -31,7 +31,7 @@ CS.Activities.SpecifyTop2Strength.Controllers.Step3 = P(CS.Activities.Controller
         this.$form = this.$el.find("form");
         this.$strengthForPositionField = this.$form.find("#strength-for-position");
         this.$goBackBtn = this.$form.find(".btn-default");
-        this.$submitBtn =  this.$form.find(".btn-primary");
+        this.$submitBtn = this.$form.find(".btn-primary");
     };
 
     c.initValidation = function () {

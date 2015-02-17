@@ -48,6 +48,20 @@ button {
       margin-top: $alert-close-btn-margin-top / $large-screen-ratio-l;
     }
   }
+
+  > p+p {
+    $alert-p-margin-top: $spacer-unit-size / 2;
+
+    margin-top: $alert-p-margin-top;
+
+    @include medium-screen {
+      margin-top: $alert-p-margin-top * $medium-screen-ratio-l;
+    }
+
+    @include large-screen {
+      margin-top: $alert-p-margin-top * $large-screen-ratio-l;
+    }
+  }
 }
 
 .modal-header {

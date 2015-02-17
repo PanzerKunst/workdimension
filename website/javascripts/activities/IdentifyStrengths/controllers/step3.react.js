@@ -7,7 +7,7 @@ CS.Activities.IdentifyStrengths.Controllers.Step3 = P(CS.Activities.Controller, 
         render: function () {
             return (
                 <form role="form" className="how-well">
-                    <p>Hur viktiga är de här egenskaperna för arbetsgivaren och rollen du söker&#63;</p>
+                    <h3>Hur väl stämmer det här in på dig&#63;</h3>
 
                     {this.state.strengths.map(function (strength) {
                         return (
@@ -43,6 +43,11 @@ CS.Activities.IdentifyStrengths.Controllers.Step3 = P(CS.Activities.Controller, 
         }.bind(this);
 
         this.onReRender();
+
+        /* TODO
+         this.$sliders.each(function(index, element) {
+         $(element).on("change", $.proxy(this._displayCurrentSliderText, this));
+         }.bind(this); */
     };
 
     c.onReRender = function () {
@@ -60,26 +65,30 @@ CS.Activities.IdentifyStrengths.Controllers.Step3 = P(CS.Activities.Controller, 
                     case 1:
                         return "Sådär";
                     case 2:
-                        return "Viktigt";
+                        return "Hyfsat";
                     case 3:
-                        return "En stark fördel";
+                        return "Ganska väl";
                     case 4:
-                        return "Avgörande";
+                        return "Fullständigt";
                 }
             }
         });
     };
 
+    /* TODO
+     c._displayCurrentSliderText = function(e) {
+
+     }; */
+
     c._saveAndNavigateNext = function (e) {
         e.preventDefault();
 
         this.activity.model.account.data.strengths = this.activity.model.account.data.strengths.map(function (strength, index) {
-            var howImportantForEmployer = parseInt($(this.$sliders[index]).val(), 10);
+            var howWellItApplies = parseInt($(this.$sliders[index]).val(), 10);
 
             return {
                 "name": strength.name,
-                "howWellItApplies": strength.howWellItApplies,
-                "howImportantForEmployer": howImportantForEmployer
+                "howWellItApplies": howWellItApplies
             };
         }.bind(this));
 

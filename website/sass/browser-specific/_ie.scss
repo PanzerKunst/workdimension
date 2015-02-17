@@ -1,0 +1,20 @@
+html[data-useragent*='MSIE 9'],
+html[data-useragent*='MSIE 10'],
+html[data-useragent*='MSIE 11'],
+html[data-useragent*='Trident/7.0'] { // Some IE 11
+
+  .input-group {
+    .form-control[type="text"],
+    .input-group-btn > .btn {
+      height: 34px;
+
+      @include medium-screen {
+        height: 40px;
+      }
+
+      @include large-screen {
+        height: 46px;
+      }
+    }
+  }
+}

@@ -4994,6 +4994,14 @@ body {
   -webkit-font-smoothing: antialiased; }
 
 h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  line-height: 1.75em; }
+
+h1,
 h2 {
   text-rendering: optimizelegibility; }
 
@@ -5131,6 +5139,7 @@ form .field-error {
     form .field-error {
       font-size: 19px; } }
   form .field-error.other-form-error {
+    display: none;
     font-size: 14px;
     margin-bottom: 10px;
     text-align: center;
@@ -5230,6 +5239,9 @@ nav[role="navigation"],
       margin: 12px 6.4px;
       margin-left: 0; } }
 
+.help-text {
+  color: #999999; }
+
 html {
   font-size: 14px; }
 
@@ -5269,6 +5281,14 @@ button.close {
   @media screen and (min-width: 960px) {
     .alert > .close {
       margin-top: -4px; } }
+.alert > p + p {
+  margin-top: 7px; }
+  @media screen and (min-width: 640px) {
+    .alert > p + p {
+      margin-top: 11.9px; } }
+  @media screen and (min-width: 960px) {
+    .alert > p + p {
+      margin-top: 17.5px; } }
 
 .modal-header {
   padding-right: 7.5px; }
@@ -5375,8 +5395,8 @@ h6, .h6 {
 footer {
   min-height: 42px; }
 
-#activities .well.done {
-  opacity: 0.4; }
+#activit1es .well.done {
+  opacity: 0.5; }
 
 #c1-and-activity-feed > div > h3 {
   text-align: center;
@@ -5422,14 +5442,14 @@ footer {
 #custom-activity-saved {
   display: none; }
 
-.IdentifyStrengths #strength-taglist > li {
-  margin-top: 14px; }
-  @media screen and (min-width: 640px) {
-    .IdentifyStrengths #strength-taglist > li {
-      margin-top: 18.2px; } }
-  @media screen and (min-width: 960px) {
-    .IdentifyStrengths #strength-taglist > li {
-      margin-top: 22.4px; } }
+.IdentifyStrengths .strength-taglist-container {
+  text-align: center; }
+  .IdentifyStrengths .strength-taglist-container > ul {
+    display: inline-block; }
+    .IdentifyStrengths .strength-taglist-container > ul > li {
+      display: inline-block;
+      margin-top: 1em;
+      padding: 0 0.5em; }
 .IdentifyStrengths .how-well .form-group {
       /* TODO
       @include medium-screen {
@@ -5447,21 +5467,9 @@ footer {
         }
       } */ }
   .IdentifyStrengths .how-well .form-group .slider {
-    margin-top: 30px; }
-    @media screen and (min-width: 640px) {
-      .IdentifyStrengths .how-well .form-group .slider {
-        margin-top: 39px; } }
-    @media screen and (min-width: 960px) {
-      .IdentifyStrengths .how-well .form-group .slider {
-        margin-top: 48px; } }
+    margin-top: 2em; }
 .IdentifyStrengths article {
-  margin-top: 21px; }
-  @media screen and (min-width: 640px) {
-    .IdentifyStrengths article {
-      margin-top: 27.3px; } }
-  @media screen and (min-width: 960px) {
-    .IdentifyStrengths article {
-      margin-top: 33.6px; } }
+  margin-top: 1.5em; }
 
 #Strengths .alert {
   display: none; }
@@ -5476,18 +5484,8 @@ footer {
     #Strengths article {
       margin-bottom: 35px; } }
 
-/* TODO .section-top > h2,
-.section-bottom > .glyphicon {
-  margin: $strengths-standout-section-margin 0 0 $strengths-standout-section-margin;
-
-  @include medium-screen {
-    margin: $strengths-standout-section-margin*$medium-screen-ratio-l 0 0 $strengths-standout-section-margin*$medium-screen-ratio-l;
-  }
-
-  @include large-screen {
-    margin: $strengths-standout-section-margin*$large-screen-ratio-l 0 0 $strengths-standout-section-margin*$large-screen-ratio-l;
-  }
-} */
+.section-top > h2 {
+  margin-left: 0.5em; }
 .section-top.with-specify:before, .section-top.with-specify:after {
   content: " ";
   display: table; }
@@ -5496,9 +5494,42 @@ footer {
 .section-top.with-specify > h2 {
   float: left; }
 .section-top.with-specify > button {
-  float: right; }
+  float: right;
+  margin: 0.5em 0.5em 0 0; }
 
 .section-bottom {
   background-color: #eeeeee; }
+  .section-bottom > .glyphicon {
+    margin-left: 1em; }
+
+html[data-useragent*='MSIE 9'] .input-group .form-control[type="text"],
+html[data-useragent*='MSIE 9'] .input-group .input-group-btn > .btn,
+html[data-useragent*='MSIE 10'] .input-group .form-control[type="text"],
+html[data-useragent*='MSIE 10'] .input-group .input-group-btn > .btn,
+html[data-useragent*='MSIE 11'] .input-group .form-control[type="text"],
+html[data-useragent*='MSIE 11'] .input-group .input-group-btn > .btn,
+html[data-useragent*='Trident/7.0'] .input-group .form-control[type="text"],
+html[data-useragent*='Trident/7.0'] .input-group .input-group-btn > .btn {
+  height: 34px; }
+  @media screen and (min-width: 640px) {
+    html[data-useragent*='MSIE 9'] .input-group .form-control[type="text"],
+    html[data-useragent*='MSIE 9'] .input-group .input-group-btn > .btn,
+    html[data-useragent*='MSIE 10'] .input-group .form-control[type="text"],
+    html[data-useragent*='MSIE 10'] .input-group .input-group-btn > .btn,
+    html[data-useragent*='MSIE 11'] .input-group .form-control[type="text"],
+    html[data-useragent*='MSIE 11'] .input-group .input-group-btn > .btn,
+    html[data-useragent*='Trident/7.0'] .input-group .form-control[type="text"],
+    html[data-useragent*='Trident/7.0'] .input-group .input-group-btn > .btn {
+      height: 40px; } }
+  @media screen and (min-width: 960px) {
+    html[data-useragent*='MSIE 9'] .input-group .form-control[type="text"],
+    html[data-useragent*='MSIE 9'] .input-group .input-group-btn > .btn,
+    html[data-useragent*='MSIE 10'] .input-group .form-control[type="text"],
+    html[data-useragent*='MSIE 10'] .input-group .input-group-btn > .btn,
+    html[data-useragent*='MSIE 11'] .input-group .form-control[type="text"],
+    html[data-useragent*='MSIE 11'] .input-group .input-group-btn > .btn,
+    html[data-useragent*='Trident/7.0'] .input-group .form-control[type="text"],
+    html[data-useragent*='Trident/7.0'] .input-group .input-group-btn > .btn {
+      height: 46px; } }
 
 /*# sourceMappingURL=main.css.map */

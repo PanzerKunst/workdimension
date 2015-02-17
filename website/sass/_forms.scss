@@ -50,6 +50,8 @@ form {
     margin-bottom: 0;
 
     &.other-form-error {
+      display: none;
+
       @include adaptive-font-size($font-size-base);
 
       margin-bottom: $line-height-computed / 2; // Same as a normal <p>

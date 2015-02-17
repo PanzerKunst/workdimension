@@ -1,4 +1,8 @@
 CS.Browser = {
+    addUserAgentAttributeToHtmlTag: function() {
+        document.documentElement.setAttribute('data-useragent', navigator.userAgent);
+    },
+
     isMediumScreen: function () {
         var content = window.getComputedStyle(
             document.querySelector("html"), ":after"

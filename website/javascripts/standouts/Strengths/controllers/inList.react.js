@@ -38,7 +38,7 @@ CS.Standouts.Strengths.Controllers.InList = P(CS.Controllers.OnePageWebapp, func
 
             return _.isEmpty(this.props.strengths) ?
                 (
-                    <div></div>
+                    <h3>Gör styrka aktiviteter för att få insikter!</h3>
                     ) : (
                 <div>
                     <div className="alert alert-info">
@@ -103,7 +103,7 @@ CS.Standouts.Strengths.Controllers.InList = P(CS.Controllers.OnePageWebapp, func
         this.$activitiesTab = this.$headerNav.find("#activities-tab");
 
         this.$tabPanels = $('[role="tabpanel"]');
-        this.$activitiesPanel = this.$tabPanels.filter("#activities");
+        this.$activitiesPanel = this.$tabPanels.filter("#activit1es");
 
         this.$alert = this.$el.find(".alert");
 

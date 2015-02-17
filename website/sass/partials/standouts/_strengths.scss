@@ -21,20 +21,11 @@
 
 $strengths-standout-section-margin: 9px;
 
-/* TODO .section-top > h2,
-.section-bottom > .glyphicon {
-  margin: $strengths-standout-section-margin 0 0 $strengths-standout-section-margin;
-
-  @include medium-screen {
-    margin: $strengths-standout-section-margin*$medium-screen-ratio-l 0 0 $strengths-standout-section-margin*$medium-screen-ratio-l;
-  }
-
-  @include large-screen {
-    margin: $strengths-standout-section-margin*$large-screen-ratio-l 0 0 $strengths-standout-section-margin*$large-screen-ratio-l;
-  }
-} */
-
 .section-top {
+  > h2 {
+    margin-left: 0.5em;
+  }
+
   &.with-specify {
     @include clearfix;
 
@@ -44,10 +35,16 @@ $strengths-standout-section-margin: 9px;
 
     > button {
       float: right;
+
+      margin: 0.5em 0.5em 0 0;
     }
   }
 }
 
 .section-bottom {
   background-color: $gray-lighter;
+
+  > .glyphicon {
+    margin-left: 1em;
+  }
 }

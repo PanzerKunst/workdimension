@@ -1,9 +1,13 @@
 CS.Activities.SpecifyTop1Strength.Controllers.Intro = P(CS.Activities.Controller, function (c, base) {
     c.reactClass = React.createClass({
+        getInitialState: function () {
+            return {strengthName: null};
+        },
+
         render: function () {
             return (
                 <div>
-                    <h1>Stick ut från mängden</h1>
+                    <h1>Styrkans innebörd: {this.state.strengthName}</h1>
 
                     <p>Visste du att de tre vanligast angivna egenskaperna i jobbansökningar är kreativ, analytisk och passionerad&#63;</p>
 
@@ -30,6 +34,12 @@ CS.Activities.SpecifyTop1Strength.Controllers.Intro = P(CS.Activities.Controller
     c.initEvents = function () {
         this.$goBackBtn.click($.proxy(this.navigateBack, this));
         this.$goNextStepBtn.click($.proxy(this._navigateNext, this));
+
+        this.onReRender();
+    };
+
+    c.onReRender = function () {
+        this.reactInstance.replaceState({strengthName: this.activity.model.account.data.strengths[0].name});
     };
 
     c._navigateNext = function (e) {

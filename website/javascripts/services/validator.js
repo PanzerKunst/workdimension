@@ -13,6 +13,8 @@ CS.Services.Validator = P(function (c) {
     c.checkDecimal = "decimal";
     c.checkUrl = "url";
 
+    c.errorMessagesToHide = [];
+
     c.init = function (fieldIds) {
         this.fieldIds = fieldIds;
 
@@ -66,7 +68,7 @@ CS.Services.Validator = P(function (c) {
         return $field.parent().hasClass("has-error");
     };
 
-    c.showErrorMessage = function($errorMsg) {
+    c.showErrorMessage = function ($errorMsg) {
         if ($errorMsg.html()) {
             var height = this.errorMessageHeight;
             if (CS.Browser.isMediumScreen()) {
@@ -75,13 +77,28 @@ CS.Services.Validator = P(function (c) {
                 height = this.errorMessageHeightLargeScreen;
             }
 
+            TweenLite.set($errorMsg, {display: "block"});
             TweenLite.to($errorMsg, 0.5, {height: height});
+
+            $errorMsg.each(function (index, element) {
+                _.pull(this.errorMessagesToHide, element.innerHTML);
+            }.bind(this));
         }
     };
-    
-    c.hideErrorMessage = function($errorMsg) {
+
+    c.hideErrorMessage = function ($errorMsg) {
         if ($errorMsg.html()) {
-            TweenLite.to($errorMsg, 0.5, {height: 0});
+            $errorMsg.each(function (index, element) {
+                this.errorMessagesToHide.push(element.innerHTML);
+            }.bind(this));
+
+            TweenLite.to($errorMsg, 0.5, {height: 0,
+                onComplete: function () {
+                    if (_.indexOf(this.errorMessagesToHide, $errorMsg[0].innerHTML) > -1) {
+                        $errorMsg.hide();
+                    }
+                }.bind(this)
+            });
         }
     };
 
@@ -211,7 +228,7 @@ CS.Services.Validator = P(function (c) {
         return reg.test(value);
     };
 
-    c._isUrl = function(url) {
+    c._isUrl = function (url) {
         var reg = /^((https?|ftp|irc):\/\/)?(www\d?|[a-z0-9]+)?\.[a-z0-9-]+(\:|\.)([a-z0-9.]+|(\d+)?)([/?:].*)?$/i;
         return reg.test(url);
     };

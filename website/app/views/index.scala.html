@@ -10,7 +10,7 @@
     Content
 -->
 <div class="tab-content">
-    <div role="tabpanel" class="tab-pane active" id="activities">
+    <div role="tabpanel" class="tab-pane active" id="activit1es">
         <section id="c1-and-activity-feed"></section>
         <section id="current-activity"></section>
     </div>
@@ -27,9 +27,9 @@
 <script type="text/javascript">
     document.addEventListener("DOMContentLoaded", function () {
         CS.Controllers.Index(@accountId,
-                @if(accountEmail.isDefined) { "@accountEmail.get"} else { null },
-                @Html(play.api.libs.json.Json.toJson(accountData).toString)
-        );
+            @if(accountEmail.isDefined) { "@accountEmail.get"} else { null },
+            @Html(play.api.libs.json.Json.toJson(accountData).toString)
+        )
     });
 </script>
 

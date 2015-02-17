@@ -7,11 +7,14 @@ CS.Activities.IdentifyStrengths.Controllers.Step1 = P(CS.Activities.Controller, 
         render: function () {
             return (
                 <form role="form">
-                    <p>Finns det några egenskaper du vill framhäva som inte direkt efterfrågas&#63;</p>
+                    <h3>Börja med att identifiera efterfrågade egenskaper i jobbannonsen.</h3>
+
+                    <p className="help-text">Försök hitta de egenskaper du uppfattar som allra viktigast för tjänsten.
+                    Med egenskaper menas att sätta att vara, ett karaktärsdrag.</p>
 
                     <div className="form-group">
                         <div className="input-group">
-                            <input type="text" id="strength" className="form-control" />
+                            <input type="text" id="strength-in-job-add" className="form-control" placeholder="t.ex. kreativ eller resultatorienterad" />
                             <span className="input-group-btn">
                                 <button type="submit" className="btn btn-default">+ Lägg till</button>
                             </span>
@@ -20,26 +23,28 @@ CS.Activities.IdentifyStrengths.Controllers.Step1 = P(CS.Activities.Controller, 
                         <p className="field-error" data-check="empty"></p>
                     </div>
 
-                    <p className="field-error other-form-error" id="one-strength-min">Minst en egenskap ska läggas till</p>
-                    <p className="field-error other-form-error" id="strength-already-added">Denna egenskap har redan lagt</p>
+                    <p className="field-error other-form-error" id="one-strength-min">Ange minst en egenskap</p>
+                    <p className="field-error other-form-error strength-already-added">Den här egenskapen har redan lagts till</p>
 
-                    <ul className="styleless" id="strength-taglist">
-                        {this.state.strengths.map(function (strength) {
-                            return (
-                                <li>
-                                    <span className="tag">
-                                        <span>{strength}</span>
-                                        <button type="button" className="close" aria-label="Close" onClick={this._handleRemoveStrengthClick}>
-                                            <span aria-hidden="true">&times;</span>
-                                        </button>
-                                    </span>
-                                </li>
-                                );
-                        }.bind(this))}
-                    </ul>
+                    <div className="strength-taglist-container">
+                        <ul className="styleless">
+                            {this.state.strengths.map(function (strength) {
+                                return (
+                                    <li>
+                                        <span className="tag">
+                                            <span>{strength}</span>
+                                            <button type="button" className="close" aria-label="Close" onClick={this._handleRemoveStrengthClick}>
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </span>
+                                    </li>
+                                    );
+                            }.bind(this))}
+                        </ul>
+                    </div>
 
                     <div className="submit-wrapper">
-                        <button type="button" className="btn btn-default go-back">Tillbaka</button>
+                        <button type="button" className="btn btn-default js-go-back">Tillbaka</button>
                         <button type="button" className="btn btn-primary">Gå vidare</button>
                     </div>
                 </form>
@@ -57,19 +62,19 @@ CS.Activities.IdentifyStrengths.Controllers.Step1 = P(CS.Activities.Controller, 
 
     c.initElements = function () {
         this.$form = this.$el.find("form");
-        this.$strengthField = this.$form.find("#strength");
+        this.$strengthField = this.$form.find("#strength-in-job-add");
 
         this.$oneStrengthMinError = this.$form.find("#one-strength-min");
-        this.$strengthAlreadyAddedError = this.$form.find("#strength-already-added");
+        this.$strengthAlreadyAddedError = this.$form.find(".strength-already-added");
 
-        this.$strengthTagList = this.$form.find("#strength-taglist");
-        this.$goBackBtn = this.$form.find(".go-back");
+        this.$strengthTagList = this.$form.find(".strength-taglist-container").children();
+        this.$goBackBtn = this.$form.find(".js-go-back");
         this.$goNextStepBtn = this.$form.find(".btn-primary");
     };
 
     c.initValidation = function () {
         this.validator = CS.Services.Validator([
-            "strength"
+            "strength-in-job-add"
         ]);
     };
 
@@ -117,7 +122,7 @@ CS.Activities.IdentifyStrengths.Controllers.Step1 = P(CS.Activities.Controller, 
 
         for (var i = 0; i < $listItems.length; i++) {
             var span = $($listItems[i]).children().children("span")[0];
-            if (span.innerHTML === strength) {
+            if (span.innerHTML.toLowerCase() === strength.toLowerCase()) {
                 return true;
             }
         }

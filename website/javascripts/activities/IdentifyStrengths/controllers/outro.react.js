@@ -9,8 +9,8 @@ CS.Activities.IdentifyStrengths.Controllers.Outro = P(CS.Activities.Controller, 
 
             return (
                 <div>
-                    <p>Snyggt jobbat! De här egenskaperna sparas ner till dina smalade insikter och vi kan börja definiera
-                    dem närmre.</p>
+                    <h3>Snyggt jobbat! De här egenskaperna sparas ner till dina smalade insikter och vi kan börja definiera
+                    dem närmre.</h3>
 
                     <ol>
                         {sortedStrengths.map(function (strength) {

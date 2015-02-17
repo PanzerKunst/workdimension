@@ -1,7 +1,7 @@
 CS.Activities.SpecifyTop1Strength.Controllers.Step2 = P(CS.Activities.Controller, function (c, base) {
     c.reactClass = React.createClass({
         getInitialState: function () {
-            return {whatItMeans: {}};
+            return {whatItMeans: null};
         },
 
         render: function () {

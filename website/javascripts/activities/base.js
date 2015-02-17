@@ -25,7 +25,7 @@ CS.Activities.Base = P(function (c) {
         this.$activitiesTab = $("#activities-tab");
 
         this.$tabPanels = $('[role="tabpanel"]');
-        this.$activitiesPanel = this.$tabPanels.filter("#activities");
+        this.$activitiesPanel = this.$tabPanels.filter("#activit1es");
 
         this.$feedSection = this.$activitiesPanel.children("#c1-and-activity-feed");
         this.$currentActivitySection = this.$activitiesPanel.children("#current-activity");

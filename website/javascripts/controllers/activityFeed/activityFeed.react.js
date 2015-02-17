@@ -63,19 +63,21 @@ CS.Controllers.ActivityFeed = P(CS.Controllers.Base, function (c, base) {
         this.activityFeedItems = [
             {
                 className: "IdentifyStrengths",
-                title: "Förstå vad de söker"
+                title: "Analysera jobbannonsen",
+                description: "Här får du hjälp att ta fram de viktigaste egenskaperna som efterfrågas och matcha kraven med dina styrkor.",
+                buttonText: "Kom igång"
             },
             {
                 className: "SpecifyTop1Strength",
-                title: "Stick ut från mängden"
+                title: "Styrkans innebörd"
             },
             {
                 className: "SpecifyTop2Strength",
-                title: "Stick ut från mängden"
+                title: "Styrkans innebörd"
             },
             {
                 className: "SpecifyTop3Strength",
-                title: "Stick ut från mängden"
+                title: "Styrkans innebörd"
             }
         ];
 

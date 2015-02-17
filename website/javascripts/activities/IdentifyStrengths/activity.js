@@ -14,13 +14,15 @@ CS.Activities.IdentifyStrengths = P(CS.Activities.Base, function (c, base) {
         this.step2Controller = CS.Activities.IdentifyStrengths.Controllers.Step2("activities/" + this.model.className + "/2", this);
         this.step3Controller = CS.Activities.IdentifyStrengths.Controllers.Step3("activities/" + this.model.className + "/3", this);
         this.step4Controller = CS.Activities.IdentifyStrengths.Controllers.Step4("activities/" + this.model.className + "/4", this);
+        this.step5Controller = CS.Activities.IdentifyStrengths.Controllers.Step5("activities/" + this.model.className + "/5", this);
 
         var controllers = [
             this.introController,
             this.step1Controller,
             this.step2Controller,
             this.step3Controller,
-            this.step4Controller
+            this.step4Controller,
+            this.step5Controller
         ];
 
         this.initRouting(controllers);

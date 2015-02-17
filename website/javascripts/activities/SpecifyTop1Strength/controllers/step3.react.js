@@ -10,11 +10,7 @@ CS.Activities.SpecifyTop1Strength.Controllers.Step3 = P(CS.Activities.Controller
         render: function () {
             return (
                 <form role="form">
-                    <p className="well">På vilket sätt kommer det att vara en styrka i rollen som
-                        <strong>{this.state.position}</strong>
-                    på
-                        <strong>{this.state.employer}</strong>
-                    &#63;</p>
+                    <p className="well">På vilket sätt kommer det att vara en styrka i rollen som <strong>{this.state.position}</strong> på <strong>{this.state.employer}</strong>&#63;</p>
 
                     <div className="form-group">
                         <textarea id="strength-for-position" className="form-control"></textarea>

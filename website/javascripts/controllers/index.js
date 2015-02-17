@@ -13,6 +13,7 @@ CS.Controllers.Index = P(CS.Controllers.OnePageWebapp, function (c, base) {
 
         this._initElements();
         this._initHeaderLinks();
+        this._initActivityTabText();
         this._initEvents();
 
         this._initRouter();
@@ -32,7 +33,7 @@ CS.Controllers.Index = P(CS.Controllers.OnePageWebapp, function (c, base) {
         this.$introToActivitiesAlert = this.$headerAlerts.children("#intro-to-activities-alert");
 
         this.$tabPanels = $('[role="tabpanel"]');
-        this.$activitiesPanel = this.$tabPanels.filter("#activities");
+        this.$activitiesPanel = this.$tabPanels.filter("#activit1es");
         this.$standoutsPanel = this.$tabPanels.filter("#standouts");
 
         this.$feedSection = this.$activitiesPanel.children("#c1-and-activity-feed");
@@ -65,6 +66,12 @@ CS.Controllers.Index = P(CS.Controllers.OnePageWebapp, function (c, base) {
             this.$signOutLink.hide();
         } else {
             this.$signOutLink.show();
+        }
+    };
+
+    c._initActivityTabText = function() {
+        if (!CS.account.data || !CS.account.data.Employer || !CS.account.data.Position) {
+            this.$activitiesTab.html("Din ansökan");
         }
     };
 
