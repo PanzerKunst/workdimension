@@ -81,8 +81,12 @@ CS.Activities.IdentifyStrengths.Controllers.Intro = P(CS.Activities.Controller, 
     };
 
     c.initEvents = function () {
-        this.$goBackBtn.click($.proxy(this.navigateBack, this));
+        this.$goBackBtn.click($.proxy(this._nagivateToActivityFeed, this));
         this.$goNextStepBtn.click($.proxy(this._navigateNext, this));
+    };
+
+    c._nagivateToActivityFeed = function() {
+        this.navigateTo("activities");
     };
 
     c._navigateNext = function (e) {
@@ -723,7 +727,7 @@ CS.Activities.SpecifyTop1Strength.Controllers.Intro = P(CS.Activities.Controller
     };
 
     c.initEvents = function () {
-        this.$goBackBtn.click($.proxy(this.navigateBack, this));
+        this.$goBackBtn.click($.proxy(this._nagivateToActivityFeed, this));
         this.$goNextStepBtn.click($.proxy(this._navigateNext, this));
 
         this.onReRender();
@@ -731,6 +735,10 @@ CS.Activities.SpecifyTop1Strength.Controllers.Intro = P(CS.Activities.Controller
 
     c.onReRender = function () {
         this.reactInstance.replaceState({strengthName: this.activity.model.account.data.strengths[0].name});
+    };
+
+    c._nagivateToActivityFeed = function() {
+        this.navigateTo("activities");
     };
 
     c._navigateNext = function (e) {
@@ -926,9 +934,9 @@ CS.Activities.SpecifyTop1Strength.Controllers.Step3 = P(CS.Activities.Controller
     c._saveAndNavigateNext = function (e) {
         e.preventDefault();
 
-        this.$submitBtn.button("loading");
-
         if (this.validator.isValid()) {
+            this.$submitBtn.button("loading");
+
             this.activity.model.account.data.strengths[0].specify.strengthForPosition = this.$strengthForPositionField.val().trim();
 
             this.postData(function () {
@@ -1034,7 +1042,7 @@ CS.Activities.SpecifyTop2Strength.Controllers.Intro = P(CS.Activities.Controller
     };
 
     c.initEvents = function () {
-        this.$goBackBtn.click($.proxy(this.navigateBack, this));
+        this.$goBackBtn.click($.proxy(this._nagivateToActivityFeed, this));
         this.$goNextStepBtn.click($.proxy(this._navigateNext, this));
 
         this.onReRender();
@@ -1042,6 +1050,10 @@ CS.Activities.SpecifyTop2Strength.Controllers.Intro = P(CS.Activities.Controller
 
     c.onReRender = function () {
         this.reactInstance.replaceState({strengthName: this.activity.model.account.data.strengths[1].name});
+    };
+
+    c._nagivateToActivityFeed = function() {
+        this.navigateTo("activities");
     };
 
     c._navigateNext = function (e) {
@@ -1237,9 +1249,9 @@ CS.Activities.SpecifyTop2Strength.Controllers.Step3 = P(CS.Activities.Controller
     c._saveAndNavigateNext = function (e) {
         e.preventDefault();
 
-        this.$submitBtn.button("loading");
-
         if (this.validator.isValid()) {
+            this.$submitBtn.button("loading");
+
             this.activity.model.account.data.strengths[1].specify.strengthForPosition = this.$strengthForPositionField.val().trim();
 
             this.postData(function () {
@@ -1345,7 +1357,7 @@ CS.Activities.SpecifyTop3Strength.Controllers.Intro = P(CS.Activities.Controller
     };
 
     c.initEvents = function () {
-        this.$goBackBtn.click($.proxy(this.navigateBack, this));
+        this.$goBackBtn.click($.proxy(this._nagivateToActivityFeed, this));
         this.$goNextStepBtn.click($.proxy(this._navigateNext, this));
 
         this.onReRender();
@@ -1353,6 +1365,10 @@ CS.Activities.SpecifyTop3Strength.Controllers.Intro = P(CS.Activities.Controller
 
     c.onReRender = function () {
         this.reactInstance.replaceState({strengthName: this.activity.model.account.data.strengths[2].name});
+    };
+
+    c._nagivateToActivityFeed = function() {
+        this.navigateTo("activities");
     };
 
     c._navigateNext = function (e) {
@@ -1548,9 +1564,9 @@ CS.Activities.SpecifyTop3Strength.Controllers.Step3 = P(CS.Activities.Controller
     c._saveAndNavigateNext = function (e) {
         e.preventDefault();
 
-        this.$submitBtn.button("loading");
-
         if (this.validator.isValid()) {
+            this.$submitBtn.button("loading");
+
             this.activity.model.account.data.strengths[2].specify.strengthForPosition = this.$strengthForPositionField.val().trim();
 
             this.postData(function () {

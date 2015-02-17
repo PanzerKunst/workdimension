@@ -79,7 +79,7 @@ CS.Standouts.Strengths.Controllers = {};
     c.render = function () {
         // TODO: FIX - this if statement shouldn't be necessary, as this.standout.detailData should always exist
         // Maybe linked to https://github.com/EngineeringMode/Grapnel.js/issues/26
-        if (this.standout.detailData) {
+        if (this.standout.detailData && this.standout.detailData.strength && this.standout.detailData.strength.specify) {
             console.log("this.standout.detailData NOT NULL");
 
             var strength = this.standout.detailData.strength;

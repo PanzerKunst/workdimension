@@ -113,7 +113,8 @@ a:focus {
 }
 
 textarea {
-  min-height: 5em;
+  resize: vertical;
+  height: 8em;
 }
 
 blockquote {

@@ -5068,7 +5068,8 @@ a:focus {
   color: #ff8a38; }
 
 textarea {
-  min-height: 5em; }
+  resize: vertical;
+  height: 8em; }
 
 blockquote {
   margin: 0; }
@@ -5317,6 +5318,9 @@ button.close {
   .form-control {
     height: 100%; } }
 
+textarea.form-control {
+  height: 8em; }
+
 h1, .h1,
 h2, .h2,
 h3, .h3,
@@ -5389,8 +5393,13 @@ h6, .h6 {
 #modal form [type="submit"] {
   display: none; }
 
-#header-alerts > .alert {
+#header-alerts > div {
   display: none; }
+
+#welcome-alert {
+  padding: 15px; }
+  #welcome-alert span {
+    display: inline-block; }
 
 footer {
   min-height: 42px; }

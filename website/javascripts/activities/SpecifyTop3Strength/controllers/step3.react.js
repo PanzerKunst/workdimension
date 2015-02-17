@@ -60,9 +60,9 @@ CS.Activities.SpecifyTop3Strength.Controllers.Step3 = P(CS.Activities.Controller
     c._saveAndNavigateNext = function (e) {
         e.preventDefault();
 
-        this.$submitBtn.button("loading");
-
         if (this.validator.isValid()) {
+            this.$submitBtn.button("loading");
+
             this.activity.model.account.data.strengths[2].specify.strengthForPosition = this.$strengthForPositionField.val().trim();
 
             this.postData(function () {

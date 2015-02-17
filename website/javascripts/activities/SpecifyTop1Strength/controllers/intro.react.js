@@ -32,7 +32,7 @@ CS.Activities.SpecifyTop1Strength.Controllers.Intro = P(CS.Activities.Controller
     };
 
     c.initEvents = function () {
-        this.$goBackBtn.click($.proxy(this.navigateBack, this));
+        this.$goBackBtn.click($.proxy(this._nagivateToActivityFeed, this));
         this.$goNextStepBtn.click($.proxy(this._navigateNext, this));
 
         this.onReRender();
@@ -40,6 +40,10 @@ CS.Activities.SpecifyTop1Strength.Controllers.Intro = P(CS.Activities.Controller
 
     c.onReRender = function () {
         this.reactInstance.replaceState({strengthName: this.activity.model.account.data.strengths[0].name});
+    };
+
+    c._nagivateToActivityFeed = function() {
+        this.navigateTo("activities");
     };
 
     c._navigateNext = function (e) {

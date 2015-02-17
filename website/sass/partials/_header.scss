@@ -39,7 +39,15 @@
 }
 
 #header-alerts {
-  > .alert {
+  > div {
     display: none;
+  }
+}
+
+#welcome-alert {
+  padding: $alert-padding;
+
+  span {
+    display: inline-block;
   }
 }
