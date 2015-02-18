@@ -14,8 +14,7 @@ CS.Activities.SpecifyTop1Strength.Controllers.Intro = P(CS.Activities.Controller
                     <p>Vi använder ofta vaga termer när vi beskriver oss själva. Dessutom är egenskaperna som efterfrågas i jobbannonser
                     ofta ganska generiska eller tvetydigt formulerade.</p>
 
-                    <p>I den här övningen hjälper vi dig att definiera vad en specifik egenskap ennebär för just dig och hur den kan
-                    tillämpas på din roll för att kunna påvisa värdet av den för din framtida arbetsgivare.</p>
+                    <p>I den här övningen hjälper vi dig att definiera vad en specifik egenskap innebär för just dig och på vilket sätt det är en fördel för arbetsgivaren.</p>
 
                     <div className="centered-contents">
                         <button type="button" className="btn btn-default">Tillbaka</button>

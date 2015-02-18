@@ -40,8 +40,8 @@ CS.Standouts.Strengths.Controllers.Details = P(CS.Controllers.OnePageWebapp, fun
                             React.createElement("span", {className: "glyphicon glyphicon-chevron-left", "aria-hidden": "true"}), 
                         "Tillbaka"), 
                         React.createElement("button", {type: "button", className: "btn btn-default js-redo-activity"}, 
-                            React.createElement("span", {className: "glyphicon glyphicon-repeat", "aria-hidden": "true"}), 
-                        "Gör om aktiviteten"), 
+                            React.createElement("span", {className: "glyphicon glyphicon-pencil", "aria-hidden": "true"}), 
+                        "Redigera"), 
                         React.createElement("button", {type: "button", className: "btn btn-warning"}, 
                             React.createElement("span", {className: "glyphicon glyphicon-trash", "aria-hidden": "true"}), 
                         "Ta bort styrkan")

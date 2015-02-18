@@ -9,10 +9,12 @@ CS.Activities.IdentifyStrengths.Controllers.Step5 = P(CS.Activities.Controller, 
                 <div>
                     <h3>Toppen! Du har nu gjort en prioritering av dina starkaste egenskaper för din ansökan.</h3>
 
-                    {this.state.strengths.map(function (strength) {
+                    <p className="help-text">När du börjar skriva din ansökan är det här sannolikt dina starkaste kort att lyfta fram och vi kommer därför att prioritera dem tre i kommande aktiviteter. De övriga sparas tillsvidare.</p>
+
+                    {this.state.strengths.map(function (strength, index) {
                         return (
                             <article>
-                                <h2>{strength.name}</h2>
+                                <h2>{index+1}. {strength.name}</h2>
                                 <p>Stämmer <strong>{this._howWellDoesItApplyFormatter(strength.howWellItApplies)}</strong> in på dig och är <strong>{this._howImportantForEmployerformatter(strength.howImportantForEmployer)}</strong> för jobbet.</p>
                             </article>
                             );
@@ -20,7 +22,7 @@ CS.Activities.IdentifyStrengths.Controllers.Step5 = P(CS.Activities.Controller, 
 
                     <div className="centered-contents">
                         <button type="button" className="btn btn-default">Tillbaka</button>
-                        <button type="button" className="btn btn-primary" data-loading-text="Sparar...">Spara</button>
+                        <button type="button" className="btn btn-primary" data-loading-text="Sparar...">Gå vidare</button>
                     </div>
                 </div>
                 );
@@ -67,7 +69,7 @@ CS.Activities.IdentifyStrengths.Controllers.Step5 = P(CS.Activities.Controller, 
 
     c.onReRender = function () {
         this.activity.model.account.data.strengths = CS.Models.Strength.sort(this.activity.model.account.data.strengths);
-        this.reactInstance.replaceState({strengths: this.activity.model.account.data.strengths});
+        this.reactInstance.replaceState({strengths: _.take(this.activity.model.account.data.strengths, 3)});
 
         // The submit button may still be in loading state when navigating back. We make sure it doesn't happen
         this.$submitBtn.button('reset');
@@ -76,6 +78,8 @@ CS.Activities.IdentifyStrengths.Controllers.Step5 = P(CS.Activities.Controller, 
     c._handleSubmit = function (e) {
         this.$submitBtn.button('loading');
 
-        this.postData();
+        this.postData(function () {
+            this.navigateTo(this.activity.outroController.route);
+        }.bind(this));
     };
 });

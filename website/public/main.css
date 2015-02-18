@@ -5080,8 +5080,10 @@ blockquote {
 .tag {
   background-color: #eeeeee;
   border-radius: 4px;
-  padding-left: 7px;
-  display: inline-block; }
+  display: inline-block;
+  padding: 0 7px; }
+  .tag.with-close-btn {
+    padding-right: 0; }
   .tag > span {
     display: inline-block;
     vertical-align: top;

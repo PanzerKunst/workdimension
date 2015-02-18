@@ -44,6 +44,7 @@ CS.Activities.Controller = P(CS.Controllers.OnePageWebapp, function (c, base) {
             }),
             success: function (data, textStatus, jqXHR) {
                 CS.account.data = this.activity.model.account.data;
+                CS.activityFeedController.refreshData();
 
                 if (callback) {
                     callback();

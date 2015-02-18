@@ -4,7 +4,7 @@ CS.Controllers.Index = P(CS.Controllers.OnePageWebapp, function (c, base) {
         CS.account.email = accountEmail;
         CS.account.data = accountData;
 
-        this.activityFeedController = CS.Controllers.ActivityFeed();
+        CS.activityFeedController = CS.Controllers.ActivityFeed();
         this.standoutsController = CS.Controllers.Standouts();
 
         CS.Controllers.HeaderModal.Register();
@@ -122,7 +122,8 @@ CS.Controllers.Index = P(CS.Controllers.OnePageWebapp, function (c, base) {
     };
 
     c._handlePanelActivated = function () {
-        this.activityFeedController.refreshData();
+        // TODO: remove?
+        CS.activityFeedController.refreshData();
         this.standoutsController.refreshData();
 
         this.$currentActivitySection.hide();

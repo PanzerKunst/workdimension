@@ -18,11 +18,6 @@ CS.Controllers.ActivityFeedItem = React.createClass({
     },
     
     _handleClick: function (e) {
-        var instance = this.props.activity.instance;
-
-        location.hash = "activities/" + instance.getClassName();
-
-        $("#c1-and-activity-feed").hide();
-        $("#current-activity").show();
+        location.hash = "activities/" + this.props.activity.instance.getClassName();
     }
 });

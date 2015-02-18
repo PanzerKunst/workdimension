@@ -15,14 +15,14 @@ CS.Activities.SpecifyTop1Strength = P(CS.Activities.Base, function (c, base) {
         this.step1Controller = CS.Activities.SpecifyTop1Strength.Controllers.Step1("activities/" + this.model.className + "/1", this);
         this.step2Controller = CS.Activities.SpecifyTop1Strength.Controllers.Step2("activities/" + this.model.className + "/2", this);
         this.step3Controller = CS.Activities.SpecifyTop1Strength.Controllers.Step3("activities/" + this.model.className + "/3", this);
-        this.step4Controller = CS.Activities.SpecifyTop1Strength.Controllers.Step4("activities/" + this.model.className + "/4", this);
+        this.outroController = CS.Activities.SpecifyTop1Strength.Controllers.Outro("activities/" + this.model.className + "/outro", this);
 
         var controllers = [
             this.introController,
             this.step1Controller,
             this.step2Controller,
             this.step3Controller,
-            this.step4Controller
+            this.outroController
         ];
 
         this.initRouting(controllers);

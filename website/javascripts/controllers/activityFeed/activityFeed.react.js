@@ -155,7 +155,7 @@ CS.Controllers.ActivityFeed = P(CS.Controllers.Base, function (c, base) {
     };
 
     c._orderFeedItems = function (activityData) {
-        var undoneC1sAndActivities = [];
+        CS.undoneC1sAndActivities = [];
         var doneC1sAndActivities = [];
 
         activityData.forEach(function (activity) {
@@ -170,7 +170,7 @@ CS.Controllers.ActivityFeed = P(CS.Controllers.Base, function (c, base) {
                     isDone: true
                 });
             } else if (instance.isDoable()) {
-                undoneC1sAndActivities.push({
+                CS.undoneC1sAndActivities.push({
                     type: CS.Controllers.ActivityFeed.itemType.activity,
                     title: instance.getTitle(),
                     instance: instance,
@@ -188,7 +188,7 @@ CS.Controllers.ActivityFeed = P(CS.Controllers.Base, function (c, base) {
                     instance: c1Instance
                 });
             } else {
-                undoneC1sAndActivities.push({
+                CS.undoneC1sAndActivities.push({
                     type: CS.Controllers.ActivityFeed.itemType.c1,
                     instance: c1Instance
                 });
@@ -203,12 +203,12 @@ CS.Controllers.ActivityFeed = P(CS.Controllers.Base, function (c, base) {
 
             if (isTodo && instance.isDoable()) {
                 // Is it already is among the undoneActivities?
-                var isAlreadyInTheList = _.find(undoneC1sAndActivities, function (activity) {
+                var isAlreadyInTheList = _.find(CS.undoneC1sAndActivities, function (activity) {
                     return activity.instance.getClassName() === instance.getClassName();
                 });
 
                 if (!isAlreadyInTheList) {
-                    undoneC1sAndActivities.push({
+                    CS.undoneC1sAndActivities.push({
                         type: CS.Controllers.ActivityFeed.itemType.activity,
                         instance: instance,
                         isDone: false
@@ -220,7 +220,7 @@ CS.Controllers.ActivityFeed = P(CS.Controllers.Base, function (c, base) {
         this._showOrHideRegisterReminder(doneC1sAndActivities.length);
 
         this.reactInstance.replaceState({
-            undoneC1sAndActivities: undoneC1sAndActivities,
+            undoneC1sAndActivities: CS.undoneC1sAndActivities,
             doneC1sAndActivities: doneC1sAndActivities
         });
     };

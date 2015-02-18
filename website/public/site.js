@@ -281,6 +281,8 @@ CS.account = {
 };
 CS.router = new Grapnel();
 CS.defaultAnimationDuration = 0.5;
+CS.activityFeedController = null;
+CS.undoneC1sAndActivities = [];
 ;CS.Browser = {
     addUserAgentAttributeToHtmlTag: function() {
         document.documentElement.setAttribute('data-useragent', navigator.userAgent);
@@ -750,7 +752,7 @@ CS.defaultAnimationDuration = 0.5;
         CS.account.email = accountEmail;
         CS.account.data = accountData;
 
-        this.activityFeedController = CS.Controllers.ActivityFeed();
+        CS.activityFeedController = CS.Controllers.ActivityFeed();
         this.standoutsController = CS.Controllers.Standouts();
 
         CS.Controllers.HeaderModal.Register();
@@ -868,7 +870,8 @@ CS.defaultAnimationDuration = 0.5;
     };
 
     c._handlePanelActivated = function () {
-        this.activityFeedController.refreshData();
+        // TODO: remove?
+        CS.activityFeedController.refreshData();
         this.standoutsController.refreshData();
 
         this.$currentActivitySection.hide();
@@ -1418,7 +1421,7 @@ CS.defaultAnimationDuration = 0.5;
     };
 
     c._orderFeedItems = function (activityData) {
-        var undoneC1sAndActivities = [];
+        CS.undoneC1sAndActivities = [];
         var doneC1sAndActivities = [];
 
         activityData.forEach(function (activity) {
@@ -1433,7 +1436,7 @@ CS.defaultAnimationDuration = 0.5;
                     isDone: true
                 });
             } else if (instance.isDoable()) {
-                undoneC1sAndActivities.push({
+                CS.undoneC1sAndActivities.push({
                     type: CS.Controllers.ActivityFeed.itemType.activity,
                     title: instance.getTitle(),
                     instance: instance,
@@ -1451,7 +1454,7 @@ CS.defaultAnimationDuration = 0.5;
                     instance: c1Instance
                 });
             } else {
-                undoneC1sAndActivities.push({
+                CS.undoneC1sAndActivities.push({
                     type: CS.Controllers.ActivityFeed.itemType.c1,
                     instance: c1Instance
                 });
@@ -1466,12 +1469,12 @@ CS.defaultAnimationDuration = 0.5;
 
             if (isTodo && instance.isDoable()) {
                 // Is it already is among the undoneActivities?
-                var isAlreadyInTheList = _.find(undoneC1sAndActivities, function (activity) {
+                var isAlreadyInTheList = _.find(CS.undoneC1sAndActivities, function (activity) {
                     return activity.instance.getClassName() === instance.getClassName();
                 });
 
                 if (!isAlreadyInTheList) {
-                    undoneC1sAndActivities.push({
+                    CS.undoneC1sAndActivities.push({
                         type: CS.Controllers.ActivityFeed.itemType.activity,
                         instance: instance,
                         isDone: false
@@ -1483,7 +1486,7 @@ CS.defaultAnimationDuration = 0.5;
         this._showOrHideRegisterReminder(doneC1sAndActivities.length);
 
         this.reactInstance.replaceState({
-            undoneC1sAndActivities: undoneC1sAndActivities,
+            undoneC1sAndActivities: CS.undoneC1sAndActivities,
             doneC1sAndActivities: doneC1sAndActivities
         });
     };
@@ -1522,12 +1525,7 @@ CS.Controllers.ActivityFeedItem = React.createClass({displayName: "ActivityFeedI
     },
     
     _handleClick: function (e) {
-        var instance = this.props.activity.instance;
-
-        location.hash = "activities/" + instance.getClassName();
-
-        $("#c1-and-activity-feed").hide();
-        $("#current-activity").show();
+        location.hash = "activities/" + this.props.activity.instance.getClassName();
     }
 });
 

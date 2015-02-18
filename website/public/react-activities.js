@@ -60,11 +60,9 @@ CS.Activities.IdentifyStrengths.Controllers.Intro = P(CS.Activities.Controller, 
                 React.createElement("div", null, 
                     React.createElement("h1", null, "Analysera jobbannonsen"), 
 
-                    React.createElement("p", null, "Spännande att du har funnit en annons som du vill svara på! Här hjälper vi dig att ta fram de viktigaste" + ' ' +
-                    "egenskaperna som efterfrågas i annonsen samt matcha de kraven med dina egenskaper."), 
+                    React.createElement("p", null, "Spännande att du har funnit en annons som du vill svara på! Här hjälper vi dig att ta fram de viktigaste egenskaperna som efterfrågas i annonsen samt matcha de kraven med dina egenskaper."), 
 
-                    React.createElement("p", null, "Genom ett antal frågeställningar och övningar hoppas vi att du kommer at få insikter om just dina egenskaper" + ' ' +
-                    "och på vilket sätt de bidrar till dig sätt att vara."), 
+                    React.createElement("p", null, "Genom ett antal frågeställningar och övningar kommer du att identifiera och förklara de viktigaste egenskaper att lyfta fram i din jobbansökan."), 
 
                     React.createElement("div", {className: "centered-contents"}, 
                         React.createElement("button", {type: "button", className: "btn btn-default"}, "Tillbaka"), 
@@ -99,34 +97,59 @@ CS.Activities.IdentifyStrengths.Controllers.Intro = P(CS.Activities.Controller, 
 CS.Activities.IdentifyStrengths.Controllers.Outro = P(CS.Activities.Controller, function (c, base) {
     c.reactClass = React.createClass({displayName: "reactClass",
         getInitialState: function () {
-            return {strengths: []};
+            return {
+                nextActivity: null,
+                firstThreeStrengths: [],
+                otherStrengths: []
+            };
         },
 
         render: function () {
-            var sortedStrengths = CS.Models.Strength.sort(this.state.strengths);
-
             return (
                 React.createElement("div", null, 
-                    React.createElement("h3", null, "Snyggt jobbat! De här egenskaperna sparas ner till dina smalade insikter och vi kan börja definiera" + ' ' +
-                    "dem närmre."), 
+                    React.createElement("h3", null, "De här egenskaperna sparas ner till dina samlade insikter så du kan börja definiera dem närmre."), 
 
                     React.createElement("ol", null, 
-                        sortedStrengths.map(function (strength) {
+                        this.state.firstThreeStrengths.map(function (strength) {
                             return (
                                 React.createElement("li", null, strength.name)
                                 );
                         }.bind(this))
                     ), 
 
-                    React.createElement("section", null, 
-                        React.createElement("span", null, "Nästa steg"), 
-                        React.createElement("div", {className: "centered-contents"}
+                    React.createElement("div", {className: "strength-taglist-container"}, 
+                        React.createElement("ul", {className: "styleless"}, 
+                            this.state.otherStrengths.map(function (strength) {
+                                return (
+                                    React.createElement("li", null, 
+                                        React.createElement("span", {className: "tag"}, 
+                                            React.createElement("span", null, strength.name)
+                                        )
+                                    )
+                                    );
+                            }.bind(this))
                         )
-                    )
+                    ), 
+
+                    React.createElement(CS.Activities.Controller.NextStep, {activity: this.state.nextActivity})
                 )
                 );
         }
     });
+
+    c.initEvents = function () {
+        this.onReRender();
+    };
+
+    c.onReRender = function () {
+        var nextActivity = CS.undoneC1sAndActivities && !_.isEmpty(CS.undoneC1sAndActivities) ? CS.undoneC1sAndActivities[0].instance : null;
+
+        this.reactInstance.replaceState({
+            nextActivity: nextActivity,
+            firstThreeStrengths: _.take(this.activity.model.account.data.strengths, 3),
+            otherStrengths: _.drop(this.activity.model.account.data.strengths, 3)
+        });
+    };
 });
 
 CS.Activities.IdentifyStrengths.Controllers.Step1 = P(CS.Activities.Controller, function (c, base) {
@@ -162,7 +185,7 @@ CS.Activities.IdentifyStrengths.Controllers.Step1 = P(CS.Activities.Controller, 
                             this.state.strengths.map(function (strength) {
                                 return (
                                     React.createElement("li", null, 
-                                        React.createElement("span", {className: "tag"}, 
+                                        React.createElement("span", {className: "tag with-close-btn"}, 
                                             React.createElement("span", null, strength), 
                                             React.createElement("button", {type: "button", className: "close", "aria-label": "Close", onClick: this._handleRemoveStrengthClick}, 
                                                 React.createElement("span", {"aria-hidden": "true"}, "×")
@@ -286,7 +309,7 @@ CS.Activities.IdentifyStrengths.Controllers.Step2 = P(CS.Activities.Controller, 
         render: function () {
             return (
                 React.createElement("form", {role: "form"}, 
-                    React.createElement("h3", null, "Har du några egenskaper som är viktiga för rollen men som inte nämns i annonsen?"), 
+                    React.createElement("h3", null, "Har du några egenskaper som du tycker är viktiga för rollen men som inte nämns i annonsen?"), 
 
                     React.createElement("p", {className: "help-text"}, "Kanske har du vitsord från tidigare anställningar eller rekommendationer skrivna av andra?" + ' ' +
                     "Försök lyfta egenskaper du tror skulle bidra till jobbet."), 
@@ -309,7 +332,7 @@ CS.Activities.IdentifyStrengths.Controllers.Step2 = P(CS.Activities.Controller, 
                             this.state.strengths.map(function (strength) {
                                 return (
                                     React.createElement("li", null, 
-                                        React.createElement("span", {className: "tag"}, 
+                                        React.createElement("span", {className: "tag with-close-btn"}, 
                                             React.createElement("span", null, strength), 
                                             React.createElement("button", {type: "button", className: "close", "aria-label": "Close", onClick: this._handleRemoveStrengthClick}, 
                                                 React.createElement("span", {"aria-hidden": "true"}, "×")
@@ -622,10 +645,12 @@ CS.Activities.IdentifyStrengths.Controllers.Step5 = P(CS.Activities.Controller, 
                 React.createElement("div", null, 
                     React.createElement("h3", null, "Toppen! Du har nu gjort en prioritering av dina starkaste egenskaper för din ansökan."), 
 
-                    this.state.strengths.map(function (strength) {
+                    React.createElement("p", {className: "help-text"}, "När du börjar skriva din ansökan är det här sannolikt dina starkaste kort att lyfta fram och vi kommer därför att prioritera dem tre i kommande aktiviteter. De övriga sparas tillsvidare."), 
+
+                    this.state.strengths.map(function (strength, index) {
                         return (
                             React.createElement("article", null, 
-                                React.createElement("h2", null, strength.name), 
+                                React.createElement("h2", null, index+1, ". ", strength.name), 
                                 React.createElement("p", null, "Stämmer ", React.createElement("strong", null, this._howWellDoesItApplyFormatter(strength.howWellItApplies)), " in på dig och är ", React.createElement("strong", null, this._howImportantForEmployerformatter(strength.howImportantForEmployer)), " för jobbet.")
                             )
                             );
@@ -633,7 +658,7 @@ CS.Activities.IdentifyStrengths.Controllers.Step5 = P(CS.Activities.Controller, 
 
                     React.createElement("div", {className: "centered-contents"}, 
                         React.createElement("button", {type: "button", className: "btn btn-default"}, "Tillbaka"), 
-                        React.createElement("button", {type: "button", className: "btn btn-primary", "data-loading-text": "Sparar..."}, "Spara")
+                        React.createElement("button", {type: "button", className: "btn btn-primary", "data-loading-text": "Sparar..."}, "Gå vidare")
                     )
                 )
                 );
@@ -680,7 +705,7 @@ CS.Activities.IdentifyStrengths.Controllers.Step5 = P(CS.Activities.Controller, 
 
     c.onReRender = function () {
         this.activity.model.account.data.strengths = CS.Models.Strength.sort(this.activity.model.account.data.strengths);
-        this.reactInstance.replaceState({strengths: this.activity.model.account.data.strengths});
+        this.reactInstance.replaceState({strengths: _.take(this.activity.model.account.data.strengths, 3)});
 
         // The submit button may still be in loading state when navigating back. We make sure it doesn't happen
         this.$submitBtn.button('reset');
@@ -689,7 +714,9 @@ CS.Activities.IdentifyStrengths.Controllers.Step5 = P(CS.Activities.Controller, 
     c._handleSubmit = function (e) {
         this.$submitBtn.button('loading');
 
-        this.postData();
+        this.postData(function () {
+            this.navigateTo(this.activity.outroController.route);
+        }.bind(this));
     };
 });
 
@@ -709,8 +736,7 @@ CS.Activities.SpecifyTop1Strength.Controllers.Intro = P(CS.Activities.Controller
                     React.createElement("p", null, "Vi använder ofta vaga termer när vi beskriver oss själva. Dessutom är egenskaperna som efterfrågas i jobbannonser" + ' ' +
                     "ofta ganska generiska eller tvetydigt formulerade."), 
 
-                    React.createElement("p", null, "I den här övningen hjälper vi dig att definiera vad en specifik egenskap ennebär för just dig och hur den kan" + ' ' +
-                    "tillämpas på din roll för att kunna påvisa värdet av den för din framtida arbetsgivare."), 
+                    React.createElement("p", null, "I den här övningen hjälper vi dig att definiera vad en specifik egenskap innebär för just dig och på vilket sätt det är en fördel för arbetsgivaren."), 
 
                     React.createElement("div", {className: "centered-contents"}, 
                         React.createElement("button", {type: "button", className: "btn btn-default"}, "Tillbaka"), 
@@ -745,6 +771,57 @@ CS.Activities.SpecifyTop1Strength.Controllers.Intro = P(CS.Activities.Controller
         this.activity.model.account.data.strengths[0].specify = this.activity.model.account.data.strengths[0].specify || {};
 
         this.navigateTo(this.activity.step1Controller.route);
+    };
+});
+
+CS.Activities.SpecifyTop1Strength.Controllers.Outro = P(CS.Activities.Controller, function (c, base) {
+    c.reactClass = React.createClass({displayName: "reactClass",
+        getInitialState: function () {
+            return {
+                nextActivity: null,
+                strengthName: null,
+                howWellItApplies: null,
+                strengthForPosition: null
+            };
+        },
+
+        render: function () {
+            return (
+                React.createElement("div", null, 
+                    React.createElement("p", {className: "well"}, "Jättebra! Du har nu definierat hur just du är ", React.createElement("strong", null, this.state.strengthName), " och vilket värde det har för jobbet du söker."), 
+
+                    React.createElement("h2", null, "Definition"), 
+
+                    React.createElement("p", {className: "well", dangerouslySetInnerHTML: {__html: this.state.howWellItApplies}}), 
+
+                    React.createElement("h2", null, "Värde"), 
+
+                    React.createElement("p", {className: "well", dangerouslySetInnerHTML: {__html: this.state.strengthForPosition}}), 
+
+                    React.createElement(CS.Activities.Controller.NextStep, {activity: this.state.nextActivity})
+                )
+                );
+        }
+    });
+
+    c.initEvents = function () {
+        this.onReRender();
+    };
+
+    c.onReRender = function () {
+        var nextActivity = CS.undoneC1sAndActivities && !_.isEmpty(CS.undoneC1sAndActivities) ? CS.undoneC1sAndActivities[0].instance : null;
+
+        var strength = this.activity.model.account.data.strengths[0];
+
+        var howWellItAppliesAsHtml = CS.Services.String.textToHtml(strength.specify.howWellItApplies);
+        var strengthForPositionAsHtml = CS.Services.String.textToHtml(strength.specify.strengthForPosition);
+
+        this.reactInstance.replaceState({
+            nextActivity: nextActivity,
+            strengthName: strength.name,
+            howWellItApplies: howWellItAppliesAsHtml,
+            strengthForPosition: strengthForPositionAsHtml
+        });
     };
 });
 
@@ -940,71 +1017,9 @@ CS.Activities.SpecifyTop1Strength.Controllers.Step3 = P(CS.Activities.Controller
             this.activity.model.account.data.strengths[0].specify.strengthForPosition = this.$strengthForPositionField.val().trim();
 
             this.postData(function () {
-                this.navigateTo(this.activity.step4Controller.route);
+                this.navigateTo(this.activity.outroController.route);
             }.bind(this));
         }
-    };
-});
-
-CS.Activities.SpecifyTop1Strength.Controllers.Step4 = P(CS.Activities.Controller, function (c, base) {
-    c.reactClass = React.createClass({displayName: "reactClass",
-        getInitialState: function () {
-            return {
-                strengthName: null,
-                howWellItApplies: null,
-                strengthForPosition: null
-            };
-        },
-
-        render: function () {
-            return (
-                React.createElement("div", null, 
-                    React.createElement("p", {className: "well"}, "Jättebra! Du har nu definierat hur just du är ", React.createElement("strong", null, this.state.strengthName), " och vilket värde det har för jobbet du söker."), 
-
-                    React.createElement("h2", null, "Definition"), 
-
-                    React.createElement("p", {className: "well", dangerouslySetInnerHTML: {__html: this.state.howWellItApplies}}), 
-
-                    React.createElement("h2", null, "Värde"), 
-
-                    React.createElement("p", {className: "well", dangerouslySetInnerHTML: {__html: this.state.strengthForPosition}}), 
-
-                    React.createElement("div", {className: "centered-contents"}, 
-                        React.createElement("button", {type: "button", className: "btn btn-default"}, "Tillbaka"), 
-                        React.createElement("button", {type: "button", className: "btn btn-primary"}, "Ok")
-                    )
-                )
-                );
-        }
-    });
-
-    c.initElements = function () {
-        this.$goBackBtn = this.$el.find(".btn-default");
-        this.$goNextStepBtn = this.$el.find(".btn-primary");
-    };
-
-    c.initEvents = function () {
-        this.$goBackBtn.click($.proxy(this.navigateBack, this));
-        this.$goNextStepBtn.click($.proxy(this._navigateToInsights, this));
-
-        this.onReRender();
-    };
-
-    c.onReRender = function () {
-        var strength = this.activity.model.account.data.strengths[0];
-
-        var howWellItAppliesAsHtml = CS.Services.String.textToHtml(strength.specify.howWellItApplies);
-        var strengthForPositionAsHtml = CS.Services.String.textToHtml(strength.specify.strengthForPosition);
-
-        this.reactInstance.replaceState({
-            strengthName: strength.name,
-            howWellItApplies: howWellItAppliesAsHtml,
-            strengthForPosition: strengthForPositionAsHtml
-        });
-    };
-
-    c._navigateToInsights = function (e) {
-        this.navigateTo("insights");
     };
 });
 
@@ -1024,8 +1039,7 @@ CS.Activities.SpecifyTop2Strength.Controllers.Intro = P(CS.Activities.Controller
                     React.createElement("p", null, "Vi använder ofta vaga termer när vi beskriver oss själva. Dessutom är egenskaperna som efterfrågas i jobbannonser" + ' ' +
                     "ofta ganska generiska eller tvetydigt formulerade."), 
 
-                    React.createElement("p", null, "I den här övningen hjälper vi dig att definiera vad en specifik egenskap ennebär för just dig och hur den kan" + ' ' +
-                    "tillämpas på din roll för att kunna påvisa värdet av den för din framtida arbetsgivare."), 
+                    React.createElement("p", null, "I den här övningen hjälper vi dig att definiera vad en specifik egenskap innebär för just dig och på vilket sätt det är en fördel för arbetsgivaren."), 
 
                     React.createElement("div", {className: "centered-contents"}, 
                         React.createElement("button", {type: "button", className: "btn btn-default"}, "Tillbaka"), 
@@ -1060,6 +1074,57 @@ CS.Activities.SpecifyTop2Strength.Controllers.Intro = P(CS.Activities.Controller
         this.activity.model.account.data.strengths[1].specify = this.activity.model.account.data.strengths[1].specify || {};
 
         this.navigateTo(this.activity.step1Controller.route);
+    };
+});
+
+CS.Activities.SpecifyTop2Strength.Controllers.Outro = P(CS.Activities.Controller, function (c, base) {
+    c.reactClass = React.createClass({displayName: "reactClass",
+        getInitialState: function () {
+            return {
+                nextActivity: null,
+                strengthName: null,
+                howWellItApplies: null,
+                strengthForPosition: null
+            };
+        },
+
+        render: function () {
+            return (
+                React.createElement("div", null, 
+                    React.createElement("p", {className: "well"}, "Jättebra! Du har nu definierat hur just du är ", React.createElement("strong", null, this.state.strengthName), " och vilket värde det har för jobbet du söker."), 
+
+                    React.createElement("h2", null, "Definition"), 
+
+                    React.createElement("p", {className: "well", dangerouslySetInnerHTML: {__html: this.state.howWellItApplies}}), 
+
+                    React.createElement("h2", null, "Värde"), 
+
+                    React.createElement("p", {className: "well", dangerouslySetInnerHTML: {__html: this.state.strengthForPosition}}), 
+
+                    React.createElement(CS.Activities.Controller.NextStep, {activity: this.state.nextActivity})
+                )
+                );
+        }
+    });
+
+    c.initEvents = function () {
+        this.onReRender();
+    };
+
+    c.onReRender = function () {
+        var nextActivity = CS.undoneC1sAndActivities && !_.isEmpty(CS.undoneC1sAndActivities) ? CS.undoneC1sAndActivities[0].instance : null;
+
+        var strength = this.activity.model.account.data.strengths[1];
+
+        var howWellItAppliesAsHtml = CS.Services.String.textToHtml(strength.specify.howWellItApplies);
+        var strengthForPositionAsHtml = CS.Services.String.textToHtml(strength.specify.strengthForPosition);
+
+        this.reactInstance.replaceState({
+            nextActivity: nextActivity,
+            strengthName: strength.name,
+            howWellItApplies: howWellItAppliesAsHtml,
+            strengthForPosition: strengthForPositionAsHtml
+        });
     };
 });
 
@@ -1255,71 +1320,9 @@ CS.Activities.SpecifyTop2Strength.Controllers.Step3 = P(CS.Activities.Controller
             this.activity.model.account.data.strengths[1].specify.strengthForPosition = this.$strengthForPositionField.val().trim();
 
             this.postData(function () {
-                this.navigateTo(this.activity.step4Controller.route);
+                this.navigateTo(this.activity.outroController.route);
             }.bind(this));
         }
-    };
-});
-
-CS.Activities.SpecifyTop2Strength.Controllers.Step4 = P(CS.Activities.Controller, function (c, base) {
-    c.reactClass = React.createClass({displayName: "reactClass",
-        getInitialState: function () {
-            return {
-                strengthName: null,
-                howWellItApplies: null,
-                strengthForPosition: null
-            };
-        },
-
-        render: function () {
-            return (
-                React.createElement("div", null, 
-                    React.createElement("p", {className: "well"}, "Jättebra! Du har nu definierat hur just du är ", React.createElement("strong", null, this.state.strengthName), " och vilket värde det har för jobbet du söker."), 
-
-                    React.createElement("h2", null, "Definition"), 
-
-                    React.createElement("p", {className: "well", dangerouslySetInnerHTML: {__html: this.state.howWellItApplies}}), 
-
-                    React.createElement("h2", null, "Värde"), 
-
-                    React.createElement("p", {className: "well", dangerouslySetInnerHTML: {__html: this.state.strengthForPosition}}), 
-
-                    React.createElement("div", {className: "centered-contents"}, 
-                        React.createElement("button", {type: "button", className: "btn btn-default"}, "Tillbaka"), 
-                        React.createElement("button", {type: "button", className: "btn btn-primary"}, "Ok")
-                    )
-                )
-                );
-        }
-    });
-
-    c.initElements = function () {
-        this.$goBackBtn = this.$el.find(".btn-default");
-        this.$goNextStepBtn = this.$el.find(".btn-primary");
-    };
-
-    c.initEvents = function () {
-        this.$goBackBtn.click($.proxy(this.navigateBack, this));
-        this.$goNextStepBtn.click($.proxy(this._navigateToInsights, this));
-
-        this.onReRender();
-    };
-
-    c.onReRender = function () {
-        var strength = this.activity.model.account.data.strengths[1];
-
-        var howWellItAppliesAsHtml = CS.Services.String.textToHtml(strength.specify.howWellItApplies);
-        var strengthForPositionAsHtml = CS.Services.String.textToHtml(strength.specify.strengthForPosition);
-
-        this.reactInstance.replaceState({
-            strengthName: strength.name,
-            howWellItApplies: howWellItAppliesAsHtml,
-            strengthForPosition: strengthForPositionAsHtml
-        });
-    };
-
-    c._navigateToInsights = function (e) {
-        this.navigateTo("insights");
     };
 });
 
@@ -1339,8 +1342,7 @@ CS.Activities.SpecifyTop3Strength.Controllers.Intro = P(CS.Activities.Controller
                     React.createElement("p", null, "Vi använder ofta vaga termer när vi beskriver oss själva. Dessutom är egenskaperna som efterfrågas i jobbannonser" + ' ' +
                     "ofta ganska generiska eller tvetydigt formulerade."), 
 
-                    React.createElement("p", null, "I den här övningen hjälper vi dig att definiera vad en specifik egenskap ennebär för just dig och hur den kan" + ' ' +
-                    "tillämpas på din roll för att kunna påvisa värdet av den för din framtida arbetsgivare."), 
+                    React.createElement("p", null, "I den här övningen hjälper vi dig att definiera vad en specifik egenskap innebär för just dig och på vilket sätt det är en fördel för arbetsgivaren."), 
 
                     React.createElement("div", {className: "centered-contents"}, 
                         React.createElement("button", {type: "button", className: "btn btn-default"}, "Tillbaka"), 
@@ -1375,6 +1377,57 @@ CS.Activities.SpecifyTop3Strength.Controllers.Intro = P(CS.Activities.Controller
         this.activity.model.account.data.strengths[2].specify = this.activity.model.account.data.strengths[2].specify || {};
 
         this.navigateTo(this.activity.step1Controller.route);
+    };
+});
+
+CS.Activities.SpecifyTop3Strength.Controllers.Outro = P(CS.Activities.Controller, function (c, base) {
+    c.reactClass = React.createClass({displayName: "reactClass",
+        getInitialState: function () {
+            return {
+                nextActivity: null,
+                strengthName: null,
+                howWellItApplies: null,
+                strengthForPosition: null
+            };
+        },
+
+        render: function () {
+            return (
+                React.createElement("div", null, 
+                    React.createElement("p", {className: "well"}, "Jättebra! Du har nu definierat hur just du är ", React.createElement("strong", null, this.state.strengthName), " och vilket värde det har för jobbet du söker."), 
+
+                    React.createElement("h2", null, "Definition"), 
+
+                    React.createElement("p", {className: "well", dangerouslySetInnerHTML: {__html: this.state.howWellItApplies}}), 
+
+                    React.createElement("h2", null, "Värde"), 
+
+                    React.createElement("p", {className: "well", dangerouslySetInnerHTML: {__html: this.state.strengthForPosition}}), 
+
+                    React.createElement(CS.Activities.Controller.NextStep, {activity: this.state.nextActivity})
+                )
+                );
+        }
+    });
+
+    c.initEvents = function () {
+        this.onReRender();
+    };
+
+    c.onReRender = function () {
+        var nextActivity = CS.undoneC1sAndActivities && !_.isEmpty(CS.undoneC1sAndActivities) ? CS.undoneC1sAndActivities[0].instance : null;
+
+        var strength = this.activity.model.account.data.strengths[2];
+
+        var howWellItAppliesAsHtml = CS.Services.String.textToHtml(strength.specify.howWellItApplies);
+        var strengthForPositionAsHtml = CS.Services.String.textToHtml(strength.specify.strengthForPosition);
+
+        this.reactInstance.replaceState({
+            nextActivity: nextActivity,
+            strengthName: strength.name,
+            howWellItApplies: howWellItAppliesAsHtml,
+            strengthForPosition: strengthForPositionAsHtml
+        });
     };
 });
 
@@ -1570,70 +1623,60 @@ CS.Activities.SpecifyTop3Strength.Controllers.Step3 = P(CS.Activities.Controller
             this.activity.model.account.data.strengths[2].specify.strengthForPosition = this.$strengthForPositionField.val().trim();
 
             this.postData(function () {
-                this.navigateTo(this.activity.step4Controller.route);
+                this.navigateTo(this.activity.outroController.route);
             }.bind(this));
         }
     };
 });
 
-CS.Activities.SpecifyTop3Strength.Controllers.Step4 = P(CS.Activities.Controller, function (c, base) {
-    c.reactClass = React.createClass({displayName: "reactClass",
-        getInitialState: function () {
-            return {
-                strengthName: null,
-                howWellItApplies: null,
-                strengthForPosition: null
-            };
-        },
+CS.Activities.Controller.NextStep = React.createClass({displayName: "NextStep",
+    render: function () {
+        var markup = null;
 
-        render: function () {
-            return (
+        if (this.props.activity) {
+            markup = (
                 React.createElement("div", null, 
-                    React.createElement("p", {className: "well"}, "Jättebra! Du har nu definierat hur just du är ", React.createElement("strong", null, this.state.strengthName), " och vilket värde det har för jobbet du söker."), 
-
-                    React.createElement("h2", null, "Definition"), 
-
-                    React.createElement("p", {className: "well", dangerouslySetInnerHTML: {__html: this.state.howWellItApplies}}), 
-
-                    React.createElement("h2", null, "Värde"), 
-
-                    React.createElement("p", {className: "well", dangerouslySetInnerHTML: {__html: this.state.strengthForPosition}}), 
+                    React.createElement("section", {className: "alert alert-info"}, 
+                        React.createElement("div", {className: "centered-contents"}, 
+                            React.createElement("p", null, "Nästa steg"), 
+                            React.createElement("h3", null, this.props.activity.title), 
+                            React.createElement("div", {className: "centered-contents"}, 
+                                React.createElement("button", {type: "button", className: "btn btn-default", onClick: this._navigateBack}, "Tillbaka"), 
+                                React.createElement("button", {type: "button", className: "btn btn-primary", onClick: this._launchNextActivity}, "Sätt igång")
+                            )
+                        )
+                    ), 
 
                     React.createElement("div", {className: "centered-contents"}, 
-                        React.createElement("button", {type: "button", className: "btn btn-default"}, "Tillbaka"), 
-                        React.createElement("button", {type: "button", className: "btn btn-primary"}, "Ok")
+                        React.createElement("span", null, "eller"), " ", React.createElement("a", {onClick: this._navigateToInsights}, "gå till dina insikter")
                     )
                 )
                 );
+        } else {
+            markup = (
+                React.createElement("div", {className: "centered-contents"}, 
+                    React.createElement("button", {type: "button", className: "btn btn-default", onClick: this._navigateBack}, "Tillbaka"), 
+                    React.createElement("button", {type: "button", className: "btn btn-primary", onClick: this._navigateToInsights}, "Gå till dina insikter")
+                )
+                );
         }
-    });
 
-    c.initElements = function () {
-        this.$goBackBtn = this.$el.find(".btn-default");
-        this.$goNextStepBtn = this.$el.find(".btn-primary");
-    };
+        return (
+            React.createElement("div", null, 
+                markup
+            )
+            );
+    },
 
-    c.initEvents = function () {
-        this.$goBackBtn.click($.proxy(this.navigateBack, this));
-        this.$goNextStepBtn.click($.proxy(this._navigateToInsights, this));
+    _navigateBack: function (e) {
+        history.back();
+    },
 
-        this.onReRender();
-    };
+    _launchNextActivity: function (e) {
+        location.hash = "activities/" + this.props.activity.getClassName();
+    },
 
-    c.onReRender = function () {
-        var strength = this.activity.model.account.data.strengths[2];
-
-        var howWellItAppliesAsHtml = CS.Services.String.textToHtml(strength.specify.howWellItApplies);
-        var strengthForPositionAsHtml = CS.Services.String.textToHtml(strength.specify.strengthForPosition);
-
-        this.reactInstance.replaceState({
-            strengthName: strength.name,
-            howWellItApplies: howWellItAppliesAsHtml,
-            strengthForPosition: strengthForPositionAsHtml
-        });
-    };
-
-    c._navigateToInsights = function (e) {
-        this.navigateTo("insights");
-    };
+    _navigateToInsights: function (e) {
+        location.hash = "insights";
+    }
 });

@@ -129,9 +129,13 @@ blockquote {
   background-color: $gray-lighter;
   border-radius: $border-radius-base;
 
-  padding-left: $spacer-unit-size / 2;
-
   display: inline-block;
+
+  padding: 0 $spacer-unit-size/2;
+
+  &.with-close-btn {
+    padding-right: 0;
+  }
 
   > span {
     display: inline-block;

@@ -7,7 +7,7 @@ CS.Activities.IdentifyStrengths.Controllers.Step2 = P(CS.Activities.Controller, 
         render: function () {
             return (
                 <form role="form">
-                    <h3>Har du några egenskaper som är viktiga för rollen men som inte nämns i annonsen&#63;</h3>
+                    <h3>Har du några egenskaper som du tycker är viktiga för rollen men som inte nämns i annonsen&#63;</h3>
 
                     <p className="help-text">Kanske har du vitsord från tidigare anställningar eller rekommendationer skrivna av andra&#63;
                     Försök lyfta egenskaper du tror skulle bidra till jobbet.</p>
@@ -30,7 +30,7 @@ CS.Activities.IdentifyStrengths.Controllers.Step2 = P(CS.Activities.Controller, 
                             {this.state.strengths.map(function (strength) {
                                 return (
                                     <li>
-                                        <span className="tag">
+                                        <span className="tag with-close-btn">
                                             <span>{strength}</span>
                                             <button type="button" className="close" aria-label="Close" onClick={this._handleRemoveStrengthClick}>
                                                 <span aria-hidden="true">&times;</span>

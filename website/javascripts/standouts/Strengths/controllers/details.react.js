@@ -40,8 +40,8 @@ CS.Standouts.Strengths.Controllers.Details = P(CS.Controllers.OnePageWebapp, fun
                             <span className="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
                         Tillbaka</button>
                         <button type="button" className="btn btn-default js-redo-activity">
-                            <span className="glyphicon glyphicon-repeat" aria-hidden="true"></span>
-                        Gör om aktiviteten</button>
+                            <span className="glyphicon glyphicon-pencil" aria-hidden="true"></span>
+                        Redigera</button>
                         <button type="button" className="btn btn-warning">
                             <span className="glyphicon glyphicon-trash" aria-hidden="true"></span>
                         Ta bort styrkan</button>

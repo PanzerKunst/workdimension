@@ -31,7 +31,7 @@ CS.Activities.IdentifyStrengths.Controllers.Step1 = P(CS.Activities.Controller, 
                             {this.state.strengths.map(function (strength) {
                                 return (
                                     <li>
-                                        <span className="tag">
+                                        <span className="tag with-close-btn">
                                             <span>{strength}</span>
                                             <button type="button" className="close" aria-label="Close" onClick={this._handleRemoveStrengthClick}>
                                                 <span aria-hidden="true">&times;</span>
