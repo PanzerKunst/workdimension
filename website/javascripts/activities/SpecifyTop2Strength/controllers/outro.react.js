@@ -22,7 +22,7 @@ CS.Activities.SpecifyTop2Strength.Controllers.Outro = P(CS.Activities.Controller
 
                     <p className="well" dangerouslySetInnerHTML={{__html: this.state.strengthForPosition}} />
 
-                    <CS.Activities.Controller.NextStep activity={this.state.nextActivity}/>
+                    <CS.Activities.Controller.NextStep key={this.state.nextActivity.getClassName()} activity={this.state.nextActivity}/>
                 </div>
                 );
         }

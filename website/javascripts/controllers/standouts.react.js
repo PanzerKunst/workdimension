@@ -22,7 +22,7 @@ CS.Controllers.Standouts = P(function (c) {
 
                     <ul className="styleless">
                         {this.state.standoutInstances.map(function (standout) {
-                            return <li key={standout.className} id={standout.className}></li>;
+                            return <li id={standout.className}></li>;
                         })}
                     </ul>
                 </div>

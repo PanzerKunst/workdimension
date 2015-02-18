@@ -478,7 +478,7 @@ CS.Activities.IdentifyStrengths.Controllers.Outro = P(CS.Activities.Controller, 
                         )
                     ), 
 
-                    React.createElement(CS.Activities.Controller.NextStep, {activity: this.state.nextActivity})
+                    React.createElement(CS.Activities.Controller.NextStep, {key: this.state.nextActivity.getClassName(), activity: this.state.nextActivity})
                 )
                 );
         }
@@ -1139,7 +1139,7 @@ CS.Activities.SpecifyTop1Strength.Controllers.Outro = P(CS.Activities.Controller
 
                     React.createElement("p", {className: "well", dangerouslySetInnerHTML: {__html: this.state.strengthForPosition}}), 
 
-                    React.createElement(CS.Activities.Controller.NextStep, {activity: this.state.nextActivity})
+                    React.createElement(CS.Activities.Controller.NextStep, {key: this.state.nextActivity.getClassName(), activity: this.state.nextActivity})
                 )
                 );
         }
@@ -1436,7 +1436,7 @@ CS.Activities.SpecifyTop2Strength.Controllers.Outro = P(CS.Activities.Controller
 
                     React.createElement("p", {className: "well", dangerouslySetInnerHTML: {__html: this.state.strengthForPosition}}), 
 
-                    React.createElement(CS.Activities.Controller.NextStep, {activity: this.state.nextActivity})
+                    React.createElement(CS.Activities.Controller.NextStep, {key: this.state.nextActivity.getClassName(), activity: this.state.nextActivity})
                 )
                 );
         }
@@ -1733,7 +1733,7 @@ CS.Activities.SpecifyTop3Strength.Controllers.Outro = P(CS.Activities.Controller
 
                     React.createElement("p", {className: "well", dangerouslySetInnerHTML: {__html: this.state.strengthForPosition}}), 
 
-                    React.createElement(CS.Activities.Controller.NextStep, {activity: this.state.nextActivity})
+                    React.createElement(CS.Activities.Controller.NextStep, {key: this.state.nextActivity.getClassName(), activity: this.state.nextActivity})
                 )
                 );
         }

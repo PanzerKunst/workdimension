@@ -3,7 +3,8 @@ CS.Controllers.ActivityFeed = P(CS.Controllers.Base, function (c, base) {
         getInitialState: function () {
             return {
                 undoneC1sAndActivities: [],
-                doneC1sAndActivities: []
+                doneC1sAndActivities: [],
+                accountData: null
             };
         },
 
@@ -35,22 +36,41 @@ CS.Controllers.ActivityFeed = P(CS.Controllers.Base, function (c, base) {
 
                     React.createElement("ul", {className: "styleless"}, 
                     this.state.undoneC1sAndActivities.map(function (c1OrActivity) {
+                        var key = c1OrActivity.instance.getClassName();
+
                         if (c1OrActivity.type === CS.Controllers.ActivityFeed.itemType.c1) {
-                            return React.createElement(CS.Controllers.C1FeedItem, {key: c1OrActivity.instance.className, c1: c1OrActivity});
+                            return React.createElement(CS.Controllers.C1FeedItem, {key: key, c1: c1OrActivity});
                         }
-                        return React.createElement(CS.Controllers.ActivityFeedItem, {key: c1OrActivity.instance.className, activity: c1OrActivity});
-                    })
+
+                        if (this.state.accountData) {
+                            key += JSON.stringify(this.state.accountData);
+                        }
+
+                        return React.createElement(CS.Controllers.ActivityFeedItem, {key: key, activity: c1OrActivity});
+                    }.bind(this))
                     ), 
 
                     finishedActivitiesTitle, 
 
                     React.createElement("ul", {className: "styleless"}, 
                     this.state.doneC1sAndActivities.map(function (c1OrActivity) {
+                        var className = c1OrActivity.instance.getClassName();
+                        var key = className;
+
                         if (c1OrActivity.type === CS.Controllers.ActivityFeed.itemType.c1) {
-                            return React.createElement(CS.Controllers.C1FeedItem, {key: c1OrActivity.instance.className, c1: c1OrActivity});
+                            if (this.state.accountData) {
+                                key += this.state.accountData[className];
+                            }
+
+                            return React.createElement(CS.Controllers.C1FeedItem, {key: key, c1: c1OrActivity});
                         }
-                        return React.createElement(CS.Controllers.ActivityFeedItem, {key: c1OrActivity.instance.className, activity: c1OrActivity});
-                    })
+
+                        if (this.state.accountData) {
+                            key += JSON.stringify(this.state.accountData);
+                        }
+
+                        return React.createElement(CS.Controllers.ActivityFeedItem, {key: key, activity: c1OrActivity});
+                    }.bind(this))
                     )
                 )
                 );
@@ -257,7 +277,8 @@ CS.Controllers.ActivityFeed = P(CS.Controllers.Base, function (c, base) {
 
         this.reactInstance.replaceState({
             undoneC1sAndActivities: CS.undoneC1sAndActivities,
-            doneC1sAndActivities: doneC1sAndActivities
+            doneC1sAndActivities: doneC1sAndActivities,
+            accountData: CS.account.data
         });
     };
 
@@ -424,7 +445,7 @@ CS.Controllers.Standouts = P(function (c) {
 
                     React.createElement("ul", {className: "styleless"}, 
                         this.state.standoutInstances.map(function (standout) {
-                            return React.createElement("li", {key: standout.className, id: standout.className});
+                            return React.createElement("li", {id: standout.className});
                         })
                     )
                 )

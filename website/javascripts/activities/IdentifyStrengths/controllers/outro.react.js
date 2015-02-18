@@ -35,7 +35,7 @@ CS.Activities.IdentifyStrengths.Controllers.Outro = P(CS.Activities.Controller, 
                         </ul>
                     </div>
 
-                    <CS.Activities.Controller.NextStep activity={this.state.nextActivity}/>
+                    <CS.Activities.Controller.NextStep key={this.state.nextActivity.getClassName()} activity={this.state.nextActivity}/>
                 </div>
                 );
         }
