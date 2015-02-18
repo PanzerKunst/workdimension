@@ -17,7 +17,7 @@ CS.Controllers.HeaderModal = P(CS.Controllers.OnePageWebapp, function (c, base) 
         this.$modalForms = this.$modal.find("form");
         this.$modalSubmitButtons = this.$modal.find(".modal-footer").find("button");
 
-        this.$registerReminderAlert = $("#register-reminder-alert");
+        this.$registerReminderAlert = $("#register-reminder");
     };
 
     c.initEvents = function () {
@@ -34,9 +34,9 @@ CS.Controllers.HeaderModal = P(CS.Controllers.OnePageWebapp, function (c, base) 
         CS.account.data = data.accountData;
 
         CS.indexController.initWelcomePanel();
-        CS.indexController.initIntroToActivitiesAlert();
         CS.indexController.initHeaderLinks();
         CS.indexController.initActivityTabText();
+        CS.activityFeedController.initIntroToActivitiesAlert();
 
         this.$registerReminderAlert.hide();
 

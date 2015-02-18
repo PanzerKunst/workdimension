@@ -311,10 +311,6 @@ CS.indexController = null;
     }
 };
 ;CS.Services.Validator = P(function (c) {
-    c.errorMessageHeight = "21px";
-    c.errorMessageHeightMediumScreen = "28px";
-    c.errorMessageHeightLargeScreen = "33px";
-
     c.checkEmpty = "empty";
     c.checkEmail = "email";
     c.checkUsername = "username";
@@ -325,7 +321,11 @@ CS.indexController = null;
     c.checkDecimal = "decimal";
     c.checkUrl = "url";
 
-    c.errorMessagesToHide = [];
+    c.errorMessageHeight = "21px";
+    c.errorMessageHeightMediumScreen = "28px";
+    c.errorMessageHeightLargeScreen = "33px";
+
+    c.errorMessageAnimationDuration = 0.5;
 
     c.init = function (fieldIds) {
         this.fieldIds = fieldIds;
@@ -367,12 +367,10 @@ CS.indexController = null;
     c.flagValid = function ($field) {
         var $wrapper = $field.parent();
         $wrapper.removeClass("has-error");
-        //$wrapper.addClass("has-success");
     };
 
     c.flagInvalid = function ($field) {
         var $wrapper = $field.parent();
-        //$wrapper.removeClass("has-success");
         $wrapper.addClass("has-error");
     };
 
@@ -389,28 +387,13 @@ CS.indexController = null;
                 height = this.errorMessageHeightLargeScreen;
             }
 
-            TweenLite.set($errorMsg, {display: "block"});
-            TweenLite.to($errorMsg, 0.5, {height: height});
-
-            $errorMsg.each(function (index, element) {
-                _.pull(this.errorMessagesToHide, element.innerHTML);
-            }.bind(this));
+            TweenLite.to($errorMsg, this.errorMessageAnimationDuration, {height: height, marginBottom: height});
         }
     };
 
     c.hideErrorMessage = function ($errorMsg) {
         if ($errorMsg.html()) {
-            $errorMsg.each(function (index, element) {
-                this.errorMessagesToHide.push(element.innerHTML);
-            }.bind(this));
-
-            TweenLite.to($errorMsg, 0.5, {height: 0,
-                onComplete: function () {
-                    if (_.indexOf(this.errorMessagesToHide, $errorMsg[0].innerHTML) > -1) {
-                        $errorMsg.hide();
-                    }
-                }.bind(this)
-            });
+            TweenLite.to($errorMsg, this.errorMessageAnimationDuration, {height: 0, marginBottom: 0});
         }
     };
 
@@ -696,12 +679,16 @@ CS.indexController = null;
 };
 ;CS.Services.String = {
     textToHtml: function (text) {
-        return text.replace(/\n/g, "<br/>");
+        if (text) {
+            return text.replace(/\n/g, "<br/>");
+        }
     },
 
     template: function (string, key, value) {
-        var regExp = new RegExp("\\{" + key + "\\}", "g");
-        return string.replace(regExp, value);
+        if (string) {
+            var regExp = new RegExp("\\{" + key + "\\}", "g");
+            return string.replace(regExp, value);
+        }
     }
 };
 ;CS.Models.Activity = {
@@ -786,7 +773,6 @@ CS.indexController = null;
 
         this.$headerAlerts = $("#header-alerts");
         this.$welcomePanel = this.$headerAlerts.children("#welcome-panel");
-        this.$introToActivitiesAlert = this.$headerAlerts.children("#intro-to-activities-alert");
 
         this.$tabPanels = $('[role="tabpanel"]');
         this.$activitiesPanel = this.$tabPanels.filter("#activit1es");
@@ -799,7 +785,6 @@ CS.indexController = null;
         this.$standoutDetailSection = this.$standoutsPanel.children("#standout-detail");
 
         this.initWelcomePanel();
-        this.initIntroToActivitiesAlert();
     };
 
     c._initEvents = function () {
@@ -812,8 +797,6 @@ CS.indexController = null;
         }.bind(this));
 
         this.$signOutLink.click($.proxy(this._signOut, this));
-
-        this.$introToActivitiesAlert.on('close.bs.alert', $.proxy(this._onIntroToActivitiesAlertClose, this));
     };
 
     c.initHeaderLinks = function () {
@@ -839,14 +822,6 @@ CS.indexController = null;
             CS.Services.Animator.fadeOut(this.$welcomePanel);
         } else {
             CS.Services.Animator.fadeIn(this.$welcomePanel);
-        }
-    };
-
-    c.initIntroToActivitiesAlert = function () {
-        if (CS.account.data && CS.account.data.Employer && CS.account.data.Position && !this.getFromLocalStorage("is-intro-to-activities-alert-closed")) {
-            CS.Services.Animator.fadeIn(this.$introToActivitiesAlert);
-        } else {
-            CS.Services.Animator.fadeOut(this.$introToActivitiesAlert);
         }
     };
 
@@ -911,13 +886,6 @@ CS.indexController = null;
             }.bind(this)
         });
     };
-
-    c._onIntroToActivitiesAlertClose = function(e) {
-        e.preventDefault();
-
-        CS.Services.Animator.fadeOut(this.$introToActivitiesAlert);
-        this.saveInLocalStorage("is-intro-to-activities-alert-closed", true);
-    };
 });
 
 ;CS.Controllers.HeaderModal = P(CS.Controllers.OnePageWebapp, function (c, base) {
@@ -939,7 +907,7 @@ CS.indexController = null;
         this.$modalForms = this.$modal.find("form");
         this.$modalSubmitButtons = this.$modal.find(".modal-footer").find("button");
 
-        this.$registerReminderAlert = $("#register-reminder-alert");
+        this.$registerReminderAlert = $("#register-reminder");
     };
 
     c.initEvents = function () {
@@ -956,9 +924,9 @@ CS.indexController = null;
         CS.account.data = data.accountData;
 
         CS.indexController.initWelcomePanel();
-        CS.indexController.initIntroToActivitiesAlert();
         CS.indexController.initHeaderLinks();
         CS.indexController.initActivityTabText();
+        CS.activityFeedController.initIntroToActivitiesAlert();
 
         this.$registerReminderAlert.hide();
 
@@ -1164,7 +1132,7 @@ CS.indexController = null;
     c.initElements = function () {
         this.$mainRegisterLink = $("#register-link");
 
-        this.$registerLink = $("#register-reminder-alert").find("a");
+        this.$registerLink = $("#register-reminder").find("a");
     };
 
     c.initEvents = function () {
@@ -1175,7 +1143,7 @@ CS.indexController = null;
         this.$mainRegisterLink.click();
     };
 });
-;CS.Controllers.CustomActivity = P(function (c) {
+;CS.Controllers.CustomActivity = P(CS.Controllers.Base, function (c, base) {
     c.init = function () {
         this._initElements();
         this._initValidation();
@@ -1235,8 +1203,7 @@ CS.indexController = null;
                     contentType: "application/json",
                     data: JSON.stringify(data),
                     success: function (data, textStatus, jqXHR) {
-                        this.$submitBtn.button('reset');
-                        this.$form[0].reset();
+                        this._resetForm();
 
                         CS.Services.Animator.fadeIn(this.$successAlert);
                     }.bind(this),
@@ -1280,6 +1247,12 @@ CS.indexController = null;
             });
         }
     };
+
+    c._resetForm = function() {
+        this.$submitBtn.button('reset');
+        this.$form[0].reset();
+        this.$formGroupEmail.removeClass("has-success");
+    };
 });
 ;CS.Controllers.ActivityFeed = P(CS.Controllers.Base, function (c, base) {
     c.reactClass = React.createClass({displayName: "reactClass",
@@ -1300,6 +1273,22 @@ CS.indexController = null;
 
             return (
                 React.createElement("div", null, 
+                    React.createElement("div", {className: "alert alert-info", id: "intro-to-activities"}, 
+                        React.createElement("button", {type: "button", className: "close", "data-dismiss": "alert", "aria-label": "Close"}, 
+                            React.createElement("span", {"aria-hidden": "true"}, "×")
+                        ), 
+
+                        React.createElement("h2", null, "Aktiviteter att göra"), 
+
+                        React.createElement("p", null, "Det dyker upp ett kort i flödet så fort det finns något nytt att göra."), 
+
+                        React.createElement("p", null, "Den första aktiviteten är att hitta vilka styrkor som efterfrågas i annonsen till jobbet du söker."), 
+
+                        React.createElement("p", null, "När du hittat några styrkor kommer det nya övningar som handlar om att beskriva styrkorna du just har hittat."), 
+
+                        React.createElement("p", null, "Det är bara att sätta igång!")
+                    ), 
+
                     React.createElement("ul", {className: "styleless"}, 
                     this.state.undoneC1sAndActivities.map(function (c1OrActivity) {
                         if (c1OrActivity.type === CS.Controllers.ActivityFeed.itemType.c1) {
@@ -1324,6 +1313,8 @@ CS.indexController = null;
         }
     });
 
+    c.defaultActivityButtonText = "Gör detta";
+
     c.init = function () {
         this.reactInstance = React.render(
             React.createElement(this.reactClass),
@@ -1331,6 +1322,7 @@ CS.indexController = null;
         );
 
         this._initElements();
+        this._initEvents();
 
         this.c1FeedItems = [
             {
@@ -1376,11 +1368,26 @@ CS.indexController = null;
     };
 
     c._initElements = function () {
-        this.$registerReminderAlert = $("#register-reminder-alert");
+        this.$registerReminderAlert = $("#register-reminder");
+        this.$introToActivitiesAlert = $("#intro-to-activities");
+
+        this.initIntroToActivitiesAlert();
+    };
+
+    c._initEvents = function() {
+        this.$introToActivitiesAlert.on('close.bs.alert', $.proxy(this._onIntroToActivitiesAlertClose, this));
     };
 
     c.refreshData = function () {
         this._fetchCustomActivities();
+    };
+
+    c.initIntroToActivitiesAlert = function () {
+        if (CS.account.data && CS.account.data.Employer && CS.account.data.Position && !this.getFromLocalStorage("is-intro-to-activities-alert-closed")) {
+            CS.Services.Animator.fadeIn(this.$introToActivitiesAlert);
+        } else {
+            CS.Services.Animator.fadeOut(this.$introToActivitiesAlert);
+        }
     };
 
     c._fetchCustomActivities = function () {
@@ -1436,6 +1443,7 @@ CS.indexController = null;
                 return instans.getClassName() === activity.className;
             });
 
+            // Custom activities are not defined in this.activityFeedItems, in which case "feedItem" is null
             var feedItem = _.find(this.activityFeedItems, function (item) {
                 return item.className === activity.className;
             });
@@ -1444,14 +1452,14 @@ CS.indexController = null;
                 doneC1sAndActivities.push({
                     type: CS.Controllers.ActivityFeed.itemType.activity,
                     instance: instance,
-                    buttonText: feedItem.buttonText,
+                    buttonText: feedItem ? feedItem.buttonText : this.defaultActivityButtonText,
                     isDone: true
                 });
             } else if (instance.isDoable()) {
                 CS.undoneC1sAndActivities.push({
                     type: CS.Controllers.ActivityFeed.itemType.activity,
                     instance: instance,
-                    buttonText: feedItem.buttonText,
+                    buttonText: feedItem ? feedItem.buttonText : this.defaultActivityButtonText,
                     isDone: false
                 });
             }
@@ -1486,6 +1494,7 @@ CS.indexController = null;
                 });
 
                 if (!isAlreadyInTheList) {
+                    // Custom activities are not defined in this.activityFeedItems, in which case "feedItem" is null
                     var feedItem = _.find(this.activityFeedItems, function (item) {
                         return item.className === instance.getClassName();
                     });
@@ -1493,7 +1502,7 @@ CS.indexController = null;
                     CS.undoneC1sAndActivities.push({
                         type: CS.Controllers.ActivityFeed.itemType.activity,
                         instance: instance,
-                        buttonText: feedItem.buttonText,
+                        buttonText: feedItem ? feedItem.buttonText : this.defaultActivityButtonText,
                         isDone: false
                     });
                 }
@@ -1514,6 +1523,13 @@ CS.indexController = null;
         } else {
             CS.Services.Animator.fadeOut(this.$registerReminderAlert);
         }
+    };
+
+    c._onIntroToActivitiesAlertClose = function(e) {
+        e.preventDefault();
+
+        CS.Services.Animator.fadeOut(this.$introToActivitiesAlert);
+        this.saveInLocalStorage("is-intro-to-activities-alert-closed", true);
     };
 });
 
@@ -1643,15 +1659,30 @@ CS.Controllers.C1FeedItem = React.createClass({displayName: "C1FeedItem",
 CS.Controllers.Standouts = P(function (c) {
     c.reactClass = React.createClass({displayName: "reactClass",
         getInitialState: function () {
-            return {standoutInstances: []};
+            return {
+                employer: null,
+                position: null,
+                standoutInstances: []
+            };
         },
 
         render: function () {
+            var employerAndPosition;
+            if (this.state.employer && this.state.position) {
+                employerAndPosition = (
+                    React.createElement("h1", null, this.state.position, " på ", this.state.employer)
+                    );
+            }
+
             return (
-                React.createElement("ul", {className: "styleless"}, 
-                    this.state.standoutInstances.map(function (standout) {
-                        return React.createElement("li", {key: standout.className, id: standout.className});
-                    })
+                React.createElement("div", null, 
+                    employerAndPosition, 
+
+                    React.createElement("ul", {className: "styleless"}, 
+                        this.state.standoutInstances.map(function (standout) {
+                            return React.createElement("li", {key: standout.className, id: standout.className});
+                        })
+                    )
                 )
                 );
         }
@@ -1689,7 +1720,11 @@ CS.Controllers.Standouts = P(function (c) {
 
                 var allItemInstances = _.union(itemInstancesCustomStandouts, itemInstancesClassicStandouts);
 
-                this.reactInstance.replaceState({ standoutInstances: allItemInstances });
+                this.reactInstance.replaceState({
+                    employer: CS.account.data ? CS.account.data.Employer : null,
+                    position: CS.account.data ? CS.account.data.Position : null,
+                    standoutInstances: allItemInstances
+                });
 
                 allItemInstances.forEach(function(instance, index) {
                     instance.run();

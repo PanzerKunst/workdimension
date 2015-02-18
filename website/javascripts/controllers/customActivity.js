@@ -1,4 +1,4 @@
-CS.Controllers.CustomActivity = P(function (c) {
+CS.Controllers.CustomActivity = P(CS.Controllers.Base, function (c, base) {
     c.init = function () {
         this._initElements();
         this._initValidation();
@@ -58,8 +58,7 @@ CS.Controllers.CustomActivity = P(function (c) {
                     contentType: "application/json",
                     data: JSON.stringify(data),
                     success: function (data, textStatus, jqXHR) {
-                        this.$submitBtn.button('reset');
-                        this.$form[0].reset();
+                        this._resetForm();
 
                         CS.Services.Animator.fadeIn(this.$successAlert);
                     }.bind(this),
@@ -102,5 +101,11 @@ CS.Controllers.CustomActivity = P(function (c) {
                 }.bind(this)
             });
         }
+    };
+
+    c._resetForm = function() {
+        this.$submitBtn.button('reset');
+        this.$form[0].reset();
+        this.$formGroupEmail.removeClass("has-success");
     };
 });

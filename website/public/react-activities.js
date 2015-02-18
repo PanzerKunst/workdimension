@@ -1,10 +1,14 @@
-CS.Activities.Custom.Controllers.Page1 = P(CS.Activities.Controller, function (c, base) {
+CS.Activities.Custom.Controllers.Step1 = P(CS.Activities.Controller, function (c, base) {
     c.reactClass = React.createClass({displayName: "reactClass",
+        getInitialState: function () {
+            return {text: null};
+        },
+
         render: function () {
             return (
                 React.createElement("form", {role: "form"}, 
                     React.createElement("div", {className: "form-group"}, 
-                        React.createElement("p", null, this.props.text), 
+                        React.createElement("p", null, this.state.text), 
                         React.createElement("textarea", {id: "custom-activity-answer", className: "form-control"}), 
 
                         React.createElement("p", {className: "field-error", "data-check": "empty"})
@@ -19,9 +23,7 @@ CS.Activities.Custom.Controllers.Page1 = P(CS.Activities.Controller, function (c
 
     c.initElements = function () {
         this.$form = this.$el.find("form");
-
         this.$textarea = this.$form.find("#custom-activity-answer");
-
         this.$submitBtn = this.$form.find("[type=submit]");
     };
 
@@ -33,9 +35,16 @@ CS.Activities.Custom.Controllers.Page1 = P(CS.Activities.Controller, function (c
 
     c.initEvents = function () {
         this.$form.submit($.proxy(this._handleSubmit, this));
+        this.onReRender();
     };
 
-    c.onReRender = function() {
+    c.onReRender = function () {
+
+        // TODO: remove
+        console.log(this.activity.text);
+
+        this.reactInstance.replaceState({text: CS.Services.String.textToHtml(this.activity.text)});
+
         // The submit button may still be in loading state when navigating back. We make sure it doesn't happen
         this.$submitBtn.button('reset');
     };
@@ -999,13 +1008,13 @@ CS.Activities.SpecifyTop1Strength.Controllers.Step3 = P(CS.Activities.Controller
     };
 
     c.onReRender = function () {
-        // The submit button may still be in loading state when navigating back. We make sure it doesn't happen
-        this.$submitBtn.button('reset');
-
         this.reactInstance.replaceState({
             position: this.activity.model.account.data.Position,
             employer: this.activity.model.account.data.Employer
         });
+
+        // The submit button may still be in loading state when navigating back. We make sure it doesn't happen
+        this.$submitBtn.button('reset');
     };
 
     c._saveAndNavigateNext = function (e) {
@@ -1300,13 +1309,13 @@ CS.Activities.SpecifyTop2Strength.Controllers.Step3 = P(CS.Activities.Controller
     };
 
     c.onReRender = function () {
-        // The submit button may still be in loading state when navigating back. We make sure it doesn't happen
-        this.$submitBtn.button('reset');
-
         this.reactInstance.replaceState({
             position: this.activity.model.account.data.Position,
             employer: this.activity.model.account.data.Employer
         });
+
+        // The submit button may still be in loading state when navigating back. We make sure it doesn't happen
+        this.$submitBtn.button('reset');
     };
 
     c._saveAndNavigateNext = function (e) {
@@ -1601,13 +1610,13 @@ CS.Activities.SpecifyTop3Strength.Controllers.Step3 = P(CS.Activities.Controller
     };
 
     c.onReRender = function () {
-        // The submit button may still be in loading state when navigating back. We make sure it doesn't happen
-        this.$submitBtn.button('reset');
-
         this.reactInstance.replaceState({
             position: this.activity.model.account.data.Position,
             employer: this.activity.model.account.data.Employer
         });
+
+        // The submit button may still be in loading state when navigating back. We make sure it doesn't happen
+        this.$submitBtn.button('reset');
     };
 
     c._saveAndNavigateNext = function (e) {

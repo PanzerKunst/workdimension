@@ -4,17 +4,19 @@
   }
 }
 
+#intro-to-activities {
+  display: none;
+}
+
 #c1-and-activity-feed {
-  > div {
-    > h3 {
-      text-align: center;
-      text-transform: uppercase;
+  h3 {
+    text-align: center;
+    text-transform: uppercase;
 
-      margin-top: $default-spacer-size;
+    margin-top: $default-spacer-size;
 
-      @include large-screen {
-        margin-top: $default-spacer-size-large-screen;
-      }
+    @include large-screen {
+      margin-top: $default-spacer-size-large-screen;
     }
   }
 }

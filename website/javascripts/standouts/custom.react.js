@@ -2,9 +2,9 @@ CS.Standouts.Custom = P(function (c) {
     c.reactClass = React.createClass({
         render: function () {
             return (
-                <div>
+                <div className="well">
                     <h2>{this.props.title}</h2>
-                    <p>{this.props.data}</p>
+                    <p dangerouslySetInnerHTML={{__html: this.props.data}} />
                 </div>
                 );
         }
@@ -15,13 +15,17 @@ CS.Standouts.Custom = P(function (c) {
         this.title = title;
     };
 
-    c.render = function () {
+    c.run = function () {
         var data = null;
 
-        if (CS.account.data && CS.account.data.custom) {
-            data = CS.account.data.custom[this.className];
-        }
+        if (CS.account.data && CS.account.data.custom && CS.account.data.custom[this.className]) {
+            data = CS.Services.String.textToHtml(CS.account.data.custom[this.className]);
 
+            this._render(data);
+        }
+    };
+
+    c._render = function (data) {
         this.reactInstance = React.render(
             React.createElement(this.reactClass, {
                 title: this.title,
@@ -29,9 +33,5 @@ CS.Standouts.Custom = P(function (c) {
             }),
             document.getElementById(this.className)
         );
-    };
-
-    c.run = function() {
-        this.render();
     };
 });

@@ -175,13 +175,6 @@ CS.Standouts.Strengths.Controllers = {};
 CS.Standouts.Strengths.Controllers.InList = P(CS.Controllers.OnePageWebapp, function (c, base) {
     c.reactClass = React.createClass({displayName: "reactClass",
         render: function () {
-            var employerAndPosition;
-            if (this.props.employer && this.props.position) {
-                employerAndPosition = (
-                    React.createElement("h1", null, this.props.position, " på ", this.props.employer)
-                    );
-            }
-
             var sections = this.props.strengths.map(function (strength) {
                 if (strength.specify) {
                     return [(
@@ -228,8 +221,6 @@ CS.Standouts.Strengths.Controllers.InList = P(CS.Controllers.OnePageWebapp, func
                         React.createElement("p", null, "Om styrkan har hittats men inte definierats så sparas den också här så du ser vad du ska jobba vidare med!")
                     ), 
 
-                    employerAndPosition, 
-
                     React.createElement("p", null, "Detta är dina främsta styrkor för rollen."), 
 
                     sections.map(function (section, index) {
@@ -253,11 +244,7 @@ CS.Standouts.Strengths.Controllers.InList = P(CS.Controllers.OnePageWebapp, func
             _.take(CS.account.data.strengths, 3) :
             [];
 
-        var data = {
-            employer: CS.account.data && CS.account.data.Employer,
-            position: CS.account.data && CS.account.data.Position,
-            strengths: this.strengths
-        };
+        var data = {strengths: this.strengths};
 
         // This is to avoid duplicate event bindings - TODO, and probably linked to https://github.com/EngineeringMode/Grapnel.js/issues/26
         this.$el.empty();
@@ -335,9 +322,9 @@ CS.Standouts.Custom = P(function (c) {
     c.reactClass = React.createClass({displayName: "reactClass",
         render: function () {
             return (
-                React.createElement("div", null, 
+                React.createElement("div", {className: "well"}, 
                     React.createElement("h2", null, this.props.title), 
-                    React.createElement("p", null, this.props.data)
+                    React.createElement("p", {dangerouslySetInnerHTML: {__html: this.props.data}})
                 )
                 );
         }
@@ -348,13 +335,17 @@ CS.Standouts.Custom = P(function (c) {
         this.title = title;
     };
 
-    c.render = function () {
+    c.run = function () {
         var data = null;
 
-        if (CS.account.data && CS.account.data.custom) {
-            data = CS.account.data.custom[this.className];
-        }
+        if (CS.account.data && CS.account.data.custom && CS.account.data.custom[this.className]) {
+            data = CS.Services.String.textToHtml(CS.account.data.custom[this.className]);
 
+            this._render(data);
+        }
+    };
+
+    c._render = function (data) {
         this.reactInstance = React.render(
             React.createElement(this.reactClass, {
                 title: this.title,
@@ -362,9 +353,5 @@ CS.Standouts.Custom = P(function (c) {
             }),
             document.getElementById(this.className)
         );
-    };
-
-    c.run = function() {
-        this.render();
     };
 });

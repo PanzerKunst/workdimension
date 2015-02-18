@@ -1,8 +1,4 @@
 CS.Services.Validator = P(function (c) {
-    c.errorMessageHeight = "21px";
-    c.errorMessageHeightMediumScreen = "28px";
-    c.errorMessageHeightLargeScreen = "33px";
-
     c.checkEmpty = "empty";
     c.checkEmail = "email";
     c.checkUsername = "username";
@@ -13,7 +9,11 @@ CS.Services.Validator = P(function (c) {
     c.checkDecimal = "decimal";
     c.checkUrl = "url";
 
-    c.errorMessagesToHide = [];
+    c.errorMessageHeight = "21px";
+    c.errorMessageHeightMediumScreen = "28px";
+    c.errorMessageHeightLargeScreen = "33px";
+
+    c.errorMessageAnimationDuration = 0.5;
 
     c.init = function (fieldIds) {
         this.fieldIds = fieldIds;
@@ -55,12 +55,10 @@ CS.Services.Validator = P(function (c) {
     c.flagValid = function ($field) {
         var $wrapper = $field.parent();
         $wrapper.removeClass("has-error");
-        //$wrapper.addClass("has-success");
     };
 
     c.flagInvalid = function ($field) {
         var $wrapper = $field.parent();
-        //$wrapper.removeClass("has-success");
         $wrapper.addClass("has-error");
     };
 
@@ -77,28 +75,13 @@ CS.Services.Validator = P(function (c) {
                 height = this.errorMessageHeightLargeScreen;
             }
 
-            TweenLite.set($errorMsg, {display: "block"});
-            TweenLite.to($errorMsg, 0.5, {height: height});
-
-            $errorMsg.each(function (index, element) {
-                _.pull(this.errorMessagesToHide, element.innerHTML);
-            }.bind(this));
+            TweenLite.to($errorMsg, this.errorMessageAnimationDuration, {height: height, marginBottom: height});
         }
     };
 
     c.hideErrorMessage = function ($errorMsg) {
         if ($errorMsg.html()) {
-            $errorMsg.each(function (index, element) {
-                this.errorMessagesToHide.push(element.innerHTML);
-            }.bind(this));
-
-            TweenLite.to($errorMsg, 0.5, {height: 0,
-                onComplete: function () {
-                    if (_.indexOf(this.errorMessagesToHide, $errorMsg[0].innerHTML) > -1) {
-                        $errorMsg.hide();
-                    }
-                }.bind(this)
-            });
+            TweenLite.to($errorMsg, this.errorMessageAnimationDuration, {height: 0, marginBottom: 0});
         }
     };
 

@@ -5142,9 +5142,7 @@ form .field-error {
     form .field-error {
       font-size: 19px; } }
   form .field-error.other-form-error {
-    display: none;
     font-size: 14px;
-    margin-bottom: 10px;
     text-align: center;
     clear: both; }
     @media screen and (min-width: 640px) {
@@ -5153,12 +5151,6 @@ form .field-error {
     @media screen and (min-width: 960px) {
       form .field-error.other-form-error {
         font-size: 22px; } }
-    @media screen and (min-width: 640px) {
-      form .field-error.other-form-error {
-        margin-bottom: 17px; } }
-    @media screen and (min-width: 960px) {
-      form .field-error.other-form-error {
-        margin-bottom: 25px; } }
 
 .check-or-radio {
   display: table-row; }
@@ -5409,12 +5401,15 @@ footer {
 #activit1es .well.done {
   opacity: 0.5; }
 
-#c1-and-activity-feed > div > h3 {
+#intro-to-activities {
+  display: none; }
+
+#c1-and-activity-feed h3 {
   text-align: center;
   text-transform: uppercase;
   margin-top: 10vw; }
   @media screen and (min-width: 960px) {
-    #c1-and-activity-feed > div > h3 {
+    #c1-and-activity-feed h3 {
       margin-top: 98px; } }
 
 #current-activity .tooltip {

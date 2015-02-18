@@ -17,6 +17,22 @@ CS.Controllers.ActivityFeed = P(CS.Controllers.Base, function (c, base) {
 
             return (
                 <div>
+                    <div className="alert alert-info" id="intro-to-activities">
+                        <button type="button" className="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+
+                        <h2>Aktiviteter att göra</h2>
+
+                        <p>Det dyker upp ett kort i flödet så fort det finns något nytt att göra.</p>
+
+                        <p>Den första aktiviteten är att hitta vilka styrkor som efterfrågas i annonsen till jobbet du söker.</p>
+
+                        <p>När du hittat några styrkor kommer det nya övningar som handlar om att beskriva styrkorna du just har hittat.</p>
+
+                        <p>Det är bara att sätta igång!</p>
+                    </div>
+
                     <ul className="styleless">
                     {this.state.undoneC1sAndActivities.map(function (c1OrActivity) {
                         if (c1OrActivity.type === CS.Controllers.ActivityFeed.itemType.c1) {
@@ -41,6 +57,8 @@ CS.Controllers.ActivityFeed = P(CS.Controllers.Base, function (c, base) {
         }
     });
 
+    c.defaultActivityButtonText = "Gör detta";
+
     c.init = function () {
         this.reactInstance = React.render(
             React.createElement(this.reactClass),
@@ -48,6 +66,7 @@ CS.Controllers.ActivityFeed = P(CS.Controllers.Base, function (c, base) {
         );
 
         this._initElements();
+        this._initEvents();
 
         this.c1FeedItems = [
             {
@@ -93,11 +112,26 @@ CS.Controllers.ActivityFeed = P(CS.Controllers.Base, function (c, base) {
     };
 
     c._initElements = function () {
-        this.$registerReminderAlert = $("#register-reminder-alert");
+        this.$registerReminderAlert = $("#register-reminder");
+        this.$introToActivitiesAlert = $("#intro-to-activities");
+
+        this.initIntroToActivitiesAlert();
+    };
+
+    c._initEvents = function() {
+        this.$introToActivitiesAlert.on('close.bs.alert', $.proxy(this._onIntroToActivitiesAlertClose, this));
     };
 
     c.refreshData = function () {
         this._fetchCustomActivities();
+    };
+
+    c.initIntroToActivitiesAlert = function () {
+        if (CS.account.data && CS.account.data.Employer && CS.account.data.Position && !this.getFromLocalStorage("is-intro-to-activities-alert-closed")) {
+            CS.Services.Animator.fadeIn(this.$introToActivitiesAlert);
+        } else {
+            CS.Services.Animator.fadeOut(this.$introToActivitiesAlert);
+        }
     };
 
     c._fetchCustomActivities = function () {
@@ -153,6 +187,7 @@ CS.Controllers.ActivityFeed = P(CS.Controllers.Base, function (c, base) {
                 return instans.getClassName() === activity.className;
             });
 
+            // Custom activities are not defined in this.activityFeedItems, in which case "feedItem" is null
             var feedItem = _.find(this.activityFeedItems, function (item) {
                 return item.className === activity.className;
             });
@@ -161,14 +196,14 @@ CS.Controllers.ActivityFeed = P(CS.Controllers.Base, function (c, base) {
                 doneC1sAndActivities.push({
                     type: CS.Controllers.ActivityFeed.itemType.activity,
                     instance: instance,
-                    buttonText: feedItem.buttonText,
+                    buttonText: feedItem ? feedItem.buttonText : this.defaultActivityButtonText,
                     isDone: true
                 });
             } else if (instance.isDoable()) {
                 CS.undoneC1sAndActivities.push({
                     type: CS.Controllers.ActivityFeed.itemType.activity,
                     instance: instance,
-                    buttonText: feedItem.buttonText,
+                    buttonText: feedItem ? feedItem.buttonText : this.defaultActivityButtonText,
                     isDone: false
                 });
             }
@@ -203,6 +238,7 @@ CS.Controllers.ActivityFeed = P(CS.Controllers.Base, function (c, base) {
                 });
 
                 if (!isAlreadyInTheList) {
+                    // Custom activities are not defined in this.activityFeedItems, in which case "feedItem" is null
                     var feedItem = _.find(this.activityFeedItems, function (item) {
                         return item.className === instance.getClassName();
                     });
@@ -210,7 +246,7 @@ CS.Controllers.ActivityFeed = P(CS.Controllers.Base, function (c, base) {
                     CS.undoneC1sAndActivities.push({
                         type: CS.Controllers.ActivityFeed.itemType.activity,
                         instance: instance,
-                        buttonText: feedItem.buttonText,
+                        buttonText: feedItem ? feedItem.buttonText : this.defaultActivityButtonText,
                         isDone: false
                     });
                 }
@@ -231,6 +267,13 @@ CS.Controllers.ActivityFeed = P(CS.Controllers.Base, function (c, base) {
         } else {
             CS.Services.Animator.fadeOut(this.$registerReminderAlert);
         }
+    };
+
+    c._onIntroToActivitiesAlertClose = function(e) {
+        e.preventDefault();
+
+        CS.Services.Animator.fadeOut(this.$introToActivitiesAlert);
+        this.saveInLocalStorage("is-intro-to-activities-alert-closed", true);
     };
 });
 

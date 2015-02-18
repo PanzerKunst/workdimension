@@ -30,7 +30,6 @@ CS.Controllers.Index = P(CS.Controllers.OnePageWebapp, function (c, base) {
 
         this.$headerAlerts = $("#header-alerts");
         this.$welcomePanel = this.$headerAlerts.children("#welcome-panel");
-        this.$introToActivitiesAlert = this.$headerAlerts.children("#intro-to-activities-alert");
 
         this.$tabPanels = $('[role="tabpanel"]');
         this.$activitiesPanel = this.$tabPanels.filter("#activit1es");
@@ -43,7 +42,6 @@ CS.Controllers.Index = P(CS.Controllers.OnePageWebapp, function (c, base) {
         this.$standoutDetailSection = this.$standoutsPanel.children("#standout-detail");
 
         this.initWelcomePanel();
-        this.initIntroToActivitiesAlert();
     };
 
     c._initEvents = function () {
@@ -56,8 +54,6 @@ CS.Controllers.Index = P(CS.Controllers.OnePageWebapp, function (c, base) {
         }.bind(this));
 
         this.$signOutLink.click($.proxy(this._signOut, this));
-
-        this.$introToActivitiesAlert.on('close.bs.alert', $.proxy(this._onIntroToActivitiesAlertClose, this));
     };
 
     c.initHeaderLinks = function () {
@@ -83,14 +79,6 @@ CS.Controllers.Index = P(CS.Controllers.OnePageWebapp, function (c, base) {
             CS.Services.Animator.fadeOut(this.$welcomePanel);
         } else {
             CS.Services.Animator.fadeIn(this.$welcomePanel);
-        }
-    };
-
-    c.initIntroToActivitiesAlert = function () {
-        if (CS.account.data && CS.account.data.Employer && CS.account.data.Position && !this.getFromLocalStorage("is-intro-to-activities-alert-closed")) {
-            CS.Services.Animator.fadeIn(this.$introToActivitiesAlert);
-        } else {
-            CS.Services.Animator.fadeOut(this.$introToActivitiesAlert);
         }
     };
 
@@ -154,13 +142,6 @@ CS.Controllers.Index = P(CS.Controllers.OnePageWebapp, function (c, base) {
                 alert('AJAX failure doing a ' + type + ' request to "' + url + '"');
             }.bind(this)
         });
-    };
-
-    c._onIntroToActivitiesAlertClose = function(e) {
-        e.preventDefault();
-
-        CS.Services.Animator.fadeOut(this.$introToActivitiesAlert);
-        this.saveInLocalStorage("is-intro-to-activities-alert-closed", true);
     };
 });
 

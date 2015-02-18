@@ -17,6 +17,22 @@ CS.Controllers.ActivityFeed = P(CS.Controllers.Base, function (c, base) {
 
             return (
                 React.createElement("div", null, 
+                    React.createElement("div", {className: "alert alert-info", id: "intro-to-activities"}, 
+                        React.createElement("button", {type: "button", className: "close", "data-dismiss": "alert", "aria-label": "Close"}, 
+                            React.createElement("span", {"aria-hidden": "true"}, "×")
+                        ), 
+
+                        React.createElement("h2", null, "Aktiviteter att göra"), 
+
+                        React.createElement("p", null, "Det dyker upp ett kort i flödet så fort det finns något nytt att göra."), 
+
+                        React.createElement("p", null, "Den första aktiviteten är att hitta vilka styrkor som efterfrågas i annonsen till jobbet du söker."), 
+
+                        React.createElement("p", null, "När du hittat några styrkor kommer det nya övningar som handlar om att beskriva styrkorna du just har hittat."), 
+
+                        React.createElement("p", null, "Det är bara att sätta igång!")
+                    ), 
+
                     React.createElement("ul", {className: "styleless"}, 
                     this.state.undoneC1sAndActivities.map(function (c1OrActivity) {
                         if (c1OrActivity.type === CS.Controllers.ActivityFeed.itemType.c1) {
@@ -41,6 +57,8 @@ CS.Controllers.ActivityFeed = P(CS.Controllers.Base, function (c, base) {
         }
     });
 
+    c.defaultActivityButtonText = "Gör detta";
+
     c.init = function () {
         this.reactInstance = React.render(
             React.createElement(this.reactClass),
@@ -48,6 +66,7 @@ CS.Controllers.ActivityFeed = P(CS.Controllers.Base, function (c, base) {
         );
 
         this._initElements();
+        this._initEvents();
 
         this.c1FeedItems = [
             {
@@ -93,11 +112,26 @@ CS.Controllers.ActivityFeed = P(CS.Controllers.Base, function (c, base) {
     };
 
     c._initElements = function () {
-        this.$registerReminderAlert = $("#register-reminder-alert");
+        this.$registerReminderAlert = $("#register-reminder");
+        this.$introToActivitiesAlert = $("#intro-to-activities");
+
+        this.initIntroToActivitiesAlert();
+    };
+
+    c._initEvents = function() {
+        this.$introToActivitiesAlert.on('close.bs.alert', $.proxy(this._onIntroToActivitiesAlertClose, this));
     };
 
     c.refreshData = function () {
         this._fetchCustomActivities();
+    };
+
+    c.initIntroToActivitiesAlert = function () {
+        if (CS.account.data && CS.account.data.Employer && CS.account.data.Position && !this.getFromLocalStorage("is-intro-to-activities-alert-closed")) {
+            CS.Services.Animator.fadeIn(this.$introToActivitiesAlert);
+        } else {
+            CS.Services.Animator.fadeOut(this.$introToActivitiesAlert);
+        }
     };
 
     c._fetchCustomActivities = function () {
@@ -153,6 +187,7 @@ CS.Controllers.ActivityFeed = P(CS.Controllers.Base, function (c, base) {
                 return instans.getClassName() === activity.className;
             });
 
+            // Custom activities are not defined in this.activityFeedItems, in which case "feedItem" is null
             var feedItem = _.find(this.activityFeedItems, function (item) {
                 return item.className === activity.className;
             });
@@ -161,14 +196,14 @@ CS.Controllers.ActivityFeed = P(CS.Controllers.Base, function (c, base) {
                 doneC1sAndActivities.push({
                     type: CS.Controllers.ActivityFeed.itemType.activity,
                     instance: instance,
-                    buttonText: feedItem.buttonText,
+                    buttonText: feedItem ? feedItem.buttonText : this.defaultActivityButtonText,
                     isDone: true
                 });
             } else if (instance.isDoable()) {
                 CS.undoneC1sAndActivities.push({
                     type: CS.Controllers.ActivityFeed.itemType.activity,
                     instance: instance,
-                    buttonText: feedItem.buttonText,
+                    buttonText: feedItem ? feedItem.buttonText : this.defaultActivityButtonText,
                     isDone: false
                 });
             }
@@ -203,6 +238,7 @@ CS.Controllers.ActivityFeed = P(CS.Controllers.Base, function (c, base) {
                 });
 
                 if (!isAlreadyInTheList) {
+                    // Custom activities are not defined in this.activityFeedItems, in which case "feedItem" is null
                     var feedItem = _.find(this.activityFeedItems, function (item) {
                         return item.className === instance.getClassName();
                     });
@@ -210,7 +246,7 @@ CS.Controllers.ActivityFeed = P(CS.Controllers.Base, function (c, base) {
                     CS.undoneC1sAndActivities.push({
                         type: CS.Controllers.ActivityFeed.itemType.activity,
                         instance: instance,
-                        buttonText: feedItem.buttonText,
+                        buttonText: feedItem ? feedItem.buttonText : this.defaultActivityButtonText,
                         isDone: false
                     });
                 }
@@ -231,6 +267,13 @@ CS.Controllers.ActivityFeed = P(CS.Controllers.Base, function (c, base) {
         } else {
             CS.Services.Animator.fadeOut(this.$registerReminderAlert);
         }
+    };
+
+    c._onIntroToActivitiesAlertClose = function(e) {
+        e.preventDefault();
+
+        CS.Services.Animator.fadeOut(this.$introToActivitiesAlert);
+        this.saveInLocalStorage("is-intro-to-activities-alert-closed", true);
     };
 });
 
@@ -360,15 +403,30 @@ CS.Controllers.C1FeedItem = React.createClass({displayName: "C1FeedItem",
 CS.Controllers.Standouts = P(function (c) {
     c.reactClass = React.createClass({displayName: "reactClass",
         getInitialState: function () {
-            return {standoutInstances: []};
+            return {
+                employer: null,
+                position: null,
+                standoutInstances: []
+            };
         },
 
         render: function () {
+            var employerAndPosition;
+            if (this.state.employer && this.state.position) {
+                employerAndPosition = (
+                    React.createElement("h1", null, this.state.position, " på ", this.state.employer)
+                    );
+            }
+
             return (
-                React.createElement("ul", {className: "styleless"}, 
-                    this.state.standoutInstances.map(function (standout) {
-                        return React.createElement("li", {key: standout.className, id: standout.className});
-                    })
+                React.createElement("div", null, 
+                    employerAndPosition, 
+
+                    React.createElement("ul", {className: "styleless"}, 
+                        this.state.standoutInstances.map(function (standout) {
+                            return React.createElement("li", {key: standout.className, id: standout.className});
+                        })
+                    )
                 )
                 );
         }
@@ -406,7 +464,11 @@ CS.Controllers.Standouts = P(function (c) {
 
                 var allItemInstances = _.union(itemInstancesCustomStandouts, itemInstancesClassicStandouts);
 
-                this.reactInstance.replaceState({ standoutInstances: allItemInstances });
+                this.reactInstance.replaceState({
+                    employer: CS.account.data ? CS.account.data.Employer : null,
+                    position: CS.account.data ? CS.account.data.Position : null,
+                    standoutInstances: allItemInstances
+                });
 
                 allItemInstances.forEach(function(instance, index) {
                     instance.run();

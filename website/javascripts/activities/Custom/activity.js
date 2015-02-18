@@ -11,13 +11,8 @@ CS.Activities.Custom = P(CS.Activities.Base, function (c, base) {
         return true;    // Always doable
     };
 
-    c.preLaunch = function () {
-        // Initialising all activity controllers
-        var controller = CS.Activities.Custom.Controllers.Page1("activities/" + this.model.className, this);
-
-        CS.router.get(controller.route, function (req) {
-            this.renderController(controller.route, { text: this.text});
-        }.bind(this));
+    c.initControllers = function() {
+        this.initRouting([CS.Activities.Custom.Controllers.Step1("activities/" + this.model.className, this)]);
     };
 });
 

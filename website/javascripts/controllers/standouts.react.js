@@ -1,16 +1,31 @@
 CS.Controllers.Standouts = P(function (c) {
     c.reactClass = React.createClass({
         getInitialState: function () {
-            return {standoutInstances: []};
+            return {
+                employer: null,
+                position: null,
+                standoutInstances: []
+            };
         },
 
         render: function () {
+            var employerAndPosition;
+            if (this.state.employer && this.state.position) {
+                employerAndPosition = (
+                    <h1>{this.state.position} på {this.state.employer}</h1>
+                    );
+            }
+
             return (
-                <ul className="styleless">
-                    {this.state.standoutInstances.map(function (standout) {
-                        return <li key={standout.className} id={standout.className}></li>;
-                    })}
-                </ul>
+                <div>
+                    {employerAndPosition}
+
+                    <ul className="styleless">
+                        {this.state.standoutInstances.map(function (standout) {
+                            return <li key={standout.className} id={standout.className}></li>;
+                        })}
+                    </ul>
+                </div>
                 );
         }
     });
@@ -47,7 +62,11 @@ CS.Controllers.Standouts = P(function (c) {
 
                 var allItemInstances = _.union(itemInstancesCustomStandouts, itemInstancesClassicStandouts);
 
-                this.reactInstance.replaceState({ standoutInstances: allItemInstances });
+                this.reactInstance.replaceState({
+                    employer: CS.account.data ? CS.account.data.Employer : null,
+                    position: CS.account.data ? CS.account.data.Position : null,
+                    standoutInstances: allItemInstances
+                });
 
                 allItemInstances.forEach(function(instance, index) {
                     instance.run();

@@ -1,13 +1,6 @@
 CS.Standouts.Strengths.Controllers.InList = P(CS.Controllers.OnePageWebapp, function (c, base) {
     c.reactClass = React.createClass({
         render: function () {
-            var employerAndPosition;
-            if (this.props.employer && this.props.position) {
-                employerAndPosition = (
-                    <h1>{this.props.position} på {this.props.employer}</h1>
-                    );
-            }
-
             var sections = this.props.strengths.map(function (strength) {
                 if (strength.specify) {
                     return [(
@@ -54,8 +47,6 @@ CS.Standouts.Strengths.Controllers.InList = P(CS.Controllers.OnePageWebapp, func
                         <p>Om styrkan har hittats men inte definierats så sparas den också här så du ser vad du ska jobba vidare med!</p>
                     </div>
 
-                    {employerAndPosition}
-
                     <p>Detta är dina främsta styrkor för rollen.</p>
 
                     {sections.map(function (section, index) {
@@ -79,11 +70,7 @@ CS.Standouts.Strengths.Controllers.InList = P(CS.Controllers.OnePageWebapp, func
             _.take(CS.account.data.strengths, 3) :
             [];
 
-        var data = {
-            employer: CS.account.data && CS.account.data.Employer,
-            position: CS.account.data && CS.account.data.Position,
-            strengths: this.strengths
-        };
+        var data = {strengths: this.strengths};
 
         // This is to avoid duplicate event bindings - TODO, and probably linked to https://github.com/EngineeringMode/Grapnel.js/issues/26
         this.$el.empty();

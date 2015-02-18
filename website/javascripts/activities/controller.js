@@ -5,7 +5,7 @@ CS.Activities.Controller = P(CS.Controllers.OnePageWebapp, function (c, base) {
         this.activity.registerController(this, this.route);
     };
 
-    c.render = function (data) {
+    c.render = function () {
         if (!this.isRendered) {
             var uniqueId = _.uniqueId();
 
@@ -13,7 +13,7 @@ CS.Activities.Controller = P(CS.Controllers.OnePageWebapp, function (c, base) {
             this.$el = $("#" + uniqueId);
 
             this.reactInstance = React.render(
-                React.createElement(this.reactClass, data),
+                React.createElement(this.reactClass),
                 this.$el[0]
             );
 
