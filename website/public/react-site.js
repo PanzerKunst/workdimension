@@ -69,15 +69,21 @@ CS.Controllers.ActivityFeed = P(CS.Controllers.Base, function (c, base) {
             },
             {
                 className: "SpecifyTop1Strength",
-                title: "Styrkans innebörd"
+                title: "Styrkans innebörd{colonAndStrengthName}",
+                description: "Vad innebär <strong>{strengthName}</strong> för dig och vilken nytta skapas för företaget? Vi hjälper dig att ta reda på det!",
+                buttonText: "Definiera och värdera"
             },
             {
                 className: "SpecifyTop2Strength",
-                title: "Styrkans innebörd"
+                title: "Styrkans innebörd{colonAndStrengthName}",
+                description: "Vad innebär <strong>{strengthName}</strong> för dig och vilken nytta skapas för företaget? Vi hjälper dig att ta reda på det!",
+                buttonText: "Definiera och värdera"
             },
             {
                 className: "SpecifyTop3Strength",
-                title: "Styrkans innebörd"
+                title: "Styrkans innebörd{colonAndStrengthName}",
+                description: "Vad innebär <strong>{strengthName}</strong> för dig och vilken nytta skapas för företaget? Vi hjälper dig att ta reda på det!",
+                buttonText: "Definiera och värdera"
             }
         ];
 
@@ -108,23 +114,7 @@ CS.Controllers.ActivityFeed = P(CS.Controllers.Base, function (c, base) {
                 }.bind(this));
 
                 var classicActivityInstances = this.activityFeedItems.map(function (item, index) {
-                    var title = item.title;
-                    if (item.className === "SpecifyTop1Strength" &&
-                        CS.account.data && !_.isEmpty(CS.account.data.strengths)) {
-                        title += ": " + CS.account.data.strengths[0].name;
-                    } else if (item.className === "SpecifyTop2Strength" &&
-                        CS.account.data &&
-                        CS.account.data.strengths &&
-                        CS.account.data.strengths.length > 1) {
-                        title += ": " + CS.account.data.strengths[1].name;
-                    } else if (item.className === "SpecifyTop3Strength" &&
-                        CS.account.data &&
-                        CS.account.data.strengths &&
-                        CS.account.data.strengths.length > 2) {
-                        title += ": " + CS.account.data.strengths[2].name;
-                    }
-
-                    return CS.Activities[item.className](item.className, title);
+                    return CS.Activities[item.className](item.className, item.title, item.description);
                 }.bind(this));
 
                 this.activityInstances = _.union(customActivityInstances, classicActivityInstances);
@@ -163,17 +153,22 @@ CS.Controllers.ActivityFeed = P(CS.Controllers.Base, function (c, base) {
                 return instans.getClassName() === activity.className;
             });
 
+            var feedItem = _.find(this.activityFeedItems, function (item) {
+                return item.className === activity.className;
+            });
+
             if (activity.state === CS.Models.Activity.state.done) {
                 doneC1sAndActivities.push({
                     type: CS.Controllers.ActivityFeed.itemType.activity,
                     instance: instance,
+                    buttonText: feedItem.buttonText,
                     isDone: true
                 });
             } else if (instance.isDoable()) {
                 CS.undoneC1sAndActivities.push({
                     type: CS.Controllers.ActivityFeed.itemType.activity,
-                    title: instance.getTitle(),
                     instance: instance,
+                    buttonText: feedItem.buttonText,
                     isDone: false
                 });
             }
@@ -208,9 +203,14 @@ CS.Controllers.ActivityFeed = P(CS.Controllers.Base, function (c, base) {
                 });
 
                 if (!isAlreadyInTheList) {
+                    var feedItem = _.find(this.activityFeedItems, function (item) {
+                        return item.className === instance.getClassName();
+                    });
+
                     CS.undoneC1sAndActivities.push({
                         type: CS.Controllers.ActivityFeed.itemType.activity,
                         instance: instance,
+                        buttonText: feedItem.buttonText,
                         isDone: false
                     });
                 }
@@ -246,11 +246,14 @@ CS.Controllers.ActivityFeedItem = React.createClass({displayName: "ActivityFeedI
             "done": this.props.activity.isDone
         });
 
-        var buttonText = this.props.activity.isDone ? "Gör om" : "Gör detta";
+        var buttonText = this.props.activity.isDone ? "Gör om" : this.props.activity.buttonText;
 
         return (
             React.createElement("li", {className: liClasses}, 
-                React.createElement("h2", null, this.props.activity.instance.getTitle()), 
+                React.createElement("h2", {dangerouslySetInnerHTML: {__html: this.props.activity.instance.getTitle()}}), 
+
+                React.createElement("p", {className: "help-text", dangerouslySetInnerHTML: {__html: this.props.activity.instance.getDescription()}}), 
+
                 React.createElement("div", {className: "centered-contents"}, 
                     React.createElement("button", {className: "btn btn-primary", onClick: this._handleClick}, buttonText)
                 )

@@ -4,8 +4,9 @@ CS.Activities.Base = P(function (c) {
     c.$el = $("#current-activity");
     c.controllers = {};
 
-    c.init = function (className, title) {
+    c.init = function (className, title, description) {
         this.title = title;
+        this.description = description;
 
         this.model = {
             className: className,
@@ -37,6 +38,10 @@ CS.Activities.Base = P(function (c) {
 
     c.getTitle = function () {
         return this.title;
+    };
+
+    c.getDescription = function () {
+        return this.description;
     };
 
     c.registerController = function (controllerClass, route) {
@@ -177,8 +182,8 @@ CS.Activities.Base.pageAnimationDuration = 0.15;
 
 CS.Activities.Custom.Controllers = {};
 ;CS.Activities.IdentifyStrengths = P(CS.Activities.Base, function (c, base) {
-    c.init = function (className, title) {
-        base.init.call(this, className, title);
+    c.init = function (className, title, description) {
+        base.init.call(this, className, title, description);
     };
 
     c.isDoable = function() {
@@ -211,8 +216,8 @@ CS.Activities.Custom.Controllers = {};
 
 CS.Activities.IdentifyStrengths.Controllers = {};
 ;CS.Activities.SpecifyTop1Strength = P(CS.Activities.Base, function (c, base) {
-    c.init = function (className, title) {
-        base.init.call(this, className, title);
+    c.init = function (className, title, description) {
+        base.init.call(this, className, title, description);
     };
 
     c.isDoable = function() {
@@ -239,12 +244,20 @@ CS.Activities.IdentifyStrengths.Controllers = {};
 
         this.initRouting(controllers);
     };
+
+    c.getTitle = function() {
+        return CS.Services.String.template(base.getTitle.call(this), "colonAndStrengthName", ": <strong>" + this.model.account.data.strengths[0].name + "</strong>");
+    };
+
+    c.getDescription = function() {
+        return CS.Services.String.template(base.getDescription.call(this), "strengthName", this.model.account.data.strengths[0].name);
+    };
 });
 
 CS.Activities.SpecifyTop1Strength.Controllers = {};
 ;CS.Activities.SpecifyTop2Strength = P(CS.Activities.Base, function (c, base) {
-    c.init = function (className, title) {
-        base.init.call(this, className, title);
+    c.init = function (className, title, description) {
+        base.init.call(this, className, title, description);
     };
 
     c.isDoable = function() {
@@ -272,12 +285,20 @@ CS.Activities.SpecifyTop1Strength.Controllers = {};
 
         this.initRouting(controllers);
     };
+
+    c.getTitle = function() {
+        return CS.Services.String.template(base.getTitle.call(this), "colonAndStrengthName", ": <strong>" + this.model.account.data.strengths[1].name + "</strong>");
+    };
+
+    c.getDescription = function() {
+        return CS.Services.String.template(base.getDescription.call(this), "strengthName", this.model.account.data.strengths[1].name);
+    };
 });
 
 CS.Activities.SpecifyTop2Strength.Controllers = {};
 ;CS.Activities.SpecifyTop3Strength = P(CS.Activities.Base, function (c, base) {
-    c.init = function (className, title) {
-        base.init.call(this, className, title);
+    c.init = function (className, title, description) {
+        base.init.call(this, className, title, description);
     };
 
     c.isDoable = function() {
@@ -304,6 +325,14 @@ CS.Activities.SpecifyTop2Strength.Controllers = {};
         ];
 
         this.initRouting(controllers);
+    };
+
+    c.getTitle = function() {
+        return CS.Services.String.template(base.getTitle.call(this), "colonAndStrengthName", ": <strong>" + this.model.account.data.strengths[2].name + "</strong>");
+    };
+
+    c.getDescription = function() {
+        return CS.Services.String.template(base.getDescription.call(this), "strengthName", this.model.account.data.strengths[2].name);
     };
 });
 
@@ -1033,13 +1062,13 @@ CS.Activities.IdentifyStrengths.Controllers.Step5 = P(CS.Activities.Controller, 
 CS.Activities.SpecifyTop1Strength.Controllers.Intro = P(CS.Activities.Controller, function (c, base) {
     c.reactClass = React.createClass({displayName: "reactClass",
         getInitialState: function () {
-            return {strengthName: null};
+            return {title: null};
         },
 
         render: function () {
             return (
                 React.createElement("div", null, 
-                    React.createElement("h1", null, "Styrkans innebörd: ", this.state.strengthName), 
+                    React.createElement("h1", {dangerouslySetInnerHTML: {__html: this.state.title}}), 
 
                     React.createElement("p", null, "Visste du att de tre vanligast angivna egenskaperna i jobbansökningar är kreativ, analytisk och passionerad?"), 
 
@@ -1070,7 +1099,7 @@ CS.Activities.SpecifyTop1Strength.Controllers.Intro = P(CS.Activities.Controller
     };
 
     c.onReRender = function () {
-        this.reactInstance.replaceState({strengthName: this.activity.model.account.data.strengths[0].name});
+        this.reactInstance.replaceState({title: this.activity.getTitle()});
     };
 
     c._nagivateToActivityFeed = function() {
@@ -1334,13 +1363,13 @@ CS.Activities.SpecifyTop1Strength.Controllers.Step3 = P(CS.Activities.Controller
 CS.Activities.SpecifyTop2Strength.Controllers.Intro = P(CS.Activities.Controller, function (c, base) {
     c.reactClass = React.createClass({displayName: "reactClass",
         getInitialState: function () {
-            return {strengthName: null};
+            return {title: null};
         },
 
         render: function () {
             return (
                 React.createElement("div", null, 
-                    React.createElement("h1", null, "Styrkans innebörd: ", this.state.strengthName), 
+                    React.createElement("h1", {dangerouslySetInnerHTML: {__html: this.state.title}}), 
 
                     React.createElement("p", null, "Visste du att de tre vanligast angivna egenskaperna i jobbansökningar är kreativ, analytisk och passionerad?"), 
 
@@ -1371,7 +1400,7 @@ CS.Activities.SpecifyTop2Strength.Controllers.Intro = P(CS.Activities.Controller
     };
 
     c.onReRender = function () {
-        this.reactInstance.replaceState({strengthName: this.activity.model.account.data.strengths[1].name});
+        this.reactInstance.replaceState({title: this.activity.getTitle()});
     };
 
     c._nagivateToActivityFeed = function() {
@@ -1635,13 +1664,13 @@ CS.Activities.SpecifyTop2Strength.Controllers.Step3 = P(CS.Activities.Controller
 CS.Activities.SpecifyTop3Strength.Controllers.Intro = P(CS.Activities.Controller, function (c, base) {
     c.reactClass = React.createClass({displayName: "reactClass",
         getInitialState: function () {
-            return {strengthName: null};
+            return {title: null};
         },
 
         render: function () {
             return (
                 React.createElement("div", null, 
-                    React.createElement("h1", null, "Styrkans innebörd: ", this.state.strengthName), 
+                    React.createElement("h1", {dangerouslySetInnerHTML: {__html: this.state.title}}), 
 
                     React.createElement("p", null, "Visste du att de tre vanligast angivna egenskaperna i jobbansökningar är kreativ, analytisk och passionerad?"), 
 
@@ -1672,7 +1701,7 @@ CS.Activities.SpecifyTop3Strength.Controllers.Intro = P(CS.Activities.Controller
     };
 
     c.onReRender = function () {
-        this.reactInstance.replaceState({strengthName: this.activity.model.account.data.strengths[2].name});
+        this.reactInstance.replaceState({title: this.activity.getTitle()});
     };
 
     c._nagivateToActivityFeed = function() {
@@ -1943,7 +1972,9 @@ CS.Activities.Controller.NextStep = React.createClass({displayName: "NextStep",
                     React.createElement("section", {className: "alert alert-info"}, 
                         React.createElement("div", {className: "centered-contents"}, 
                             React.createElement("p", null, "Nästa steg"), 
-                            React.createElement("h3", null, this.props.activity.title), 
+
+                            React.createElement("h3", {dangerouslySetInnerHTML: {__html: this.props.activity.getTitle()}}), 
+
                             React.createElement("div", {className: "centered-contents"}, 
                                 React.createElement("button", {type: "button", className: "btn btn-default", onClick: this._navigateBack}, "Tillbaka"), 
                                 React.createElement("button", {type: "button", className: "btn btn-primary", onClick: this._launchNextActivity}, "Sätt igång")

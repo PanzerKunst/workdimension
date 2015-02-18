@@ -5416,21 +5416,6 @@ footer {
   @media screen and (min-width: 960px) {
     #c1-and-activity-feed > div > h3 {
       margin-top: 98px; } }
-#c1-and-activity-feed li:before, #c1-and-activity-feed li:after {
-  content: " ";
-  display: table; }
-#c1-and-activity-feed li:after {
-  clear: both; }
-#c1-and-activity-feed li > h2 {
-  margin-bottom: 0; }
-  @media screen and (min-width: 640px) {
-    #c1-and-activity-feed li > h2 {
-      float: left; } }
-#c1-and-activity-feed li > .centered-contents {
-  margin-top: 3px; }
-  @media screen and (min-width: 640px) {
-    #c1-and-activity-feed li > .centered-contents {
-      float: right; } }
 
 #current-activity .tooltip {
   z-index: 1039; }

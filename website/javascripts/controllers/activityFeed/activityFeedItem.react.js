@@ -5,11 +5,14 @@ CS.Controllers.ActivityFeedItem = React.createClass({
             "done": this.props.activity.isDone
         });
 
-        var buttonText = this.props.activity.isDone ? "Gör om" : "Gör detta";
+        var buttonText = this.props.activity.isDone ? "Gör om" : this.props.activity.buttonText;
 
         return (
             <li className={liClasses}>
-                <h2>{this.props.activity.instance.getTitle()}</h2>
+                <h2 dangerouslySetInnerHTML={{__html: this.props.activity.instance.getTitle()}} />
+
+                <p className="help-text" dangerouslySetInnerHTML={{__html: this.props.activity.instance.getDescription()}} />
+
                 <div className="centered-contents">
                     <button className="btn btn-primary" onClick={this._handleClick}>{buttonText}</button>
                 </div>

@@ -1,6 +1,6 @@
 CS.Activities.SpecifyTop1Strength = P(CS.Activities.Base, function (c, base) {
-    c.init = function (className, title) {
-        base.init.call(this, className, title);
+    c.init = function (className, title, description) {
+        base.init.call(this, className, title, description);
     };
 
     c.isDoable = function() {
@@ -26,6 +26,14 @@ CS.Activities.SpecifyTop1Strength = P(CS.Activities.Base, function (c, base) {
         ];
 
         this.initRouting(controllers);
+    };
+
+    c.getTitle = function() {
+        return CS.Services.String.template(base.getTitle.call(this), "colonAndStrengthName", ": <strong>" + this.model.account.data.strengths[0].name + "</strong>");
+    };
+
+    c.getDescription = function() {
+        return CS.Services.String.template(base.getDescription.call(this), "strengthName", this.model.account.data.strengths[0].name);
     };
 });
 

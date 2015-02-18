@@ -8,7 +8,9 @@ CS.Activities.Controller.NextStep = React.createClass({
                     <section className="alert alert-info">
                         <div className="centered-contents">
                             <p>Nästa steg</p>
-                            <h3>{this.props.activity.title}</h3>
+
+                            <h3 dangerouslySetInnerHTML={{__html: this.props.activity.getTitle()}} />
+
                             <div className="centered-contents">
                                 <button type="button" className="btn btn-default" onClick={this._navigateBack}>Tillbaka</button>
                                 <button type="button" className="btn btn-primary" onClick={this._launchNextActivity}>Sätt igång</button>

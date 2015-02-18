@@ -17,26 +17,6 @@
       }
     }
   }
-
-  li {
-    @include clearfix;
-
-    > h2 {
-      @include medium-screen {
-        float: left;
-      }
-
-      margin-bottom: 0;
-    }
-
-    > .centered-contents {
-      @include medium-screen {
-        float: right;
-      }
-
-      margin-top: 3px;
-    }
-  }
 }
 
 #current-activity {

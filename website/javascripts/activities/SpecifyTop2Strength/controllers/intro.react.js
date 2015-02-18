@@ -1,13 +1,13 @@
 CS.Activities.SpecifyTop2Strength.Controllers.Intro = P(CS.Activities.Controller, function (c, base) {
     c.reactClass = React.createClass({
         getInitialState: function () {
-            return {strengthName: null};
+            return {title: null};
         },
 
         render: function () {
             return (
                 <div>
-                    <h1>Styrkans innebörd: {this.state.strengthName}</h1>
+                    <h1 dangerouslySetInnerHTML={{__html: this.state.title}} />
 
                     <p>Visste du att de tre vanligast angivna egenskaperna i jobbansökningar är kreativ, analytisk och passionerad&#63;</p>
 
@@ -38,7 +38,7 @@ CS.Activities.SpecifyTop2Strength.Controllers.Intro = P(CS.Activities.Controller
     };
 
     c.onReRender = function () {
-        this.reactInstance.replaceState({strengthName: this.activity.model.account.data.strengths[1].name});
+        this.reactInstance.replaceState({title: this.activity.getTitle()});
     };
 
     c._nagivateToActivityFeed = function() {

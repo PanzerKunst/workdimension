@@ -1,6 +1,6 @@
 CS.Activities.IdentifyStrengths = P(CS.Activities.Base, function (c, base) {
-    c.init = function (className, title) {
-        base.init.call(this, className, title);
+    c.init = function (className, title, description) {
+        base.init.call(this, className, title, description);
     };
 
     c.isDoable = function() {

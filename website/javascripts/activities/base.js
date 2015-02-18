@@ -4,8 +4,9 @@ CS.Activities.Base = P(function (c) {
     c.$el = $("#current-activity");
     c.controllers = {};
 
-    c.init = function (className, title) {
+    c.init = function (className, title, description) {
         this.title = title;
+        this.description = description;
 
         this.model = {
             className: className,
@@ -37,6 +38,10 @@ CS.Activities.Base = P(function (c) {
 
     c.getTitle = function () {
         return this.title;
+    };
+
+    c.getDescription = function () {
+        return this.description;
     };
 
     c.registerController = function (controllerClass, route) {

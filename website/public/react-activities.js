@@ -723,13 +723,13 @@ CS.Activities.IdentifyStrengths.Controllers.Step5 = P(CS.Activities.Controller, 
 CS.Activities.SpecifyTop1Strength.Controllers.Intro = P(CS.Activities.Controller, function (c, base) {
     c.reactClass = React.createClass({displayName: "reactClass",
         getInitialState: function () {
-            return {strengthName: null};
+            return {title: null};
         },
 
         render: function () {
             return (
                 React.createElement("div", null, 
-                    React.createElement("h1", null, "Styrkans innebörd: ", this.state.strengthName), 
+                    React.createElement("h1", {dangerouslySetInnerHTML: {__html: this.state.title}}), 
 
                     React.createElement("p", null, "Visste du att de tre vanligast angivna egenskaperna i jobbansökningar är kreativ, analytisk och passionerad?"), 
 
@@ -760,7 +760,7 @@ CS.Activities.SpecifyTop1Strength.Controllers.Intro = P(CS.Activities.Controller
     };
 
     c.onReRender = function () {
-        this.reactInstance.replaceState({strengthName: this.activity.model.account.data.strengths[0].name});
+        this.reactInstance.replaceState({title: this.activity.getTitle()});
     };
 
     c._nagivateToActivityFeed = function() {
@@ -1024,13 +1024,13 @@ CS.Activities.SpecifyTop1Strength.Controllers.Step3 = P(CS.Activities.Controller
 CS.Activities.SpecifyTop2Strength.Controllers.Intro = P(CS.Activities.Controller, function (c, base) {
     c.reactClass = React.createClass({displayName: "reactClass",
         getInitialState: function () {
-            return {strengthName: null};
+            return {title: null};
         },
 
         render: function () {
             return (
                 React.createElement("div", null, 
-                    React.createElement("h1", null, "Styrkans innebörd: ", this.state.strengthName), 
+                    React.createElement("h1", {dangerouslySetInnerHTML: {__html: this.state.title}}), 
 
                     React.createElement("p", null, "Visste du att de tre vanligast angivna egenskaperna i jobbansökningar är kreativ, analytisk och passionerad?"), 
 
@@ -1061,7 +1061,7 @@ CS.Activities.SpecifyTop2Strength.Controllers.Intro = P(CS.Activities.Controller
     };
 
     c.onReRender = function () {
-        this.reactInstance.replaceState({strengthName: this.activity.model.account.data.strengths[1].name});
+        this.reactInstance.replaceState({title: this.activity.getTitle()});
     };
 
     c._nagivateToActivityFeed = function() {
@@ -1325,13 +1325,13 @@ CS.Activities.SpecifyTop2Strength.Controllers.Step3 = P(CS.Activities.Controller
 CS.Activities.SpecifyTop3Strength.Controllers.Intro = P(CS.Activities.Controller, function (c, base) {
     c.reactClass = React.createClass({displayName: "reactClass",
         getInitialState: function () {
-            return {strengthName: null};
+            return {title: null};
         },
 
         render: function () {
             return (
                 React.createElement("div", null, 
-                    React.createElement("h1", null, "Styrkans innebörd: ", this.state.strengthName), 
+                    React.createElement("h1", {dangerouslySetInnerHTML: {__html: this.state.title}}), 
 
                     React.createElement("p", null, "Visste du att de tre vanligast angivna egenskaperna i jobbansökningar är kreativ, analytisk och passionerad?"), 
 
@@ -1362,7 +1362,7 @@ CS.Activities.SpecifyTop3Strength.Controllers.Intro = P(CS.Activities.Controller
     };
 
     c.onReRender = function () {
-        this.reactInstance.replaceState({strengthName: this.activity.model.account.data.strengths[2].name});
+        this.reactInstance.replaceState({title: this.activity.getTitle()});
     };
 
     c._nagivateToActivityFeed = function() {
@@ -1633,7 +1633,9 @@ CS.Activities.Controller.NextStep = React.createClass({displayName: "NextStep",
                     React.createElement("section", {className: "alert alert-info"}, 
                         React.createElement("div", {className: "centered-contents"}, 
                             React.createElement("p", null, "Nästa steg"), 
-                            React.createElement("h3", null, this.props.activity.title), 
+
+                            React.createElement("h3", {dangerouslySetInnerHTML: {__html: this.props.activity.getTitle()}}), 
+
                             React.createElement("div", {className: "centered-contents"}, 
                                 React.createElement("button", {type: "button", className: "btn btn-default", onClick: this._navigateBack}, "Tillbaka"), 
                                 React.createElement("button", {type: "button", className: "btn btn-primary", onClick: this._launchNextActivity}, "Sätt igång")

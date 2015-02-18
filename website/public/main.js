@@ -697,6 +697,11 @@ CS.indexController = null;
 ;CS.Services.String = {
     textToHtml: function (text) {
         return text.replace(/\n/g, "<br/>");
+    },
+
+    template: function (string, key, value) {
+        var regExp = new RegExp("\\{" + key + "\\}", "g");
+        return string.replace(regExp, value);
     }
 };
 ;CS.Models.Activity = {
@@ -1347,15 +1352,21 @@ CS.indexController = null;
             },
             {
                 className: "SpecifyTop1Strength",
-                title: "Styrkans innebörd"
+                title: "Styrkans innebörd{colonAndStrengthName}",
+                description: "Vad innebär <strong>{strengthName}</strong> för dig och vilken nytta skapas för företaget? Vi hjälper dig att ta reda på det!",
+                buttonText: "Definiera och värdera"
             },
             {
                 className: "SpecifyTop2Strength",
-                title: "Styrkans innebörd"
+                title: "Styrkans innebörd{colonAndStrengthName}",
+                description: "Vad innebär <strong>{strengthName}</strong> för dig och vilken nytta skapas för företaget? Vi hjälper dig att ta reda på det!",
+                buttonText: "Definiera och värdera"
             },
             {
                 className: "SpecifyTop3Strength",
-                title: "Styrkans innebörd"
+                title: "Styrkans innebörd{colonAndStrengthName}",
+                description: "Vad innebär <strong>{strengthName}</strong> för dig och vilken nytta skapas för företaget? Vi hjälper dig att ta reda på det!",
+                buttonText: "Definiera och värdera"
             }
         ];
 
@@ -1386,23 +1397,7 @@ CS.indexController = null;
                 }.bind(this));
 
                 var classicActivityInstances = this.activityFeedItems.map(function (item, index) {
-                    var title = item.title;
-                    if (item.className === "SpecifyTop1Strength" &&
-                        CS.account.data && !_.isEmpty(CS.account.data.strengths)) {
-                        title += ": " + CS.account.data.strengths[0].name;
-                    } else if (item.className === "SpecifyTop2Strength" &&
-                        CS.account.data &&
-                        CS.account.data.strengths &&
-                        CS.account.data.strengths.length > 1) {
-                        title += ": " + CS.account.data.strengths[1].name;
-                    } else if (item.className === "SpecifyTop3Strength" &&
-                        CS.account.data &&
-                        CS.account.data.strengths &&
-                        CS.account.data.strengths.length > 2) {
-                        title += ": " + CS.account.data.strengths[2].name;
-                    }
-
-                    return CS.Activities[item.className](item.className, title);
+                    return CS.Activities[item.className](item.className, item.title, item.description);
                 }.bind(this));
 
                 this.activityInstances = _.union(customActivityInstances, classicActivityInstances);
@@ -1441,17 +1436,22 @@ CS.indexController = null;
                 return instans.getClassName() === activity.className;
             });
 
+            var feedItem = _.find(this.activityFeedItems, function (item) {
+                return item.className === activity.className;
+            });
+
             if (activity.state === CS.Models.Activity.state.done) {
                 doneC1sAndActivities.push({
                     type: CS.Controllers.ActivityFeed.itemType.activity,
                     instance: instance,
+                    buttonText: feedItem.buttonText,
                     isDone: true
                 });
             } else if (instance.isDoable()) {
                 CS.undoneC1sAndActivities.push({
                     type: CS.Controllers.ActivityFeed.itemType.activity,
-                    title: instance.getTitle(),
                     instance: instance,
+                    buttonText: feedItem.buttonText,
                     isDone: false
                 });
             }
@@ -1486,9 +1486,14 @@ CS.indexController = null;
                 });
 
                 if (!isAlreadyInTheList) {
+                    var feedItem = _.find(this.activityFeedItems, function (item) {
+                        return item.className === instance.getClassName();
+                    });
+
                     CS.undoneC1sAndActivities.push({
                         type: CS.Controllers.ActivityFeed.itemType.activity,
                         instance: instance,
+                        buttonText: feedItem.buttonText,
                         isDone: false
                     });
                 }
@@ -1524,11 +1529,14 @@ CS.Controllers.ActivityFeedItem = React.createClass({displayName: "ActivityFeedI
             "done": this.props.activity.isDone
         });
 
-        var buttonText = this.props.activity.isDone ? "Gör om" : "Gör detta";
+        var buttonText = this.props.activity.isDone ? "Gör om" : this.props.activity.buttonText;
 
         return (
             React.createElement("li", {className: liClasses}, 
-                React.createElement("h2", null, this.props.activity.instance.getTitle()), 
+                React.createElement("h2", {dangerouslySetInnerHTML: {__html: this.props.activity.instance.getTitle()}}), 
+
+                React.createElement("p", {className: "help-text", dangerouslySetInnerHTML: {__html: this.props.activity.instance.getDescription()}}), 
+
                 React.createElement("div", {className: "centered-contents"}, 
                     React.createElement("button", {className: "btn btn-primary", onClick: this._handleClick}, buttonText)
                 )
@@ -1723,8 +1731,9 @@ CS.Activities.Base = P(function (c) {
     c.$el = $("#current-activity");
     c.controllers = {};
 
-    c.init = function (className, title) {
+    c.init = function (className, title, description) {
         this.title = title;
+        this.description = description;
 
         this.model = {
             className: className,
@@ -1756,6 +1765,10 @@ CS.Activities.Base = P(function (c) {
 
     c.getTitle = function () {
         return this.title;
+    };
+
+    c.getDescription = function () {
+        return this.description;
     };
 
     c.registerController = function (controllerClass, route) {
@@ -1896,8 +1909,8 @@ CS.Activities.Base.pageAnimationDuration = 0.15;
 
 CS.Activities.Custom.Controllers = {};
 ;CS.Activities.IdentifyStrengths = P(CS.Activities.Base, function (c, base) {
-    c.init = function (className, title) {
-        base.init.call(this, className, title);
+    c.init = function (className, title, description) {
+        base.init.call(this, className, title, description);
     };
 
     c.isDoable = function() {
@@ -1930,8 +1943,8 @@ CS.Activities.Custom.Controllers = {};
 
 CS.Activities.IdentifyStrengths.Controllers = {};
 ;CS.Activities.SpecifyTop1Strength = P(CS.Activities.Base, function (c, base) {
-    c.init = function (className, title) {
-        base.init.call(this, className, title);
+    c.init = function (className, title, description) {
+        base.init.call(this, className, title, description);
     };
 
     c.isDoable = function() {
@@ -1958,12 +1971,20 @@ CS.Activities.IdentifyStrengths.Controllers = {};
 
         this.initRouting(controllers);
     };
+
+    c.getTitle = function() {
+        return CS.Services.String.template(base.getTitle.call(this), "colonAndStrengthName", ": <strong>" + this.model.account.data.strengths[0].name + "</strong>");
+    };
+
+    c.getDescription = function() {
+        return CS.Services.String.template(base.getDescription.call(this), "strengthName", this.model.account.data.strengths[0].name);
+    };
 });
 
 CS.Activities.SpecifyTop1Strength.Controllers = {};
 ;CS.Activities.SpecifyTop2Strength = P(CS.Activities.Base, function (c, base) {
-    c.init = function (className, title) {
-        base.init.call(this, className, title);
+    c.init = function (className, title, description) {
+        base.init.call(this, className, title, description);
     };
 
     c.isDoable = function() {
@@ -1991,12 +2012,20 @@ CS.Activities.SpecifyTop1Strength.Controllers = {};
 
         this.initRouting(controllers);
     };
+
+    c.getTitle = function() {
+        return CS.Services.String.template(base.getTitle.call(this), "colonAndStrengthName", ": <strong>" + this.model.account.data.strengths[1].name + "</strong>");
+    };
+
+    c.getDescription = function() {
+        return CS.Services.String.template(base.getDescription.call(this), "strengthName", this.model.account.data.strengths[1].name);
+    };
 });
 
 CS.Activities.SpecifyTop2Strength.Controllers = {};
 ;CS.Activities.SpecifyTop3Strength = P(CS.Activities.Base, function (c, base) {
-    c.init = function (className, title) {
-        base.init.call(this, className, title);
+    c.init = function (className, title, description) {
+        base.init.call(this, className, title, description);
     };
 
     c.isDoable = function() {
@@ -2023,6 +2052,14 @@ CS.Activities.SpecifyTop2Strength.Controllers = {};
         ];
 
         this.initRouting(controllers);
+    };
+
+    c.getTitle = function() {
+        return CS.Services.String.template(base.getTitle.call(this), "colonAndStrengthName", ": <strong>" + this.model.account.data.strengths[2].name + "</strong>");
+    };
+
+    c.getDescription = function() {
+        return CS.Services.String.template(base.getDescription.call(this), "strengthName", this.model.account.data.strengths[2].name);
     };
 });
 
@@ -2752,13 +2789,13 @@ CS.Activities.IdentifyStrengths.Controllers.Step5 = P(CS.Activities.Controller, 
 CS.Activities.SpecifyTop1Strength.Controllers.Intro = P(CS.Activities.Controller, function (c, base) {
     c.reactClass = React.createClass({displayName: "reactClass",
         getInitialState: function () {
-            return {strengthName: null};
+            return {title: null};
         },
 
         render: function () {
             return (
                 React.createElement("div", null, 
-                    React.createElement("h1", null, "Styrkans innebörd: ", this.state.strengthName), 
+                    React.createElement("h1", {dangerouslySetInnerHTML: {__html: this.state.title}}), 
 
                     React.createElement("p", null, "Visste du att de tre vanligast angivna egenskaperna i jobbansökningar är kreativ, analytisk och passionerad?"), 
 
@@ -2789,7 +2826,7 @@ CS.Activities.SpecifyTop1Strength.Controllers.Intro = P(CS.Activities.Controller
     };
 
     c.onReRender = function () {
-        this.reactInstance.replaceState({strengthName: this.activity.model.account.data.strengths[0].name});
+        this.reactInstance.replaceState({title: this.activity.getTitle()});
     };
 
     c._nagivateToActivityFeed = function() {
@@ -3053,13 +3090,13 @@ CS.Activities.SpecifyTop1Strength.Controllers.Step3 = P(CS.Activities.Controller
 CS.Activities.SpecifyTop2Strength.Controllers.Intro = P(CS.Activities.Controller, function (c, base) {
     c.reactClass = React.createClass({displayName: "reactClass",
         getInitialState: function () {
-            return {strengthName: null};
+            return {title: null};
         },
 
         render: function () {
             return (
                 React.createElement("div", null, 
-                    React.createElement("h1", null, "Styrkans innebörd: ", this.state.strengthName), 
+                    React.createElement("h1", {dangerouslySetInnerHTML: {__html: this.state.title}}), 
 
                     React.createElement("p", null, "Visste du att de tre vanligast angivna egenskaperna i jobbansökningar är kreativ, analytisk och passionerad?"), 
 
@@ -3090,7 +3127,7 @@ CS.Activities.SpecifyTop2Strength.Controllers.Intro = P(CS.Activities.Controller
     };
 
     c.onReRender = function () {
-        this.reactInstance.replaceState({strengthName: this.activity.model.account.data.strengths[1].name});
+        this.reactInstance.replaceState({title: this.activity.getTitle()});
     };
 
     c._nagivateToActivityFeed = function() {
@@ -3354,13 +3391,13 @@ CS.Activities.SpecifyTop2Strength.Controllers.Step3 = P(CS.Activities.Controller
 CS.Activities.SpecifyTop3Strength.Controllers.Intro = P(CS.Activities.Controller, function (c, base) {
     c.reactClass = React.createClass({displayName: "reactClass",
         getInitialState: function () {
-            return {strengthName: null};
+            return {title: null};
         },
 
         render: function () {
             return (
                 React.createElement("div", null, 
-                    React.createElement("h1", null, "Styrkans innebörd: ", this.state.strengthName), 
+                    React.createElement("h1", {dangerouslySetInnerHTML: {__html: this.state.title}}), 
 
                     React.createElement("p", null, "Visste du att de tre vanligast angivna egenskaperna i jobbansökningar är kreativ, analytisk och passionerad?"), 
 
@@ -3391,7 +3428,7 @@ CS.Activities.SpecifyTop3Strength.Controllers.Intro = P(CS.Activities.Controller
     };
 
     c.onReRender = function () {
-        this.reactInstance.replaceState({strengthName: this.activity.model.account.data.strengths[2].name});
+        this.reactInstance.replaceState({title: this.activity.getTitle()});
     };
 
     c._nagivateToActivityFeed = function() {
@@ -3662,7 +3699,9 @@ CS.Activities.Controller.NextStep = React.createClass({displayName: "NextStep",
                     React.createElement("section", {className: "alert alert-info"}, 
                         React.createElement("div", {className: "centered-contents"}, 
                             React.createElement("p", null, "Nästa steg"), 
-                            React.createElement("h3", null, this.props.activity.title), 
+
+                            React.createElement("h3", {dangerouslySetInnerHTML: {__html: this.props.activity.getTitle()}}), 
+
                             React.createElement("div", {className: "centered-contents"}, 
                                 React.createElement("button", {type: "button", className: "btn btn-default", onClick: this._navigateBack}, "Tillbaka"), 
                                 React.createElement("button", {type: "button", className: "btn btn-primary", onClick: this._launchNextActivity}, "Sätt igång")
