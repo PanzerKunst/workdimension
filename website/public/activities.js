@@ -147,6 +147,10 @@ CS.Activities.Base.pageAnimationDuration = 0.15;
         });
     };
 
+    c.nagivateToActivityFeed = function() {
+        this.navigateTo("activities");
+    };
+
     // Child functions are call instead if exist
     c.initElements = function () {
     };
@@ -342,12 +346,15 @@ CS.Activities.SpecifyTop3Strength.Controllers = {};
             return (
                 React.createElement("form", {role: "form"}, 
                     React.createElement("div", {className: "form-group"}, 
-                        React.createElement("p", null, this.state.text), 
+                        React.createElement("p", {dangerouslySetInnerHTML: {__html: this.state.text}}), 
+
                         React.createElement("textarea", {id: "custom-activity-answer", className: "form-control"}), 
 
                         React.createElement("p", {className: "field-error", "data-check": "empty"})
                     ), 
+
                     React.createElement("div", {className: "submit-wrapper"}, 
+                        React.createElement("button", {type: "button", className: "btn btn-default"}, "Tillbaka"), 
                         React.createElement("button", {type: "submit", className: "btn btn-primary", "data-loading-text": "Sparar..."}, "Spara")
                     )
                 )
@@ -358,6 +365,7 @@ CS.Activities.SpecifyTop3Strength.Controllers = {};
     c.initElements = function () {
         this.$form = this.$el.find("form");
         this.$textarea = this.$form.find("#custom-activity-answer");
+        this.$goBackBtn = this.$form.find(".btn-default");
         this.$submitBtn = this.$form.find("[type=submit]");
     };
 
@@ -368,15 +376,13 @@ CS.Activities.SpecifyTop3Strength.Controllers = {};
     };
 
     c.initEvents = function () {
+        this.$goBackBtn.click($.proxy(this.nagivateToActivityFeed, this));
         this.$form.submit($.proxy(this._handleSubmit, this));
+
         this.onReRender();
     };
 
     c.onReRender = function () {
-
-        // TODO: remove
-        console.log(this.activity.text);
-
         this.reactInstance.replaceState({text: CS.Services.String.textToHtml(this.activity.text)});
 
         // The submit button may still be in loading state when navigating back. We make sure it doesn't happen
@@ -424,12 +430,8 @@ CS.Activities.IdentifyStrengths.Controllers.Intro = P(CS.Activities.Controller, 
     };
 
     c.initEvents = function () {
-        this.$goBackBtn.click($.proxy(this._nagivateToActivityFeed, this));
+        this.$goBackBtn.click($.proxy(this.nagivateToActivityFeed, this));
         this.$goNextStepBtn.click($.proxy(this._navigateNext, this));
-    };
-
-    c._nagivateToActivityFeed = function() {
-        this.navigateTo("activities");
     };
 
     c._navigateNext = function (e) {
@@ -1096,7 +1098,7 @@ CS.Activities.SpecifyTop1Strength.Controllers.Intro = P(CS.Activities.Controller
     };
 
     c.initEvents = function () {
-        this.$goBackBtn.click($.proxy(this._nagivateToActivityFeed, this));
+        this.$goBackBtn.click($.proxy(this.nagivateToActivityFeed, this));
         this.$goNextStepBtn.click($.proxy(this._navigateNext, this));
 
         this.onReRender();
@@ -1104,10 +1106,6 @@ CS.Activities.SpecifyTop1Strength.Controllers.Intro = P(CS.Activities.Controller
 
     c.onReRender = function () {
         this.reactInstance.replaceState({title: this.activity.getTitle()});
-    };
-
-    c._nagivateToActivityFeed = function() {
-        this.navigateTo("activities");
     };
 
     c._navigateNext = function (e) {
@@ -1397,7 +1395,7 @@ CS.Activities.SpecifyTop2Strength.Controllers.Intro = P(CS.Activities.Controller
     };
 
     c.initEvents = function () {
-        this.$goBackBtn.click($.proxy(this._nagivateToActivityFeed, this));
+        this.$goBackBtn.click($.proxy(this.nagivateToActivityFeed, this));
         this.$goNextStepBtn.click($.proxy(this._navigateNext, this));
 
         this.onReRender();
@@ -1405,10 +1403,6 @@ CS.Activities.SpecifyTop2Strength.Controllers.Intro = P(CS.Activities.Controller
 
     c.onReRender = function () {
         this.reactInstance.replaceState({title: this.activity.getTitle()});
-    };
-
-    c._nagivateToActivityFeed = function() {
-        this.navigateTo("activities");
     };
 
     c._navigateNext = function (e) {
@@ -1698,7 +1692,7 @@ CS.Activities.SpecifyTop3Strength.Controllers.Intro = P(CS.Activities.Controller
     };
 
     c.initEvents = function () {
-        this.$goBackBtn.click($.proxy(this._nagivateToActivityFeed, this));
+        this.$goBackBtn.click($.proxy(this.nagivateToActivityFeed, this));
         this.$goNextStepBtn.click($.proxy(this._navigateNext, this));
 
         this.onReRender();
@@ -1706,10 +1700,6 @@ CS.Activities.SpecifyTop3Strength.Controllers.Intro = P(CS.Activities.Controller
 
     c.onReRender = function () {
         this.reactInstance.replaceState({title: this.activity.getTitle()});
-    };
-
-    c._nagivateToActivityFeed = function() {
-        this.navigateTo("activities");
     };
 
     c._navigateNext = function (e) {

@@ -62,6 +62,10 @@ CS.Activities.Controller = P(CS.Controllers.OnePageWebapp, function (c, base) {
         });
     };
 
+    c.nagivateToActivityFeed = function() {
+        this.navigateTo("activities");
+    };
+
     // Child functions are call instead if exist
     c.initElements = function () {
     };

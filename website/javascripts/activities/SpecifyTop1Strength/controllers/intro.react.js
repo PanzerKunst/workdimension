@@ -31,7 +31,7 @@ CS.Activities.SpecifyTop1Strength.Controllers.Intro = P(CS.Activities.Controller
     };
 
     c.initEvents = function () {
-        this.$goBackBtn.click($.proxy(this._nagivateToActivityFeed, this));
+        this.$goBackBtn.click($.proxy(this.nagivateToActivityFeed, this));
         this.$goNextStepBtn.click($.proxy(this._navigateNext, this));
 
         this.onReRender();
@@ -39,10 +39,6 @@ CS.Activities.SpecifyTop1Strength.Controllers.Intro = P(CS.Activities.Controller
 
     c.onReRender = function () {
         this.reactInstance.replaceState({title: this.activity.getTitle()});
-    };
-
-    c._nagivateToActivityFeed = function() {
-        this.navigateTo("activities");
     };
 
     c._navigateNext = function (e) {

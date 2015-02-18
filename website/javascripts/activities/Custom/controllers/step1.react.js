@@ -8,12 +8,15 @@ CS.Activities.Custom.Controllers.Step1 = P(CS.Activities.Controller, function (c
             return (
                 <form role="form">
                     <div className="form-group">
-                        <p>{this.state.text}</p>
+                        <p dangerouslySetInnerHTML={{__html: this.state.text}} />
+
                         <textarea id="custom-activity-answer" className="form-control"></textarea>
 
                         <p className="field-error" data-check="empty"></p>
                     </div>
+
                     <div className="submit-wrapper">
+                        <button type="button" className="btn btn-default">Tillbaka</button>
                         <button type="submit" className="btn btn-primary" data-loading-text="Sparar...">Spara</button>
                     </div>
                 </form>
@@ -24,6 +27,7 @@ CS.Activities.Custom.Controllers.Step1 = P(CS.Activities.Controller, function (c
     c.initElements = function () {
         this.$form = this.$el.find("form");
         this.$textarea = this.$form.find("#custom-activity-answer");
+        this.$goBackBtn = this.$form.find(".btn-default");
         this.$submitBtn = this.$form.find("[type=submit]");
     };
 
@@ -34,15 +38,13 @@ CS.Activities.Custom.Controllers.Step1 = P(CS.Activities.Controller, function (c
     };
 
     c.initEvents = function () {
+        this.$goBackBtn.click($.proxy(this.nagivateToActivityFeed, this));
         this.$form.submit($.proxy(this._handleSubmit, this));
+
         this.onReRender();
     };
 
     c.onReRender = function () {
-
-        // TODO: remove
-        console.log(this.activity.text);
-
         this.reactInstance.replaceState({text: CS.Services.String.textToHtml(this.activity.text)});
 
         // The submit button may still be in loading state when navigating back. We make sure it doesn't happen

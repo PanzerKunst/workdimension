@@ -24,12 +24,8 @@ CS.Activities.IdentifyStrengths.Controllers.Intro = P(CS.Activities.Controller, 
     };
 
     c.initEvents = function () {
-        this.$goBackBtn.click($.proxy(this._nagivateToActivityFeed, this));
+        this.$goBackBtn.click($.proxy(this.nagivateToActivityFeed, this));
         this.$goNextStepBtn.click($.proxy(this._navigateNext, this));
-    };
-
-    c._nagivateToActivityFeed = function() {
-        this.navigateTo("activities");
     };
 
     c._navigateNext = function (e) {
