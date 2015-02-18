@@ -5398,9 +5398,9 @@ h6, .h6 {
 #header-alerts > div {
   display: none; }
 
-#welcome-alert {
+#welcome-panel {
   padding: 15px; }
-  #welcome-alert span {
+  #welcome-panel span {
     display: inline-block; }
 
 footer {

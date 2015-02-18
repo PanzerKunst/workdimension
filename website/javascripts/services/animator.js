@@ -6,15 +6,17 @@ CS.Services.Animator = {
         }
     },
     fadeOut: function ($el, onComplete) {
-        TweenLite.to($el, CS.defaultAnimationDuration, {
-            alpha: 0,
-            onComplete: function () {
-                if (onComplete) {
-                    onComplete();
-                } else {
-                    $el.hide();
-                }
-            }.bind(this)
-        });
+        if ($el.is(":visible")) {
+            TweenLite.to($el, CS.defaultAnimationDuration, {
+                alpha: 0,
+                onComplete: function () {
+                    if (onComplete) {
+                        onComplete();
+                    } else {
+                        $el.hide();
+                    }
+                }.bind(this)
+            });
+        }
     }
 };

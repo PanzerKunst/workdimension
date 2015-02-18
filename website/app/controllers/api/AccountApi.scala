@@ -28,7 +28,7 @@ object AccountApi extends Controller {
                   // We delete the old account
                   AccountDto.deleteOfId(accountId)
 
-                  // TODO EmailService.sendWelcomeEmail(frontendAccount.emailAddress)
+                  EmailService.sendWelcomeEmail(frontendAccount.emailAddress)
 
                   AccountDataDto.getOfAccountId(newAccountId) match {
                     case Some(accountData) => EmailService.sendAccountDataUpdatedEmail(frontendAccount.emailAddress, accountData)

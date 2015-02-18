@@ -29,12 +29,14 @@ CS.Controllers.HeaderModal = P(CS.Controllers.OnePageWebapp, function (c, base) 
     };
 
     c.onFormSubmitSuccess = function(data) {
-        this.$headerLinks.hide();
-        this.$signOutLink.show();
-
         CS.account.id = data.accountId;
         CS.account.email = data.accountEmail;
         CS.account.data = data.accountData;
+
+        CS.indexController.initWelcomePanel();
+        CS.indexController.initIntroToActivitiesAlert();
+        CS.indexController.initHeaderLinks();
+        CS.indexController.initActivityTabText();
 
         this.$registerReminderAlert.hide();
 

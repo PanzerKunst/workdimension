@@ -49,8 +49,7 @@ CS.Activities.Controller = P(CS.Controllers.OnePageWebapp, function (c, base) {
                 if (callback) {
                     callback();
                 } else {
-                    // TODO this.navigateTo(this.activity.outroController.route);
-                    this.navigateTo("insights");
+                    this.navigateTo(this.activity.outroController.route);
                 }
             }.bind(this),
             error: function (jqXHR, textStatus, errorThrown) {

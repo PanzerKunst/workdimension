@@ -48,7 +48,9 @@ CS.Activities.Custom.Controllers.Page1 = P(CS.Activities.Controller, function (c
 
             this.activity.model.account.data.custom[this.activity.model.className] = this.$textarea.val().trim();
 
-            this.postData();
+            this.postData(function () {
+                this.navigateTo("insights");
+            }.bind(this));
         }
     };
 });
@@ -714,9 +716,7 @@ CS.Activities.IdentifyStrengths.Controllers.Step5 = P(CS.Activities.Controller, 
     c._handleSubmit = function (e) {
         this.$submitBtn.button('loading');
 
-        this.postData(function () {
-            this.navigateTo(this.activity.outroController.route);
-        }.bind(this));
+        this.postData();
     };
 });
 
@@ -1016,9 +1016,7 @@ CS.Activities.SpecifyTop1Strength.Controllers.Step3 = P(CS.Activities.Controller
 
             this.activity.model.account.data.strengths[0].specify.strengthForPosition = this.$strengthForPositionField.val().trim();
 
-            this.postData(function () {
-                this.navigateTo(this.activity.outroController.route);
-            }.bind(this));
+            this.postData();
         }
     };
 });
@@ -1319,9 +1317,7 @@ CS.Activities.SpecifyTop2Strength.Controllers.Step3 = P(CS.Activities.Controller
 
             this.activity.model.account.data.strengths[1].specify.strengthForPosition = this.$strengthForPositionField.val().trim();
 
-            this.postData(function () {
-                this.navigateTo(this.activity.outroController.route);
-            }.bind(this));
+            this.postData();
         }
     };
 });
@@ -1622,9 +1618,7 @@ CS.Activities.SpecifyTop3Strength.Controllers.Step3 = P(CS.Activities.Controller
 
             this.activity.model.account.data.strengths[2].specify.strengthForPosition = this.$strengthForPositionField.val().trim();
 
-            this.postData(function () {
-                this.navigateTo(this.activity.outroController.route);
-            }.bind(this));
+            this.postData();
         }
     };
 });

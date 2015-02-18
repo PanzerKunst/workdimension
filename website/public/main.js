@@ -283,6 +283,7 @@ CS.router = new Grapnel();
 CS.defaultAnimationDuration = 0.5;
 CS.activityFeedController = null;
 CS.undoneC1sAndActivities = [];
+CS.indexController = null;
 ;CS.Browser = {
     addUserAgentAttributeToHtmlTag: function() {
         document.documentElement.setAttribute('data-useragent', navigator.userAgent);
@@ -679,16 +680,18 @@ CS.undoneC1sAndActivities = [];
         }
     },
     fadeOut: function ($el, onComplete) {
-        TweenLite.to($el, CS.defaultAnimationDuration, {
-            alpha: 0,
-            onComplete: function () {
-                if (onComplete) {
-                    onComplete();
-                } else {
-                    $el.hide();
-                }
-            }.bind(this)
-        });
+        if ($el.is(":visible")) {
+            TweenLite.to($el, CS.defaultAnimationDuration, {
+                alpha: 0,
+                onComplete: function () {
+                    if (onComplete) {
+                        onComplete();
+                    } else {
+                        $el.hide();
+                    }
+                }.bind(this)
+            });
+        }
     }
 };
 ;CS.Services.String = {
@@ -760,8 +763,8 @@ CS.undoneC1sAndActivities = [];
         CS.Controllers.RegisterReminder();
 
         this._initElements();
-        this._initHeaderLinks();
-        this._initActivityTabText();
+        this.initHeaderLinks();
+        this.initActivityTabText();
         this._initEvents();
 
         this._initRouter();
@@ -777,7 +780,7 @@ CS.undoneC1sAndActivities = [];
         this.$standoutsTab = this.$headerNav.find("#standouts-tab");
 
         this.$headerAlerts = $("#header-alerts");
-        this.$welcomeAlert = this.$headerAlerts.children("#welcome-alert");
+        this.$welcomePanel = this.$headerAlerts.children("#welcome-panel");
         this.$introToActivitiesAlert = this.$headerAlerts.children("#intro-to-activities-alert");
 
         this.$tabPanels = $('[role="tabpanel"]');
@@ -790,8 +793,8 @@ CS.undoneC1sAndActivities = [];
         this.$standoutListSection = this.$standoutsPanel.children("#standout-list");
         this.$standoutDetailSection = this.$standoutsPanel.children("#standout-detail");
 
-        this._displayWelcomeAlertIfNeeded();
-        this._displayIntroToActivitiesAlertIfNeeded();
+        this.initWelcomePanel();
+        this.initIntroToActivitiesAlert();
     };
 
     c._initEvents = function () {
@@ -808,30 +811,37 @@ CS.undoneC1sAndActivities = [];
         this.$introToActivitiesAlert.on('close.bs.alert', $.proxy(this._onIntroToActivitiesAlertClose, this));
     };
 
-    c._initHeaderLinks = function () {
+    c.initHeaderLinks = function () {
         if (this.isTemporaryAccount()) {
             this.$headerLinks.show();
             this.$signOutLink.hide();
         } else {
+            this.$headerLinks.hide();
             this.$signOutLink.show();
         }
     };
 
-    c._initActivityTabText = function() {
-        if (!CS.account.data || !CS.account.data.Employer || !CS.account.data.Position) {
+    c.initActivityTabText = function() {
+        if (CS.account.data && CS.account.data.Employer && CS.account.data.Position) {
+            this.$activitiesTab.html("Aktiviteter");
+        } else {
             this.$activitiesTab.html("Din ansökan");
         }
     };
 
-    c._displayWelcomeAlertIfNeeded = function () {
-        if (!CS.account.data || !CS.account.data.Employer || !CS.account.data.Position) {
-            CS.Services.Animator.fadeIn(this.$welcomeAlert);
+    c.initWelcomePanel = function () {
+        if (CS.account.data && CS.account.data.Employer && CS.account.data.Position) {
+            CS.Services.Animator.fadeOut(this.$welcomePanel);
+        } else {
+            CS.Services.Animator.fadeIn(this.$welcomePanel);
         }
     };
 
-    c._displayIntroToActivitiesAlertIfNeeded = function () {
+    c.initIntroToActivitiesAlert = function () {
         if (CS.account.data && CS.account.data.Employer && CS.account.data.Position && !this.getFromLocalStorage("is-intro-to-activities-alert-closed")) {
             CS.Services.Animator.fadeIn(this.$introToActivitiesAlert);
+        } else {
+            CS.Services.Animator.fadeOut(this.$introToActivitiesAlert);
         }
     };
 
@@ -936,12 +946,14 @@ CS.undoneC1sAndActivities = [];
     };
 
     c.onFormSubmitSuccess = function(data) {
-        this.$headerLinks.hide();
-        this.$signOutLink.show();
-
         CS.account.id = data.accountId;
         CS.account.email = data.accountEmail;
         CS.account.data = data.accountData;
+
+        CS.indexController.initWelcomePanel();
+        CS.indexController.initIntroToActivitiesAlert();
+        CS.indexController.initHeaderLinks();
+        CS.indexController.initActivityTabText();
 
         this.$registerReminderAlert.hide();
 
@@ -1836,8 +1848,7 @@ CS.Activities.Base.pageAnimationDuration = 0.15;
                 if (callback) {
                     callback();
                 } else {
-                    // TODO this.navigateTo(this.activity.outroController.route);
-                    this.navigateTo("insights");
+                    this.navigateTo(this.activity.outroController.route);
                 }
             }.bind(this),
             error: function (jqXHR, textStatus, errorThrown) {
@@ -2066,7 +2077,9 @@ CS.Activities.SpecifyTop3Strength.Controllers = {};
 
             this.activity.model.account.data.custom[this.activity.model.className] = this.$textarea.val().trim();
 
-            this.postData();
+            this.postData(function () {
+                this.navigateTo("insights");
+            }.bind(this));
         }
     };
 });
@@ -2732,9 +2745,7 @@ CS.Activities.IdentifyStrengths.Controllers.Step5 = P(CS.Activities.Controller, 
     c._handleSubmit = function (e) {
         this.$submitBtn.button('loading');
 
-        this.postData(function () {
-            this.navigateTo(this.activity.outroController.route);
-        }.bind(this));
+        this.postData();
     };
 });
 
@@ -3034,9 +3045,7 @@ CS.Activities.SpecifyTop1Strength.Controllers.Step3 = P(CS.Activities.Controller
 
             this.activity.model.account.data.strengths[0].specify.strengthForPosition = this.$strengthForPositionField.val().trim();
 
-            this.postData(function () {
-                this.navigateTo(this.activity.outroController.route);
-            }.bind(this));
+            this.postData();
         }
     };
 });
@@ -3337,9 +3346,7 @@ CS.Activities.SpecifyTop2Strength.Controllers.Step3 = P(CS.Activities.Controller
 
             this.activity.model.account.data.strengths[1].specify.strengthForPosition = this.$strengthForPositionField.val().trim();
 
-            this.postData(function () {
-                this.navigateTo(this.activity.outroController.route);
-            }.bind(this));
+            this.postData();
         }
     };
 });
@@ -3640,9 +3647,7 @@ CS.Activities.SpecifyTop3Strength.Controllers.Step3 = P(CS.Activities.Controller
 
             this.activity.model.account.data.strengths[2].specify.strengthForPosition = this.$strengthForPositionField.val().trim();
 
-            this.postData(function () {
-                this.navigateTo(this.activity.outroController.route);
-            }.bind(this));
+            this.postData();
         }
     };
 });
@@ -3910,8 +3915,7 @@ CS.Standouts.Strengths.Controllers.InList = P(CS.Controllers.OnePageWebapp, func
                 }
             });
 
-            return _.isEmpty(this.props.strengths) ?
-                (
+            return _.isEmpty(this.props.strengths) ? (
                     React.createElement("h3", null, "Gör styrka aktiviteter för att få insikter!")
                     ) : (
                 React.createElement("div", null, 
@@ -3951,7 +3955,7 @@ CS.Standouts.Strengths.Controllers.InList = P(CS.Controllers.OnePageWebapp, func
 
     c.render = function () {
         this.strengths = CS.account.data && !_.isEmpty(CS.account.data.strengths) ?
-            CS.account.data.strengths :
+            _.take(CS.account.data.strengths, 3) :
             [];
 
         var data = {
@@ -4029,8 +4033,6 @@ CS.Standouts.Strengths.Controllers.InList = P(CS.Controllers.OnePageWebapp, func
         this.$tabPanels.removeClass("active");
         this.$activitiesTab.tab('show');
         this.$activitiesPanel.addClass("active");
-        $("#c1-and-activity-feed").hide();
-        $("#current-activity").show();
     };
 });
 

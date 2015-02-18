@@ -36,8 +36,7 @@ CS.Standouts.Strengths.Controllers.InList = P(CS.Controllers.OnePageWebapp, func
                 }
             });
 
-            return _.isEmpty(this.props.strengths) ?
-                (
+            return _.isEmpty(this.props.strengths) ? (
                     <h3>Gör styrka aktiviteter för att få insikter!</h3>
                     ) : (
                 <div>
@@ -77,7 +76,7 @@ CS.Standouts.Strengths.Controllers.InList = P(CS.Controllers.OnePageWebapp, func
 
     c.render = function () {
         this.strengths = CS.account.data && !_.isEmpty(CS.account.data.strengths) ?
-            CS.account.data.strengths :
+            _.take(CS.account.data.strengths, 3) :
             [];
 
         var data = {
@@ -155,7 +154,5 @@ CS.Standouts.Strengths.Controllers.InList = P(CS.Controllers.OnePageWebapp, func
         this.$tabPanels.removeClass("active");
         this.$activitiesTab.tab('show');
         this.$activitiesPanel.addClass("active");
-        $("#c1-and-activity-feed").hide();
-        $("#current-activity").show();
     };
 });

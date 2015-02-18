@@ -65,9 +65,7 @@ CS.Activities.SpecifyTop2Strength.Controllers.Step3 = P(CS.Activities.Controller
 
             this.activity.model.account.data.strengths[1].specify.strengthForPosition = this.$strengthForPositionField.val().trim();
 
-            this.postData(function () {
-                this.navigateTo(this.activity.outroController.route);
-            }.bind(this));
+            this.postData();
         }
     };
 });

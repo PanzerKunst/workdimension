@@ -12,8 +12,8 @@ CS.Controllers.Index = P(CS.Controllers.OnePageWebapp, function (c, base) {
         CS.Controllers.RegisterReminder();
 
         this._initElements();
-        this._initHeaderLinks();
-        this._initActivityTabText();
+        this.initHeaderLinks();
+        this.initActivityTabText();
         this._initEvents();
 
         this._initRouter();
@@ -29,7 +29,7 @@ CS.Controllers.Index = P(CS.Controllers.OnePageWebapp, function (c, base) {
         this.$standoutsTab = this.$headerNav.find("#standouts-tab");
 
         this.$headerAlerts = $("#header-alerts");
-        this.$welcomeAlert = this.$headerAlerts.children("#welcome-alert");
+        this.$welcomePanel = this.$headerAlerts.children("#welcome-panel");
         this.$introToActivitiesAlert = this.$headerAlerts.children("#intro-to-activities-alert");
 
         this.$tabPanels = $('[role="tabpanel"]');
@@ -42,8 +42,8 @@ CS.Controllers.Index = P(CS.Controllers.OnePageWebapp, function (c, base) {
         this.$standoutListSection = this.$standoutsPanel.children("#standout-list");
         this.$standoutDetailSection = this.$standoutsPanel.children("#standout-detail");
 
-        this._displayWelcomeAlertIfNeeded();
-        this._displayIntroToActivitiesAlertIfNeeded();
+        this.initWelcomePanel();
+        this.initIntroToActivitiesAlert();
     };
 
     c._initEvents = function () {
@@ -60,30 +60,37 @@ CS.Controllers.Index = P(CS.Controllers.OnePageWebapp, function (c, base) {
         this.$introToActivitiesAlert.on('close.bs.alert', $.proxy(this._onIntroToActivitiesAlertClose, this));
     };
 
-    c._initHeaderLinks = function () {
+    c.initHeaderLinks = function () {
         if (this.isTemporaryAccount()) {
             this.$headerLinks.show();
             this.$signOutLink.hide();
         } else {
+            this.$headerLinks.hide();
             this.$signOutLink.show();
         }
     };
 
-    c._initActivityTabText = function() {
-        if (!CS.account.data || !CS.account.data.Employer || !CS.account.data.Position) {
+    c.initActivityTabText = function() {
+        if (CS.account.data && CS.account.data.Employer && CS.account.data.Position) {
+            this.$activitiesTab.html("Aktiviteter");
+        } else {
             this.$activitiesTab.html("Din ansökan");
         }
     };
 
-    c._displayWelcomeAlertIfNeeded = function () {
-        if (!CS.account.data || !CS.account.data.Employer || !CS.account.data.Position) {
-            CS.Services.Animator.fadeIn(this.$welcomeAlert);
+    c.initWelcomePanel = function () {
+        if (CS.account.data && CS.account.data.Employer && CS.account.data.Position) {
+            CS.Services.Animator.fadeOut(this.$welcomePanel);
+        } else {
+            CS.Services.Animator.fadeIn(this.$welcomePanel);
         }
     };
 
-    c._displayIntroToActivitiesAlertIfNeeded = function () {
+    c.initIntroToActivitiesAlert = function () {
         if (CS.account.data && CS.account.data.Employer && CS.account.data.Position && !this.getFromLocalStorage("is-intro-to-activities-alert-closed")) {
             CS.Services.Animator.fadeIn(this.$introToActivitiesAlert);
+        } else {
+            CS.Services.Animator.fadeOut(this.$introToActivitiesAlert);
         }
     };
 

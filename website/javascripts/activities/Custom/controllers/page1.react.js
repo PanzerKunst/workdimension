@@ -48,7 +48,9 @@ CS.Activities.Custom.Controllers.Page1 = P(CS.Activities.Controller, function (c
 
             this.activity.model.account.data.custom[this.activity.model.className] = this.$textarea.val().trim();
 
-            this.postData();
+            this.postData(function () {
+                this.navigateTo("insights");
+            }.bind(this));
         }
     };
 });

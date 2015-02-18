@@ -29,3 +29,4 @@ CS.router = new Grapnel();
 CS.defaultAnimationDuration = 0.5;
 CS.activityFeedController = null;
 CS.undoneC1sAndActivities = [];
+CS.indexController = null;

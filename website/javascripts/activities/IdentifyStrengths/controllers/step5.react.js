@@ -78,8 +78,6 @@ CS.Activities.IdentifyStrengths.Controllers.Step5 = P(CS.Activities.Controller, 
     c._handleSubmit = function (e) {
         this.$submitBtn.button('loading');
 
-        this.postData(function () {
-            this.navigateTo(this.activity.outroController.route);
-        }.bind(this));
+        this.postData();
     };
 });
