@@ -3,6 +3,9 @@ CS.Activities.Controller = P(CS.Controllers.OnePageWebapp, function (c, base) {
         this.route = route;
         this.activity = activity;
         this.activity.registerController(this, this.route);
+
+        this.$window = $(window);
+        this.$content = $("#content");
     };
 
     c.render = function () {
@@ -28,6 +31,8 @@ CS.Activities.Controller = P(CS.Controllers.OnePageWebapp, function (c, base) {
 
         TweenLite.set(this.$el, {display: "block", alpha: 0});
         TweenLite.to(this.$el, CS.Activities.Base.pageAnimationDuration, {alpha: 1});
+
+        this.$window.scrollTop(this.$content.offset().top);
     };
 
     c.postData = function (callback) {

@@ -114,6 +114,8 @@ CS.Activities.IdentifyStrengths.Controllers.Outro = P(CS.Activities.Controller, 
         },
 
         render: function () {
+            var reactKey = this.state.nextActivity ? this.state.nextActivity.getClassName() : _.uniqueId();
+
             return (
                 React.createElement("div", null, 
                     React.createElement("h3", null, "De här egenskaperna sparas ner till dina samlade insikter så du kan börja definiera dem närmre."), 
@@ -140,7 +142,7 @@ CS.Activities.IdentifyStrengths.Controllers.Outro = P(CS.Activities.Controller, 
                         )
                     ), 
 
-                    React.createElement(CS.Activities.Controller.NextStep, {key: this.state.nextActivity.getClassName(), activity: this.state.nextActivity})
+                    React.createElement(CS.Activities.Controller.NextStep, {key: reactKey, activity: this.state.nextActivity})
                 )
                 );
         }
@@ -789,6 +791,8 @@ CS.Activities.SpecifyTop1Strength.Controllers.Outro = P(CS.Activities.Controller
         },
 
         render: function () {
+            var reactKey = this.state.nextActivity ? this.state.nextActivity.getClassName() : _.uniqueId();
+
             return (
                 React.createElement("div", null, 
                     React.createElement("p", {className: "well"}, "Jättebra! Du har nu definierat hur just du är ", React.createElement("strong", null, this.state.strengthName), " och vilket värde det har för jobbet du söker."), 
@@ -801,7 +805,7 @@ CS.Activities.SpecifyTop1Strength.Controllers.Outro = P(CS.Activities.Controller
 
                     React.createElement("p", {className: "well", dangerouslySetInnerHTML: {__html: this.state.strengthForPosition}}), 
 
-                    React.createElement(CS.Activities.Controller.NextStep, {key: this.state.nextActivity.getClassName(), activity: this.state.nextActivity})
+                    React.createElement(CS.Activities.Controller.NextStep, {key: reactKey, activity: this.state.nextActivity})
                 )
                 );
         }
@@ -1086,6 +1090,8 @@ CS.Activities.SpecifyTop2Strength.Controllers.Outro = P(CS.Activities.Controller
         },
 
         render: function () {
+            var reactKey = this.state.nextActivity ? this.state.nextActivity.getClassName() : _.uniqueId();
+
             return (
                 React.createElement("div", null, 
                     React.createElement("p", {className: "well"}, "Jättebra! Du har nu definierat hur just du är ", React.createElement("strong", null, this.state.strengthName), " och vilket värde det har för jobbet du söker."), 
@@ -1098,7 +1104,7 @@ CS.Activities.SpecifyTop2Strength.Controllers.Outro = P(CS.Activities.Controller
 
                     React.createElement("p", {className: "well", dangerouslySetInnerHTML: {__html: this.state.strengthForPosition}}), 
 
-                    React.createElement(CS.Activities.Controller.NextStep, {key: this.state.nextActivity.getClassName(), activity: this.state.nextActivity})
+                    React.createElement(CS.Activities.Controller.NextStep, {key: reactKey, activity: this.state.nextActivity})
                 )
                 );
         }
@@ -1383,6 +1389,8 @@ CS.Activities.SpecifyTop3Strength.Controllers.Outro = P(CS.Activities.Controller
         },
 
         render: function () {
+            var reactKey = this.state.nextActivity ? this.state.nextActivity.getClassName() : _.uniqueId();
+
             return (
                 React.createElement("div", null, 
                     React.createElement("p", {className: "well"}, "Jättebra! Du har nu definierat hur just du är ", React.createElement("strong", null, this.state.strengthName), " och vilket värde det har för jobbet du söker."), 
@@ -1395,7 +1403,7 @@ CS.Activities.SpecifyTop3Strength.Controllers.Outro = P(CS.Activities.Controller
 
                     React.createElement("p", {className: "well", dangerouslySetInnerHTML: {__html: this.state.strengthForPosition}}), 
 
-                    React.createElement(CS.Activities.Controller.NextStep, {key: this.state.nextActivity.getClassName(), activity: this.state.nextActivity})
+                    React.createElement(CS.Activities.Controller.NextStep, {key: reactKey, activity: this.state.nextActivity})
                 )
                 );
         }

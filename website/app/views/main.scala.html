@@ -47,12 +47,23 @@
         <script src="@routes.Assets.at("main.js")"></script>
 
         <script type="text/javascript">
+            CS.Services.Browser.addUserAgentAttributeToHtmlTag();
+
             // FastClick init
             window.addEventListener('load', function() {
                 FastClick.attach(document.body);
             }, false);
 
-            CS.Browser.addUserAgentAttributeToHtmlTag();
+            // HotJar
+            /* TODO
+            (function(f,b){
+                var c;
+                f.hj=f.hj||function(){(f.hj.q=f.hj.q||[]).push(arguments)};
+                f._hjSettings={hjid:19422, hjsv:3};
+                c=b.createElement("script");c.async=1;
+                c.src="//static.hotjar.com/c/hotjar-19422.js?sv=3";
+                b.getElementsByTagName("head")[0].appendChild(c);
+            })(window,document); */
         </script>
 
         @javascript

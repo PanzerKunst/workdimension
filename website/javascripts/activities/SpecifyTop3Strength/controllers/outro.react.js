@@ -10,6 +10,8 @@ CS.Activities.SpecifyTop3Strength.Controllers.Outro = P(CS.Activities.Controller
         },
 
         render: function () {
+            var reactKey = this.state.nextActivity ? this.state.nextActivity.getClassName() : _.uniqueId();
+
             return (
                 <div>
                     <p className="well">Jättebra! Du har nu definierat hur just du är <strong>{this.state.strengthName}</strong> och vilket värde det har för jobbet du söker.</p>
@@ -22,7 +24,7 @@ CS.Activities.SpecifyTop3Strength.Controllers.Outro = P(CS.Activities.Controller
 
                     <p className="well" dangerouslySetInnerHTML={{__html: this.state.strengthForPosition}} />
 
-                    <CS.Activities.Controller.NextStep key={this.state.nextActivity.getClassName()} activity={this.state.nextActivity}/>
+                    <CS.Activities.Controller.NextStep key={reactKey} activity={this.state.nextActivity}/>
                 </div>
                 );
         }

@@ -24,6 +24,12 @@
 <!--
     Javascript
 -->
+<!-- LinkedIn -->
+<script type="text/javascript" src="//platform.linkedin.com/in.js">
+    api_key: 78w7zhq4cqqphu
+    onLoad: CS.Controllers.SignInWithLinkedIn
+</script>
+
 <script type="text/javascript">
     document.addEventListener("DOMContentLoaded", function () {
         CS.indexController = CS.Controllers.Index(@accountId,
@@ -32,5 +38,4 @@
         )
     });
 </script>
-
 }

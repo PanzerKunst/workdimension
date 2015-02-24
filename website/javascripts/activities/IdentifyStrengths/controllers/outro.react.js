@@ -9,6 +9,8 @@ CS.Activities.IdentifyStrengths.Controllers.Outro = P(CS.Activities.Controller, 
         },
 
         render: function () {
+            var reactKey = this.state.nextActivity ? this.state.nextActivity.getClassName() : _.uniqueId();
+
             return (
                 <div>
                     <h3>De här egenskaperna sparas ner till dina samlade insikter så du kan börja definiera dem närmre.</h3>
@@ -35,7 +37,7 @@ CS.Activities.IdentifyStrengths.Controllers.Outro = P(CS.Activities.Controller, 
                         </ul>
                     </div>
 
-                    <CS.Activities.Controller.NextStep key={this.state.nextActivity.getClassName()} activity={this.state.nextActivity}/>
+                    <CS.Activities.Controller.NextStep key={reactKey} activity={this.state.nextActivity}/>
                 </div>
                 );
         }

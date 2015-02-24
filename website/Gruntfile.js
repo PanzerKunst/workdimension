@@ -92,6 +92,7 @@ module.exports = function (grunt) {
                     "javascripts/controllers/header/registerHeaderModal.js",
                     "javascripts/controllers/header/signInHeaderModal.js",
                     "javascripts/controllers/header/registerReminder.js",
+                    "javascripts/controllers/header/signInWithLinkedIn.js",
                     "javascripts/controllers/customActivity.js",
 
                     // React

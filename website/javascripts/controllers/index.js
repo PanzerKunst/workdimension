@@ -58,11 +58,11 @@ CS.Controllers.Index = P(CS.Controllers.OnePageWebapp, function (c, base) {
 
     c.initHeaderLinks = function () {
         if (this.isTemporaryAccount()) {
-            this.$headerLinks.show();
+            this.$headerLinks.css("display", "inline-block");
             this.$signOutLink.hide();
         } else {
             this.$headerLinks.hide();
-            this.$signOutLink.show();
+            this.$signOutLink.show("display", "inline-block");
         }
     };
 
@@ -144,4 +144,3 @@ CS.Controllers.Index = P(CS.Controllers.OnePageWebapp, function (c, base) {
         });
     };
 });
-

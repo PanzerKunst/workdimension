@@ -4991,7 +4991,8 @@ html {
 body {
   min-height: 100%;
   font-family: "Lato", sans-serif;
-  -webkit-font-smoothing: antialiased; }
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale; }
 
 h1,
 h2,
@@ -5380,6 +5381,49 @@ h6, .h6 {
     #header-links > a:visited, #header-links > a:hover, #header-links > a:focus {
       color: white; }
 
+.sign-in-with-linked-in {
+  font: 0/0 a;
+  color: transparent;
+  text-shadow: none;
+  background-color: transparent;
+  border: 0;
+  background-image: url("images/sprite.png");
+  background-color: transparent;
+  background-position: 0 0;
+  width: 146px;
+  height: 21px; }
+  @media only screen and (-webkit-min-device-pixel-ratio: 1.3), only screen and (min--moz-device-pixel-ratio: 1.3), only screen and (-o-min-device-pixel-ratio: 1.3 / 1), only screen and (min-resolution: 125dpi), only screen and (min-resolution: 1.3dppx) {
+    .sign-in-with-linked-in {
+      background-image: url("images/sprite_2x.png");
+      background-size: 1000px 250px; } }
+  @media only screen and (-webkit-min-device-pixel-ratio: 1.3), only screen and (min--moz-device-pixel-ratio: 1.3), only screen and (-o-min-device-pixel-ratio: 1.3 / 1), only screen and (min-resolution: 125dpi), only screen and (min-resolution: 1.3dppx) {
+    .sign-in-with-linked-in {
+      background-position: 0 0; } }
+  @media screen and (min-width: 640px) {
+    .sign-in-with-linked-in {
+      background-image: url("images/sprite.png");
+      background-color: transparent;
+      background-position: -300px 0;
+      width: 215px;
+      height: 41px; } }
+  @media only screen and (min-width: 640px) and (-webkit-min-device-pixel-ratio: 1.3), only screen and (min-width: 640px) and (min--moz-device-pixel-ratio: 1.3), only screen and (min-width: 640px) and (-o-min-device-pixel-ratio: 1.3 / 1), only screen and (min-width: 640px) and (min-resolution: 125dpi), only screen and (min-width: 640px) and (min-resolution: 1.3dppx) {
+    .sign-in-with-linked-in {
+      background-image: url("images/sprite_2x.png");
+      background-size: 1000px 250px; } }
+  @media only screen and (min-width: 640px) and (-webkit-min-device-pixel-ratio: 1.3), only screen and (min-width: 640px) and (min--moz-device-pixel-ratio: 1.3), only screen and (min-width: 640px) and (-o-min-device-pixel-ratio: 1.3 / 1), only screen and (min-width: 640px) and (min-resolution: 125dpi), only screen and (min-width: 640px) and (min-resolution: 1.3dppx) {
+    .sign-in-with-linked-in {
+      background-position: -150px 0; } }
+
+#modal form > .centered-contents > p {
+  font-style: italic;
+  font-weight: bold;
+  margin-top: 15px; }
+  @media screen and (min-width: 640px) {
+    #modal form > .centered-contents > p {
+      margin-top: 19.5px; } }
+  @media screen and (min-width: 960px) {
+    #modal form > .centered-contents > p {
+      margin-bottom: 24px; } }
 #modal form .form-group {
   float: none;
   width: 100%;

@@ -69,9 +69,9 @@ CS.Services.Validator = P(function (c) {
     c.showErrorMessage = function ($errorMsg) {
         if ($errorMsg.html()) {
             var height = this.errorMessageHeight;
-            if (CS.Browser.isMediumScreen()) {
+            if (CS.Services.Browser.isMediumScreen()) {
                 height = this.errorMessageHeightMediumScreen;
-            } else if (CS.Browser.isLargeScreen()) {
+            } else if (CS.Services.Browser.isLargeScreen()) {
                 height = this.errorMessageHeightLargeScreen;
             }
 
