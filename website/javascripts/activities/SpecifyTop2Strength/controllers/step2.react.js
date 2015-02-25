@@ -1,4 +1,4 @@
-CS.Activities.SpecifyTop2Strength.Controllers.Step2 = P(CS.Activities.Controller, function (c, base) {
+CS.Activities.SpecifyTop2Strength.Controllers.Step2 = P(CS.Activities.Controller, function (c) {
     c.reactClass = React.createClass({
         getInitialState: function () {
             return {whatItMeans: null};

@@ -39,15 +39,15 @@ CS.Activities.Controller.NextStep = React.createClass({
             );
     },
 
-    _navigateBack: function (e) {
+    _navigateBack: function () {
         history.back();
     },
 
-    _launchNextActivity: function (e) {
+    _launchNextActivity: function () {
         location.hash = "activities/" + this.props.activity.getClassName();
     },
 
-    _navigateToInsights: function (e) {
+    _navigateToInsights: function () {
         location.hash = "insights";
     }
 });

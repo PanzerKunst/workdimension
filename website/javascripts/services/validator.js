@@ -21,9 +21,9 @@ CS.Services.Validator = P(function (c) {
         for (var i = 0; i < this.fieldIds.length; i++) {
             var $field = $("#" + this.fieldIds[i]);
 
-            if ($field.hasClass("pills"))
+            if ($field.hasClass("pills")) {
                 this._addClickEvents($field);
-            else {
+            } else {
                 this._addBlurEvent($field);
                 this._addValueChangedEvent($field);
             }
@@ -162,8 +162,9 @@ CS.Services.Validator = P(function (c) {
     };
 
     c._isEmail = function (email) {
-        if (email === "")
+        if (email === "") {
             return true;
+        }
 
         var reg = /^([a-z0-9_\-\.])+\@([a-z0-9_\-\.])+\.([a-z]{2,4})$/i;
         return reg.test(email);
@@ -190,14 +191,18 @@ CS.Services.Validator = P(function (c) {
     };
 
     c._isMinLength = function (value, minLength) {
-        if (value === null || value === undefined || value === "")
+        if (value === null || value === undefined || value === "") {
             return true;
+        }
+
         return value.length >= minLength;
     };
 
     c._isMaxLength = function (value, maxLength) {
-        if (value === null || value === undefined || value === "")
+        if (value === null || value === undefined || value === "") {
             return true;
+        }
+
         return value.length <= maxLength;
     };
 

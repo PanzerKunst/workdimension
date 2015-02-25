@@ -252,19 +252,7 @@ window.Breakpoints = (function (window, document) {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  * ========================================================= */
-!function(a,b){if("function"==typeof define&&define.amd)define(["jquery"],b);else if("object"==typeof module&&module.exports){var c;try{c=require("jquery")}catch(d){c=null}module.exports=b(c)}else a.Slider=b(a.jQuery)}(this,function(a){var b;return function(a){"use strict";function b(){}function c(a){function c(b){b.prototype.option||(b.prototype.option=function(b){a.isPlainObject(b)&&(this.options=a.extend(!0,this.options,b))})}function e(b,c){a.fn[b]=function(e){if("string"==typeof e){for(var g=d.call(arguments,1),h=0,i=this.length;i>h;h++){var j=this[h],k=a.data(j,b);if(k)if(a.isFunction(k[e])&&"_"!==e.charAt(0)){var l=k[e].apply(k,g);if(void 0!==l&&l!==k)return l}else f("no such method '"+e+"' for "+b+" instance");else f("cannot call methods on "+b+" prior to initialization; attempted to call '"+e+"'")}return this}var m=this.map(function(){var d=a.data(this,b);return d?(d.option(e),d._init()):(d=new c(this,e),a.data(this,b,d)),a(this)});return!m||m.length>1?m:m[0]}}if(a){var f="undefined"==typeof console?b:function(a){console.error(a)};return a.bridget=function(a,b){c(b),e(a,b)},a.bridget}}var d=Array.prototype.slice;c(a)}(a),function(a){function c(b,c){function d(a,b){var c="data-slider-"+b,d=a.getAttribute(c);try{return JSON.parse(d)}catch(e){return d}}"string"==typeof b?this.element=document.querySelector(b):b instanceof HTMLElement&&(this.element=b),c=c?c:{};for(var e=Object.keys(this.defaultOptions),f=0;f<e.length;f++){var g=e[f],h=c[g];h="undefined"!=typeof h?h:d(this.element,g),h=null!==h?h:this.defaultOptions[g],this.options||(this.options={}),this.options[g]=h}var i,j,k,l,m,n=this.element.style.width,o=!1,p=this.element.parentNode;if(this.sliderElem)o=!0;else{this.sliderElem=document.createElement("div"),this.sliderElem.className="slider";var q=document.createElement("div");if(q.className="slider-track",j=document.createElement("div"),j.className="slider-track-left",i=document.createElement("div"),i.className="slider-selection",k=document.createElement("div"),k.className="slider-track-right",l=document.createElement("div"),l.className="slider-handle min-slider-handle",m=document.createElement("div"),m.className="slider-handle max-slider-handle",q.appendChild(j),q.appendChild(i),q.appendChild(k),this.ticks=[],this.options.ticks instanceof Array&&this.options.ticks.length>0)for(f=0;f<this.options.ticks.length;f++){var r=document.createElement("div");r.className="slider-tick",this.ticks.push(r),q.appendChild(r)}if(q.appendChild(l),q.appendChild(m),this.tickLabels=[],this.options.ticks_labels instanceof Array&&this.options.ticks_labels.length>0)for(this.tickLabelContainer=document.createElement("div"),this.tickLabelContainer.className="slider-tick-label-container",f=0;f<this.options.ticks_labels.length;f++){var s=document.createElement("div");s.className="slider-tick-label",s.innerHTML=this.options.ticks_labels[f],this.tickLabels.push(s),this.tickLabelContainer.appendChild(s)}var t=function(a){var b=document.createElement("div");b.className="tooltip-arrow";var c=document.createElement("div");c.className="tooltip-inner",a.appendChild(b),a.appendChild(c)},u=document.createElement("div");u.className="tooltip tooltip-main",t(u);var v=document.createElement("div");v.className="tooltip tooltip-min",t(v);var w=document.createElement("div");w.className="tooltip tooltip-max",t(w),this.sliderElem.appendChild(q),this.sliderElem.appendChild(u),this.sliderElem.appendChild(v),this.sliderElem.appendChild(w),this.tickLabelContainer&&this.sliderElem.appendChild(this.tickLabelContainer),p.insertBefore(this.sliderElem,this.element),this.element.style.display="none"}if(a&&(this.$element=a(this.element),this.$sliderElem=a(this.sliderElem)),this.eventToCallbackMap={},this.sliderElem.id=this.options.id,this.touchCapable="ontouchstart"in window||window.DocumentTouch&&document instanceof window.DocumentTouch,this.tooltip=this.sliderElem.querySelector(".tooltip-main"),this.tooltipInner=this.tooltip.querySelector(".tooltip-inner"),this.tooltip_min=this.sliderElem.querySelector(".tooltip-min"),this.tooltipInner_min=this.tooltip_min.querySelector(".tooltip-inner"),this.tooltip_max=this.sliderElem.querySelector(".tooltip-max"),this.tooltipInner_max=this.tooltip_max.querySelector(".tooltip-inner"),o===!0&&(this._removeClass(this.sliderElem,"slider-horizontal"),this._removeClass(this.sliderElem,"slider-vertical"),this._removeClass(this.tooltip,"hide"),this._removeClass(this.tooltip_min,"hide"),this._removeClass(this.tooltip_max,"hide"),["left","top","width","height"].forEach(function(a){this._removeProperty(this.trackLeft,a),this._removeProperty(this.trackSelection,a),this._removeProperty(this.trackRight,a)},this),[this.handle1,this.handle2].forEach(function(a){this._removeProperty(a,"left"),this._removeProperty(a,"top")},this),[this.tooltip,this.tooltip_min,this.tooltip_max].forEach(function(a){this._removeProperty(a,"left"),this._removeProperty(a,"top"),this._removeProperty(a,"margin-left"),this._removeProperty(a,"margin-top"),this._removeClass(a,"right"),this._removeClass(a,"top")},this)),"vertical"===this.options.orientation?(this._addClass(this.sliderElem,"slider-vertical"),this.stylePos="top",this.mousePos="pageY",this.sizePos="offsetHeight",this._addClass(this.tooltip,"right"),this.tooltip.style.left="100%",this._addClass(this.tooltip_min,"right"),this.tooltip_min.style.left="100%",this._addClass(this.tooltip_max,"right"),this.tooltip_max.style.left="100%"):(this._addClass(this.sliderElem,"slider-horizontal"),this.sliderElem.style.width=n,this.options.orientation="horizontal",this.stylePos="left",this.mousePos="pageX",this.sizePos="offsetWidth",this._addClass(this.tooltip,"top"),this.tooltip.style.top=-this.tooltip.outerHeight-14+"px",this._addClass(this.tooltip_min,"top"),this.tooltip_min.style.top=-this.tooltip_min.outerHeight-14+"px",this._addClass(this.tooltip_max,"top"),this.tooltip_max.style.top=-this.tooltip_max.outerHeight-14+"px"),this.options.ticks instanceof Array&&this.options.ticks.length>0&&(this.options.max=Math.max.apply(Math,this.options.ticks),this.options.min=Math.min.apply(Math,this.options.ticks)),this.options.value instanceof Array?this.options.range=!0:this.options.range&&(this.options.value=[this.options.value,this.options.max]),this.trackLeft=j||this.trackLeft,this.trackSelection=i||this.trackSelection,this.trackRight=k||this.trackRight,"none"===this.options.selection&&(this._addClass(this.trackLeft,"hide"),this._addClass(this.trackSelection,"hide"),this._addClass(this.trackRight,"hide")),this.handle1=l||this.handle1,this.handle2=m||this.handle2,o===!0)for(this._removeClass(this.handle1,"round triangle"),this._removeClass(this.handle2,"round triangle hide"),f=0;f<this.ticks.length;f++)this._removeClass(this.ticks[f],"round triangle hide");var x=["round","triangle","custom"],y=-1!==x.indexOf(this.options.handle);if(y)for(this._addClass(this.handle1,this.options.handle),this._addClass(this.handle2,this.options.handle),f=0;f<this.ticks.length;f++)this._addClass(this.ticks[f],this.options.handle);this.offset=this._offset(this.sliderElem),this.size=this.sliderElem[this.sizePos],this.setValue(this.options.value),this.handle1Keydown=this._keydown.bind(this,0),this.handle1.addEventListener("keydown",this.handle1Keydown,!1),this.handle2Keydown=this._keydown.bind(this,1),this.handle2.addEventListener("keydown",this.handle2Keydown,!1),this.touchCapable?(this.mousedown=this._mousedown.bind(this),this.sliderElem.addEventListener("touchstart",this.mousedown,!1)):(this.mousedown=this._mousedown.bind(this),this.sliderElem.addEventListener("mousedown",this.mousedown,!1)),"hide"===this.options.tooltip?(this._addClass(this.tooltip,"hide"),this._addClass(this.tooltip_min,"hide"),this._addClass(this.tooltip_max,"hide")):"always"===this.options.tooltip?(this._showTooltip(),this._alwaysShowTooltip=!0):(this.showTooltip=this._showTooltip.bind(this),this.hideTooltip=this._hideTooltip.bind(this),this.sliderElem.addEventListener("mouseenter",this.showTooltip,!1),this.sliderElem.addEventListener("mouseleave",this.hideTooltip,!1),this.handle1.addEventListener("focus",this.showTooltip,!1),this.handle1.addEventListener("blur",this.hideTooltip,!1),this.handle2.addEventListener("focus",this.showTooltip,!1),this.handle2.addEventListener("blur",this.hideTooltip,!1)),this.options.enabled?this.enable():this.disable()}var d={formatInvalidInputErrorMsg:function(a){return"Invalid input value '"+a+"' passed in"},callingContextNotSliderInstance:"Calling context element does not have instance of Slider bound to it. Check your code to make sure the JQuery object returned from the call to the slider() initializer is calling the method"};if(b=function(a,b){return c.call(this,a,b),this},b.prototype={_init:function(){},constructor:b,defaultOptions:{id:"",min:0,max:10,step:1,precision:0,orientation:"horizontal",value:5,range:!1,selection:"before",tooltip:"show",tooltip_split:!1,handle:"round",reversed:!1,enabled:!0,formatter:function(a){return a instanceof Array?a[0]+" : "+a[1]:a},natural_arrow_keys:!1,ticks:[],ticks_labels:[],ticks_snap_bounds:0},over:!1,inDrag:!1,getValue:function(){return this.options.range?this.options.value:this.options.value[0]},setValue:function(a,b){a||(a=0);var c=this.getValue();this.options.value=this._validateInputValue(a);var d=this._applyPrecision.bind(this);this.options.range?(this.options.value[0]=d(this.options.value[0]),this.options.value[1]=d(this.options.value[1]),this.options.value[0]=Math.max(this.options.min,Math.min(this.options.max,this.options.value[0])),this.options.value[1]=Math.max(this.options.min,Math.min(this.options.max,this.options.value[1]))):(this.options.value=d(this.options.value),this.options.value=[Math.max(this.options.min,Math.min(this.options.max,this.options.value))],this._addClass(this.handle2,"hide"),this.options.value[1]="after"===this.options.selection?this.options.max:this.options.min),this.diff=this.options.max-this.options.min,this.percentage=this.diff>0?[100*(this.options.value[0]-this.options.min)/this.diff,100*(this.options.value[1]-this.options.min)/this.diff,100*this.options.step/this.diff]:[0,0,100],this._layout();var e=this.options.range?this.options.value:this.options.value[0];return b===!0&&this._trigger("slide",e),c!==e&&this._trigger("change",{oldValue:c,newValue:e}),this._setDataVal(e),this},destroy:function(){this._removeSliderEventHandlers(),this.sliderElem.parentNode.removeChild(this.sliderElem),this.element.style.display="",this._cleanUpEventCallbacksMap(),this.element.removeAttribute("data"),a&&(this._unbindJQueryEventHandlers(),this.$element.removeData("slider"))},disable:function(){return this.options.enabled=!1,this.handle1.removeAttribute("tabindex"),this.handle2.removeAttribute("tabindex"),this._addClass(this.sliderElem,"slider-disabled"),this._trigger("slideDisabled"),this},enable:function(){return this.options.enabled=!0,this.handle1.setAttribute("tabindex",0),this.handle2.setAttribute("tabindex",0),this._removeClass(this.sliderElem,"slider-disabled"),this._trigger("slideEnabled"),this},toggle:function(){return this.options.enabled?this.disable():this.enable(),this},isEnabled:function(){return this.options.enabled},on:function(b,c){return a?(this.$element.on(b,c),this.$sliderElem.on(b,c)):this._bindNonQueryEventHandler(b,c),this},getAttribute:function(a){return a?this.options[a]:this.options},setAttribute:function(a,b){return this.options[a]=b,this},refresh:function(){return this._removeSliderEventHandlers(),c.call(this,this.element,this.options),a&&a.data(this.element,"slider",this),this},relayout:function(){return this._layout(),this},_removeSliderEventHandlers:function(){this.handle1.removeEventListener("keydown",this.handle1Keydown,!1),this.handle1.removeEventListener("focus",this.showTooltip,!1),this.handle1.removeEventListener("blur",this.hideTooltip,!1),this.handle2.removeEventListener("keydown",this.handle2Keydown,!1),this.handle2.removeEventListener("focus",this.handle2Keydown,!1),this.handle2.removeEventListener("blur",this.handle2Keydown,!1),this.sliderElem.removeEventListener("mouseenter",this.showTooltip,!1),this.sliderElem.removeEventListener("mouseleave",this.hideTooltip,!1),this.sliderElem.removeEventListener("touchstart",this.mousedown,!1),this.sliderElem.removeEventListener("mousedown",this.mousedown,!1)},_bindNonQueryEventHandler:function(a,b){void 0===this.eventToCallbackMap[a]&&(this.eventToCallbackMap[a]=[]),this.eventToCallbackMap[a].push(b)},_cleanUpEventCallbacksMap:function(){for(var a=Object.keys(this.eventToCallbackMap),b=0;b<a.length;b++){var c=a[b];this.eventToCallbackMap[c]=null}},_showTooltip:function(){this.options.tooltip_split===!1?this._addClass(this.tooltip,"in"):(this._addClass(this.tooltip_min,"in"),this._addClass(this.tooltip_max,"in")),this.over=!0},_hideTooltip:function(){this.inDrag===!1&&this.alwaysShowTooltip!==!0&&(this._removeClass(this.tooltip,"in"),this._removeClass(this.tooltip_min,"in"),this._removeClass(this.tooltip_max,"in")),this.over=!1},_layout:function(){var a;if(a=this.options.reversed?[100-this.percentage[0],this.percentage[1]]:[this.percentage[0],this.percentage[1]],this.handle1.style[this.stylePos]=a[0]+"%",this.handle2.style[this.stylePos]=a[1]+"%",this.options.ticks instanceof Array&&this.options.ticks.length>0){var b=Math.max.apply(Math,this.options.ticks),c=Math.min.apply(Math,this.options.ticks),d="vertical"===this.options.orientation?"height":"width",e="vertical"===this.options.orientation?"margin-top":"margin-left",f=this.size/(this.options.ticks.length-1);if(this.tickLabelContainer&&(this.tickLabelContainer.style[e]=-f/2+"px","horizontal"===this.options.orientation)){var g=this.tickLabelContainer.offsetHeight-this.sliderElem.offsetHeight;this.sliderElem.style.marginBottom=g+"px"}for(var h=0;h<this.options.ticks.length;h++){var i=100*(this.options.ticks[h]-c)/(b-c);this.ticks[h].style[this.stylePos]=i+"%",this._removeClass(this.ticks[h],"in-selection"),i<=a[0]&&!this.options.range?this._addClass(this.ticks[h],"in-selection"):i>=a[0]&&i<=a[1]&&this._addClass(this.ticks[h],"in-selection"),this.tickLabels[h]&&(this.tickLabels[h].style[d]=f+"px")}}if("vertical"===this.options.orientation)this.trackLeft.style.top="0",this.trackLeft.style.height=Math.min(a[0],a[1])+"%",this.trackSelection.style.top=Math.min(a[0],a[1])+"%",this.trackSelection.style.height=Math.abs(a[0]-a[1])+"%",this.trackRight.style.bottom="0",this.trackRight.style.height=100-Math.min(a[0],a[1])-Math.abs(a[0]-a[1])+"%";else{this.trackLeft.style.left="0",this.trackLeft.style.width=Math.min(a[0],a[1])+"%",this.trackSelection.style.left=Math.min(a[0],a[1])+"%",this.trackSelection.style.width=Math.abs(a[0]-a[1])+"%",this.trackRight.style.right="0",this.trackRight.style.width=100-Math.min(a[0],a[1])-Math.abs(a[0]-a[1])+"%";var j=this.tooltip_min.getBoundingClientRect(),k=this.tooltip_max.getBoundingClientRect();j.right>k.left?(this._removeClass(this.tooltip_max,"top"),this._addClass(this.tooltip_max,"bottom"),this.tooltip_max.style.top="18px"):(this._removeClass(this.tooltip_max,"bottom"),this._addClass(this.tooltip_max,"top"),this.tooltip_max.style.top=this.tooltip_min.style.top)}var l;if(this.options.range){l=this.options.formatter(this.options.value),this._setText(this.tooltipInner,l),this.tooltip.style[this.stylePos]=(a[1]+a[0])/2+"%","vertical"===this.options.orientation?this._css(this.tooltip,"margin-top",-this.tooltip.offsetHeight/2+"px"):this._css(this.tooltip,"margin-left",-this.tooltip.offsetWidth/2+"px"),"vertical"===this.options.orientation?this._css(this.tooltip,"margin-top",-this.tooltip.offsetHeight/2+"px"):this._css(this.tooltip,"margin-left",-this.tooltip.offsetWidth/2+"px");var m=this.options.formatter(this.options.value[0]);this._setText(this.tooltipInner_min,m);var n=this.options.formatter(this.options.value[1]);this._setText(this.tooltipInner_max,n),this.tooltip_min.style[this.stylePos]=a[0]+"%","vertical"===this.options.orientation?this._css(this.tooltip_min,"margin-top",-this.tooltip_min.offsetHeight/2+"px"):this._css(this.tooltip_min,"margin-left",-this.tooltip_min.offsetWidth/2+"px"),this.tooltip_max.style[this.stylePos]=a[1]+"%","vertical"===this.options.orientation?this._css(this.tooltip_max,"margin-top",-this.tooltip_max.offsetHeight/2+"px"):this._css(this.tooltip_max,"margin-left",-this.tooltip_max.offsetWidth/2+"px")}else l=this.options.formatter(this.options.value[0]),this._setText(this.tooltipInner,l),this.tooltip.style[this.stylePos]=a[0]+"%","vertical"===this.options.orientation?this._css(this.tooltip,"margin-top",-this.tooltip.offsetHeight/2+"px"):this._css(this.tooltip,"margin-left",-this.tooltip.offsetWidth/2+"px")},_removeProperty:function(a,b){a.style.removeProperty?a.style.removeProperty(b):a.style.removeAttribute(b)},_mousedown:function(a){if(!this.options.enabled)return!1;this._triggerFocusOnHandle(),this.offset=this._offset(this.sliderElem),this.size=this.sliderElem[this.sizePos];var b=this._getPercentage(a);if(this.options.range){var c=Math.abs(this.percentage[0]-b),d=Math.abs(this.percentage[1]-b);this.dragged=d>c?0:1}else this.dragged=0;this.percentage[this.dragged]=this.options.reversed?100-b:b,this._layout(),this.touchCapable&&(document.removeEventListener("touchmove",this.mousemove,!1),document.removeEventListener("touchend",this.mouseup,!1)),this.mousemove&&document.removeEventListener("mousemove",this.mousemove,!1),this.mouseup&&document.removeEventListener("mouseup",this.mouseup,!1),this.mousemove=this._mousemove.bind(this),this.mouseup=this._mouseup.bind(this),this.touchCapable&&(document.addEventListener("touchmove",this.mousemove,!1),document.addEventListener("touchend",this.mouseup,!1)),document.addEventListener("mousemove",this.mousemove,!1),document.addEventListener("mouseup",this.mouseup,!1),this.inDrag=!0;var e=this._calculateValue();return this._trigger("slideStart",e),this._setDataVal(e),this.setValue(e),this._pauseEvent(a),!0},_triggerFocusOnHandle:function(a){0===a&&this.handle1.focus(),1===a&&this.handle2.focus()},_keydown:function(a,b){if(!this.options.enabled)return!1;var c;switch(b.keyCode){case 37:case 40:c=-1;break;case 39:case 38:c=1}if(c){if(this.options.natural_arrow_keys){var d="vertical"===this.options.orientation&&!this.options.reversed,e="horizontal"===this.options.orientation&&this.options.reversed;(d||e)&&(c=-1*c)}var f=c*this.percentage[2],g=this.percentage[a]+f;g>100?g=100:0>g&&(g=0),this.dragged=a,this._adjustPercentageForRangeSliders(g),this.percentage[this.dragged]=g,this._layout();var h=this._calculateValue(!1);return this._trigger("slideStart",h),this._setDataVal(h),this.setValue(h,!0),this._trigger("slideStop",h),this._setDataVal(h),this._pauseEvent(b),!1}},_pauseEvent:function(a){a.stopPropagation&&a.stopPropagation(),a.preventDefault&&a.preventDefault(),a.cancelBubble=!0,a.returnValue=!1},_mousemove:function(a){if(!this.options.enabled)return!1;var b=this._getPercentage(a);this._adjustPercentageForRangeSliders(b),this.percentage[this.dragged]=this.options.reversed?100-b:b,this._layout();var c=this._calculateValue(!0);return this.setValue(c,!0),!1},_adjustPercentageForRangeSliders:function(a){this.options.range&&(0===this.dragged&&this.percentage[1]<a?(this.percentage[0]=this.percentage[1],this.dragged=1):1===this.dragged&&this.percentage[0]>a&&(this.percentage[1]=this.percentage[0],this.dragged=0))},_mouseup:function(){if(!this.options.enabled)return!1;this.touchCapable&&(document.removeEventListener("touchmove",this.mousemove,!1),document.removeEventListener("touchend",this.mouseup,!1)),document.removeEventListener("mousemove",this.mousemove,!1),document.removeEventListener("mouseup",this.mouseup,!1),this.inDrag=!1,this.over===!1&&this._hideTooltip();var a=this._calculateValue(!0);return this._layout(),this._trigger("slideStop",a),this._setDataVal(a),!1},_calculateValue:function(a){var b;if(this.options.range?(b=[this.options.min,this.options.max],0!==this.percentage[0]&&(b[0]=Math.max(this.options.min,this.options.min+Math.round(this.diff*this.percentage[0]/100/this.options.step)*this.options.step),b[0]=this._applyPrecision(b[0])),100!==this.percentage[1]&&(b[1]=Math.min(this.options.max,this.options.min+Math.round(this.diff*this.percentage[1]/100/this.options.step)*this.options.step),b[1]=this._applyPrecision(b[1]))):(b=this.options.min+Math.round(this.diff*this.percentage[0]/100/this.options.step)*this.options.step,b<this.options.min?b=this.options.min:b>this.options.max&&(b=this.options.max),b=parseFloat(b),b=this._applyPrecision(b)),a){for(var c=[b,1/0],d=0;d<this.options.ticks.length;d++){var e=Math.abs(this.options.ticks[d]-b);e<=c[1]&&(c=[this.options.ticks[d],e])}if(c[1]<=this.options.ticks_snap_bounds)return c[0]}return b},_applyPrecision:function(a){var b=this.options.precision||this._getNumDigitsAfterDecimalPlace(this.options.step);return this._applyToFixedAndParseFloat(a,b)},_getNumDigitsAfterDecimalPlace:function(a){var b=(""+a).match(/(?:\.(\d+))?(?:[eE]([+-]?\d+))?$/);return b?Math.max(0,(b[1]?b[1].length:0)-(b[2]?+b[2]:0)):0},_applyToFixedAndParseFloat:function(a,b){var c=a.toFixed(b);return parseFloat(c)},_getPercentage:function(a){!this.touchCapable||"touchstart"!==a.type&&"touchmove"!==a.type||(a=a.touches[0]);var b=100*(a[this.mousePos]-this.offset[this.stylePos])/this.size;return b=Math.round(b/this.percentage[2])*this.percentage[2],Math.max(0,Math.min(100,b))},_validateInputValue:function(a){if("number"==typeof a)return a;if(a instanceof Array)return this._validateArray(a),a;throw new Error(d.formatInvalidInputErrorMsg(a))},_validateArray:function(a){for(var b=0;b<a.length;b++){var c=a[b];if("number"!=typeof c)throw new Error(d.formatInvalidInputErrorMsg(c))}},_setDataVal:function(a){var b="value: '"+a+"'";this.element.setAttribute("data",b),this.element.setAttribute("value",a)},_trigger:function(b,c){c=c||0===c?c:void 0;var d=this.eventToCallbackMap[b];if(d&&d.length)for(var e=0;e<d.length;e++){var f=d[e];f(c)}a&&this._triggerJQueryEvent(b,c)},_triggerJQueryEvent:function(a,b){var c={type:a,value:b};this.$element.trigger(c),this.$sliderElem.trigger(c)},_unbindJQueryEventHandlers:function(){this.$element.off(),this.$sliderElem.off()},_setText:function(a,b){"undefined"!=typeof a.innerText?a.innerText=b:"undefined"!=typeof a.textContent&&(a.textContent=b)},_removeClass:function(a,b){for(var c=b.split(" "),d=a.className,e=0;e<c.length;e++){var f=c[e],g=new RegExp("(?:\\s|^)"+f+"(?:\\s|$)");d=d.replace(g," ")}a.className=d.trim()},_addClass:function(a,b){for(var c=b.split(" "),d=a.className,e=0;e<c.length;e++){var f=c[e],g=new RegExp("(?:\\s|^)"+f+"(?:\\s|$)"),h=g.test(d);h||(d+=" "+f)}a.className=d.trim()},_offset:function(a){var b=0,c=0;if(a.offsetParent)do b+=a.offsetLeft,c+=a.offsetTop;while(a=a.offsetParent);return{left:b,top:c}},_css:function(b,c,d){if(a)a.style(b,c,d);else{var e=c.replace(/^-ms-/,"ms-").replace(/-([\da-z])/gi,function(a,b){return b.toUpperCase()});b.style[e]=d}}},a){var e=a.fn.slider?"bootstrapSlider":"slider";a.bridget(e,b)}}(a),b});;if (typeof String.prototype.startsWith !== 'function') {
-    String.prototype.startsWith = function (str) {
-        return this.slice(0, str.length) === str;
-    };
-}
-
-if (typeof Array.prototype.clone !== 'function') {
-    Array.prototype.clone = function () {
-        return this.slice(0);
-    };
-}
-
-// create the base namespace
+!function(a,b){if("function"==typeof define&&define.amd)define(["jquery"],b);else if("object"==typeof module&&module.exports){var c;try{c=require("jquery")}catch(d){c=null}module.exports=b(c)}else a.Slider=b(a.jQuery)}(this,function(a){var b;return function(a){"use strict";function b(){}function c(a){function c(b){b.prototype.option||(b.prototype.option=function(b){a.isPlainObject(b)&&(this.options=a.extend(!0,this.options,b))})}function e(b,c){a.fn[b]=function(e){if("string"==typeof e){for(var g=d.call(arguments,1),h=0,i=this.length;i>h;h++){var j=this[h],k=a.data(j,b);if(k)if(a.isFunction(k[e])&&"_"!==e.charAt(0)){var l=k[e].apply(k,g);if(void 0!==l&&l!==k)return l}else f("no such method '"+e+"' for "+b+" instance");else f("cannot call methods on "+b+" prior to initialization; attempted to call '"+e+"'")}return this}var m=this.map(function(){var d=a.data(this,b);return d?(d.option(e),d._init()):(d=new c(this,e),a.data(this,b,d)),a(this)});return!m||m.length>1?m:m[0]}}if(a){var f="undefined"==typeof console?b:function(a){console.error(a)};return a.bridget=function(a,b){c(b),e(a,b)},a.bridget}}var d=Array.prototype.slice;c(a)}(a),function(a){function c(b,c){function d(a,b){var c="data-slider-"+b,d=a.getAttribute(c);try{return JSON.parse(d)}catch(e){return d}}"string"==typeof b?this.element=document.querySelector(b):b instanceof HTMLElement&&(this.element=b),c=c?c:{};for(var e=Object.keys(this.defaultOptions),f=0;f<e.length;f++){var g=e[f],h=c[g];h="undefined"!=typeof h?h:d(this.element,g),h=null!==h?h:this.defaultOptions[g],this.options||(this.options={}),this.options[g]=h}var i,j,k,l,m,n=this.element.style.width,o=!1,p=this.element.parentNode;if(this.sliderElem)o=!0;else{this.sliderElem=document.createElement("div"),this.sliderElem.className="slider";var q=document.createElement("div");if(q.className="slider-track",j=document.createElement("div"),j.className="slider-track-left",i=document.createElement("div"),i.className="slider-selection",k=document.createElement("div"),k.className="slider-track-right",l=document.createElement("div"),l.className="slider-handle min-slider-handle",m=document.createElement("div"),m.className="slider-handle max-slider-handle",q.appendChild(j),q.appendChild(i),q.appendChild(k),this.ticks=[],this.options.ticks instanceof Array&&this.options.ticks.length>0)for(f=0;f<this.options.ticks.length;f++){var r=document.createElement("div");r.className="slider-tick",this.ticks.push(r),q.appendChild(r)}if(q.appendChild(l),q.appendChild(m),this.tickLabels=[],this.options.ticks_labels instanceof Array&&this.options.ticks_labels.length>0)for(this.tickLabelContainer=document.createElement("div"),this.tickLabelContainer.className="slider-tick-label-container",f=0;f<this.options.ticks_labels.length;f++){var s=document.createElement("div");s.className="slider-tick-label",s.innerHTML=this.options.ticks_labels[f],this.tickLabels.push(s),this.tickLabelContainer.appendChild(s)}var t=function(a){var b=document.createElement("div");b.className="tooltip-arrow";var c=document.createElement("div");c.className="tooltip-inner",a.appendChild(b),a.appendChild(c)},u=document.createElement("div");u.className="tooltip tooltip-main",t(u);var v=document.createElement("div");v.className="tooltip tooltip-min",t(v);var w=document.createElement("div");w.className="tooltip tooltip-max",t(w),this.sliderElem.appendChild(q),this.sliderElem.appendChild(u),this.sliderElem.appendChild(v),this.sliderElem.appendChild(w),this.tickLabelContainer&&this.sliderElem.appendChild(this.tickLabelContainer),p.insertBefore(this.sliderElem,this.element),this.element.style.display="none"}if(a&&(this.$element=a(this.element),this.$sliderElem=a(this.sliderElem)),this.eventToCallbackMap={},this.sliderElem.id=this.options.id,this.touchCapable="ontouchstart"in window||window.DocumentTouch&&document instanceof window.DocumentTouch,this.tooltip=this.sliderElem.querySelector(".tooltip-main"),this.tooltipInner=this.tooltip.querySelector(".tooltip-inner"),this.tooltip_min=this.sliderElem.querySelector(".tooltip-min"),this.tooltipInner_min=this.tooltip_min.querySelector(".tooltip-inner"),this.tooltip_max=this.sliderElem.querySelector(".tooltip-max"),this.tooltipInner_max=this.tooltip_max.querySelector(".tooltip-inner"),o===!0&&(this._removeClass(this.sliderElem,"slider-horizontal"),this._removeClass(this.sliderElem,"slider-vertical"),this._removeClass(this.tooltip,"hide"),this._removeClass(this.tooltip_min,"hide"),this._removeClass(this.tooltip_max,"hide"),["left","top","width","height"].forEach(function(a){this._removeProperty(this.trackLeft,a),this._removeProperty(this.trackSelection,a),this._removeProperty(this.trackRight,a)},this),[this.handle1,this.handle2].forEach(function(a){this._removeProperty(a,"left"),this._removeProperty(a,"top")},this),[this.tooltip,this.tooltip_min,this.tooltip_max].forEach(function(a){this._removeProperty(a,"left"),this._removeProperty(a,"top"),this._removeProperty(a,"margin-left"),this._removeProperty(a,"margin-top"),this._removeClass(a,"right"),this._removeClass(a,"top")},this)),"vertical"===this.options.orientation?(this._addClass(this.sliderElem,"slider-vertical"),this.stylePos="top",this.mousePos="pageY",this.sizePos="offsetHeight",this._addClass(this.tooltip,"right"),this.tooltip.style.left="100%",this._addClass(this.tooltip_min,"right"),this.tooltip_min.style.left="100%",this._addClass(this.tooltip_max,"right"),this.tooltip_max.style.left="100%"):(this._addClass(this.sliderElem,"slider-horizontal"),this.sliderElem.style.width=n,this.options.orientation="horizontal",this.stylePos="left",this.mousePos="pageX",this.sizePos="offsetWidth",this._addClass(this.tooltip,"top"),this.tooltip.style.top=-this.tooltip.outerHeight-14+"px",this._addClass(this.tooltip_min,"top"),this.tooltip_min.style.top=-this.tooltip_min.outerHeight-14+"px",this._addClass(this.tooltip_max,"top"),this.tooltip_max.style.top=-this.tooltip_max.outerHeight-14+"px"),this.options.ticks instanceof Array&&this.options.ticks.length>0&&(this.options.max=Math.max.apply(Math,this.options.ticks),this.options.min=Math.min.apply(Math,this.options.ticks)),this.options.value instanceof Array?this.options.range=!0:this.options.range&&(this.options.value=[this.options.value,this.options.max]),this.trackLeft=j||this.trackLeft,this.trackSelection=i||this.trackSelection,this.trackRight=k||this.trackRight,"none"===this.options.selection&&(this._addClass(this.trackLeft,"hide"),this._addClass(this.trackSelection,"hide"),this._addClass(this.trackRight,"hide")),this.handle1=l||this.handle1,this.handle2=m||this.handle2,o===!0)for(this._removeClass(this.handle1,"round triangle"),this._removeClass(this.handle2,"round triangle hide"),f=0;f<this.ticks.length;f++)this._removeClass(this.ticks[f],"round triangle hide");var x=["round","triangle","custom"],y=-1!==x.indexOf(this.options.handle);if(y)for(this._addClass(this.handle1,this.options.handle),this._addClass(this.handle2,this.options.handle),f=0;f<this.ticks.length;f++)this._addClass(this.ticks[f],this.options.handle);this.offset=this._offset(this.sliderElem),this.size=this.sliderElem[this.sizePos],this.setValue(this.options.value),this.handle1Keydown=this._keydown.bind(this,0),this.handle1.addEventListener("keydown",this.handle1Keydown,!1),this.handle2Keydown=this._keydown.bind(this,1),this.handle2.addEventListener("keydown",this.handle2Keydown,!1),this.touchCapable?(this.mousedown=this._mousedown.bind(this),this.sliderElem.addEventListener("touchstart",this.mousedown,!1)):(this.mousedown=this._mousedown.bind(this),this.sliderElem.addEventListener("mousedown",this.mousedown,!1)),"hide"===this.options.tooltip?(this._addClass(this.tooltip,"hide"),this._addClass(this.tooltip_min,"hide"),this._addClass(this.tooltip_max,"hide")):"always"===this.options.tooltip?(this._showTooltip(),this._alwaysShowTooltip=!0):(this.showTooltip=this._showTooltip.bind(this),this.hideTooltip=this._hideTooltip.bind(this),this.sliderElem.addEventListener("mouseenter",this.showTooltip,!1),this.sliderElem.addEventListener("mouseleave",this.hideTooltip,!1),this.handle1.addEventListener("focus",this.showTooltip,!1),this.handle1.addEventListener("blur",this.hideTooltip,!1),this.handle2.addEventListener("focus",this.showTooltip,!1),this.handle2.addEventListener("blur",this.hideTooltip,!1)),this.options.enabled?this.enable():this.disable()}var d={formatInvalidInputErrorMsg:function(a){return"Invalid input value '"+a+"' passed in"},callingContextNotSliderInstance:"Calling context element does not have instance of Slider bound to it. Check your code to make sure the JQuery object returned from the call to the slider() initializer is calling the method"};if(b=function(a,b){return c.call(this,a,b),this},b.prototype={_init:function(){},constructor:b,defaultOptions:{id:"",min:0,max:10,step:1,precision:0,orientation:"horizontal",value:5,range:!1,selection:"before",tooltip:"show",tooltip_split:!1,handle:"round",reversed:!1,enabled:!0,formatter:function(a){return a instanceof Array?a[0]+" : "+a[1]:a},natural_arrow_keys:!1,ticks:[],ticks_labels:[],ticks_snap_bounds:0},over:!1,inDrag:!1,getValue:function(){return this.options.range?this.options.value:this.options.value[0]},setValue:function(a,b){a||(a=0);var c=this.getValue();this.options.value=this._validateInputValue(a);var d=this._applyPrecision.bind(this);this.options.range?(this.options.value[0]=d(this.options.value[0]),this.options.value[1]=d(this.options.value[1]),this.options.value[0]=Math.max(this.options.min,Math.min(this.options.max,this.options.value[0])),this.options.value[1]=Math.max(this.options.min,Math.min(this.options.max,this.options.value[1]))):(this.options.value=d(this.options.value),this.options.value=[Math.max(this.options.min,Math.min(this.options.max,this.options.value))],this._addClass(this.handle2,"hide"),this.options.value[1]="after"===this.options.selection?this.options.max:this.options.min),this.diff=this.options.max-this.options.min,this.percentage=this.diff>0?[100*(this.options.value[0]-this.options.min)/this.diff,100*(this.options.value[1]-this.options.min)/this.diff,100*this.options.step/this.diff]:[0,0,100],this._layout();var e=this.options.range?this.options.value:this.options.value[0];return b===!0&&this._trigger("slide",e),c!==e&&this._trigger("change",{oldValue:c,newValue:e}),this._setDataVal(e),this},destroy:function(){this._removeSliderEventHandlers(),this.sliderElem.parentNode.removeChild(this.sliderElem),this.element.style.display="",this._cleanUpEventCallbacksMap(),this.element.removeAttribute("data"),a&&(this._unbindJQueryEventHandlers(),this.$element.removeData("slider"))},disable:function(){return this.options.enabled=!1,this.handle1.removeAttribute("tabindex"),this.handle2.removeAttribute("tabindex"),this._addClass(this.sliderElem,"slider-disabled"),this._trigger("slideDisabled"),this},enable:function(){return this.options.enabled=!0,this.handle1.setAttribute("tabindex",0),this.handle2.setAttribute("tabindex",0),this._removeClass(this.sliderElem,"slider-disabled"),this._trigger("slideEnabled"),this},toggle:function(){return this.options.enabled?this.disable():this.enable(),this},isEnabled:function(){return this.options.enabled},on:function(b,c){return a?(this.$element.on(b,c),this.$sliderElem.on(b,c)):this._bindNonQueryEventHandler(b,c),this},getAttribute:function(a){return a?this.options[a]:this.options},setAttribute:function(a,b){return this.options[a]=b,this},refresh:function(){return this._removeSliderEventHandlers(),c.call(this,this.element,this.options),a&&a.data(this.element,"slider",this),this},relayout:function(){return this._layout(),this},_removeSliderEventHandlers:function(){this.handle1.removeEventListener("keydown",this.handle1Keydown,!1),this.handle1.removeEventListener("focus",this.showTooltip,!1),this.handle1.removeEventListener("blur",this.hideTooltip,!1),this.handle2.removeEventListener("keydown",this.handle2Keydown,!1),this.handle2.removeEventListener("focus",this.handle2Keydown,!1),this.handle2.removeEventListener("blur",this.handle2Keydown,!1),this.sliderElem.removeEventListener("mouseenter",this.showTooltip,!1),this.sliderElem.removeEventListener("mouseleave",this.hideTooltip,!1),this.sliderElem.removeEventListener("touchstart",this.mousedown,!1),this.sliderElem.removeEventListener("mousedown",this.mousedown,!1)},_bindNonQueryEventHandler:function(a,b){void 0===this.eventToCallbackMap[a]&&(this.eventToCallbackMap[a]=[]),this.eventToCallbackMap[a].push(b)},_cleanUpEventCallbacksMap:function(){for(var a=Object.keys(this.eventToCallbackMap),b=0;b<a.length;b++){var c=a[b];this.eventToCallbackMap[c]=null}},_showTooltip:function(){this.options.tooltip_split===!1?this._addClass(this.tooltip,"in"):(this._addClass(this.tooltip_min,"in"),this._addClass(this.tooltip_max,"in")),this.over=!0},_hideTooltip:function(){this.inDrag===!1&&this.alwaysShowTooltip!==!0&&(this._removeClass(this.tooltip,"in"),this._removeClass(this.tooltip_min,"in"),this._removeClass(this.tooltip_max,"in")),this.over=!1},_layout:function(){var a;if(a=this.options.reversed?[100-this.percentage[0],this.percentage[1]]:[this.percentage[0],this.percentage[1]],this.handle1.style[this.stylePos]=a[0]+"%",this.handle2.style[this.stylePos]=a[1]+"%",this.options.ticks instanceof Array&&this.options.ticks.length>0){var b=Math.max.apply(Math,this.options.ticks),c=Math.min.apply(Math,this.options.ticks),d="vertical"===this.options.orientation?"height":"width",e="vertical"===this.options.orientation?"margin-top":"margin-left",f=this.size/(this.options.ticks.length-1);if(this.tickLabelContainer&&(this.tickLabelContainer.style[e]=-f/2+"px","horizontal"===this.options.orientation)){var g=this.tickLabelContainer.offsetHeight-this.sliderElem.offsetHeight;this.sliderElem.style.marginBottom=g+"px"}for(var h=0;h<this.options.ticks.length;h++){var i=100*(this.options.ticks[h]-c)/(b-c);this.ticks[h].style[this.stylePos]=i+"%",this._removeClass(this.ticks[h],"in-selection"),i<=a[0]&&!this.options.range?this._addClass(this.ticks[h],"in-selection"):i>=a[0]&&i<=a[1]&&this._addClass(this.ticks[h],"in-selection"),this.tickLabels[h]&&(this.tickLabels[h].style[d]=f+"px")}}if("vertical"===this.options.orientation)this.trackLeft.style.top="0",this.trackLeft.style.height=Math.min(a[0],a[1])+"%",this.trackSelection.style.top=Math.min(a[0],a[1])+"%",this.trackSelection.style.height=Math.abs(a[0]-a[1])+"%",this.trackRight.style.bottom="0",this.trackRight.style.height=100-Math.min(a[0],a[1])-Math.abs(a[0]-a[1])+"%";else{this.trackLeft.style.left="0",this.trackLeft.style.width=Math.min(a[0],a[1])+"%",this.trackSelection.style.left=Math.min(a[0],a[1])+"%",this.trackSelection.style.width=Math.abs(a[0]-a[1])+"%",this.trackRight.style.right="0",this.trackRight.style.width=100-Math.min(a[0],a[1])-Math.abs(a[0]-a[1])+"%";var j=this.tooltip_min.getBoundingClientRect(),k=this.tooltip_max.getBoundingClientRect();j.right>k.left?(this._removeClass(this.tooltip_max,"top"),this._addClass(this.tooltip_max,"bottom"),this.tooltip_max.style.top="18px"):(this._removeClass(this.tooltip_max,"bottom"),this._addClass(this.tooltip_max,"top"),this.tooltip_max.style.top=this.tooltip_min.style.top)}var l;if(this.options.range){l=this.options.formatter(this.options.value),this._setText(this.tooltipInner,l),this.tooltip.style[this.stylePos]=(a[1]+a[0])/2+"%","vertical"===this.options.orientation?this._css(this.tooltip,"margin-top",-this.tooltip.offsetHeight/2+"px"):this._css(this.tooltip,"margin-left",-this.tooltip.offsetWidth/2+"px"),"vertical"===this.options.orientation?this._css(this.tooltip,"margin-top",-this.tooltip.offsetHeight/2+"px"):this._css(this.tooltip,"margin-left",-this.tooltip.offsetWidth/2+"px");var m=this.options.formatter(this.options.value[0]);this._setText(this.tooltipInner_min,m);var n=this.options.formatter(this.options.value[1]);this._setText(this.tooltipInner_max,n),this.tooltip_min.style[this.stylePos]=a[0]+"%","vertical"===this.options.orientation?this._css(this.tooltip_min,"margin-top",-this.tooltip_min.offsetHeight/2+"px"):this._css(this.tooltip_min,"margin-left",-this.tooltip_min.offsetWidth/2+"px"),this.tooltip_max.style[this.stylePos]=a[1]+"%","vertical"===this.options.orientation?this._css(this.tooltip_max,"margin-top",-this.tooltip_max.offsetHeight/2+"px"):this._css(this.tooltip_max,"margin-left",-this.tooltip_max.offsetWidth/2+"px")}else l=this.options.formatter(this.options.value[0]),this._setText(this.tooltipInner,l),this.tooltip.style[this.stylePos]=a[0]+"%","vertical"===this.options.orientation?this._css(this.tooltip,"margin-top",-this.tooltip.offsetHeight/2+"px"):this._css(this.tooltip,"margin-left",-this.tooltip.offsetWidth/2+"px")},_removeProperty:function(a,b){a.style.removeProperty?a.style.removeProperty(b):a.style.removeAttribute(b)},_mousedown:function(a){if(!this.options.enabled)return!1;this._triggerFocusOnHandle(),this.offset=this._offset(this.sliderElem),this.size=this.sliderElem[this.sizePos];var b=this._getPercentage(a);if(this.options.range){var c=Math.abs(this.percentage[0]-b),d=Math.abs(this.percentage[1]-b);this.dragged=d>c?0:1}else this.dragged=0;this.percentage[this.dragged]=this.options.reversed?100-b:b,this._layout(),this.touchCapable&&(document.removeEventListener("touchmove",this.mousemove,!1),document.removeEventListener("touchend",this.mouseup,!1)),this.mousemove&&document.removeEventListener("mousemove",this.mousemove,!1),this.mouseup&&document.removeEventListener("mouseup",this.mouseup,!1),this.mousemove=this._mousemove.bind(this),this.mouseup=this._mouseup.bind(this),this.touchCapable&&(document.addEventListener("touchmove",this.mousemove,!1),document.addEventListener("touchend",this.mouseup,!1)),document.addEventListener("mousemove",this.mousemove,!1),document.addEventListener("mouseup",this.mouseup,!1),this.inDrag=!0;var e=this._calculateValue();return this._trigger("slideStart",e),this._setDataVal(e),this.setValue(e),this._pauseEvent(a),!0},_triggerFocusOnHandle:function(a){0===a&&this.handle1.focus(),1===a&&this.handle2.focus()},_keydown:function(a,b){if(!this.options.enabled)return!1;var c;switch(b.keyCode){case 37:case 40:c=-1;break;case 39:case 38:c=1}if(c){if(this.options.natural_arrow_keys){var d="vertical"===this.options.orientation&&!this.options.reversed,e="horizontal"===this.options.orientation&&this.options.reversed;(d||e)&&(c=-1*c)}var f=c*this.percentage[2],g=this.percentage[a]+f;g>100?g=100:0>g&&(g=0),this.dragged=a,this._adjustPercentageForRangeSliders(g),this.percentage[this.dragged]=g,this._layout();var h=this._calculateValue(!1);return this._trigger("slideStart",h),this._setDataVal(h),this.setValue(h,!0),this._trigger("slideStop",h),this._setDataVal(h),this._pauseEvent(b),!1}},_pauseEvent:function(a){a.stopPropagation&&a.stopPropagation(),a.preventDefault&&a.preventDefault(),a.cancelBubble=!0,a.returnValue=!1},_mousemove:function(a){if(!this.options.enabled)return!1;var b=this._getPercentage(a);this._adjustPercentageForRangeSliders(b),this.percentage[this.dragged]=this.options.reversed?100-b:b,this._layout();var c=this._calculateValue(!0);return this.setValue(c,!0),!1},_adjustPercentageForRangeSliders:function(a){this.options.range&&(0===this.dragged&&this.percentage[1]<a?(this.percentage[0]=this.percentage[1],this.dragged=1):1===this.dragged&&this.percentage[0]>a&&(this.percentage[1]=this.percentage[0],this.dragged=0))},_mouseup:function(){if(!this.options.enabled)return!1;this.touchCapable&&(document.removeEventListener("touchmove",this.mousemove,!1),document.removeEventListener("touchend",this.mouseup,!1)),document.removeEventListener("mousemove",this.mousemove,!1),document.removeEventListener("mouseup",this.mouseup,!1),this.inDrag=!1,this.over===!1&&this._hideTooltip();var a=this._calculateValue(!0);return this._layout(),this._trigger("slideStop",a),this._setDataVal(a),!1},_calculateValue:function(a){var b;if(this.options.range?(b=[this.options.min,this.options.max],0!==this.percentage[0]&&(b[0]=Math.max(this.options.min,this.options.min+Math.round(this.diff*this.percentage[0]/100/this.options.step)*this.options.step),b[0]=this._applyPrecision(b[0])),100!==this.percentage[1]&&(b[1]=Math.min(this.options.max,this.options.min+Math.round(this.diff*this.percentage[1]/100/this.options.step)*this.options.step),b[1]=this._applyPrecision(b[1]))):(b=this.options.min+Math.round(this.diff*this.percentage[0]/100/this.options.step)*this.options.step,b<this.options.min?b=this.options.min:b>this.options.max&&(b=this.options.max),b=parseFloat(b),b=this._applyPrecision(b)),a){for(var c=[b,1/0],d=0;d<this.options.ticks.length;d++){var e=Math.abs(this.options.ticks[d]-b);e<=c[1]&&(c=[this.options.ticks[d],e])}if(c[1]<=this.options.ticks_snap_bounds)return c[0]}return b},_applyPrecision:function(a){var b=this.options.precision||this._getNumDigitsAfterDecimalPlace(this.options.step);return this._applyToFixedAndParseFloat(a,b)},_getNumDigitsAfterDecimalPlace:function(a){var b=(""+a).match(/(?:\.(\d+))?(?:[eE]([+-]?\d+))?$/);return b?Math.max(0,(b[1]?b[1].length:0)-(b[2]?+b[2]:0)):0},_applyToFixedAndParseFloat:function(a,b){var c=a.toFixed(b);return parseFloat(c)},_getPercentage:function(a){!this.touchCapable||"touchstart"!==a.type&&"touchmove"!==a.type||(a=a.touches[0]);var b=100*(a[this.mousePos]-this.offset[this.stylePos])/this.size;return b=Math.round(b/this.percentage[2])*this.percentage[2],Math.max(0,Math.min(100,b))},_validateInputValue:function(a){if("number"==typeof a)return a;if(a instanceof Array)return this._validateArray(a),a;throw new Error(d.formatInvalidInputErrorMsg(a))},_validateArray:function(a){for(var b=0;b<a.length;b++){var c=a[b];if("number"!=typeof c)throw new Error(d.formatInvalidInputErrorMsg(c))}},_setDataVal:function(a){var b="value: '"+a+"'";this.element.setAttribute("data",b),this.element.setAttribute("value",a)},_trigger:function(b,c){c=c||0===c?c:void 0;var d=this.eventToCallbackMap[b];if(d&&d.length)for(var e=0;e<d.length;e++){var f=d[e];f(c)}a&&this._triggerJQueryEvent(b,c)},_triggerJQueryEvent:function(a,b){var c={type:a,value:b};this.$element.trigger(c),this.$sliderElem.trigger(c)},_unbindJQueryEventHandlers:function(){this.$element.off(),this.$sliderElem.off()},_setText:function(a,b){"undefined"!=typeof a.innerText?a.innerText=b:"undefined"!=typeof a.textContent&&(a.textContent=b)},_removeClass:function(a,b){for(var c=b.split(" "),d=a.className,e=0;e<c.length;e++){var f=c[e],g=new RegExp("(?:\\s|^)"+f+"(?:\\s|$)");d=d.replace(g," ")}a.className=d.trim()},_addClass:function(a,b){for(var c=b.split(" "),d=a.className,e=0;e<c.length;e++){var f=c[e],g=new RegExp("(?:\\s|^)"+f+"(?:\\s|$)"),h=g.test(d);h||(d+=" "+f)}a.className=d.trim()},_offset:function(a){var b=0,c=0;if(a.offsetParent)do b+=a.offsetLeft,c+=a.offsetTop;while(a=a.offsetParent);return{left:b,top:c}},_css:function(b,c,d){if(a)a.style(b,c,d);else{var e=c.replace(/^-ms-/,"ms-").replace(/-([\da-z])/gi,function(a,b){return b.toUpperCase()});b.style[e]=d}}},a){var e=a.fn.slider?"bootstrapSlider":"slider";a.bridget(e,b)}}(a),b});;// create the base namespace
 var CS = {};
 
 // create additional namespace
@@ -284,9 +272,10 @@ CS.defaultAnimationDuration = 0.5;
 CS.activityFeedController = null;
 CS.activitiesModel = null;
 CS.indexController = null;
-CS.activityFeedController = null;;CS.Services.Browser = {
+CS.activityFeedController = null;
+;CS.Services.Browser = {
     addUserAgentAttributeToHtmlTag: function() {
-        document.documentElement.setAttribute('data-useragent', navigator.userAgent);
+        document.documentElement.setAttribute("data-useragent", navigator.userAgent);
     },
 
     isMediumScreen: function () {
@@ -333,9 +322,9 @@ CS.activityFeedController = null;;CS.Services.Browser = {
         for (var i = 0; i < this.fieldIds.length; i++) {
             var $field = $("#" + this.fieldIds[i]);
 
-            if ($field.hasClass("pills"))
+            if ($field.hasClass("pills")) {
                 this._addClickEvents($field);
-            else {
+            } else {
                 this._addBlurEvent($field);
                 this._addValueChangedEvent($field);
             }
@@ -474,8 +463,9 @@ CS.activityFeedController = null;;CS.Services.Browser = {
     };
 
     c._isEmail = function (email) {
-        if (email === "")
+        if (email === "") {
             return true;
+        }
 
         var reg = /^([a-z0-9_\-\.])+\@([a-z0-9_\-\.])+\.([a-z]{2,4})$/i;
         return reg.test(email);
@@ -502,14 +492,18 @@ CS.activityFeedController = null;;CS.Services.Browser = {
     };
 
     c._isMinLength = function (value, minLength) {
-        if (value === null || value === undefined || value === "")
+        if (value === null || value === undefined || value === "") {
             return true;
+        }
+
         return value.length >= minLength;
     };
 
     c._isMaxLength = function (value, maxLength) {
-        if (value === null || value === undefined || value === "")
+        if (value === null || value === undefined || value === "") {
             return true;
+        }
+
         return value.length <= maxLength;
     };
 
@@ -672,7 +666,7 @@ CS.activityFeedController = null;;CS.Services.Browser = {
                     } else {
                         $el.hide();
                     }
-                }.bind(this)
+                }
             });
         }
     }
@@ -699,9 +693,9 @@ CS.activityFeedController = null;;CS.Services.Browser = {
 };
 ;CS.Models.Activities = P(function (c) {
     c.init = function (activityFeedItems) {
-        this.classicActivityInstances = activityFeedItems.map(function (item, index) {
+        this.classicActivityInstances = activityFeedItems.map(function (item) {
             return CS.Activities[item.className](item.className, item.title, item.description);
-        }.bind(this));
+        });
     };
 
     c.updateActivityStatus = function (onComplete) {
@@ -741,12 +735,12 @@ CS.activityFeedController = null;;CS.Services.Browser = {
             url: url,
             type: type,
             dataType: "json",
-            success: function (data, textStatus, jqXHR) {
+            success: function (data) {
                 this._updateActivityStatus(data, onComplete);
             }.bind(this),
-            error: function (jqXHR, textStatus, errorThrown) {
-                alert('AJAX failure doing a ' + type + ' request to "' + url + '"');
-            }.bind(this)
+            error: function () {
+                alert("AJAX failure doing a " + type + " request to \"" + url + "\"");
+            }
         });
     };
 
@@ -766,7 +760,7 @@ CS.activityFeedController = null;;CS.Services.Browser = {
         }.bind(this));
 
         // We handle instances which didn't have any activity data
-        this.classicActivityInstances.forEach(function (instance, index) {
+        this.classicActivityInstances.forEach(function (instance) {
             var isTodo = _.isEmpty(_.find(this.activities.done, function (activity) {
                 return activity.getClassName() === instance.getClassName();
             }));
@@ -835,7 +829,7 @@ CS.activityFeedController = null;;CS.Services.Browser = {
         }
     };
 });
-;CS.Controllers.OnePageWebapp = P(CS.Controllers.Base, function (c, base) {
+;CS.Controllers.OnePageWebapp = P(CS.Controllers.Base, function (c) {
     c.navigateTo = function (route) {
         location.hash = route;
     };
@@ -844,7 +838,7 @@ CS.activityFeedController = null;;CS.Services.Browser = {
         history.back();
     };
 });
-;CS.Controllers.Index = P(CS.Controllers.OnePageWebapp, function (c, base) {
+;CS.Controllers.Index = P(CS.Controllers.OnePageWebapp, function (c) {
     c.init = function (accountId, accountEmail, accountData) {
         CS.account.id = accountId;
         CS.account.email = accountEmail;
@@ -870,14 +864,14 @@ CS.activityFeedController = null;;CS.Services.Browser = {
         this.$headerLinks = this.$headerSection.children("a");
         this.$signOutLink = this.$headerLinks.filter("#sign-out-link");
 
-        this.$headerNav = $('[role="navigation"]');
+        this.$headerNav = $("[role='navigation']");
         this.$activitiesTab = this.$headerNav.find("#activities-tab");
         this.$standoutsTab = this.$headerNav.find("#standouts-tab");
 
         this.$headerAlerts = $("#header-alerts");
         this.$welcomePanel = this.$headerAlerts.children("#welcome-panel");
 
-        this.$tabPanels = $('[role="tabpanel"]');
+        this.$tabPanels = $("[role='tabpanel']");
         this.$activitiesPanel = this.$tabPanels.filter("#activit1es");
         this.$standoutsPanel = this.$tabPanels.filter("#standouts");
 
@@ -891,11 +885,11 @@ CS.activityFeedController = null;;CS.Services.Browser = {
     };
 
     c._initEvents = function () {
-        this.$activitiesTab.click(function (e) {
+        this.$activitiesTab.click(function () {
             this.navigateTo("activities");
         }.bind(this));
 
-        this.$standoutsTab.click(function (e) {
+        this.$standoutsTab.click(function () {
             this.navigateTo("insights");
         }.bind(this));
 
@@ -929,15 +923,15 @@ CS.activityFeedController = null;;CS.Services.Browser = {
     };
 
     c._initRouter = function () {
-        CS.router.get("", function (req) {
+        CS.router.get("", function () {
             this._activateActivitiesPanel();
         }.bind(this));
 
-        CS.router.get("activities", function (req) {
+        CS.router.get("activities", function () {
             this._activateActivitiesPanel();
         }.bind(this));
 
-        CS.router.get("insights", function (req) {
+        CS.router.get("insights", function () {
             this._activateStandoutsPanel();
         }.bind(this));
     };
@@ -945,7 +939,7 @@ CS.activityFeedController = null;;CS.Services.Browser = {
     c._activateActivitiesPanel = function () {
         if (!this.$activitiesPanel.hasClass("active")) {
             this.$tabPanels.removeClass("active");
-            this.$activitiesTab.tab('show');
+            this.$activitiesTab.tab("show");
             this.$activitiesPanel.addClass("active");
         }
 
@@ -955,7 +949,7 @@ CS.activityFeedController = null;;CS.Services.Browser = {
     c._activateStandoutsPanel = function () {
         if (!this.$standoutsPanel.hasClass("active")) {
             this.$tabPanels.removeClass("active");
-            this.$standoutsTab.tab('show');
+            this.$standoutsTab.tab("show");
             this.$standoutsPanel.addClass("active");
         }
 
@@ -972,23 +966,23 @@ CS.activityFeedController = null;;CS.Services.Browser = {
         this.$standoutListSection.show();
     };
 
-    c._signOut = function (e) {
+    c._signOut = function () {
         var type = "DELETE";
         var url = "/api/auth";
 
         $.ajax({
             url: url,
             type: type,
-            success: function (data, textStatus, jqXHR) {
+            success: function () {
                 location.href = "/";
-            }.bind(this),
-            error: function (jqXHR, textStatus, errorThrown) {
-                alert('AJAX failure doing a ' + type + ' request to "' + url + '"');
-            }.bind(this)
+            },
+            error: function () {
+                alert("AJAX failure doing a " + type + " request to \"" + url + "\"");
+            }
         });
     };
 });
-;CS.Controllers.HeaderModal = P(CS.Controllers.OnePageWebapp, function (c, base) {
+;CS.Controllers.HeaderModal = P(CS.Controllers.OnePageWebapp, function (c) {
     c.init = function () {
         this.initElements();
         this.initValidation();
@@ -1011,7 +1005,7 @@ CS.activityFeedController = null;;CS.Services.Browser = {
     };
 
     c.initEvents = function () {
-        this.$modal.on('hidden.bs.modal', $.proxy(this._launchOtherModalIfNeeded, this));
+        this.$modal.on("hidden.bs.modal", $.proxy(this._launchOtherModalIfNeeded, this));
         this.$launchLink.click($.proxy(this._launchModal, this));
         this.$switchModalLink.click($.proxy(this.setSwitchFormIdAndCloseModal, this));
         this.$form.submit($.proxy(this._clickOnSubmitBtn, this));
@@ -1032,17 +1026,17 @@ CS.activityFeedController = null;;CS.Services.Browser = {
 
         this.navigateTo("activities");
 
-        this.$modal.modal('hide');
+        this.$modal.modal("hide");
 
         this._resetForm();
     };
 
     c._resetForm = function () {
         this.$form[0].reset();
-        this.$submitBtn.button('reset');
+        this.$submitBtn.button("reset");
     };
 
-    c._launchModal = function (e) {
+    c._launchModal = function () {
         this.$modalTitles.hide();
         this.$modalForms.hide();
         this.$modalSubmitButtons.hide();
@@ -1054,7 +1048,7 @@ CS.activityFeedController = null;;CS.Services.Browser = {
         this.$modal.modal();
     };
 
-    c._launchOtherModalIfNeeded = function (e) {
+    c._launchOtherModalIfNeeded = function () {
         if (this.switchFormId) {
             if (this.switchFormId === "register-form") {
                 this.$registerLink.click();
@@ -1109,7 +1103,7 @@ CS.activityFeedController = null;;CS.Services.Browser = {
         this.validator.hideErrorMessage(this.$otherFormErrors);
 
         if (this.validator.isValid() && this._arePasswordsMatching()) {
-            this.$submitBtn.button('loading');
+            this.$submitBtn.button("loading");
 
             var data = {
                 emailAddress: this.$emailField.val().trim(),
@@ -1124,17 +1118,17 @@ CS.activityFeedController = null;;CS.Services.Browser = {
                 type: type,
                 contentType: "application/json",
                 data: JSON.stringify(data),
-                success: function (data, textStatus, jqXHR) {
+                success: function (d4ta, textStatus, jqXHR) {
                     if (jqXHR.status === this.httpStatusCode.emailAlreadyRegistered) {
-                        this.$submitBtn.button('reset');
+                        this.$submitBtn.button("reset");
                         this.validator.showErrorMessage(this.$emailAlreadyRegisteredError);
                     } else {
-                        this.onFormSubmitSuccess(data);
+                        this.onFormSubmitSuccess(d4ta);
                     }
                 }.bind(this),
-                error: function (jqXHR, textStatus, errorThrown) {
-                    this.$submitBtn.button('reset');
-                    alert('AJAX failure doing a ' + type + ' request to "' + url + '"');
+                error: function () {
+                    this.$submitBtn.button("reset");
+                    alert("AJAX failure doing a " + type + " request to \"" + url + "\"");
                 }.bind(this)
             });
         }
@@ -1142,7 +1136,7 @@ CS.activityFeedController = null;;CS.Services.Browser = {
 
     c.setSwitchFormIdAndCloseModal = function() {
         this.switchFormId = "sign-in-form";
-        this.$modal.modal('hide');
+        this.$modal.modal("hide");
     };
 
     c._arePasswordsMatching = function () {
@@ -1187,7 +1181,7 @@ CS.activityFeedController = null;;CS.Services.Browser = {
         this.validator.hideErrorMessage(this.$wrongCredentialsError);
 
         if (this.validator.isValid()) {
-            this.$submitBtn.button('loading');
+            this.$submitBtn.button("loading");
 
             var data = {
                 emailAddress: this.$emailField.val().trim(),
@@ -1202,17 +1196,17 @@ CS.activityFeedController = null;;CS.Services.Browser = {
                 type: type,
                 contentType: "application/json",
                 data: JSON.stringify(data),
-                success: function (data, textStatus, jqXHR) {
+                success: function (d4ta, textStatus, jqXHR) {
                     if (jqXHR.status === this.httpStatusCode.noContent) {
-                        this.$submitBtn.button('reset');
+                        this.$submitBtn.button("reset");
                         this.validator.showErrorMessage(this.$wrongCredentialsError);
                     } else {
-                        this.onFormSubmitSuccess(data);
+                        this.onFormSubmitSuccess(d4ta);
                     }
                 }.bind(this),
-                error: function (jqXHR, textStatus, errorThrown) {
-                    this.$submitBtn.button('reset');
-                    alert('AJAX failure doing a ' + type + ' request to "' + url + '"');
+                error: function () {
+                    this.$submitBtn.button("reset");
+                    alert("AJAX failure doing a " + type + " request to \"" + url + "\"");
                 }.bind(this)
             });
         }
@@ -1220,7 +1214,7 @@ CS.activityFeedController = null;;CS.Services.Browser = {
 
     c.setSwitchFormIdAndCloseModal = function() {
         this.switchFormId = "register-form";
-        this.$modal.modal('hide');
+        this.$modal.modal("hide");
     };
 });
 ;CS.Controllers.RegisterReminder = P(function (c) {
@@ -1239,7 +1233,7 @@ CS.activityFeedController = null;;CS.Services.Browser = {
         this.$registerLink.click($.proxy(this._clickOnMainLink, this));
     };
 
-    c._clickOnMainLink = function (e) {
+    c._clickOnMainLink = function () {
         this.$mainRegisterLink.click();
     };
 });
@@ -1258,7 +1252,7 @@ CS.activityFeedController = null;;CS.Services.Browser = {
     };
 
 
-    c._signIn = function (e) {
+    c._signIn = function () {
         IN.User.authorize(this._getProfileData, this);
     };
 
@@ -1273,7 +1267,7 @@ CS.activityFeedController = null;;CS.Services.Browser = {
             });
     };
 });
-;CS.Controllers.CustomActivity = P(CS.Controllers.Base, function (c, base) {
+;CS.Controllers.CustomActivity = P(CS.Controllers.Base, function (c) {
     c.init = function () {
         this._initElements();
         this._initValidation();
@@ -1332,14 +1326,14 @@ CS.activityFeedController = null;;CS.Services.Browser = {
                     type: type,
                     contentType: "application/json",
                     data: JSON.stringify(data),
-                    success: function (data, textStatus, jqXHR) {
+                    success: function () {
                         this._resetForm();
 
                         CS.Services.Animator.fadeIn(this.$successAlert);
                     }.bind(this),
-                    error: function (jqXHR, textStatus, errorThrown) {
-                        this.$submitBtn.button('reset');
-                        alert('AJAX failure doing a ' + type + ' request to "' + url + '"');
+                    error: function () {
+                        this.$submitBtn.button("reset");
+                        alert("AJAX failure doing a " + type + " request to \"" + url + "\"");
                     }.bind(this)
                 });
             }.bind(this));
@@ -1371,20 +1365,20 @@ CS.activityFeedController = null;;CS.Services.Browser = {
                         }
                     }
                 }.bind(this),
-                error: function (jqXHR, textStatus, errorThrown) {
-                    alert('AJAX failure doing a ' + type + ' request to "' + url + '"');
-                }.bind(this)
+                error: function () {
+                    alert("AJAX failure doing a " + type + " request to \"" + url + "\"");
+                }
             });
         }
     };
 
     c._resetForm = function() {
-        this.$submitBtn.button('reset');
+        this.$submitBtn.button("reset");
         this.$form[0].reset();
         this.$formGroupEmail.removeClass("has-success");
     };
 });
-;CS.Controllers.ActivityFeed = P(CS.Controllers.Base, function (c, base) {
+;CS.Controllers.ActivityFeed = P(CS.Controllers.Base, function (c) {
     c.reactClass = React.createClass({displayName: "reactClass",
         getInitialState: function () {
             return {
@@ -1512,9 +1506,9 @@ CS.activityFeedController = null;;CS.Services.Browser = {
             }
         ];
 
-        this.c1Instances = this.c1FeedItems.map(function (item, index) {
+        this.c1Instances = this.c1FeedItems.map(function (item) {
             return CS.C1s[item.className](item.className, item.title);
-        }.bind(this));
+        });
 
         CS.activitiesModel = CS.Models.Activities(this.activityFeedItems);
 
@@ -1529,7 +1523,7 @@ CS.activityFeedController = null;;CS.Services.Browser = {
     };
 
     c._initEvents = function() {
-        this.$introToActivitiesAlert.on('close.bs.alert', $.proxy(this._onIntroToActivitiesAlertClose, this));
+        this.$introToActivitiesAlert.on("close.bs.alert", $.proxy(this._onIntroToActivitiesAlertClose, this));
     };
 
     c.initIntroToActivitiesAlert = function () {
@@ -1544,7 +1538,7 @@ CS.activityFeedController = null;;CS.Services.Browser = {
         var doableC1sAndActivities = [];
         var doneC1sAndActivities = [];
 
-        this.c1Instances.forEach(function (c1Instance, index) {
+        this.c1Instances.forEach(function (c1Instance) {
             var isDone = CS.account.data && CS.account.data[c1Instance.getClassName()];
 
             if (isDone) {
@@ -1558,9 +1552,9 @@ CS.activityFeedController = null;;CS.Services.Browser = {
                     instance: c1Instance
                 });
             }
-        }.bind(this));
+        });
 
-        CS.activitiesModel.getDoable().forEach(function (activityInstance, index) {
+        CS.activitiesModel.getDoable().forEach(function (activityInstance) {
             var feedItem = _.find(this.activityFeedItems, function (item) {
                 return item.className === activityInstance.getClassName();
             });
@@ -1573,7 +1567,7 @@ CS.activityFeedController = null;;CS.Services.Browser = {
             });
         }.bind(this));
 
-        CS.activitiesModel.getDone().forEach(function (activityInstance, index) {
+        CS.activitiesModel.getDone().forEach(function (activityInstance) {
             var feedItem = _.find(this.activityFeedItems, function (item) {
                 return item.className === activityInstance.getClassName();
             });
@@ -1637,8 +1631,8 @@ CS.Controllers.ActivityFeedItem = React.createClass({displayName: "ActivityFeedI
             )
             );
     },
-    
-    _handleClick: function (e) {
+
+    _handleClick: function () {
         location.hash = "activities/" + this.props.activity.instance.getClassName();
     }
 });
@@ -1681,7 +1675,7 @@ CS.Controllers.C1FeedItem = React.createClass({displayName: "C1FeedItem",
         return this._getClassName() + "-input-form";
     },
 
-    componentDidMount: function (prevProps, prevState) {
+    componentDidMount: function () {
         this.account = {
             data: _.clone(CS.account.data, true) || {}
         };
@@ -1710,7 +1704,7 @@ CS.Controllers.C1FeedItem = React.createClass({displayName: "C1FeedItem",
         e.preventDefault();
 
         if (this.validator.isValid()) {
-            this.$submitBtn.button('loading');
+            this.$submitBtn.button("loading");
 
             this.account.data[this._getClassName()] = this.$inputField.val().trim();
 
@@ -1722,12 +1716,12 @@ CS.Controllers.C1FeedItem = React.createClass({displayName: "C1FeedItem",
                 type: type,
                 contentType: "application/json",
                 data: JSON.stringify(this.account.data),
-                success: function (data, textStatus, jqXHR) {
+                success: function () {
                     location.reload();
-                }.bind(this),
-                error: function (jqXHR, textStatus, errorThrown) {
-                    this.$submitBtn.button('reset');
-                    alert('AJAX failure doing a ' + type + ' request to "' + url + '"');
+                },
+                error: function () {
+                    this.$submitBtn.button("reset");
+                    alert("AJAX failure doing a " + type + " request to \"" + url + "\"");
                 }.bind(this)
             });
         }
@@ -1787,14 +1781,14 @@ CS.Controllers.Standouts = P(function (c) {
             url: url,
             type: type,
             dataType: "json",
-            success: function (data, textStatus, jqXHR) {
-                var itemInstancesCustomStandouts = data.map(function (customActivity, index) {
+            success: function (data) {
+                var itemInstancesCustomStandouts = data.map(function (customActivity) {
                     return CS.Standouts.Custom(customActivity.className, customActivity.title);
-                }.bind(this));
+                });
 
-                var itemInstancesClassicStandouts = this.itemClassNames.map(function (className, index) {
+                var itemInstancesClassicStandouts = this.itemClassNames.map(function (className) {
                     return CS.Standouts[className](className);
-                }.bind(this));
+                });
 
                 var allItemInstances = _.union(itemInstancesCustomStandouts, itemInstancesClassicStandouts);
 
@@ -1804,13 +1798,13 @@ CS.Controllers.Standouts = P(function (c) {
                     standoutInstances: allItemInstances
                 });
 
-                allItemInstances.forEach(function(instance, index) {
+                allItemInstances.forEach(function(instance) {
                     instance.run();
-                }.bind(this));
+                });
             }.bind(this),
-            error: function (jqXHR, textStatus, errorThrown) {
-                alert('AJAX failure doing a ' + type + ' request to "' + url + '"');
-            }.bind(this)
+            error: function () {
+                alert("AJAX failure doing a " + type + " request to \"" + url + "\"");
+            }
         });
     };
 });
@@ -1860,7 +1854,7 @@ CS.Activities.Base = P(function (c) {
     c._initElements = function () {
         this.$activitiesTab = $("#activities-tab");
 
-        this.$tabPanels = $('[role="tabpanel"]');
+        this.$tabPanels = $("[role='tabpanel']");
         this.$activitiesPanel = this.$tabPanels.filter("#activit1es");
 
         this.$feedSection = this.$activitiesPanel.children("#c1-and-activity-feed");
@@ -1896,8 +1890,8 @@ CS.Activities.Base = P(function (c) {
     };
 
     c.initRouting = function (controllers) {
-        controllers.forEach(function (controller, index) {
-            CS.router.get(controller.getRoute(), function (req) {
+        controllers.forEach(function (controller) {
+            CS.router.get(controller.getRoute(), function () {
                 this.renderController(controller.route);
             }.bind(this));
         }.bind(this));
@@ -1906,7 +1900,7 @@ CS.Activities.Base = P(function (c) {
     c.renderController = function (route, data) {
         if (!this.$activitiesPanel.hasClass("active")) {
             this.$tabPanels.removeClass("active");
-            this.$activitiesTab.tab('show');
+            this.$activitiesTab.tab("show");
             this.$activitiesPanel.addClass("active");
         }
 
@@ -1952,7 +1946,7 @@ CS.Activities.Base.pageAnimationDuration = 0.15;
         if (!this.isRendered) {
             var uniqueId = _.uniqueId();
 
-            this.activity.get$el().append('<div class="activity-page ' + this.activity.getClassName() + '" id="' + uniqueId + '"></div>');
+            this.activity.get$el().append("<div class=\"activity-page " + this.activity.getClassName() + "\" id=\"" + uniqueId + "\"></div>");
             this.$el = $("#" + uniqueId);
 
             this.reactInstance = React.render(
@@ -1987,7 +1981,7 @@ CS.Activities.Base.pageAnimationDuration = 0.15;
                 className: this.activity.getClassName(),
                 accountData: this.activity.model.account.data
             }),
-            success: function (data, textStatus, jqXHR) {
+            success: function () {
                 CS.account.data = this.activity.model.account.data;
 
                 CS.activitiesModel.updateActivityStatus(function() {
@@ -2000,12 +1994,12 @@ CS.Activities.Base.pageAnimationDuration = 0.15;
                     }
                 }.bind(this));
             }.bind(this),
-            error: function (jqXHR, textStatus, errorThrown) {
+            error: function () {
                 if (this.$submitBtn) {
-                    this.$submitBtn.button('reset');
+                    this.$submitBtn.button("reset");
                 }
 
-                alert('AJAX failure doing a ' + type + ' request to "' + url + '"');
+                alert("AJAX failure doing a " + type + " request to \"" + url + "\"");
             }.bind(this)
         });
     };
@@ -2215,7 +2209,7 @@ CS.Activities.SpecifyTop2Strength.Controllers = {};
 });
 
 CS.Activities.SpecifyTop3Strength.Controllers = {};
-;CS.Activities.Custom.Controllers.Step1 = P(CS.Activities.Controller, function (c, base) {
+;CS.Activities.Custom.Controllers.Step1 = P(CS.Activities.Controller, function (c) {
     c.reactClass = React.createClass({displayName: "reactClass",
         getInitialState: function () {
             return {text: null};
@@ -2265,14 +2259,14 @@ CS.Activities.SpecifyTop3Strength.Controllers = {};
         this.reactInstance.replaceState({text: CS.Services.String.textToHtml(this.activity.text)});
 
         // The submit button may still be in loading state when navigating back. We make sure it doesn't happen
-        this.$submitBtn.button('reset');
+        this.$submitBtn.button("reset");
     };
 
     c._handleSubmit = function (e) {
         e.preventDefault();
 
         if (this.validator.isValid()) {
-            this.$submitBtn.button('loading');
+            this.$submitBtn.button("loading");
 
             this.activity.model.account.data.custom[this.activity.getClassName()] = this.$textarea.val().trim();
 
@@ -2283,7 +2277,7 @@ CS.Activities.SpecifyTop3Strength.Controllers = {};
     };
 });
 
-CS.Activities.IdentifyStrengths.Controllers.Intro = P(CS.Activities.Controller, function (c, base) {
+CS.Activities.IdentifyStrengths.Controllers.Intro = P(CS.Activities.Controller, function (c) {
     c.reactClass = React.createClass({displayName: "reactClass",
         render: function () {
             return (
@@ -2313,14 +2307,14 @@ CS.Activities.IdentifyStrengths.Controllers.Intro = P(CS.Activities.Controller, 
         this.$goNextStepBtn.click($.proxy(this._navigateNext, this));
     };
 
-    c._navigateNext = function (e) {
+    c._navigateNext = function () {
         this.activity.model.account.data.strengths = this.activity.model.account.data.strengths || [];
 
         this.navigateTo(this.activity.step1Controller.getRoute());
     };
 });
 
-CS.Activities.IdentifyStrengths.Controllers.Outro = P(CS.Activities.Controller, function (c, base) {
+CS.Activities.IdentifyStrengths.Controllers.Outro = P(CS.Activities.Controller, function (c) {
     c.reactClass = React.createClass({displayName: "reactClass",
         getInitialState: function () {
             return {
@@ -2342,7 +2336,7 @@ CS.Activities.IdentifyStrengths.Controllers.Outro = P(CS.Activities.Controller, 
                             return (
                                 React.createElement("li", null, strength.name)
                                 );
-                        }.bind(this))
+                        })
                     ), 
 
                     React.createElement("div", {className: "strength-taglist-container"}, 
@@ -2355,7 +2349,7 @@ CS.Activities.IdentifyStrengths.Controllers.Outro = P(CS.Activities.Controller, 
                                         )
                                     )
                                     );
-                            }.bind(this))
+                            })
                         )
                     ), 
 
@@ -2378,7 +2372,7 @@ CS.Activities.IdentifyStrengths.Controllers.Outro = P(CS.Activities.Controller, 
     };
 });
 
-CS.Activities.IdentifyStrengths.Controllers.Step1 = P(CS.Activities.Controller, function (c, base) {
+CS.Activities.IdentifyStrengths.Controllers.Step1 = P(CS.Activities.Controller, function (c) {
     c.reactClass = React.createClass({displayName: "reactClass",
         getInitialState: function () {
             return {strengths: []};
@@ -2510,7 +2504,7 @@ CS.Activities.IdentifyStrengths.Controllers.Step1 = P(CS.Activities.Controller, 
         return false;
     };
 
-    c._saveAndNavigateNext = function (e) {
+    c._saveAndNavigateNext = function () {
         if (!this._isThereAtLeastOneStrengthInList()) {
             this.validator.showErrorMessage(this.$oneStrengthMinError);
         } else {
@@ -2526,7 +2520,7 @@ CS.Activities.IdentifyStrengths.Controllers.Step1 = P(CS.Activities.Controller, 
     };
 });
 
-CS.Activities.IdentifyStrengths.Controllers.Step2 = P(CS.Activities.Controller, function (c, base) {
+CS.Activities.IdentifyStrengths.Controllers.Step2 = P(CS.Activities.Controller, function (c) {
     c.reactClass = React.createClass({displayName: "reactClass",
         getInitialState: function () {
             return {strengths: []};
@@ -2651,7 +2645,7 @@ CS.Activities.IdentifyStrengths.Controllers.Step2 = P(CS.Activities.Controller, 
         return false;
     };
 
-    c._saveAndNavigateNext = function (e) {
+    c._saveAndNavigateNext = function () {
         // Because jQuery's "map()" function returns an object, see http://xahlee.info/js/js_convert_array-like.html
         var strengthsToAdd = Array.prototype.slice.call(
             this.$strengthTagList.children().children().children("span").map(function (index, span) {
@@ -2665,7 +2659,7 @@ CS.Activities.IdentifyStrengths.Controllers.Step2 = P(CS.Activities.Controller, 
     };
 });
 
-CS.Activities.IdentifyStrengths.Controllers.Step3 = P(CS.Activities.Controller, function (c, base) {
+CS.Activities.IdentifyStrengths.Controllers.Step3 = P(CS.Activities.Controller, function (c) {
     c.reactClass = React.createClass({displayName: "reactClass",
         getInitialState: function () {
             return {strengths: []};
@@ -2696,7 +2690,7 @@ CS.Activities.IdentifyStrengths.Controllers.Step3 = P(CS.Activities.Controller, 
 
     c.initElements = function () {
         this.$form = this.$el.find("form");
-        this.$rangeInputs = this.$form.find('[type="range"]');
+        this.$rangeInputs = this.$form.find("[type='range']");
         this.$goBackBtn = this.$form.find(".btn-default");
     };
 
@@ -2704,7 +2698,7 @@ CS.Activities.IdentifyStrengths.Controllers.Step3 = P(CS.Activities.Controller, 
         this.$form.submit($.proxy(this._saveAndNavigateNext, this));
         this.$goBackBtn.click($.proxy(this.navigateBack, this));
 
-        this.reactInstance.componentDidUpdate = function (prevProps, prevState) {
+        this.reactInstance.componentDidUpdate = function () {
             this.initElements();
             this._initSliders();
         }.bind(this);
@@ -2763,7 +2757,7 @@ CS.Activities.IdentifyStrengths.Controllers.Step3 = P(CS.Activities.Controller, 
     };
 });
 
-CS.Activities.IdentifyStrengths.Controllers.Step4 = P(CS.Activities.Controller, function (c, base) {
+CS.Activities.IdentifyStrengths.Controllers.Step4 = P(CS.Activities.Controller, function (c) {
     c.reactClass = React.createClass({displayName: "reactClass",
         getInitialState: function () {
             return {
@@ -2798,7 +2792,7 @@ CS.Activities.IdentifyStrengths.Controllers.Step4 = P(CS.Activities.Controller, 
 
     c.initElements = function () {
         this.$form = this.$el.find("form");
-        this.$rangeInputs = this.$form.find('[type="range"]');
+        this.$rangeInputs = this.$form.find("[type='range']");
         this.$goBackBtn = this.$form.find(".btn-default");
     };
 
@@ -2806,7 +2800,7 @@ CS.Activities.IdentifyStrengths.Controllers.Step4 = P(CS.Activities.Controller, 
         this.$form.submit($.proxy(this._saveAndNavigateNext, this));
         this.$goBackBtn.click($.proxy(this.navigateBack, this));
 
-        this.reactInstance.componentDidUpdate = function (prevProps, prevState) {
+        this.reactInstance.componentDidUpdate = function () {
             this.initElements();
             this._initSliders();
         }.bind(this);
@@ -2860,7 +2854,7 @@ CS.Activities.IdentifyStrengths.Controllers.Step4 = P(CS.Activities.Controller, 
     };
 });
 
-CS.Activities.IdentifyStrengths.Controllers.Step5 = P(CS.Activities.Controller, function (c, base) {
+CS.Activities.IdentifyStrengths.Controllers.Step5 = P(CS.Activities.Controller, function (c) {
     c.reactClass = React.createClass({displayName: "reactClass",
         getInitialState: function () {
             return {strengths: []};
@@ -2876,7 +2870,7 @@ CS.Activities.IdentifyStrengths.Controllers.Step5 = P(CS.Activities.Controller, 
                     this.state.strengths.map(function (strength, index) {
                         return (
                             React.createElement("article", null, 
-                                React.createElement("h2", null, index+1, ". ", strength.name), 
+                                React.createElement("h2", null, index + 1, ". ", strength.name), 
                                 React.createElement("p", null, "Stämmer ", React.createElement("strong", null, this._howWellDoesItApplyFormatter(strength.howWellItApplies)), " in på dig och är ", React.createElement("strong", null, this._howImportantForEmployerformatter(strength.howImportantForEmployer)), " för jobbet.")
                             )
                             );
@@ -2934,17 +2928,17 @@ CS.Activities.IdentifyStrengths.Controllers.Step5 = P(CS.Activities.Controller, 
         this.reactInstance.replaceState({strengths: _.take(this.activity.model.account.data.strengths, 3)});
 
         // The submit button may still be in loading state when navigating back. We make sure it doesn't happen
-        this.$submitBtn.button('reset');
+        this.$submitBtn.button("reset");
     };
 
-    c._handleSubmit = function (e) {
-        this.$submitBtn.button('loading');
+    c._handleSubmit = function () {
+        this.$submitBtn.button("loading");
 
         this.postData();
     };
 });
 
-CS.Activities.SpecifyTop1Strength.Controllers.Intro = P(CS.Activities.Controller, function (c, base) {
+CS.Activities.SpecifyTop1Strength.Controllers.Intro = P(CS.Activities.Controller, function (c) {
     c.reactClass = React.createClass({displayName: "reactClass",
         getInitialState: function () {
             return {title: null};
@@ -2987,14 +2981,14 @@ CS.Activities.SpecifyTop1Strength.Controllers.Intro = P(CS.Activities.Controller
         this.reactInstance.replaceState({title: this.activity.getTitle()});
     };
 
-    c._navigateNext = function (e) {
+    c._navigateNext = function () {
         this.activity.model.account.data.strengths[0].specify = this.activity.model.account.data.strengths[0].specify || {};
 
         this.navigateTo(this.activity.step1Controller.getRoute());
     };
 });
 
-CS.Activities.SpecifyTop1Strength.Controllers.Outro = P(CS.Activities.Controller, function (c, base) {
+CS.Activities.SpecifyTop1Strength.Controllers.Outro = P(CS.Activities.Controller, function (c) {
     c.reactClass = React.createClass({displayName: "reactClass",
         getInitialState: function () {
             return {
@@ -3045,7 +3039,7 @@ CS.Activities.SpecifyTop1Strength.Controllers.Outro = P(CS.Activities.Controller
     };
 });
 
-CS.Activities.SpecifyTop1Strength.Controllers.Step1 = P(CS.Activities.Controller, function (c, base) {
+CS.Activities.SpecifyTop1Strength.Controllers.Step1 = P(CS.Activities.Controller, function (c) {
     c.reactClass = React.createClass({displayName: "reactClass",
         getInitialState: function () {
             return {strengthName: null};
@@ -3105,7 +3099,7 @@ CS.Activities.SpecifyTop1Strength.Controllers.Step1 = P(CS.Activities.Controller
     };
 });
 
-CS.Activities.SpecifyTop1Strength.Controllers.Step2 = P(CS.Activities.Controller, function (c, base) {
+CS.Activities.SpecifyTop1Strength.Controllers.Step2 = P(CS.Activities.Controller, function (c) {
     c.reactClass = React.createClass({displayName: "reactClass",
         getInitialState: function () {
             return {whatItMeans: null};
@@ -3169,7 +3163,7 @@ CS.Activities.SpecifyTop1Strength.Controllers.Step2 = P(CS.Activities.Controller
     };
 });
 
-CS.Activities.SpecifyTop1Strength.Controllers.Step3 = P(CS.Activities.Controller, function (c, base) {
+CS.Activities.SpecifyTop1Strength.Controllers.Step3 = P(CS.Activities.Controller, function (c) {
     c.reactClass = React.createClass({displayName: "reactClass",
         getInitialState: function () {
             return {
@@ -3225,7 +3219,7 @@ CS.Activities.SpecifyTop1Strength.Controllers.Step3 = P(CS.Activities.Controller
         });
 
         // The submit button may still be in loading state when navigating back. We make sure it doesn't happen
-        this.$submitBtn.button('reset');
+        this.$submitBtn.button("reset");
     };
 
     c._saveAndNavigateNext = function (e) {
@@ -3241,7 +3235,7 @@ CS.Activities.SpecifyTop1Strength.Controllers.Step3 = P(CS.Activities.Controller
     };
 });
 
-CS.Activities.SpecifyTop2Strength.Controllers.Intro = P(CS.Activities.Controller, function (c, base) {
+CS.Activities.SpecifyTop2Strength.Controllers.Intro = P(CS.Activities.Controller, function (c) {
     c.reactClass = React.createClass({displayName: "reactClass",
         getInitialState: function () {
             return {title: null};
@@ -3284,14 +3278,14 @@ CS.Activities.SpecifyTop2Strength.Controllers.Intro = P(CS.Activities.Controller
         this.reactInstance.replaceState({title: this.activity.getTitle()});
     };
 
-    c._navigateNext = function (e) {
+    c._navigateNext = function () {
         this.activity.model.account.data.strengths[1].specify = this.activity.model.account.data.strengths[1].specify || {};
 
         this.navigateTo(this.activity.step1Controller.getRoute());
     };
 });
 
-CS.Activities.SpecifyTop2Strength.Controllers.Outro = P(CS.Activities.Controller, function (c, base) {
+CS.Activities.SpecifyTop2Strength.Controllers.Outro = P(CS.Activities.Controller, function (c) {
     c.reactClass = React.createClass({displayName: "reactClass",
         getInitialState: function () {
             return {
@@ -3342,7 +3336,7 @@ CS.Activities.SpecifyTop2Strength.Controllers.Outro = P(CS.Activities.Controller
     };
 });
 
-CS.Activities.SpecifyTop2Strength.Controllers.Step1 = P(CS.Activities.Controller, function (c, base) {
+CS.Activities.SpecifyTop2Strength.Controllers.Step1 = P(CS.Activities.Controller, function (c) {
     c.reactClass = React.createClass({displayName: "reactClass",
         getInitialState: function () {
             return {strengthName: null};
@@ -3402,7 +3396,7 @@ CS.Activities.SpecifyTop2Strength.Controllers.Step1 = P(CS.Activities.Controller
     };
 });
 
-CS.Activities.SpecifyTop2Strength.Controllers.Step2 = P(CS.Activities.Controller, function (c, base) {
+CS.Activities.SpecifyTop2Strength.Controllers.Step2 = P(CS.Activities.Controller, function (c) {
     c.reactClass = React.createClass({displayName: "reactClass",
         getInitialState: function () {
             return {whatItMeans: null};
@@ -3466,7 +3460,7 @@ CS.Activities.SpecifyTop2Strength.Controllers.Step2 = P(CS.Activities.Controller
     };
 });
 
-CS.Activities.SpecifyTop2Strength.Controllers.Step3 = P(CS.Activities.Controller, function (c, base) {
+CS.Activities.SpecifyTop2Strength.Controllers.Step3 = P(CS.Activities.Controller, function (c) {
     c.reactClass = React.createClass({displayName: "reactClass",
         getInitialState: function () {
             return {
@@ -3522,7 +3516,7 @@ CS.Activities.SpecifyTop2Strength.Controllers.Step3 = P(CS.Activities.Controller
         });
 
         // The submit button may still be in loading state when navigating back. We make sure it doesn't happen
-        this.$submitBtn.button('reset');
+        this.$submitBtn.button("reset");
     };
 
     c._saveAndNavigateNext = function (e) {
@@ -3538,7 +3532,7 @@ CS.Activities.SpecifyTop2Strength.Controllers.Step3 = P(CS.Activities.Controller
     };
 });
 
-CS.Activities.SpecifyTop3Strength.Controllers.Intro = P(CS.Activities.Controller, function (c, base) {
+CS.Activities.SpecifyTop3Strength.Controllers.Intro = P(CS.Activities.Controller, function (c) {
     c.reactClass = React.createClass({displayName: "reactClass",
         getInitialState: function () {
             return {title: null};
@@ -3581,14 +3575,14 @@ CS.Activities.SpecifyTop3Strength.Controllers.Intro = P(CS.Activities.Controller
         this.reactInstance.replaceState({title: this.activity.getTitle()});
     };
 
-    c._navigateNext = function (e) {
+    c._navigateNext = function () {
         this.activity.model.account.data.strengths[2].specify = this.activity.model.account.data.strengths[2].specify || {};
 
         this.navigateTo(this.activity.step1Controller.getRoute());
     };
 });
 
-CS.Activities.SpecifyTop3Strength.Controllers.Outro = P(CS.Activities.Controller, function (c, base) {
+CS.Activities.SpecifyTop3Strength.Controllers.Outro = P(CS.Activities.Controller, function (c) {
     c.reactClass = React.createClass({displayName: "reactClass",
         getInitialState: function () {
             return {
@@ -3639,7 +3633,7 @@ CS.Activities.SpecifyTop3Strength.Controllers.Outro = P(CS.Activities.Controller
     };
 });
 
-CS.Activities.SpecifyTop3Strength.Controllers.Step1 = P(CS.Activities.Controller, function (c, base) {
+CS.Activities.SpecifyTop3Strength.Controllers.Step1 = P(CS.Activities.Controller, function (c) {
     c.reactClass = React.createClass({displayName: "reactClass",
         getInitialState: function () {
             return {strengthName: null};
@@ -3699,7 +3693,7 @@ CS.Activities.SpecifyTop3Strength.Controllers.Step1 = P(CS.Activities.Controller
     };
 });
 
-CS.Activities.SpecifyTop3Strength.Controllers.Step2 = P(CS.Activities.Controller, function (c, base) {
+CS.Activities.SpecifyTop3Strength.Controllers.Step2 = P(CS.Activities.Controller, function (c) {
     c.reactClass = React.createClass({displayName: "reactClass",
         getInitialState: function () {
             return {whatItMeans: null};
@@ -3763,7 +3757,7 @@ CS.Activities.SpecifyTop3Strength.Controllers.Step2 = P(CS.Activities.Controller
     };
 });
 
-CS.Activities.SpecifyTop3Strength.Controllers.Step3 = P(CS.Activities.Controller, function (c, base) {
+CS.Activities.SpecifyTop3Strength.Controllers.Step3 = P(CS.Activities.Controller, function (c) {
     c.reactClass = React.createClass({displayName: "reactClass",
         getInitialState: function () {
             return {
@@ -3819,7 +3813,7 @@ CS.Activities.SpecifyTop3Strength.Controllers.Step3 = P(CS.Activities.Controller
         });
 
         // The submit button may still be in loading state when navigating back. We make sure it doesn't happen
-        this.$submitBtn.button('reset');
+        this.$submitBtn.button("reset");
     };
 
     c._saveAndNavigateNext = function (e) {
@@ -3876,15 +3870,15 @@ CS.Activities.Controller.NextStep = React.createClass({displayName: "NextStep",
             );
     },
 
-    _navigateBack: function (e) {
+    _navigateBack: function () {
         history.back();
     },
 
-    _launchNextActivity: function (e) {
+    _launchNextActivity: function () {
         location.hash = "activities/" + this.props.activity.getClassName();
     },
 
-    _navigateToInsights: function (e) {
+    _navigateToInsights: function () {
         location.hash = "insights";
     }
 });
@@ -3895,7 +3889,7 @@ CS.Activities.Controller.NextStep = React.createClass({displayName: "NextStep",
 
         this.detailsController = CS.Standouts.Strengths.Controllers.Details("standouts/" + this.className + "/details", this);
 
-        CS.router.get(this.detailsController.route, function (req) {
+        CS.router.get(this.detailsController.route, function () {
             this.detailsController.render();
         }.bind(this));
     };
@@ -3906,7 +3900,7 @@ CS.Activities.Controller.NextStep = React.createClass({displayName: "NextStep",
 });
 
 CS.Standouts.Strengths.Controllers = {};
-;CS.Standouts.Strengths.Controllers.Details = P(CS.Controllers.OnePageWebapp, function (c, base) {
+;CS.Standouts.Strengths.Controllers.Details = P(CS.Controllers.OnePageWebapp, function (c) {
     c.reactClass = React.createClass({displayName: "reactClass",
         render: function () {
             return (
@@ -4000,10 +3994,10 @@ CS.Standouts.Strengths.Controllers = {};
 
     c._initElements = function () {
         // TODO: avoid duplication in the inList controller
-        this.$headerNav = $('[role="navigation"]');
+        this.$headerNav = $("[role='navigation']");
         this.$activitiesTab = this.$headerNav.find("#activities-tab");
 
-        this.$tabPanels = $('[role="tabpanel"]');
+        this.$tabPanels = $("[role='tabpanel']");
         this.$activitiesPanel = this.$tabPanels.filter("#activit1es");
 
         this.$goBackBtn = this.$el.find(".js-go-back");
@@ -4021,26 +4015,26 @@ CS.Standouts.Strengths.Controllers = {};
         this.$confirmDeleteBtn.click($.proxy(this._removeStrengthAndNavigateBack, this));
     };
 
-    c._activateActivitiesTabAndNavigateToActivity = function(e) {
+    c._activateActivitiesTabAndNavigateToActivity = function() {
         this.navigateTo("activities/SpecifyTop" + (this.standout.detailData.strengthIndex + 1) + "Strength");
 
         this.$tabPanels.removeClass("active");
-        this.$activitiesTab.tab('show');
+        this.$activitiesTab.tab("show");
         this.$activitiesPanel.addClass("active");
         $("#c1-and-activity-feed").hide();
         $("#current-activity").show();
     };
 
-    c._showDeletePopup = function(e) {
+    c._showDeletePopup = function() {
         this.$modal.modal();
     };
 
-    c._removeStrengthAndNavigateBack = function (e) {
+    c._removeStrengthAndNavigateBack = function () {
         var accountData = _.clone(CS.account.data, true);
 
         accountData.strengths.splice(this.standout.detailData.strengthIndex, 1);
 
-        this.$confirmDeleteBtn.button('loading');
+        this.$confirmDeleteBtn.button("loading");
 
         var type = "POST";
         var url = "/api/account-data";
@@ -4050,19 +4044,19 @@ CS.Standouts.Strengths.Controllers = {};
             type: type,
             contentType: "application/json",
             data: JSON.stringify(accountData),
-            success: function (data, textStatus, jqXHR) {
+            success: function () {
                 CS.account.data = accountData;
                 this.navigateBack();
             }.bind(this),
-            error: function (jqXHR, textStatus, errorThrown) {
-                this.$confirmDeleteBtn.button('reset');
-                alert('AJAX failure doing a ' + type + ' request to "' + url + '"');
+            error: function () {
+                this.$confirmDeleteBtn.button("reset");
+                alert("AJAX failure doing a " + type + " request to \"" + url + "\"");
             }.bind(this)
         });
     };
 });
 
-CS.Standouts.Strengths.Controllers.InList = P(CS.Controllers.OnePageWebapp, function (c, base) {
+CS.Standouts.Strengths.Controllers.InList = P(CS.Controllers.OnePageWebapp, function (c) {
     c.reactClass = React.createClass({displayName: "reactClass",
         render: function () {
             var sections = this.props.strengths.map(function (strength) {
@@ -4149,10 +4143,10 @@ CS.Standouts.Strengths.Controllers.InList = P(CS.Controllers.OnePageWebapp, func
     };
 
     c._initElements = function () {
-        this.$headerNav = $('[role="navigation"]');
+        this.$headerNav = $("[role='navigation']");
         this.$activitiesTab = this.$headerNav.find("#activities-tab");
 
-        this.$tabPanels = $('[role="tabpanel"]');
+        this.$tabPanels = $("[role='tabpanel']");
         this.$activitiesPanel = this.$tabPanels.filter("#activit1es");
 
         this.$alert = this.$el.find(".alert");
@@ -4164,7 +4158,7 @@ CS.Standouts.Strengths.Controllers.InList = P(CS.Controllers.OnePageWebapp, func
     };
 
     c._initEvents = function () {
-        this.$alert.on('close.bs.alert', $.proxy(this._onAlertClose, this));
+        this.$alert.on("close.bs.alert", $.proxy(this._onAlertClose, this));
         this.$detailsBtn.click($.proxy(this._showDetails, this));
         this.$startExploringBtn.click($.proxy(this._activateActivitiesTabAndNavigateToActivity, this));
     };
@@ -4203,7 +4197,7 @@ CS.Standouts.Strengths.Controllers.InList = P(CS.Controllers.OnePageWebapp, func
         this.navigateTo("activities/SpecifyTop" + (sortedStrengthIndex + 1) + "Strength");
 
         this.$tabPanels.removeClass("active");
-        this.$activitiesTab.tab('show');
+        this.$activitiesTab.tab("show");
         this.$activitiesPanel.addClass("active");
     };
 });

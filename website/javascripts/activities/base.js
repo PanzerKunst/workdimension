@@ -20,7 +20,7 @@ CS.Activities.Base = P(function (c) {
     c._initElements = function () {
         this.$activitiesTab = $("#activities-tab");
 
-        this.$tabPanels = $('[role="tabpanel"]');
+        this.$tabPanels = $("[role='tabpanel']");
         this.$activitiesPanel = this.$tabPanels.filter("#activit1es");
 
         this.$feedSection = this.$activitiesPanel.children("#c1-and-activity-feed");
@@ -56,8 +56,8 @@ CS.Activities.Base = P(function (c) {
     };
 
     c.initRouting = function (controllers) {
-        controllers.forEach(function (controller, index) {
-            CS.router.get(controller.getRoute(), function (req) {
+        controllers.forEach(function (controller) {
+            CS.router.get(controller.getRoute(), function () {
                 this.renderController(controller.route);
             }.bind(this));
         }.bind(this));
@@ -66,7 +66,7 @@ CS.Activities.Base = P(function (c) {
     c.renderController = function (route, data) {
         if (!this.$activitiesPanel.hasClass("active")) {
             this.$tabPanels.removeClass("active");
-            this.$activitiesTab.tab('show');
+            this.$activitiesTab.tab("show");
             this.$activitiesPanel.addClass("active");
         }
 

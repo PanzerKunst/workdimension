@@ -30,7 +30,7 @@ CS.Controllers.HeaderModal.SignIn = P(CS.Controllers.HeaderModal, function (c, b
         this.validator.hideErrorMessage(this.$wrongCredentialsError);
 
         if (this.validator.isValid()) {
-            this.$submitBtn.button('loading');
+            this.$submitBtn.button("loading");
 
             var data = {
                 emailAddress: this.$emailField.val().trim(),
@@ -45,17 +45,17 @@ CS.Controllers.HeaderModal.SignIn = P(CS.Controllers.HeaderModal, function (c, b
                 type: type,
                 contentType: "application/json",
                 data: JSON.stringify(data),
-                success: function (data, textStatus, jqXHR) {
+                success: function (d4ta, textStatus, jqXHR) {
                     if (jqXHR.status === this.httpStatusCode.noContent) {
-                        this.$submitBtn.button('reset');
+                        this.$submitBtn.button("reset");
                         this.validator.showErrorMessage(this.$wrongCredentialsError);
                     } else {
-                        this.onFormSubmitSuccess(data);
+                        this.onFormSubmitSuccess(d4ta);
                     }
                 }.bind(this),
-                error: function (jqXHR, textStatus, errorThrown) {
-                    this.$submitBtn.button('reset');
-                    alert('AJAX failure doing a ' + type + ' request to "' + url + '"');
+                error: function () {
+                    this.$submitBtn.button("reset");
+                    alert("AJAX failure doing a " + type + " request to \"" + url + "\"");
                 }.bind(this)
             });
         }
@@ -63,6 +63,6 @@ CS.Controllers.HeaderModal.SignIn = P(CS.Controllers.HeaderModal, function (c, b
 
     c.setSwitchFormIdAndCloseModal = function() {
         this.switchFormId = "register-form";
-        this.$modal.modal('hide');
+        this.$modal.modal("hide");
     };
 });

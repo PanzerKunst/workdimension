@@ -1,4 +1,4 @@
-CS.Activities.IdentifyStrengths.Controllers.Step1 = P(CS.Activities.Controller, function (c, base) {
+CS.Activities.IdentifyStrengths.Controllers.Step1 = P(CS.Activities.Controller, function (c) {
     c.reactClass = React.createClass({
         getInitialState: function () {
             return {strengths: []};
@@ -130,7 +130,7 @@ CS.Activities.IdentifyStrengths.Controllers.Step1 = P(CS.Activities.Controller, 
         return false;
     };
 
-    c._saveAndNavigateNext = function (e) {
+    c._saveAndNavigateNext = function () {
         if (!this._isThereAtLeastOneStrengthInList()) {
             this.validator.showErrorMessage(this.$oneStrengthMinError);
         } else {

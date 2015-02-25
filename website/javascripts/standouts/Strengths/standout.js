@@ -4,7 +4,7 @@ CS.Standouts.Strengths = P(function (c) {
 
         this.detailsController = CS.Standouts.Strengths.Controllers.Details("standouts/" + this.className + "/details", this);
 
-        CS.router.get(this.detailsController.route, function (req) {
+        CS.router.get(this.detailsController.route, function () {
             this.detailsController.render();
         }.bind(this));
     };

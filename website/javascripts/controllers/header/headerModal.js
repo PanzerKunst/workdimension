@@ -1,4 +1,4 @@
-CS.Controllers.HeaderModal = P(CS.Controllers.OnePageWebapp, function (c, base) {
+CS.Controllers.HeaderModal = P(CS.Controllers.OnePageWebapp, function (c) {
     c.init = function () {
         this.initElements();
         this.initValidation();
@@ -21,7 +21,7 @@ CS.Controllers.HeaderModal = P(CS.Controllers.OnePageWebapp, function (c, base) 
     };
 
     c.initEvents = function () {
-        this.$modal.on('hidden.bs.modal', $.proxy(this._launchOtherModalIfNeeded, this));
+        this.$modal.on("hidden.bs.modal", $.proxy(this._launchOtherModalIfNeeded, this));
         this.$launchLink.click($.proxy(this._launchModal, this));
         this.$switchModalLink.click($.proxy(this.setSwitchFormIdAndCloseModal, this));
         this.$form.submit($.proxy(this._clickOnSubmitBtn, this));
@@ -42,17 +42,17 @@ CS.Controllers.HeaderModal = P(CS.Controllers.OnePageWebapp, function (c, base) 
 
         this.navigateTo("activities");
 
-        this.$modal.modal('hide');
+        this.$modal.modal("hide");
 
         this._resetForm();
     };
 
     c._resetForm = function () {
         this.$form[0].reset();
-        this.$submitBtn.button('reset');
+        this.$submitBtn.button("reset");
     };
 
-    c._launchModal = function (e) {
+    c._launchModal = function () {
         this.$modalTitles.hide();
         this.$modalForms.hide();
         this.$modalSubmitButtons.hide();
@@ -64,7 +64,7 @@ CS.Controllers.HeaderModal = P(CS.Controllers.OnePageWebapp, function (c, base) 
         this.$modal.modal();
     };
 
-    c._launchOtherModalIfNeeded = function (e) {
+    c._launchOtherModalIfNeeded = function () {
         if (this.switchFormId) {
             if (this.switchFormId === "register-form") {
                 this.$registerLink.click();

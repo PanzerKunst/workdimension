@@ -1,4 +1,4 @@
-CS.Controllers.ActivityFeed = P(CS.Controllers.Base, function (c, base) {
+CS.Controllers.ActivityFeed = P(CS.Controllers.Base, function (c) {
     c.reactClass = React.createClass({displayName: "reactClass",
         getInitialState: function () {
             return {
@@ -126,9 +126,9 @@ CS.Controllers.ActivityFeed = P(CS.Controllers.Base, function (c, base) {
             }
         ];
 
-        this.c1Instances = this.c1FeedItems.map(function (item, index) {
+        this.c1Instances = this.c1FeedItems.map(function (item) {
             return CS.C1s[item.className](item.className, item.title);
-        }.bind(this));
+        });
 
         CS.activitiesModel = CS.Models.Activities(this.activityFeedItems);
 
@@ -143,7 +143,7 @@ CS.Controllers.ActivityFeed = P(CS.Controllers.Base, function (c, base) {
     };
 
     c._initEvents = function() {
-        this.$introToActivitiesAlert.on('close.bs.alert', $.proxy(this._onIntroToActivitiesAlertClose, this));
+        this.$introToActivitiesAlert.on("close.bs.alert", $.proxy(this._onIntroToActivitiesAlertClose, this));
     };
 
     c.initIntroToActivitiesAlert = function () {
@@ -158,7 +158,7 @@ CS.Controllers.ActivityFeed = P(CS.Controllers.Base, function (c, base) {
         var doableC1sAndActivities = [];
         var doneC1sAndActivities = [];
 
-        this.c1Instances.forEach(function (c1Instance, index) {
+        this.c1Instances.forEach(function (c1Instance) {
             var isDone = CS.account.data && CS.account.data[c1Instance.getClassName()];
 
             if (isDone) {
@@ -172,9 +172,9 @@ CS.Controllers.ActivityFeed = P(CS.Controllers.Base, function (c, base) {
                     instance: c1Instance
                 });
             }
-        }.bind(this));
+        });
 
-        CS.activitiesModel.getDoable().forEach(function (activityInstance, index) {
+        CS.activitiesModel.getDoable().forEach(function (activityInstance) {
             var feedItem = _.find(this.activityFeedItems, function (item) {
                 return item.className === activityInstance.getClassName();
             });
@@ -187,7 +187,7 @@ CS.Controllers.ActivityFeed = P(CS.Controllers.Base, function (c, base) {
             });
         }.bind(this));
 
-        CS.activitiesModel.getDone().forEach(function (activityInstance, index) {
+        CS.activitiesModel.getDone().forEach(function (activityInstance) {
             var feedItem = _.find(this.activityFeedItems, function (item) {
                 return item.className === activityInstance.getClassName();
             });
@@ -251,8 +251,8 @@ CS.Controllers.ActivityFeedItem = React.createClass({displayName: "ActivityFeedI
             )
             );
     },
-    
-    _handleClick: function (e) {
+
+    _handleClick: function () {
         location.hash = "activities/" + this.props.activity.instance.getClassName();
     }
 });
@@ -295,7 +295,7 @@ CS.Controllers.C1FeedItem = React.createClass({displayName: "C1FeedItem",
         return this._getClassName() + "-input-form";
     },
 
-    componentDidMount: function (prevProps, prevState) {
+    componentDidMount: function () {
         this.account = {
             data: _.clone(CS.account.data, true) || {}
         };
@@ -324,7 +324,7 @@ CS.Controllers.C1FeedItem = React.createClass({displayName: "C1FeedItem",
         e.preventDefault();
 
         if (this.validator.isValid()) {
-            this.$submitBtn.button('loading');
+            this.$submitBtn.button("loading");
 
             this.account.data[this._getClassName()] = this.$inputField.val().trim();
 
@@ -336,12 +336,12 @@ CS.Controllers.C1FeedItem = React.createClass({displayName: "C1FeedItem",
                 type: type,
                 contentType: "application/json",
                 data: JSON.stringify(this.account.data),
-                success: function (data, textStatus, jqXHR) {
+                success: function () {
                     location.reload();
-                }.bind(this),
-                error: function (jqXHR, textStatus, errorThrown) {
-                    this.$submitBtn.button('reset');
-                    alert('AJAX failure doing a ' + type + ' request to "' + url + '"');
+                },
+                error: function () {
+                    this.$submitBtn.button("reset");
+                    alert("AJAX failure doing a " + type + " request to \"" + url + "\"");
                 }.bind(this)
             });
         }
@@ -401,14 +401,14 @@ CS.Controllers.Standouts = P(function (c) {
             url: url,
             type: type,
             dataType: "json",
-            success: function (data, textStatus, jqXHR) {
-                var itemInstancesCustomStandouts = data.map(function (customActivity, index) {
+            success: function (data) {
+                var itemInstancesCustomStandouts = data.map(function (customActivity) {
                     return CS.Standouts.Custom(customActivity.className, customActivity.title);
-                }.bind(this));
+                });
 
-                var itemInstancesClassicStandouts = this.itemClassNames.map(function (className, index) {
+                var itemInstancesClassicStandouts = this.itemClassNames.map(function (className) {
                     return CS.Standouts[className](className);
-                }.bind(this));
+                });
 
                 var allItemInstances = _.union(itemInstancesCustomStandouts, itemInstancesClassicStandouts);
 
@@ -418,13 +418,13 @@ CS.Controllers.Standouts = P(function (c) {
                     standoutInstances: allItemInstances
                 });
 
-                allItemInstances.forEach(function(instance, index) {
+                allItemInstances.forEach(function(instance) {
                     instance.run();
-                }.bind(this));
+                });
             }.bind(this),
-            error: function (jqXHR, textStatus, errorThrown) {
-                alert('AJAX failure doing a ' + type + ' request to "' + url + '"');
-            }.bind(this)
+            error: function () {
+                alert("AJAX failure doing a " + type + " request to \"" + url + "\"");
+            }
         });
     };
 });

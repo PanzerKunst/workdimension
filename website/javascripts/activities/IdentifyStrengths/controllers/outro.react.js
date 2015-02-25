@@ -1,4 +1,4 @@
-CS.Activities.IdentifyStrengths.Controllers.Outro = P(CS.Activities.Controller, function (c, base) {
+CS.Activities.IdentifyStrengths.Controllers.Outro = P(CS.Activities.Controller, function (c) {
     c.reactClass = React.createClass({
         getInitialState: function () {
             return {
@@ -20,7 +20,7 @@ CS.Activities.IdentifyStrengths.Controllers.Outro = P(CS.Activities.Controller, 
                             return (
                                 <li>{strength.name}</li>
                                 );
-                        }.bind(this))}
+                        })}
                     </ol>
 
                     <div className="strength-taglist-container">
@@ -33,7 +33,7 @@ CS.Activities.IdentifyStrengths.Controllers.Outro = P(CS.Activities.Controller, 
                                         </span>
                                     </li>
                                     );
-                            }.bind(this))}
+                            })}
                         </ul>
                     </div>
 

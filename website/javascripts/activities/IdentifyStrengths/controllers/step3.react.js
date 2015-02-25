@@ -1,4 +1,4 @@
-CS.Activities.IdentifyStrengths.Controllers.Step3 = P(CS.Activities.Controller, function (c, base) {
+CS.Activities.IdentifyStrengths.Controllers.Step3 = P(CS.Activities.Controller, function (c) {
     c.reactClass = React.createClass({
         getInitialState: function () {
             return {strengths: []};
@@ -29,7 +29,7 @@ CS.Activities.IdentifyStrengths.Controllers.Step3 = P(CS.Activities.Controller, 
 
     c.initElements = function () {
         this.$form = this.$el.find("form");
-        this.$rangeInputs = this.$form.find('[type="range"]');
+        this.$rangeInputs = this.$form.find("[type='range']");
         this.$goBackBtn = this.$form.find(".btn-default");
     };
 
@@ -37,7 +37,7 @@ CS.Activities.IdentifyStrengths.Controllers.Step3 = P(CS.Activities.Controller, 
         this.$form.submit($.proxy(this._saveAndNavigateNext, this));
         this.$goBackBtn.click($.proxy(this.navigateBack, this));
 
-        this.reactInstance.componentDidUpdate = function (prevProps, prevState) {
+        this.reactInstance.componentDidUpdate = function () {
             this.initElements();
             this._initSliders();
         }.bind(this);

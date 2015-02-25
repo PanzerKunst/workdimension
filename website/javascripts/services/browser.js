@@ -1,6 +1,6 @@
 CS.Services.Browser = {
     addUserAgentAttributeToHtmlTag: function() {
-        document.documentElement.setAttribute('data-useragent', navigator.userAgent);
+        document.documentElement.setAttribute("data-useragent", navigator.userAgent);
     },
 
     isMediumScreen: function () {

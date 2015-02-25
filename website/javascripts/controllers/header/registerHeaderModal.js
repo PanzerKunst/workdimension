@@ -35,7 +35,7 @@ CS.Controllers.HeaderModal.Register = P(CS.Controllers.HeaderModal, function (c,
         this.validator.hideErrorMessage(this.$otherFormErrors);
 
         if (this.validator.isValid() && this._arePasswordsMatching()) {
-            this.$submitBtn.button('loading');
+            this.$submitBtn.button("loading");
 
             var data = {
                 emailAddress: this.$emailField.val().trim(),
@@ -50,17 +50,17 @@ CS.Controllers.HeaderModal.Register = P(CS.Controllers.HeaderModal, function (c,
                 type: type,
                 contentType: "application/json",
                 data: JSON.stringify(data),
-                success: function (data, textStatus, jqXHR) {
+                success: function (d4ta, textStatus, jqXHR) {
                     if (jqXHR.status === this.httpStatusCode.emailAlreadyRegistered) {
-                        this.$submitBtn.button('reset');
+                        this.$submitBtn.button("reset");
                         this.validator.showErrorMessage(this.$emailAlreadyRegisteredError);
                     } else {
-                        this.onFormSubmitSuccess(data);
+                        this.onFormSubmitSuccess(d4ta);
                     }
                 }.bind(this),
-                error: function (jqXHR, textStatus, errorThrown) {
-                    this.$submitBtn.button('reset');
-                    alert('AJAX failure doing a ' + type + ' request to "' + url + '"');
+                error: function () {
+                    this.$submitBtn.button("reset");
+                    alert("AJAX failure doing a " + type + " request to \"" + url + "\"");
                 }.bind(this)
             });
         }
@@ -68,7 +68,7 @@ CS.Controllers.HeaderModal.Register = P(CS.Controllers.HeaderModal, function (c,
 
     c.setSwitchFormIdAndCloseModal = function() {
         this.switchFormId = "sign-in-form";
-        this.$modal.modal('hide');
+        this.$modal.modal("hide");
     };
 
     c._arePasswordsMatching = function () {

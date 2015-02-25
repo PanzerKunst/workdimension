@@ -1,4 +1,4 @@
-CS.Controllers.CustomActivity = P(CS.Controllers.Base, function (c, base) {
+CS.Controllers.CustomActivity = P(CS.Controllers.Base, function (c) {
     c.init = function () {
         this._initElements();
         this._initValidation();
@@ -57,14 +57,14 @@ CS.Controllers.CustomActivity = P(CS.Controllers.Base, function (c, base) {
                     type: type,
                     contentType: "application/json",
                     data: JSON.stringify(data),
-                    success: function (data, textStatus, jqXHR) {
+                    success: function () {
                         this._resetForm();
 
                         CS.Services.Animator.fadeIn(this.$successAlert);
                     }.bind(this),
-                    error: function (jqXHR, textStatus, errorThrown) {
-                        this.$submitBtn.button('reset');
-                        alert('AJAX failure doing a ' + type + ' request to "' + url + '"');
+                    error: function () {
+                        this.$submitBtn.button("reset");
+                        alert("AJAX failure doing a " + type + " request to \"" + url + "\"");
                     }.bind(this)
                 });
             }.bind(this));
@@ -96,15 +96,15 @@ CS.Controllers.CustomActivity = P(CS.Controllers.Base, function (c, base) {
                         }
                     }
                 }.bind(this),
-                error: function (jqXHR, textStatus, errorThrown) {
-                    alert('AJAX failure doing a ' + type + ' request to "' + url + '"');
-                }.bind(this)
+                error: function () {
+                    alert("AJAX failure doing a " + type + " request to \"" + url + "\"");
+                }
             });
         }
     };
 
     c._resetForm = function() {
-        this.$submitBtn.button('reset');
+        this.$submitBtn.button("reset");
         this.$form[0].reset();
         this.$formGroupEmail.removeClass("has-success");
     };

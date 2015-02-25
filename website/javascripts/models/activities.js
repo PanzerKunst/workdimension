@@ -1,8 +1,8 @@
 CS.Models.Activities = P(function (c) {
     c.init = function (activityFeedItems) {
-        this.classicActivityInstances = activityFeedItems.map(function (item, index) {
+        this.classicActivityInstances = activityFeedItems.map(function (item) {
             return CS.Activities[item.className](item.className, item.title, item.description);
-        }.bind(this));
+        });
     };
 
     c.updateActivityStatus = function (onComplete) {
@@ -42,12 +42,12 @@ CS.Models.Activities = P(function (c) {
             url: url,
             type: type,
             dataType: "json",
-            success: function (data, textStatus, jqXHR) {
+            success: function (data) {
                 this._updateActivityStatus(data, onComplete);
             }.bind(this),
-            error: function (jqXHR, textStatus, errorThrown) {
-                alert('AJAX failure doing a ' + type + ' request to "' + url + '"');
-            }.bind(this)
+            error: function () {
+                alert("AJAX failure doing a " + type + " request to \"" + url + "\"");
+            }
         });
     };
 
@@ -67,7 +67,7 @@ CS.Models.Activities = P(function (c) {
         }.bind(this));
 
         // We handle instances which didn't have any activity data
-        this.classicActivityInstances.forEach(function (instance, index) {
+        this.classicActivityInstances.forEach(function (instance) {
             var isTodo = _.isEmpty(_.find(this.activities.done, function (activity) {
                 return activity.getClassName() === instance.getClassName();
             }));

@@ -1,4 +1,4 @@
-CS.Controllers.OnePageWebapp = P(CS.Controllers.Base, function (c, base) {
+CS.Controllers.OnePageWebapp = P(CS.Controllers.Base, function (c) {
     c.navigateTo = function (route) {
         location.hash = route;
     };

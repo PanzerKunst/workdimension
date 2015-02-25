@@ -20,7 +20,7 @@ CS.Activities.Controller = P(CS.Controllers.OnePageWebapp, function (c, base) {
         if (!this.isRendered) {
             var uniqueId = _.uniqueId();
 
-            this.activity.get$el().append('<div class="activity-page ' + this.activity.getClassName() + '" id="' + uniqueId + '"></div>');
+            this.activity.get$el().append("<div class=\"activity-page " + this.activity.getClassName() + "\" id=\"" + uniqueId + "\"></div>");
             this.$el = $("#" + uniqueId);
 
             this.reactInstance = React.render(
@@ -55,7 +55,7 @@ CS.Activities.Controller = P(CS.Controllers.OnePageWebapp, function (c, base) {
                 className: this.activity.getClassName(),
                 accountData: this.activity.model.account.data
             }),
-            success: function (data, textStatus, jqXHR) {
+            success: function () {
                 CS.account.data = this.activity.model.account.data;
 
                 CS.activitiesModel.updateActivityStatus(function() {
@@ -68,12 +68,12 @@ CS.Activities.Controller = P(CS.Controllers.OnePageWebapp, function (c, base) {
                     }
                 }.bind(this));
             }.bind(this),
-            error: function (jqXHR, textStatus, errorThrown) {
+            error: function () {
                 if (this.$submitBtn) {
-                    this.$submitBtn.button('reset');
+                    this.$submitBtn.button("reset");
                 }
 
-                alert('AJAX failure doing a ' + type + ' request to "' + url + '"');
+                alert("AJAX failure doing a " + type + " request to \"" + url + "\"");
             }.bind(this)
         });
     };

@@ -5,7 +5,7 @@ CS.Standouts = {};
 
         this.detailsController = CS.Standouts.Strengths.Controllers.Details("standouts/" + this.className + "/details", this);
 
-        CS.router.get(this.detailsController.route, function (req) {
+        CS.router.get(this.detailsController.route, function () {
             this.detailsController.render();
         }.bind(this));
     };
@@ -16,7 +16,7 @@ CS.Standouts = {};
 });
 
 CS.Standouts.Strengths.Controllers = {};
-;CS.Standouts.Strengths.Controllers.Details = P(CS.Controllers.OnePageWebapp, function (c, base) {
+;CS.Standouts.Strengths.Controllers.Details = P(CS.Controllers.OnePageWebapp, function (c) {
     c.reactClass = React.createClass({displayName: "reactClass",
         render: function () {
             return (
@@ -110,10 +110,10 @@ CS.Standouts.Strengths.Controllers = {};
 
     c._initElements = function () {
         // TODO: avoid duplication in the inList controller
-        this.$headerNav = $('[role="navigation"]');
+        this.$headerNav = $("[role='navigation']");
         this.$activitiesTab = this.$headerNav.find("#activities-tab");
 
-        this.$tabPanels = $('[role="tabpanel"]');
+        this.$tabPanels = $("[role='tabpanel']");
         this.$activitiesPanel = this.$tabPanels.filter("#activit1es");
 
         this.$goBackBtn = this.$el.find(".js-go-back");
@@ -131,26 +131,26 @@ CS.Standouts.Strengths.Controllers = {};
         this.$confirmDeleteBtn.click($.proxy(this._removeStrengthAndNavigateBack, this));
     };
 
-    c._activateActivitiesTabAndNavigateToActivity = function(e) {
+    c._activateActivitiesTabAndNavigateToActivity = function() {
         this.navigateTo("activities/SpecifyTop" + (this.standout.detailData.strengthIndex + 1) + "Strength");
 
         this.$tabPanels.removeClass("active");
-        this.$activitiesTab.tab('show');
+        this.$activitiesTab.tab("show");
         this.$activitiesPanel.addClass("active");
         $("#c1-and-activity-feed").hide();
         $("#current-activity").show();
     };
 
-    c._showDeletePopup = function(e) {
+    c._showDeletePopup = function() {
         this.$modal.modal();
     };
 
-    c._removeStrengthAndNavigateBack = function (e) {
+    c._removeStrengthAndNavigateBack = function () {
         var accountData = _.clone(CS.account.data, true);
 
         accountData.strengths.splice(this.standout.detailData.strengthIndex, 1);
 
-        this.$confirmDeleteBtn.button('loading');
+        this.$confirmDeleteBtn.button("loading");
 
         var type = "POST";
         var url = "/api/account-data";
@@ -160,19 +160,19 @@ CS.Standouts.Strengths.Controllers = {};
             type: type,
             contentType: "application/json",
             data: JSON.stringify(accountData),
-            success: function (data, textStatus, jqXHR) {
+            success: function () {
                 CS.account.data = accountData;
                 this.navigateBack();
             }.bind(this),
-            error: function (jqXHR, textStatus, errorThrown) {
-                this.$confirmDeleteBtn.button('reset');
-                alert('AJAX failure doing a ' + type + ' request to "' + url + '"');
+            error: function () {
+                this.$confirmDeleteBtn.button("reset");
+                alert("AJAX failure doing a " + type + " request to \"" + url + "\"");
             }.bind(this)
         });
     };
 });
 
-CS.Standouts.Strengths.Controllers.InList = P(CS.Controllers.OnePageWebapp, function (c, base) {
+CS.Standouts.Strengths.Controllers.InList = P(CS.Controllers.OnePageWebapp, function (c) {
     c.reactClass = React.createClass({displayName: "reactClass",
         render: function () {
             var sections = this.props.strengths.map(function (strength) {
@@ -259,10 +259,10 @@ CS.Standouts.Strengths.Controllers.InList = P(CS.Controllers.OnePageWebapp, func
     };
 
     c._initElements = function () {
-        this.$headerNav = $('[role="navigation"]');
+        this.$headerNav = $("[role='navigation']");
         this.$activitiesTab = this.$headerNav.find("#activities-tab");
 
-        this.$tabPanels = $('[role="tabpanel"]');
+        this.$tabPanels = $("[role='tabpanel']");
         this.$activitiesPanel = this.$tabPanels.filter("#activit1es");
 
         this.$alert = this.$el.find(".alert");
@@ -274,7 +274,7 @@ CS.Standouts.Strengths.Controllers.InList = P(CS.Controllers.OnePageWebapp, func
     };
 
     c._initEvents = function () {
-        this.$alert.on('close.bs.alert', $.proxy(this._onAlertClose, this));
+        this.$alert.on("close.bs.alert", $.proxy(this._onAlertClose, this));
         this.$detailsBtn.click($.proxy(this._showDetails, this));
         this.$startExploringBtn.click($.proxy(this._activateActivitiesTabAndNavigateToActivity, this));
     };
@@ -313,7 +313,7 @@ CS.Standouts.Strengths.Controllers.InList = P(CS.Controllers.OnePageWebapp, func
         this.navigateTo("activities/SpecifyTop" + (sortedStrengthIndex + 1) + "Strength");
 
         this.$tabPanels.removeClass("active");
-        this.$activitiesTab.tab('show');
+        this.$activitiesTab.tab("show");
         this.$activitiesPanel.addClass("active");
     };
 });

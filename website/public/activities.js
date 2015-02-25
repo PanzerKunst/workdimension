@@ -20,7 +20,7 @@ CS.Activities.Base = P(function (c) {
     c._initElements = function () {
         this.$activitiesTab = $("#activities-tab");
 
-        this.$tabPanels = $('[role="tabpanel"]');
+        this.$tabPanels = $("[role='tabpanel']");
         this.$activitiesPanel = this.$tabPanels.filter("#activit1es");
 
         this.$feedSection = this.$activitiesPanel.children("#c1-and-activity-feed");
@@ -56,8 +56,8 @@ CS.Activities.Base = P(function (c) {
     };
 
     c.initRouting = function (controllers) {
-        controllers.forEach(function (controller, index) {
-            CS.router.get(controller.getRoute(), function (req) {
+        controllers.forEach(function (controller) {
+            CS.router.get(controller.getRoute(), function () {
                 this.renderController(controller.route);
             }.bind(this));
         }.bind(this));
@@ -66,7 +66,7 @@ CS.Activities.Base = P(function (c) {
     c.renderController = function (route, data) {
         if (!this.$activitiesPanel.hasClass("active")) {
             this.$tabPanels.removeClass("active");
-            this.$activitiesTab.tab('show');
+            this.$activitiesTab.tab("show");
             this.$activitiesPanel.addClass("active");
         }
 
@@ -112,7 +112,7 @@ CS.Activities.Base.pageAnimationDuration = 0.15;
         if (!this.isRendered) {
             var uniqueId = _.uniqueId();
 
-            this.activity.get$el().append('<div class="activity-page ' + this.activity.getClassName() + '" id="' + uniqueId + '"></div>');
+            this.activity.get$el().append("<div class=\"activity-page " + this.activity.getClassName() + "\" id=\"" + uniqueId + "\"></div>");
             this.$el = $("#" + uniqueId);
 
             this.reactInstance = React.render(
@@ -147,7 +147,7 @@ CS.Activities.Base.pageAnimationDuration = 0.15;
                 className: this.activity.getClassName(),
                 accountData: this.activity.model.account.data
             }),
-            success: function (data, textStatus, jqXHR) {
+            success: function () {
                 CS.account.data = this.activity.model.account.data;
 
                 CS.activitiesModel.updateActivityStatus(function() {
@@ -160,12 +160,12 @@ CS.Activities.Base.pageAnimationDuration = 0.15;
                     }
                 }.bind(this));
             }.bind(this),
-            error: function (jqXHR, textStatus, errorThrown) {
+            error: function () {
                 if (this.$submitBtn) {
-                    this.$submitBtn.button('reset');
+                    this.$submitBtn.button("reset");
                 }
 
-                alert('AJAX failure doing a ' + type + ' request to "' + url + '"');
+                alert("AJAX failure doing a " + type + " request to \"" + url + "\"");
             }.bind(this)
         });
     };
@@ -375,7 +375,7 @@ CS.Activities.SpecifyTop2Strength.Controllers = {};
 });
 
 CS.Activities.SpecifyTop3Strength.Controllers = {};
-;CS.Activities.Custom.Controllers.Step1 = P(CS.Activities.Controller, function (c, base) {
+;CS.Activities.Custom.Controllers.Step1 = P(CS.Activities.Controller, function (c) {
     c.reactClass = React.createClass({displayName: "reactClass",
         getInitialState: function () {
             return {text: null};
@@ -425,14 +425,14 @@ CS.Activities.SpecifyTop3Strength.Controllers = {};
         this.reactInstance.replaceState({text: CS.Services.String.textToHtml(this.activity.text)});
 
         // The submit button may still be in loading state when navigating back. We make sure it doesn't happen
-        this.$submitBtn.button('reset');
+        this.$submitBtn.button("reset");
     };
 
     c._handleSubmit = function (e) {
         e.preventDefault();
 
         if (this.validator.isValid()) {
-            this.$submitBtn.button('loading');
+            this.$submitBtn.button("loading");
 
             this.activity.model.account.data.custom[this.activity.getClassName()] = this.$textarea.val().trim();
 
@@ -443,7 +443,7 @@ CS.Activities.SpecifyTop3Strength.Controllers = {};
     };
 });
 
-CS.Activities.IdentifyStrengths.Controllers.Intro = P(CS.Activities.Controller, function (c, base) {
+CS.Activities.IdentifyStrengths.Controllers.Intro = P(CS.Activities.Controller, function (c) {
     c.reactClass = React.createClass({displayName: "reactClass",
         render: function () {
             return (
@@ -473,14 +473,14 @@ CS.Activities.IdentifyStrengths.Controllers.Intro = P(CS.Activities.Controller, 
         this.$goNextStepBtn.click($.proxy(this._navigateNext, this));
     };
 
-    c._navigateNext = function (e) {
+    c._navigateNext = function () {
         this.activity.model.account.data.strengths = this.activity.model.account.data.strengths || [];
 
         this.navigateTo(this.activity.step1Controller.getRoute());
     };
 });
 
-CS.Activities.IdentifyStrengths.Controllers.Outro = P(CS.Activities.Controller, function (c, base) {
+CS.Activities.IdentifyStrengths.Controllers.Outro = P(CS.Activities.Controller, function (c) {
     c.reactClass = React.createClass({displayName: "reactClass",
         getInitialState: function () {
             return {
@@ -502,7 +502,7 @@ CS.Activities.IdentifyStrengths.Controllers.Outro = P(CS.Activities.Controller, 
                             return (
                                 React.createElement("li", null, strength.name)
                                 );
-                        }.bind(this))
+                        })
                     ), 
 
                     React.createElement("div", {className: "strength-taglist-container"}, 
@@ -515,7 +515,7 @@ CS.Activities.IdentifyStrengths.Controllers.Outro = P(CS.Activities.Controller, 
                                         )
                                     )
                                     );
-                            }.bind(this))
+                            })
                         )
                     ), 
 
@@ -538,7 +538,7 @@ CS.Activities.IdentifyStrengths.Controllers.Outro = P(CS.Activities.Controller, 
     };
 });
 
-CS.Activities.IdentifyStrengths.Controllers.Step1 = P(CS.Activities.Controller, function (c, base) {
+CS.Activities.IdentifyStrengths.Controllers.Step1 = P(CS.Activities.Controller, function (c) {
     c.reactClass = React.createClass({displayName: "reactClass",
         getInitialState: function () {
             return {strengths: []};
@@ -670,7 +670,7 @@ CS.Activities.IdentifyStrengths.Controllers.Step1 = P(CS.Activities.Controller, 
         return false;
     };
 
-    c._saveAndNavigateNext = function (e) {
+    c._saveAndNavigateNext = function () {
         if (!this._isThereAtLeastOneStrengthInList()) {
             this.validator.showErrorMessage(this.$oneStrengthMinError);
         } else {
@@ -686,7 +686,7 @@ CS.Activities.IdentifyStrengths.Controllers.Step1 = P(CS.Activities.Controller, 
     };
 });
 
-CS.Activities.IdentifyStrengths.Controllers.Step2 = P(CS.Activities.Controller, function (c, base) {
+CS.Activities.IdentifyStrengths.Controllers.Step2 = P(CS.Activities.Controller, function (c) {
     c.reactClass = React.createClass({displayName: "reactClass",
         getInitialState: function () {
             return {strengths: []};
@@ -811,7 +811,7 @@ CS.Activities.IdentifyStrengths.Controllers.Step2 = P(CS.Activities.Controller, 
         return false;
     };
 
-    c._saveAndNavigateNext = function (e) {
+    c._saveAndNavigateNext = function () {
         // Because jQuery's "map()" function returns an object, see http://xahlee.info/js/js_convert_array-like.html
         var strengthsToAdd = Array.prototype.slice.call(
             this.$strengthTagList.children().children().children("span").map(function (index, span) {
@@ -825,7 +825,7 @@ CS.Activities.IdentifyStrengths.Controllers.Step2 = P(CS.Activities.Controller, 
     };
 });
 
-CS.Activities.IdentifyStrengths.Controllers.Step3 = P(CS.Activities.Controller, function (c, base) {
+CS.Activities.IdentifyStrengths.Controllers.Step3 = P(CS.Activities.Controller, function (c) {
     c.reactClass = React.createClass({displayName: "reactClass",
         getInitialState: function () {
             return {strengths: []};
@@ -856,7 +856,7 @@ CS.Activities.IdentifyStrengths.Controllers.Step3 = P(CS.Activities.Controller, 
 
     c.initElements = function () {
         this.$form = this.$el.find("form");
-        this.$rangeInputs = this.$form.find('[type="range"]');
+        this.$rangeInputs = this.$form.find("[type='range']");
         this.$goBackBtn = this.$form.find(".btn-default");
     };
 
@@ -864,7 +864,7 @@ CS.Activities.IdentifyStrengths.Controllers.Step3 = P(CS.Activities.Controller, 
         this.$form.submit($.proxy(this._saveAndNavigateNext, this));
         this.$goBackBtn.click($.proxy(this.navigateBack, this));
 
-        this.reactInstance.componentDidUpdate = function (prevProps, prevState) {
+        this.reactInstance.componentDidUpdate = function () {
             this.initElements();
             this._initSliders();
         }.bind(this);
@@ -923,7 +923,7 @@ CS.Activities.IdentifyStrengths.Controllers.Step3 = P(CS.Activities.Controller, 
     };
 });
 
-CS.Activities.IdentifyStrengths.Controllers.Step4 = P(CS.Activities.Controller, function (c, base) {
+CS.Activities.IdentifyStrengths.Controllers.Step4 = P(CS.Activities.Controller, function (c) {
     c.reactClass = React.createClass({displayName: "reactClass",
         getInitialState: function () {
             return {
@@ -958,7 +958,7 @@ CS.Activities.IdentifyStrengths.Controllers.Step4 = P(CS.Activities.Controller, 
 
     c.initElements = function () {
         this.$form = this.$el.find("form");
-        this.$rangeInputs = this.$form.find('[type="range"]');
+        this.$rangeInputs = this.$form.find("[type='range']");
         this.$goBackBtn = this.$form.find(".btn-default");
     };
 
@@ -966,7 +966,7 @@ CS.Activities.IdentifyStrengths.Controllers.Step4 = P(CS.Activities.Controller, 
         this.$form.submit($.proxy(this._saveAndNavigateNext, this));
         this.$goBackBtn.click($.proxy(this.navigateBack, this));
 
-        this.reactInstance.componentDidUpdate = function (prevProps, prevState) {
+        this.reactInstance.componentDidUpdate = function () {
             this.initElements();
             this._initSliders();
         }.bind(this);
@@ -1020,7 +1020,7 @@ CS.Activities.IdentifyStrengths.Controllers.Step4 = P(CS.Activities.Controller, 
     };
 });
 
-CS.Activities.IdentifyStrengths.Controllers.Step5 = P(CS.Activities.Controller, function (c, base) {
+CS.Activities.IdentifyStrengths.Controllers.Step5 = P(CS.Activities.Controller, function (c) {
     c.reactClass = React.createClass({displayName: "reactClass",
         getInitialState: function () {
             return {strengths: []};
@@ -1036,7 +1036,7 @@ CS.Activities.IdentifyStrengths.Controllers.Step5 = P(CS.Activities.Controller, 
                     this.state.strengths.map(function (strength, index) {
                         return (
                             React.createElement("article", null, 
-                                React.createElement("h2", null, index+1, ". ", strength.name), 
+                                React.createElement("h2", null, index + 1, ". ", strength.name), 
                                 React.createElement("p", null, "Stämmer ", React.createElement("strong", null, this._howWellDoesItApplyFormatter(strength.howWellItApplies)), " in på dig och är ", React.createElement("strong", null, this._howImportantForEmployerformatter(strength.howImportantForEmployer)), " för jobbet.")
                             )
                             );
@@ -1094,17 +1094,17 @@ CS.Activities.IdentifyStrengths.Controllers.Step5 = P(CS.Activities.Controller, 
         this.reactInstance.replaceState({strengths: _.take(this.activity.model.account.data.strengths, 3)});
 
         // The submit button may still be in loading state when navigating back. We make sure it doesn't happen
-        this.$submitBtn.button('reset');
+        this.$submitBtn.button("reset");
     };
 
-    c._handleSubmit = function (e) {
-        this.$submitBtn.button('loading');
+    c._handleSubmit = function () {
+        this.$submitBtn.button("loading");
 
         this.postData();
     };
 });
 
-CS.Activities.SpecifyTop1Strength.Controllers.Intro = P(CS.Activities.Controller, function (c, base) {
+CS.Activities.SpecifyTop1Strength.Controllers.Intro = P(CS.Activities.Controller, function (c) {
     c.reactClass = React.createClass({displayName: "reactClass",
         getInitialState: function () {
             return {title: null};
@@ -1147,14 +1147,14 @@ CS.Activities.SpecifyTop1Strength.Controllers.Intro = P(CS.Activities.Controller
         this.reactInstance.replaceState({title: this.activity.getTitle()});
     };
 
-    c._navigateNext = function (e) {
+    c._navigateNext = function () {
         this.activity.model.account.data.strengths[0].specify = this.activity.model.account.data.strengths[0].specify || {};
 
         this.navigateTo(this.activity.step1Controller.getRoute());
     };
 });
 
-CS.Activities.SpecifyTop1Strength.Controllers.Outro = P(CS.Activities.Controller, function (c, base) {
+CS.Activities.SpecifyTop1Strength.Controllers.Outro = P(CS.Activities.Controller, function (c) {
     c.reactClass = React.createClass({displayName: "reactClass",
         getInitialState: function () {
             return {
@@ -1205,7 +1205,7 @@ CS.Activities.SpecifyTop1Strength.Controllers.Outro = P(CS.Activities.Controller
     };
 });
 
-CS.Activities.SpecifyTop1Strength.Controllers.Step1 = P(CS.Activities.Controller, function (c, base) {
+CS.Activities.SpecifyTop1Strength.Controllers.Step1 = P(CS.Activities.Controller, function (c) {
     c.reactClass = React.createClass({displayName: "reactClass",
         getInitialState: function () {
             return {strengthName: null};
@@ -1265,7 +1265,7 @@ CS.Activities.SpecifyTop1Strength.Controllers.Step1 = P(CS.Activities.Controller
     };
 });
 
-CS.Activities.SpecifyTop1Strength.Controllers.Step2 = P(CS.Activities.Controller, function (c, base) {
+CS.Activities.SpecifyTop1Strength.Controllers.Step2 = P(CS.Activities.Controller, function (c) {
     c.reactClass = React.createClass({displayName: "reactClass",
         getInitialState: function () {
             return {whatItMeans: null};
@@ -1329,7 +1329,7 @@ CS.Activities.SpecifyTop1Strength.Controllers.Step2 = P(CS.Activities.Controller
     };
 });
 
-CS.Activities.SpecifyTop1Strength.Controllers.Step3 = P(CS.Activities.Controller, function (c, base) {
+CS.Activities.SpecifyTop1Strength.Controllers.Step3 = P(CS.Activities.Controller, function (c) {
     c.reactClass = React.createClass({displayName: "reactClass",
         getInitialState: function () {
             return {
@@ -1385,7 +1385,7 @@ CS.Activities.SpecifyTop1Strength.Controllers.Step3 = P(CS.Activities.Controller
         });
 
         // The submit button may still be in loading state when navigating back. We make sure it doesn't happen
-        this.$submitBtn.button('reset');
+        this.$submitBtn.button("reset");
     };
 
     c._saveAndNavigateNext = function (e) {
@@ -1401,7 +1401,7 @@ CS.Activities.SpecifyTop1Strength.Controllers.Step3 = P(CS.Activities.Controller
     };
 });
 
-CS.Activities.SpecifyTop2Strength.Controllers.Intro = P(CS.Activities.Controller, function (c, base) {
+CS.Activities.SpecifyTop2Strength.Controllers.Intro = P(CS.Activities.Controller, function (c) {
     c.reactClass = React.createClass({displayName: "reactClass",
         getInitialState: function () {
             return {title: null};
@@ -1444,14 +1444,14 @@ CS.Activities.SpecifyTop2Strength.Controllers.Intro = P(CS.Activities.Controller
         this.reactInstance.replaceState({title: this.activity.getTitle()});
     };
 
-    c._navigateNext = function (e) {
+    c._navigateNext = function () {
         this.activity.model.account.data.strengths[1].specify = this.activity.model.account.data.strengths[1].specify || {};
 
         this.navigateTo(this.activity.step1Controller.getRoute());
     };
 });
 
-CS.Activities.SpecifyTop2Strength.Controllers.Outro = P(CS.Activities.Controller, function (c, base) {
+CS.Activities.SpecifyTop2Strength.Controllers.Outro = P(CS.Activities.Controller, function (c) {
     c.reactClass = React.createClass({displayName: "reactClass",
         getInitialState: function () {
             return {
@@ -1502,7 +1502,7 @@ CS.Activities.SpecifyTop2Strength.Controllers.Outro = P(CS.Activities.Controller
     };
 });
 
-CS.Activities.SpecifyTop2Strength.Controllers.Step1 = P(CS.Activities.Controller, function (c, base) {
+CS.Activities.SpecifyTop2Strength.Controllers.Step1 = P(CS.Activities.Controller, function (c) {
     c.reactClass = React.createClass({displayName: "reactClass",
         getInitialState: function () {
             return {strengthName: null};
@@ -1562,7 +1562,7 @@ CS.Activities.SpecifyTop2Strength.Controllers.Step1 = P(CS.Activities.Controller
     };
 });
 
-CS.Activities.SpecifyTop2Strength.Controllers.Step2 = P(CS.Activities.Controller, function (c, base) {
+CS.Activities.SpecifyTop2Strength.Controllers.Step2 = P(CS.Activities.Controller, function (c) {
     c.reactClass = React.createClass({displayName: "reactClass",
         getInitialState: function () {
             return {whatItMeans: null};
@@ -1626,7 +1626,7 @@ CS.Activities.SpecifyTop2Strength.Controllers.Step2 = P(CS.Activities.Controller
     };
 });
 
-CS.Activities.SpecifyTop2Strength.Controllers.Step3 = P(CS.Activities.Controller, function (c, base) {
+CS.Activities.SpecifyTop2Strength.Controllers.Step3 = P(CS.Activities.Controller, function (c) {
     c.reactClass = React.createClass({displayName: "reactClass",
         getInitialState: function () {
             return {
@@ -1682,7 +1682,7 @@ CS.Activities.SpecifyTop2Strength.Controllers.Step3 = P(CS.Activities.Controller
         });
 
         // The submit button may still be in loading state when navigating back. We make sure it doesn't happen
-        this.$submitBtn.button('reset');
+        this.$submitBtn.button("reset");
     };
 
     c._saveAndNavigateNext = function (e) {
@@ -1698,7 +1698,7 @@ CS.Activities.SpecifyTop2Strength.Controllers.Step3 = P(CS.Activities.Controller
     };
 });
 
-CS.Activities.SpecifyTop3Strength.Controllers.Intro = P(CS.Activities.Controller, function (c, base) {
+CS.Activities.SpecifyTop3Strength.Controllers.Intro = P(CS.Activities.Controller, function (c) {
     c.reactClass = React.createClass({displayName: "reactClass",
         getInitialState: function () {
             return {title: null};
@@ -1741,14 +1741,14 @@ CS.Activities.SpecifyTop3Strength.Controllers.Intro = P(CS.Activities.Controller
         this.reactInstance.replaceState({title: this.activity.getTitle()});
     };
 
-    c._navigateNext = function (e) {
+    c._navigateNext = function () {
         this.activity.model.account.data.strengths[2].specify = this.activity.model.account.data.strengths[2].specify || {};
 
         this.navigateTo(this.activity.step1Controller.getRoute());
     };
 });
 
-CS.Activities.SpecifyTop3Strength.Controllers.Outro = P(CS.Activities.Controller, function (c, base) {
+CS.Activities.SpecifyTop3Strength.Controllers.Outro = P(CS.Activities.Controller, function (c) {
     c.reactClass = React.createClass({displayName: "reactClass",
         getInitialState: function () {
             return {
@@ -1799,7 +1799,7 @@ CS.Activities.SpecifyTop3Strength.Controllers.Outro = P(CS.Activities.Controller
     };
 });
 
-CS.Activities.SpecifyTop3Strength.Controllers.Step1 = P(CS.Activities.Controller, function (c, base) {
+CS.Activities.SpecifyTop3Strength.Controllers.Step1 = P(CS.Activities.Controller, function (c) {
     c.reactClass = React.createClass({displayName: "reactClass",
         getInitialState: function () {
             return {strengthName: null};
@@ -1859,7 +1859,7 @@ CS.Activities.SpecifyTop3Strength.Controllers.Step1 = P(CS.Activities.Controller
     };
 });
 
-CS.Activities.SpecifyTop3Strength.Controllers.Step2 = P(CS.Activities.Controller, function (c, base) {
+CS.Activities.SpecifyTop3Strength.Controllers.Step2 = P(CS.Activities.Controller, function (c) {
     c.reactClass = React.createClass({displayName: "reactClass",
         getInitialState: function () {
             return {whatItMeans: null};
@@ -1923,7 +1923,7 @@ CS.Activities.SpecifyTop3Strength.Controllers.Step2 = P(CS.Activities.Controller
     };
 });
 
-CS.Activities.SpecifyTop3Strength.Controllers.Step3 = P(CS.Activities.Controller, function (c, base) {
+CS.Activities.SpecifyTop3Strength.Controllers.Step3 = P(CS.Activities.Controller, function (c) {
     c.reactClass = React.createClass({displayName: "reactClass",
         getInitialState: function () {
             return {
@@ -1979,7 +1979,7 @@ CS.Activities.SpecifyTop3Strength.Controllers.Step3 = P(CS.Activities.Controller
         });
 
         // The submit button may still be in loading state when navigating back. We make sure it doesn't happen
-        this.$submitBtn.button('reset');
+        this.$submitBtn.button("reset");
     };
 
     c._saveAndNavigateNext = function (e) {
@@ -2036,15 +2036,15 @@ CS.Activities.Controller.NextStep = React.createClass({displayName: "NextStep",
             );
     },
 
-    _navigateBack: function (e) {
+    _navigateBack: function () {
         history.back();
     },
 
-    _launchNextActivity: function (e) {
+    _launchNextActivity: function () {
         location.hash = "activities/" + this.props.activity.getClassName();
     },
 
-    _navigateToInsights: function (e) {
+    _navigateToInsights: function () {
         location.hash = "insights";
     }
 });

@@ -15,7 +15,7 @@ CS.Services.Animator = {
                     } else {
                         $el.hide();
                     }
-                }.bind(this)
+                }
             });
         }
     }

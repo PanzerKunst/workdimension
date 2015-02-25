@@ -1,4 +1,4 @@
-CS.Standouts.Strengths.Controllers.InList = P(CS.Controllers.OnePageWebapp, function (c, base) {
+CS.Standouts.Strengths.Controllers.InList = P(CS.Controllers.OnePageWebapp, function (c) {
     c.reactClass = React.createClass({
         render: function () {
             var sections = this.props.strengths.map(function (strength) {
@@ -85,10 +85,10 @@ CS.Standouts.Strengths.Controllers.InList = P(CS.Controllers.OnePageWebapp, func
     };
 
     c._initElements = function () {
-        this.$headerNav = $('[role="navigation"]');
+        this.$headerNav = $("[role='navigation']");
         this.$activitiesTab = this.$headerNav.find("#activities-tab");
 
-        this.$tabPanels = $('[role="tabpanel"]');
+        this.$tabPanels = $("[role='tabpanel']");
         this.$activitiesPanel = this.$tabPanels.filter("#activit1es");
 
         this.$alert = this.$el.find(".alert");
@@ -100,7 +100,7 @@ CS.Standouts.Strengths.Controllers.InList = P(CS.Controllers.OnePageWebapp, func
     };
 
     c._initEvents = function () {
-        this.$alert.on('close.bs.alert', $.proxy(this._onAlertClose, this));
+        this.$alert.on("close.bs.alert", $.proxy(this._onAlertClose, this));
         this.$detailsBtn.click($.proxy(this._showDetails, this));
         this.$startExploringBtn.click($.proxy(this._activateActivitiesTabAndNavigateToActivity, this));
     };
@@ -139,7 +139,7 @@ CS.Standouts.Strengths.Controllers.InList = P(CS.Controllers.OnePageWebapp, func
         this.navigateTo("activities/SpecifyTop" + (sortedStrengthIndex + 1) + "Strength");
 
         this.$tabPanels.removeClass("active");
-        this.$activitiesTab.tab('show');
+        this.$activitiesTab.tab("show");
         this.$activitiesPanel.addClass("active");
     };
 });

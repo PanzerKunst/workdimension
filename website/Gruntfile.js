@@ -5,31 +5,12 @@ module.exports = function (grunt) {
     grunt.initConfig({
         pkg: grunt.file.readJSON('package.json'),
 
-        jshint: {
-            dist: [
-                'Gruntfile.js',
+        eslint: {
+            target: [
                 'javascripts/**/*.js'
             ],
             options: {
-                globals: {
-                    debug: true,
-                    forin: true,
-                    eqnul: true,
-                    noarg: true,
-                    noempty: true,
-                    eqeqeq: true,
-                    boss: true,
-                    loopfunc: true,
-                    evil: true,
-                    laxbreak: true,
-                    bitwise: true,
-                    undef: true,
-                    curly: true,
-                    nonew: true,
-                    browser: true,
-                    devel: true,
-                    jquery: true
-                }
+                configFile: 'eslint.json'
             }
         },
 
@@ -244,6 +225,6 @@ module.exports = function (grunt) {
     });
 
     grunt.registerTask('default', ['buildjs', 'buildcss', 'copy']);
-    grunt.registerTask('buildjs',  ['jshint', 'react:site', 'react:activities', 'react:standouts', 'concat:site', 'concat:c1s', 'concat:activities', 'concat:standouts', 'concat:all']);
+    grunt.registerTask('buildjs',  ['eslint', 'react:site', 'react:activities', 'react:standouts', 'concat:site', 'concat:c1s', 'concat:activities', 'concat:standouts', 'concat:all']);
     grunt.registerTask('buildcss',  ['sass', 'cssmin']);
 };

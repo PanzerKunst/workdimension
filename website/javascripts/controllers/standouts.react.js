@@ -51,14 +51,14 @@ CS.Controllers.Standouts = P(function (c) {
             url: url,
             type: type,
             dataType: "json",
-            success: function (data, textStatus, jqXHR) {
-                var itemInstancesCustomStandouts = data.map(function (customActivity, index) {
+            success: function (data) {
+                var itemInstancesCustomStandouts = data.map(function (customActivity) {
                     return CS.Standouts.Custom(customActivity.className, customActivity.title);
-                }.bind(this));
+                });
 
-                var itemInstancesClassicStandouts = this.itemClassNames.map(function (className, index) {
+                var itemInstancesClassicStandouts = this.itemClassNames.map(function (className) {
                     return CS.Standouts[className](className);
-                }.bind(this));
+                });
 
                 var allItemInstances = _.union(itemInstancesCustomStandouts, itemInstancesClassicStandouts);
 
@@ -68,13 +68,13 @@ CS.Controllers.Standouts = P(function (c) {
                     standoutInstances: allItemInstances
                 });
 
-                allItemInstances.forEach(function(instance, index) {
+                allItemInstances.forEach(function(instance) {
                     instance.run();
-                }.bind(this));
+                });
             }.bind(this),
-            error: function (jqXHR, textStatus, errorThrown) {
-                alert('AJAX failure doing a ' + type + ' request to "' + url + '"');
-            }.bind(this)
+            error: function () {
+                alert("AJAX failure doing a " + type + " request to \"" + url + "\"");
+            }
         });
     };
 });

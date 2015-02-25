@@ -1,4 +1,4 @@
-CS.Activities.SpecifyTop1Strength.Controllers.Intro = P(CS.Activities.Controller, function (c, base) {
+CS.Activities.SpecifyTop1Strength.Controllers.Intro = P(CS.Activities.Controller, function (c) {
     c.reactClass = React.createClass({
         getInitialState: function () {
             return {title: null};
@@ -41,7 +41,7 @@ CS.Activities.SpecifyTop1Strength.Controllers.Intro = P(CS.Activities.Controller
         this.reactInstance.replaceState({title: this.activity.getTitle()});
     };
 
-    c._navigateNext = function (e) {
+    c._navigateNext = function () {
         this.activity.model.account.data.strengths[0].specify = this.activity.model.account.data.strengths[0].specify || {};
 
         this.navigateTo(this.activity.step1Controller.getRoute());

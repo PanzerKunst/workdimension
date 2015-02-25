@@ -1,4 +1,4 @@
-CS.Activities.IdentifyStrengths.Controllers.Step5 = P(CS.Activities.Controller, function (c, base) {
+CS.Activities.IdentifyStrengths.Controllers.Step5 = P(CS.Activities.Controller, function (c) {
     c.reactClass = React.createClass({
         getInitialState: function () {
             return {strengths: []};
@@ -14,7 +14,7 @@ CS.Activities.IdentifyStrengths.Controllers.Step5 = P(CS.Activities.Controller, 
                     {this.state.strengths.map(function (strength, index) {
                         return (
                             <article>
-                                <h2>{index+1}. {strength.name}</h2>
+                                <h2>{index + 1}. {strength.name}</h2>
                                 <p>Stämmer <strong>{this._howWellDoesItApplyFormatter(strength.howWellItApplies)}</strong> in på dig och är <strong>{this._howImportantForEmployerformatter(strength.howImportantForEmployer)}</strong> för jobbet.</p>
                             </article>
                             );
@@ -72,11 +72,11 @@ CS.Activities.IdentifyStrengths.Controllers.Step5 = P(CS.Activities.Controller, 
         this.reactInstance.replaceState({strengths: _.take(this.activity.model.account.data.strengths, 3)});
 
         // The submit button may still be in loading state when navigating back. We make sure it doesn't happen
-        this.$submitBtn.button('reset');
+        this.$submitBtn.button("reset");
     };
 
-    c._handleSubmit = function (e) {
-        this.$submitBtn.button('loading');
+    c._handleSubmit = function () {
+        this.$submitBtn.button("loading");
 
         this.postData();
     };

@@ -1,4 +1,4 @@
-CS.Activities.IdentifyStrengths.Controllers.Step2 = P(CS.Activities.Controller, function (c, base) {
+CS.Activities.IdentifyStrengths.Controllers.Step2 = P(CS.Activities.Controller, function (c) {
     c.reactClass = React.createClass({
         getInitialState: function () {
             return {strengths: []};
@@ -123,7 +123,7 @@ CS.Activities.IdentifyStrengths.Controllers.Step2 = P(CS.Activities.Controller, 
         return false;
     };
 
-    c._saveAndNavigateNext = function (e) {
+    c._saveAndNavigateNext = function () {
         // Because jQuery's "map()" function returns an object, see http://xahlee.info/js/js_convert_array-like.html
         var strengthsToAdd = Array.prototype.slice.call(
             this.$strengthTagList.children().children().children("span").map(function (index, span) {

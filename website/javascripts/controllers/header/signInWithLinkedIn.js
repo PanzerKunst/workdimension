@@ -13,7 +13,7 @@ CS.Controllers.SignInWithLinkedIn = P(function (c) {
     };
 
 
-    c._signIn = function (e) {
+    c._signIn = function () {
         IN.User.authorize(this._getProfileData, this);
     };
 

@@ -14,7 +14,7 @@ CS.Controllers.RegisterReminder = P(function (c) {
         this.$registerLink.click($.proxy(this._clickOnMainLink, this));
     };
 
-    c._clickOnMainLink = function (e) {
+    c._clickOnMainLink = function () {
         this.$mainRegisterLink.click();
     };
 });

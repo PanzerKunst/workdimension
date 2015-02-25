@@ -1,4 +1,4 @@
-CS.Activities.SpecifyTop3Strength.Controllers.Step3 = P(CS.Activities.Controller, function (c, base) {
+CS.Activities.SpecifyTop3Strength.Controllers.Step3 = P(CS.Activities.Controller, function (c) {
     c.reactClass = React.createClass({
         getInitialState: function () {
             return {
@@ -54,7 +54,7 @@ CS.Activities.SpecifyTop3Strength.Controllers.Step3 = P(CS.Activities.Controller
         });
 
         // The submit button may still be in loading state when navigating back. We make sure it doesn't happen
-        this.$submitBtn.button('reset');
+        this.$submitBtn.button("reset");
     };
 
     c._saveAndNavigateNext = function (e) {

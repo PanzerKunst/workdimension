@@ -1,4 +1,4 @@
-CS.Controllers.ActivityFeed = P(CS.Controllers.Base, function (c, base) {
+CS.Controllers.ActivityFeed = P(CS.Controllers.Base, function (c) {
     c.reactClass = React.createClass({
         getInitialState: function () {
             return {
@@ -126,9 +126,9 @@ CS.Controllers.ActivityFeed = P(CS.Controllers.Base, function (c, base) {
             }
         ];
 
-        this.c1Instances = this.c1FeedItems.map(function (item, index) {
+        this.c1Instances = this.c1FeedItems.map(function (item) {
             return CS.C1s[item.className](item.className, item.title);
-        }.bind(this));
+        });
 
         CS.activitiesModel = CS.Models.Activities(this.activityFeedItems);
 
@@ -143,7 +143,7 @@ CS.Controllers.ActivityFeed = P(CS.Controllers.Base, function (c, base) {
     };
 
     c._initEvents = function() {
-        this.$introToActivitiesAlert.on('close.bs.alert', $.proxy(this._onIntroToActivitiesAlertClose, this));
+        this.$introToActivitiesAlert.on("close.bs.alert", $.proxy(this._onIntroToActivitiesAlertClose, this));
     };
 
     c.initIntroToActivitiesAlert = function () {
@@ -158,7 +158,7 @@ CS.Controllers.ActivityFeed = P(CS.Controllers.Base, function (c, base) {
         var doableC1sAndActivities = [];
         var doneC1sAndActivities = [];
 
-        this.c1Instances.forEach(function (c1Instance, index) {
+        this.c1Instances.forEach(function (c1Instance) {
             var isDone = CS.account.data && CS.account.data[c1Instance.getClassName()];
 
             if (isDone) {
@@ -172,9 +172,9 @@ CS.Controllers.ActivityFeed = P(CS.Controllers.Base, function (c, base) {
                     instance: c1Instance
                 });
             }
-        }.bind(this));
+        });
 
-        CS.activitiesModel.getDoable().forEach(function (activityInstance, index) {
+        CS.activitiesModel.getDoable().forEach(function (activityInstance) {
             var feedItem = _.find(this.activityFeedItems, function (item) {
                 return item.className === activityInstance.getClassName();
             });
@@ -187,7 +187,7 @@ CS.Controllers.ActivityFeed = P(CS.Controllers.Base, function (c, base) {
             });
         }.bind(this));
 
-        CS.activitiesModel.getDone().forEach(function (activityInstance, index) {
+        CS.activitiesModel.getDone().forEach(function (activityInstance) {
             var feedItem = _.find(this.activityFeedItems, function (item) {
                 return item.className === activityInstance.getClassName();
             });

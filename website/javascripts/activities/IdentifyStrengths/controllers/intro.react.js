@@ -1,4 +1,4 @@
-CS.Activities.IdentifyStrengths.Controllers.Intro = P(CS.Activities.Controller, function (c, base) {
+CS.Activities.IdentifyStrengths.Controllers.Intro = P(CS.Activities.Controller, function (c) {
     c.reactClass = React.createClass({
         render: function () {
             return (
@@ -28,7 +28,7 @@ CS.Activities.IdentifyStrengths.Controllers.Intro = P(CS.Activities.Controller, 
         this.$goNextStepBtn.click($.proxy(this._navigateNext, this));
     };
 
-    c._navigateNext = function (e) {
+    c._navigateNext = function () {
         this.activity.model.account.data.strengths = this.activity.model.account.data.strengths || [];
 
         this.navigateTo(this.activity.step1Controller.getRoute());

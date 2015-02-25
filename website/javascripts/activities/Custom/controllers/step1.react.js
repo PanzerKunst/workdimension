@@ -1,4 +1,4 @@
-CS.Activities.Custom.Controllers.Step1 = P(CS.Activities.Controller, function (c, base) {
+CS.Activities.Custom.Controllers.Step1 = P(CS.Activities.Controller, function (c) {
     c.reactClass = React.createClass({
         getInitialState: function () {
             return {text: null};
@@ -48,14 +48,14 @@ CS.Activities.Custom.Controllers.Step1 = P(CS.Activities.Controller, function (c
         this.reactInstance.replaceState({text: CS.Services.String.textToHtml(this.activity.text)});
 
         // The submit button may still be in loading state when navigating back. We make sure it doesn't happen
-        this.$submitBtn.button('reset');
+        this.$submitBtn.button("reset");
     };
 
     c._handleSubmit = function (e) {
         e.preventDefault();
 
         if (this.validator.isValid()) {
-            this.$submitBtn.button('loading');
+            this.$submitBtn.button("loading");
 
             this.activity.model.account.data.custom[this.activity.getClassName()] = this.$textarea.val().trim();
 

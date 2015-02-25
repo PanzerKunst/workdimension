@@ -36,7 +36,7 @@ CS.Controllers.C1FeedItem = React.createClass({
         return this._getClassName() + "-input-form";
     },
 
-    componentDidMount: function (prevProps, prevState) {
+    componentDidMount: function () {
         this.account = {
             data: _.clone(CS.account.data, true) || {}
         };
@@ -65,7 +65,7 @@ CS.Controllers.C1FeedItem = React.createClass({
         e.preventDefault();
 
         if (this.validator.isValid()) {
-            this.$submitBtn.button('loading');
+            this.$submitBtn.button("loading");
 
             this.account.data[this._getClassName()] = this.$inputField.val().trim();
 
@@ -77,12 +77,12 @@ CS.Controllers.C1FeedItem = React.createClass({
                 type: type,
                 contentType: "application/json",
                 data: JSON.stringify(this.account.data),
-                success: function (data, textStatus, jqXHR) {
+                success: function () {
                     location.reload();
-                }.bind(this),
-                error: function (jqXHR, textStatus, errorThrown) {
-                    this.$submitBtn.button('reset');
-                    alert('AJAX failure doing a ' + type + ' request to "' + url + '"');
+                },
+                error: function () {
+                    this.$submitBtn.button("reset");
+                    alert("AJAX failure doing a " + type + " request to \"" + url + "\"");
                 }.bind(this)
             });
         }
