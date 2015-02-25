@@ -2,16 +2,15 @@ CS.Activities = {};
 
 CS.Activities.Base = P(function (c) {
     c.$el = $("#current-activity");
-    c.controllers = {};
 
     c.init = function (className, title, description) {
         this.className = className;
         this.title = title;
         this.description = description;
 
-        this.initModel();
+        this.controllers = {};
 
-        this.$el.empty();
+        this.initModel();
 
         this._initElements();
 
@@ -40,6 +39,10 @@ CS.Activities.Base = P(function (c) {
         return this.description;
     };
 
+    c.get$el = function() {
+        return this.$el;
+    };
+
     c.initModel = function() {
         this.model = {
             account: {
@@ -54,7 +57,7 @@ CS.Activities.Base = P(function (c) {
 
     c.initRouting = function (controllers) {
         controllers.forEach(function (controller, index) {
-            CS.router.get(controller.route, function (req) {
+            CS.router.get(controller.getRoute(), function (req) {
                 this.renderController(controller.route);
             }.bind(this));
         }.bind(this));

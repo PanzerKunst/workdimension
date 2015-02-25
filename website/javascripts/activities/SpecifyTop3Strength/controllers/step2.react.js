@@ -57,7 +57,7 @@ CS.Activities.SpecifyTop3Strength.Controllers.Step2 = P(CS.Activities.Controller
         if (this.validator.isValid()) {
             this.activity.model.account.data.strengths[2].specify.howWellItApplies = this.$howWellItAppliesField.val().trim();
 
-            this.navigateTo(this.activity.step3Controller.route);
+            this.navigateTo(this.activity.step3Controller.getRoute());
         }
     };
 });

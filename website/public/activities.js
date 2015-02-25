@@ -2,16 +2,15 @@ CS.Activities = {};
 
 CS.Activities.Base = P(function (c) {
     c.$el = $("#current-activity");
-    c.controllers = {};
 
     c.init = function (className, title, description) {
         this.className = className;
         this.title = title;
         this.description = description;
 
-        this.initModel();
+        this.controllers = {};
 
-        this.$el.empty();
+        this.initModel();
 
         this._initElements();
 
@@ -40,6 +39,10 @@ CS.Activities.Base = P(function (c) {
         return this.description;
     };
 
+    c.get$el = function() {
+        return this.$el;
+    };
+
     c.initModel = function() {
         this.model = {
             account: {
@@ -54,7 +57,7 @@ CS.Activities.Base = P(function (c) {
 
     c.initRouting = function (controllers) {
         controllers.forEach(function (controller, index) {
-            CS.router.get(controller.route, function (req) {
+            CS.router.get(controller.getRoute(), function (req) {
                 this.renderController(controller.route);
             }.bind(this));
         }.bind(this));
@@ -88,20 +91,28 @@ CS.Activities.Base = P(function (c) {
 
 CS.Activities.Base.pageAnimationDuration = 0.15;
 ;CS.Activities.Controller = P(CS.Controllers.OnePageWebapp, function (c, base) {
-    c.init = function (route, activity) {
-        this.route = route;
+    c.init = function (activity, route) {
         this.activity = activity;
+        this.route = route;
         this.activity.registerController(this, this.route);
 
         this.$window = $(window);
         this.$content = $("#content");
     };
 
+    c.getRoute = function(route) {
+        return "activities/" + this.activity.getClassName() + (route ? route : this.route);
+    };
+
     c.render = function () {
+        if (this._isIntro()) {
+            this.activity.get$el().empty();
+        }
+
         if (!this.isRendered) {
             var uniqueId = _.uniqueId();
 
-            this.activity.$el.append('<div class="activity-page ' + this.activity.getClassName() + '" id="' + uniqueId + '"></div>');
+            this.activity.get$el().append('<div class="activity-page ' + this.activity.getClassName() + '" id="' + uniqueId + '"></div>');
             this.$el = $("#" + uniqueId);
 
             this.reactInstance = React.render(
@@ -145,7 +156,7 @@ CS.Activities.Base.pageAnimationDuration = 0.15;
                     if (callback) {
                         callback();
                     } else {
-                        this.navigateTo(this.activity.outroController.route);
+                        this.navigateTo(this.activity.outroController.getRoute());
                     }
                 }.bind(this));
             }.bind(this),
@@ -159,8 +170,12 @@ CS.Activities.Base.pageAnimationDuration = 0.15;
         });
     };
 
+    c.nagivateTo = function(route) {
+        base.navigateTo.call(this, this.getRoute(route));
+    };
+
     c.nagivateToActivityFeed = function() {
-        this.navigateTo("activities");
+        base.navigateTo.call(this, "activities");
     };
 
     // Child functions are call instead if exist
@@ -171,6 +186,10 @@ CS.Activities.Base.pageAnimationDuration = 0.15;
     c.initEvents = function () {
     };
     c.onReRender = function () {
+    };
+
+    c._isIntro = function() {
+        return this.route === "";
     };
 });
 ;CS.Activities.Custom = P(CS.Activities.Base, function (c, base) {
@@ -205,13 +224,13 @@ CS.Activities.Custom.Controllers = {};
 
     c.initControllers = function() {
         // Initialising all activity controllers
-        this.introController = CS.Activities.IdentifyStrengths.Controllers.Intro("activities/" + this.getClassName(), this);
-        this.step1Controller = CS.Activities.IdentifyStrengths.Controllers.Step1("activities/" + this.getClassName() + "/1", this);
-        this.step2Controller = CS.Activities.IdentifyStrengths.Controllers.Step2("activities/" + this.getClassName() + "/2", this);
-        this.step3Controller = CS.Activities.IdentifyStrengths.Controllers.Step3("activities/" + this.getClassName() + "/3", this);
-        this.step4Controller = CS.Activities.IdentifyStrengths.Controllers.Step4("activities/" + this.getClassName() + "/4", this);
-        this.step5Controller = CS.Activities.IdentifyStrengths.Controllers.Step5("activities/" + this.getClassName() + "/5", this);
-        this.outroController = CS.Activities.IdentifyStrengths.Controllers.Outro("activities/" + this.getClassName() + "/outro", this);
+        this.introController = CS.Activities.IdentifyStrengths.Controllers.Intro(this, "");
+        this.step1Controller = CS.Activities.IdentifyStrengths.Controllers.Step1(this, "/1");
+        this.step2Controller = CS.Activities.IdentifyStrengths.Controllers.Step2(this, "/2");
+        this.step3Controller = CS.Activities.IdentifyStrengths.Controllers.Step3(this, "/3");
+        this.step4Controller = CS.Activities.IdentifyStrengths.Controllers.Step4(this, "/4");
+        this.step5Controller = CS.Activities.IdentifyStrengths.Controllers.Step5(this, "/5");
+        this.outroController = CS.Activities.IdentifyStrengths.Controllers.Outro(this, "/outro");
 
         var controllers = [
             this.introController,
@@ -243,11 +262,11 @@ CS.Activities.IdentifyStrengths.Controllers = {};
 
     c.initControllers = function() {
         // Initialising all activity controllers
-        this.introController = CS.Activities.SpecifyTop1Strength.Controllers.Intro("activities/" + this.getClassName(), this);
-        this.step1Controller = CS.Activities.SpecifyTop1Strength.Controllers.Step1("activities/" + this.getClassName() + "/1", this);
-        this.step2Controller = CS.Activities.SpecifyTop1Strength.Controllers.Step2("activities/" + this.getClassName() + "/2", this);
-        this.step3Controller = CS.Activities.SpecifyTop1Strength.Controllers.Step3("activities/" + this.getClassName() + "/3", this);
-        this.outroController = CS.Activities.SpecifyTop1Strength.Controllers.Outro("activities/" + this.getClassName() + "/outro", this);
+        this.introController = CS.Activities.SpecifyTop1Strength.Controllers.Intro(this, "");
+        this.step1Controller = CS.Activities.SpecifyTop1Strength.Controllers.Step1(this, "/1");
+        this.step2Controller = CS.Activities.SpecifyTop1Strength.Controllers.Step2(this, "/2");
+        this.step3Controller = CS.Activities.SpecifyTop1Strength.Controllers.Step3(this, "/3");
+        this.outroController = CS.Activities.SpecifyTop1Strength.Controllers.Outro(this, "/outro");
 
         var controllers = [
             this.introController,
@@ -286,11 +305,11 @@ CS.Activities.SpecifyTop1Strength.Controllers = {};
 
     c.initControllers = function() {
         // Initialising all activity controllers
-        this.introController = CS.Activities.SpecifyTop2Strength.Controllers.Intro("activities/" + this.getClassName(), this);
-        this.step1Controller = CS.Activities.SpecifyTop2Strength.Controllers.Step1("activities/" + this.getClassName() + "/1", this);
-        this.step2Controller = CS.Activities.SpecifyTop2Strength.Controllers.Step2("activities/" + this.getClassName() + "/2", this);
-        this.step3Controller = CS.Activities.SpecifyTop2Strength.Controllers.Step3("activities/" + this.getClassName() + "/3", this);
-        this.outroController = CS.Activities.SpecifyTop2Strength.Controllers.Outro("activities/" + this.getClassName() + "/outro", this);
+        this.introController = CS.Activities.SpecifyTop2Strength.Controllers.Intro(this, "");
+        this.step1Controller = CS.Activities.SpecifyTop2Strength.Controllers.Step1(this, "/1");
+        this.step2Controller = CS.Activities.SpecifyTop2Strength.Controllers.Step2(this, "/2");
+        this.step3Controller = CS.Activities.SpecifyTop2Strength.Controllers.Step3(this, "/3");
+        this.outroController = CS.Activities.SpecifyTop2Strength.Controllers.Outro(this, "/outro");
 
         var controllers = [
             this.introController,
@@ -329,11 +348,11 @@ CS.Activities.SpecifyTop2Strength.Controllers = {};
 
     c.initControllers = function() {
         // Initialising all activity controllers
-        this.introController = CS.Activities.SpecifyTop3Strength.Controllers.Intro("activities/" + this.getClassName(), this);
-        this.step1Controller = CS.Activities.SpecifyTop3Strength.Controllers.Step1("activities/" + this.getClassName() + "/1", this);
-        this.step2Controller = CS.Activities.SpecifyTop3Strength.Controllers.Step2("activities/" + this.getClassName() + "/2", this);
-        this.step3Controller = CS.Activities.SpecifyTop3Strength.Controllers.Step3("activities/" + this.getClassName() + "/3", this);
-        this.outroController = CS.Activities.SpecifyTop3Strength.Controllers.Outro("activities/" + this.getClassName() + "/outro", this);
+        this.introController = CS.Activities.SpecifyTop3Strength.Controllers.Intro(this, "");
+        this.step1Controller = CS.Activities.SpecifyTop3Strength.Controllers.Step1(this, "/1");
+        this.step2Controller = CS.Activities.SpecifyTop3Strength.Controllers.Step2(this, "/2");
+        this.step3Controller = CS.Activities.SpecifyTop3Strength.Controllers.Step3(this, "/3");
+        this.outroController = CS.Activities.SpecifyTop3Strength.Controllers.Outro(this, "/outro");
 
         var controllers = [
             this.introController,
@@ -457,7 +476,7 @@ CS.Activities.IdentifyStrengths.Controllers.Intro = P(CS.Activities.Controller, 
     c._navigateNext = function (e) {
         this.activity.model.account.data.strengths = this.activity.model.account.data.strengths || [];
 
-        this.navigateTo(this.activity.step1Controller.route);
+        this.navigateTo(this.activity.step1Controller.getRoute());
     };
 });
 
@@ -662,7 +681,7 @@ CS.Activities.IdentifyStrengths.Controllers.Step1 = P(CS.Activities.Controller, 
                 })
             );
 
-            this.navigateTo(this.activity.step2Controller.route);
+            this.navigateTo(this.activity.step2Controller.getRoute());
         }
     };
 });
@@ -802,7 +821,7 @@ CS.Activities.IdentifyStrengths.Controllers.Step2 = P(CS.Activities.Controller, 
 
         this.activity.model.account.data.strengths = _.union(this.activity.model.account.data.strengths, strengthsToAdd);
 
-        this.navigateTo(this.activity.step3Controller.route);
+        this.navigateTo(this.activity.step3Controller.getRoute());
     };
 });
 
@@ -900,7 +919,7 @@ CS.Activities.IdentifyStrengths.Controllers.Step3 = P(CS.Activities.Controller, 
             };
         }.bind(this));
 
-        this.navigateTo(this.activity.step4Controller.route);
+        this.navigateTo(this.activity.step4Controller.getRoute());
     };
 });
 
@@ -997,7 +1016,7 @@ CS.Activities.IdentifyStrengths.Controllers.Step4 = P(CS.Activities.Controller, 
             };
         }.bind(this));
 
-        this.navigateTo(this.activity.step5Controller.route);
+        this.navigateTo(this.activity.step5Controller.getRoute());
     };
 });
 
@@ -1131,7 +1150,7 @@ CS.Activities.SpecifyTop1Strength.Controllers.Intro = P(CS.Activities.Controller
     c._navigateNext = function (e) {
         this.activity.model.account.data.strengths[0].specify = this.activity.model.account.data.strengths[0].specify || {};
 
-        this.navigateTo(this.activity.step1Controller.route);
+        this.navigateTo(this.activity.step1Controller.getRoute());
     };
 });
 
@@ -1241,7 +1260,7 @@ CS.Activities.SpecifyTop1Strength.Controllers.Step1 = P(CS.Activities.Controller
         if (this.validator.isValid()) {
             this.activity.model.account.data.strengths[0].specify.whatItMeans = this.$whatItMeansField.val().trim();
 
-            this.navigateTo(this.activity.step2Controller.route);
+            this.navigateTo(this.activity.step2Controller.getRoute());
         }
     };
 });
@@ -1305,7 +1324,7 @@ CS.Activities.SpecifyTop1Strength.Controllers.Step2 = P(CS.Activities.Controller
         if (this.validator.isValid()) {
             this.activity.model.account.data.strengths[0].specify.howWellItApplies = this.$howWellItAppliesField.val().trim();
 
-            this.navigateTo(this.activity.step3Controller.route);
+            this.navigateTo(this.activity.step3Controller.getRoute());
         }
     };
 });
@@ -1428,7 +1447,7 @@ CS.Activities.SpecifyTop2Strength.Controllers.Intro = P(CS.Activities.Controller
     c._navigateNext = function (e) {
         this.activity.model.account.data.strengths[1].specify = this.activity.model.account.data.strengths[1].specify || {};
 
-        this.navigateTo(this.activity.step1Controller.route);
+        this.navigateTo(this.activity.step1Controller.getRoute());
     };
 });
 
@@ -1538,7 +1557,7 @@ CS.Activities.SpecifyTop2Strength.Controllers.Step1 = P(CS.Activities.Controller
         if (this.validator.isValid()) {
             this.activity.model.account.data.strengths[1].specify.whatItMeans = this.$whatItMeansField.val().trim();
 
-            this.navigateTo(this.activity.step2Controller.route);
+            this.navigateTo(this.activity.step2Controller.getRoute());
         }
     };
 });
@@ -1602,7 +1621,7 @@ CS.Activities.SpecifyTop2Strength.Controllers.Step2 = P(CS.Activities.Controller
         if (this.validator.isValid()) {
             this.activity.model.account.data.strengths[1].specify.howWellItApplies = this.$howWellItAppliesField.val().trim();
 
-            this.navigateTo(this.activity.step3Controller.route);
+            this.navigateTo(this.activity.step3Controller.getRoute());
         }
     };
 });
@@ -1725,7 +1744,7 @@ CS.Activities.SpecifyTop3Strength.Controllers.Intro = P(CS.Activities.Controller
     c._navigateNext = function (e) {
         this.activity.model.account.data.strengths[2].specify = this.activity.model.account.data.strengths[2].specify || {};
 
-        this.navigateTo(this.activity.step1Controller.route);
+        this.navigateTo(this.activity.step1Controller.getRoute());
     };
 });
 
@@ -1835,7 +1854,7 @@ CS.Activities.SpecifyTop3Strength.Controllers.Step1 = P(CS.Activities.Controller
         if (this.validator.isValid()) {
             this.activity.model.account.data.strengths[2].specify.whatItMeans = this.$whatItMeansField.val().trim();
 
-            this.navigateTo(this.activity.step2Controller.route);
+            this.navigateTo(this.activity.step2Controller.getRoute());
         }
     };
 });
@@ -1899,7 +1918,7 @@ CS.Activities.SpecifyTop3Strength.Controllers.Step2 = P(CS.Activities.Controller
         if (this.validator.isValid()) {
             this.activity.model.account.data.strengths[2].specify.howWellItApplies = this.$howWellItAppliesField.val().trim();
 
-            this.navigateTo(this.activity.step3Controller.route);
+            this.navigateTo(this.activity.step3Controller.getRoute());
         }
     };
 });

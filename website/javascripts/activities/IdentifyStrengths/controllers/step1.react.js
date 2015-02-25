@@ -141,7 +141,7 @@ CS.Activities.IdentifyStrengths.Controllers.Step1 = P(CS.Activities.Controller, 
                 })
             );
 
-            this.navigateTo(this.activity.step2Controller.route);
+            this.navigateTo(this.activity.step2Controller.getRoute());
         }
     };
 });

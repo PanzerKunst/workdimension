@@ -44,6 +44,6 @@ CS.Activities.SpecifyTop3Strength.Controllers.Intro = P(CS.Activities.Controller
     c._navigateNext = function (e) {
         this.activity.model.account.data.strengths[2].specify = this.activity.model.account.data.strengths[2].specify || {};
 
-        this.navigateTo(this.activity.step1Controller.route);
+        this.navigateTo(this.activity.step1Controller.getRoute());
     };
 });

@@ -99,7 +99,7 @@ CS.Activities.IdentifyStrengths.Controllers.Intro = P(CS.Activities.Controller, 
     c._navigateNext = function (e) {
         this.activity.model.account.data.strengths = this.activity.model.account.data.strengths || [];
 
-        this.navigateTo(this.activity.step1Controller.route);
+        this.navigateTo(this.activity.step1Controller.getRoute());
     };
 });
 
@@ -304,7 +304,7 @@ CS.Activities.IdentifyStrengths.Controllers.Step1 = P(CS.Activities.Controller, 
                 })
             );
 
-            this.navigateTo(this.activity.step2Controller.route);
+            this.navigateTo(this.activity.step2Controller.getRoute());
         }
     };
 });
@@ -444,7 +444,7 @@ CS.Activities.IdentifyStrengths.Controllers.Step2 = P(CS.Activities.Controller, 
 
         this.activity.model.account.data.strengths = _.union(this.activity.model.account.data.strengths, strengthsToAdd);
 
-        this.navigateTo(this.activity.step3Controller.route);
+        this.navigateTo(this.activity.step3Controller.getRoute());
     };
 });
 
@@ -542,7 +542,7 @@ CS.Activities.IdentifyStrengths.Controllers.Step3 = P(CS.Activities.Controller, 
             };
         }.bind(this));
 
-        this.navigateTo(this.activity.step4Controller.route);
+        this.navigateTo(this.activity.step4Controller.getRoute());
     };
 });
 
@@ -639,7 +639,7 @@ CS.Activities.IdentifyStrengths.Controllers.Step4 = P(CS.Activities.Controller, 
             };
         }.bind(this));
 
-        this.navigateTo(this.activity.step5Controller.route);
+        this.navigateTo(this.activity.step5Controller.getRoute());
     };
 });
 
@@ -773,7 +773,7 @@ CS.Activities.SpecifyTop1Strength.Controllers.Intro = P(CS.Activities.Controller
     c._navigateNext = function (e) {
         this.activity.model.account.data.strengths[0].specify = this.activity.model.account.data.strengths[0].specify || {};
 
-        this.navigateTo(this.activity.step1Controller.route);
+        this.navigateTo(this.activity.step1Controller.getRoute());
     };
 });
 
@@ -883,7 +883,7 @@ CS.Activities.SpecifyTop1Strength.Controllers.Step1 = P(CS.Activities.Controller
         if (this.validator.isValid()) {
             this.activity.model.account.data.strengths[0].specify.whatItMeans = this.$whatItMeansField.val().trim();
 
-            this.navigateTo(this.activity.step2Controller.route);
+            this.navigateTo(this.activity.step2Controller.getRoute());
         }
     };
 });
@@ -947,7 +947,7 @@ CS.Activities.SpecifyTop1Strength.Controllers.Step2 = P(CS.Activities.Controller
         if (this.validator.isValid()) {
             this.activity.model.account.data.strengths[0].specify.howWellItApplies = this.$howWellItAppliesField.val().trim();
 
-            this.navigateTo(this.activity.step3Controller.route);
+            this.navigateTo(this.activity.step3Controller.getRoute());
         }
     };
 });
@@ -1070,7 +1070,7 @@ CS.Activities.SpecifyTop2Strength.Controllers.Intro = P(CS.Activities.Controller
     c._navigateNext = function (e) {
         this.activity.model.account.data.strengths[1].specify = this.activity.model.account.data.strengths[1].specify || {};
 
-        this.navigateTo(this.activity.step1Controller.route);
+        this.navigateTo(this.activity.step1Controller.getRoute());
     };
 });
 
@@ -1180,7 +1180,7 @@ CS.Activities.SpecifyTop2Strength.Controllers.Step1 = P(CS.Activities.Controller
         if (this.validator.isValid()) {
             this.activity.model.account.data.strengths[1].specify.whatItMeans = this.$whatItMeansField.val().trim();
 
-            this.navigateTo(this.activity.step2Controller.route);
+            this.navigateTo(this.activity.step2Controller.getRoute());
         }
     };
 });
@@ -1244,7 +1244,7 @@ CS.Activities.SpecifyTop2Strength.Controllers.Step2 = P(CS.Activities.Controller
         if (this.validator.isValid()) {
             this.activity.model.account.data.strengths[1].specify.howWellItApplies = this.$howWellItAppliesField.val().trim();
 
-            this.navigateTo(this.activity.step3Controller.route);
+            this.navigateTo(this.activity.step3Controller.getRoute());
         }
     };
 });
@@ -1367,7 +1367,7 @@ CS.Activities.SpecifyTop3Strength.Controllers.Intro = P(CS.Activities.Controller
     c._navigateNext = function (e) {
         this.activity.model.account.data.strengths[2].specify = this.activity.model.account.data.strengths[2].specify || {};
 
-        this.navigateTo(this.activity.step1Controller.route);
+        this.navigateTo(this.activity.step1Controller.getRoute());
     };
 });
 
@@ -1477,7 +1477,7 @@ CS.Activities.SpecifyTop3Strength.Controllers.Step1 = P(CS.Activities.Controller
         if (this.validator.isValid()) {
             this.activity.model.account.data.strengths[2].specify.whatItMeans = this.$whatItMeansField.val().trim();
 
-            this.navigateTo(this.activity.step2Controller.route);
+            this.navigateTo(this.activity.step2Controller.getRoute());
         }
     };
 });
@@ -1541,7 +1541,7 @@ CS.Activities.SpecifyTop3Strength.Controllers.Step2 = P(CS.Activities.Controller
         if (this.validator.isValid()) {
             this.activity.model.account.data.strengths[2].specify.howWellItApplies = this.$howWellItAppliesField.val().trim();
 
-            this.navigateTo(this.activity.step3Controller.route);
+            this.navigateTo(this.activity.step3Controller.getRoute());
         }
     };
 });

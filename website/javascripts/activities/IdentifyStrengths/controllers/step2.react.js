@@ -133,6 +133,6 @@ CS.Activities.IdentifyStrengths.Controllers.Step2 = P(CS.Activities.Controller, 
 
         this.activity.model.account.data.strengths = _.union(this.activity.model.account.data.strengths, strengthsToAdd);
 
-        this.navigateTo(this.activity.step3Controller.route);
+        this.navigateTo(this.activity.step3Controller.getRoute());
     };
 });

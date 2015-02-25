@@ -13,11 +13,11 @@ CS.Activities.SpecifyTop1Strength = P(CS.Activities.Base, function (c, base) {
 
     c.initControllers = function() {
         // Initialising all activity controllers
-        this.introController = CS.Activities.SpecifyTop1Strength.Controllers.Intro("activities/" + this.getClassName(), this);
-        this.step1Controller = CS.Activities.SpecifyTop1Strength.Controllers.Step1("activities/" + this.getClassName() + "/1", this);
-        this.step2Controller = CS.Activities.SpecifyTop1Strength.Controllers.Step2("activities/" + this.getClassName() + "/2", this);
-        this.step3Controller = CS.Activities.SpecifyTop1Strength.Controllers.Step3("activities/" + this.getClassName() + "/3", this);
-        this.outroController = CS.Activities.SpecifyTop1Strength.Controllers.Outro("activities/" + this.getClassName() + "/outro", this);
+        this.introController = CS.Activities.SpecifyTop1Strength.Controllers.Intro(this, "");
+        this.step1Controller = CS.Activities.SpecifyTop1Strength.Controllers.Step1(this, "/1");
+        this.step2Controller = CS.Activities.SpecifyTop1Strength.Controllers.Step2(this, "/2");
+        this.step3Controller = CS.Activities.SpecifyTop1Strength.Controllers.Step3(this, "/3");
+        this.outroController = CS.Activities.SpecifyTop1Strength.Controllers.Outro(this, "/outro");
 
         var controllers = [
             this.introController,

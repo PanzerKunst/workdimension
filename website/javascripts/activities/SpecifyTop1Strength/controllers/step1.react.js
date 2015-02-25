@@ -53,7 +53,7 @@ CS.Activities.SpecifyTop1Strength.Controllers.Step1 = P(CS.Activities.Controller
         if (this.validator.isValid()) {
             this.activity.model.account.data.strengths[0].specify.whatItMeans = this.$whatItMeansField.val().trim();
 
-            this.navigateTo(this.activity.step2Controller.route);
+            this.navigateTo(this.activity.step2Controller.getRoute());
         }
     };
 });

@@ -91,6 +91,6 @@ CS.Activities.IdentifyStrengths.Controllers.Step4 = P(CS.Activities.Controller, 
             };
         }.bind(this));
 
-        this.navigateTo(this.activity.step5Controller.route);
+        this.navigateTo(this.activity.step5Controller.getRoute());
     };
 });

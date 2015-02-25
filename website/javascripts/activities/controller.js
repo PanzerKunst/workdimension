@@ -1,18 +1,26 @@
 CS.Activities.Controller = P(CS.Controllers.OnePageWebapp, function (c, base) {
-    c.init = function (route, activity) {
-        this.route = route;
+    c.init = function (activity, route) {
         this.activity = activity;
+        this.route = route;
         this.activity.registerController(this, this.route);
 
         this.$window = $(window);
         this.$content = $("#content");
     };
 
+    c.getRoute = function(route) {
+        return "activities/" + this.activity.getClassName() + (route ? route : this.route);
+    };
+
     c.render = function () {
+        if (this._isIntro()) {
+            this.activity.get$el().empty();
+        }
+
         if (!this.isRendered) {
             var uniqueId = _.uniqueId();
 
-            this.activity.$el.append('<div class="activity-page ' + this.activity.getClassName() + '" id="' + uniqueId + '"></div>');
+            this.activity.get$el().append('<div class="activity-page ' + this.activity.getClassName() + '" id="' + uniqueId + '"></div>');
             this.$el = $("#" + uniqueId);
 
             this.reactInstance = React.render(
@@ -56,7 +64,7 @@ CS.Activities.Controller = P(CS.Controllers.OnePageWebapp, function (c, base) {
                     if (callback) {
                         callback();
                     } else {
-                        this.navigateTo(this.activity.outroController.route);
+                        this.navigateTo(this.activity.outroController.getRoute());
                     }
                 }.bind(this));
             }.bind(this),
@@ -70,8 +78,12 @@ CS.Activities.Controller = P(CS.Controllers.OnePageWebapp, function (c, base) {
         });
     };
 
+    c.nagivateTo = function(route) {
+        base.navigateTo.call(this, this.getRoute(route));
+    };
+
     c.nagivateToActivityFeed = function() {
-        this.navigateTo("activities");
+        base.navigateTo.call(this, "activities");
     };
 
     // Child functions are call instead if exist
@@ -82,5 +94,9 @@ CS.Activities.Controller = P(CS.Controllers.OnePageWebapp, function (c, base) {
     c.initEvents = function () {
     };
     c.onReRender = function () {
+    };
+
+    c._isIntro = function() {
+        return this.route === "";
     };
 });

@@ -11,13 +11,13 @@ CS.Activities.IdentifyStrengths = P(CS.Activities.Base, function (c, base) {
 
     c.initControllers = function() {
         // Initialising all activity controllers
-        this.introController = CS.Activities.IdentifyStrengths.Controllers.Intro("activities/" + this.getClassName(), this);
-        this.step1Controller = CS.Activities.IdentifyStrengths.Controllers.Step1("activities/" + this.getClassName() + "/1", this);
-        this.step2Controller = CS.Activities.IdentifyStrengths.Controllers.Step2("activities/" + this.getClassName() + "/2", this);
-        this.step3Controller = CS.Activities.IdentifyStrengths.Controllers.Step3("activities/" + this.getClassName() + "/3", this);
-        this.step4Controller = CS.Activities.IdentifyStrengths.Controllers.Step4("activities/" + this.getClassName() + "/4", this);
-        this.step5Controller = CS.Activities.IdentifyStrengths.Controllers.Step5("activities/" + this.getClassName() + "/5", this);
-        this.outroController = CS.Activities.IdentifyStrengths.Controllers.Outro("activities/" + this.getClassName() + "/outro", this);
+        this.introController = CS.Activities.IdentifyStrengths.Controllers.Intro(this, "");
+        this.step1Controller = CS.Activities.IdentifyStrengths.Controllers.Step1(this, "/1");
+        this.step2Controller = CS.Activities.IdentifyStrengths.Controllers.Step2(this, "/2");
+        this.step3Controller = CS.Activities.IdentifyStrengths.Controllers.Step3(this, "/3");
+        this.step4Controller = CS.Activities.IdentifyStrengths.Controllers.Step4(this, "/4");
+        this.step5Controller = CS.Activities.IdentifyStrengths.Controllers.Step5(this, "/5");
+        this.outroController = CS.Activities.IdentifyStrengths.Controllers.Outro(this, "/outro");
 
         var controllers = [
             this.introController,
