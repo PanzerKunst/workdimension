@@ -282,9 +282,9 @@ CS.account = {
 CS.router = new Grapnel();
 CS.defaultAnimationDuration = 0.5;
 CS.activityFeedController = null;
-CS.undoneC1sAndActivities = [];
+CS.activitiesModel = null;
 CS.indexController = null;
-;CS.Services.Browser = {
+CS.activityFeedController = null;;CS.Services.Browser = {
     addUserAgentAttributeToHtmlTag: function() {
         document.documentElement.setAttribute('data-useragent', navigator.userAgent);
     },
@@ -697,6 +697,109 @@ CS.indexController = null;
         done: "DONE"
     }
 };
+;CS.Models.Activities = P(function (c) {
+    c.init = function (activityFeedItems) {
+        this.classicActivityInstances = activityFeedItems.map(function (item, index) {
+            return CS.Activities[item.className](item.className, item.title, item.description);
+        }.bind(this));
+    };
+
+    c.updateActivityStatus = function (onComplete) {
+        this.activities = {
+            done: [],
+            doable: [],
+            notDoable: []
+        };
+
+        this._fetchActivityData(onComplete);
+    };
+
+    c.getDone = function() {
+        return this.activities.done;
+    };
+
+    c.getDoable = function() {
+        return this.activities.doable;
+    };
+
+    c.getNotDoable = function() {
+        return this.activities.notDoable;
+    };
+
+    c.getNextActivity = function() {
+        if (_.isEmpty(this.activities.doable)) {
+            return null;
+        }
+        return this.activities.doable[0];
+    };
+
+    c._fetchActivityData = function (onComplete) {
+        var type = "GET";
+        var url = "/api/activities";
+
+        $.ajax({
+            url: url,
+            type: type,
+            dataType: "json",
+            success: function (data, textStatus, jqXHR) {
+                this._updateActivityStatus(data, onComplete);
+            }.bind(this),
+            error: function (jqXHR, textStatus, errorThrown) {
+                alert('AJAX failure doing a ' + type + ' request to "' + url + '"');
+            }.bind(this)
+        });
+    };
+
+    c._updateActivityStatus = function (activityData, onComplete) {
+        activityData.forEach(function (activity) {
+            var instance = _.find(this.classicActivityInstances, function (instans) {
+                return instans.getClassName() === activity.className;
+            });
+
+            if (activity.state === CS.Models.Activity.state.done) {
+                this.activities.done.push(instance);
+            } else if (instance.isDoable()) {
+                this.activities.doable.push(instance);
+            } else {
+                this.activities.notDoable.push(instance);
+            }
+        }.bind(this));
+
+        // We handle instances which didn't have any activity data
+        this.classicActivityInstances.forEach(function (instance, index) {
+            var isTodo = _.isEmpty(_.find(this.activities.done, function (activity) {
+                return activity.getClassName() === instance.getClassName();
+            }));
+
+            if (isTodo) {
+                var isAlreadyInTheList;
+                if (instance.isDoable()) {
+                    // Is it already is among CS.activities.doable?
+                    isAlreadyInTheList = _.find(this.activities.doable, function (activity) {
+                        return activity.getClassName() === instance.getClassName();
+                    });
+
+                    if (!isAlreadyInTheList) {
+                        this.activities.doable.push(instance);
+                    }
+                } else {
+                    // Is it already is among CS.activities.notDoable?
+                    isAlreadyInTheList = _.find(this.activities.notDoable, function (activity) {
+                        return activity.getClassName() === instance.getClassName();
+                    });
+
+                    if (!isAlreadyInTheList) {
+                        this.activities.notDoable.push(instance);
+                    }
+                }
+            }
+        }.bind(this));
+
+        if (onComplete) {
+            onComplete();
+        }
+    };
+});
 ;CS.Models.Strength = {
     sort: function (unsortedStrength) {
         return _.sortBy(unsortedStrength, function (strength) {
@@ -860,8 +963,6 @@ CS.indexController = null;
     };
 
     c._handlePanelActivated = function () {
-        // TODO: remove?
-        CS.activityFeedController.refreshData();
         this.standoutsController.refreshData();
 
         this.$currentActivitySection.hide();
@@ -1287,7 +1388,7 @@ CS.indexController = null;
     c.reactClass = React.createClass({displayName: "reactClass",
         getInitialState: function () {
             return {
-                undoneC1sAndActivities: [],
+                doableC1sAndActivities: [],
                 doneC1sAndActivities: [],
                 accountData: null
             };
@@ -1320,7 +1421,7 @@ CS.indexController = null;
                     ), 
 
                     React.createElement("ul", {className: "styleless"}, 
-                    this.state.undoneC1sAndActivities.map(function (c1OrActivity) {
+                    this.state.doableC1sAndActivities.map(function (c1OrActivity) {
                         var key = c1OrActivity.instance.getClassName();
 
                         if (c1OrActivity.type === CS.Controllers.ActivityFeed.itemType.c1) {
@@ -1414,6 +1515,10 @@ CS.indexController = null;
         this.c1Instances = this.c1FeedItems.map(function (item, index) {
             return CS.C1s[item.className](item.className, item.title);
         }.bind(this));
+
+        CS.activitiesModel = CS.Models.Activities(this.activityFeedItems);
+
+        CS.activitiesModel.updateActivityStatus($.proxy(this.reRender, this));
     };
 
     c._initElements = function () {
@@ -1427,10 +1532,6 @@ CS.indexController = null;
         this.$introToActivitiesAlert.on('close.bs.alert', $.proxy(this._onIntroToActivitiesAlertClose, this));
     };
 
-    c.refreshData = function () {
-        this._fetchCustomActivities();
-    };
-
     c.initIntroToActivitiesAlert = function () {
         if (CS.account.data && CS.account.data.Employer && CS.account.data.Position && !this.getFromLocalStorage("is-intro-to-activities-alert-closed")) {
             CS.Services.Animator.fadeIn(this.$introToActivitiesAlert);
@@ -1439,129 +1540,56 @@ CS.indexController = null;
         }
     };
 
-    c._fetchCustomActivities = function () {
-        var type = "GET";
-        var url = "/api/custom-activities";
-
-        $.ajax({
-            url: url,
-            type: type,
-            dataType: "json",
-            success: function (data, textStatus, jqXHR) {
-                var customActivityInstances = data.map(function (customActivity, index) {
-                    return CS.Activities.Custom(customActivity.className, customActivity.title, customActivity.mainText);
-                }.bind(this));
-
-                var classicActivityInstances = this.activityFeedItems.map(function (item, index) {
-                    return CS.Activities[item.className](item.className, item.title, item.description);
-                }.bind(this));
-
-                this.activityInstances = _.union(customActivityInstances, classicActivityInstances);
-
-                this._fetchActivities();
-            }.bind(this),
-            error: function (jqXHR, textStatus, errorThrown) {
-                alert('AJAX failure doing a ' + type + ' request to "' + url + '"');
-            }.bind(this)
-        });
-    };
-
-    c._fetchActivities = function () {
-        var type = "GET";
-        var url = "/api/activities";
-
-        $.ajax({
-            url: url,
-            type: type,
-            dataType: "json",
-            success: function (data, textStatus, jqXHR) {
-                this._orderFeedItems(data);
-            }.bind(this),
-            error: function (jqXHR, textStatus, errorThrown) {
-                alert('AJAX failure doing a ' + type + ' request to "' + url + '"');
-            }.bind(this)
-        });
-    };
-
-    c._orderFeedItems = function (activityData) {
-        CS.undoneC1sAndActivities = [];
+    c.reRender = function() {
+        var doableC1sAndActivities = [];
         var doneC1sAndActivities = [];
-
-        activityData.forEach(function (activity) {
-            var instance = _.find(this.activityInstances, function (instans) {
-                return instans.getClassName() === activity.className;
-            });
-
-            // Custom activities are not defined in this.activityFeedItems, in which case "feedItem" is null
-            var feedItem = _.find(this.activityFeedItems, function (item) {
-                return item.className === activity.className;
-            });
-
-            if (activity.state === CS.Models.Activity.state.done) {
-                doneC1sAndActivities.push({
-                    type: CS.Controllers.ActivityFeed.itemType.activity,
-                    instance: instance,
-                    buttonText: feedItem ? feedItem.buttonText : this.defaultActivityButtonText,
-                    isDone: true
-                });
-            } else if (instance.isDoable()) {
-                CS.undoneC1sAndActivities.push({
-                    type: CS.Controllers.ActivityFeed.itemType.activity,
-                    instance: instance,
-                    buttonText: feedItem ? feedItem.buttonText : this.defaultActivityButtonText,
-                    isDone: false
-                });
-            }
-        }.bind(this));
 
         this.c1Instances.forEach(function (c1Instance, index) {
             var isDone = CS.account.data && CS.account.data[c1Instance.getClassName()];
 
             if (isDone) {
-                doneC1sAndActivities.push({
+                doneC1sAndActivities.unshift({
                     type: CS.Controllers.ActivityFeed.itemType.c1,
                     instance: c1Instance
                 });
             } else {
-                CS.undoneC1sAndActivities.push({
+                doableC1sAndActivities.push({
                     type: CS.Controllers.ActivityFeed.itemType.c1,
                     instance: c1Instance
                 });
             }
         }.bind(this));
 
-        // We handle instances which didn't have any activity data
-        this.activityInstances.forEach(function (instance, index) {
-            var isTodo = _.isEmpty(_.find(doneC1sAndActivities, function (activity) {
-                return activity.instance.getClassName() === instance.getClassName();
-            }));
+        CS.activitiesModel.getDoable().forEach(function (activityInstance, index) {
+            var feedItem = _.find(this.activityFeedItems, function (item) {
+                return item.className === activityInstance.getClassName();
+            });
 
-            if (isTodo && instance.isDoable()) {
-                // Is it already is among the undoneActivities?
-                var isAlreadyInTheList = _.find(CS.undoneC1sAndActivities, function (activity) {
-                    return activity.instance.getClassName() === instance.getClassName();
-                });
+            doableC1sAndActivities.push({
+                type: CS.Controllers.ActivityFeed.itemType.activity,
+                instance: activityInstance,
+                buttonText: feedItem.buttonText,
+                isDone: false
+            });
+        }.bind(this));
 
-                if (!isAlreadyInTheList) {
-                    // Custom activities are not defined in this.activityFeedItems, in which case "feedItem" is null
-                    var feedItem = _.find(this.activityFeedItems, function (item) {
-                        return item.className === instance.getClassName();
-                    });
+        CS.activitiesModel.getDone().forEach(function (activityInstance, index) {
+            var feedItem = _.find(this.activityFeedItems, function (item) {
+                return item.className === activityInstance.getClassName();
+            });
 
-                    CS.undoneC1sAndActivities.push({
-                        type: CS.Controllers.ActivityFeed.itemType.activity,
-                        instance: instance,
-                        buttonText: feedItem ? feedItem.buttonText : this.defaultActivityButtonText,
-                        isDone: false
-                    });
-                }
-            }
+            doneC1sAndActivities.unshift({
+                type: CS.Controllers.ActivityFeed.itemType.activity,
+                instance: activityInstance,
+                buttonText: feedItem.buttonText,
+                isDone: true
+            });
         }.bind(this));
 
         this._showOrHideRegisterReminder(doneC1sAndActivities.length);
 
         this.reactInstance.replaceState({
-            undoneC1sAndActivities: CS.undoneC1sAndActivities,
+            doableC1sAndActivities: doableC1sAndActivities,
             doneC1sAndActivities: doneC1sAndActivities,
             accountData: CS.account.data
         });

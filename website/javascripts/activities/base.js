@@ -5,15 +5,11 @@ CS.Activities.Base = P(function (c) {
     c.controllers = {};
 
     c.init = function (className, title, description) {
+        this.className = className;
         this.title = title;
         this.description = description;
 
-        this.model = {
-            className: className,
-            account: {
-                data: _.clone(CS.account.data, true) || {}
-            }
-        };
+        this.initModel();
 
         this.$el.empty();
 
@@ -33,7 +29,7 @@ CS.Activities.Base = P(function (c) {
     };
 
     c.getClassName = function () {
-        return this.model.className;
+        return this.className;
     };
 
     c.getTitle = function () {
@@ -42,6 +38,14 @@ CS.Activities.Base = P(function (c) {
 
     c.getDescription = function () {
         return this.description;
+    };
+
+    c.initModel = function() {
+        this.model = {
+            account: {
+                data: _.clone(CS.account.data, true) || {}
+            }
+        };
     };
 
     c.registerController = function (controllerClass, route) {

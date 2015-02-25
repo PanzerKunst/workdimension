@@ -15,8 +15,7 @@ object AccountActivityDto {
           select distinct activity_class_name, activity_state, max(creation_timestamp) creation_timestamp
           from account_activity
           where account_id = """ + accountId + """
-          group by activity_class_name, activity_state
-          order by creation_timestamp desc;"""
+          group by activity_class_name, activity_state;"""
 
       Logger.info("AccountActivityDto.getOfAccountId():" + query)
 

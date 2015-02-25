@@ -57,7 +57,7 @@ CS.Activities.Custom.Controllers.Step1 = P(CS.Activities.Controller, function (c
         if (this.validator.isValid()) {
             this.$submitBtn.button('loading');
 
-            this.activity.model.account.data.custom[this.activity.model.className] = this.$textarea.val().trim();
+            this.activity.model.account.data.custom[this.activity.getClassName()] = this.$textarea.val().trim();
 
             this.postData(function () {
                 this.navigateTo("insights");
@@ -153,10 +153,8 @@ CS.Activities.IdentifyStrengths.Controllers.Outro = P(CS.Activities.Controller, 
     };
 
     c.onReRender = function () {
-        var nextActivity = CS.undoneC1sAndActivities && !_.isEmpty(CS.undoneC1sAndActivities) ? CS.undoneC1sAndActivities[0].instance : null;
-
         this.reactInstance.replaceState({
-            nextActivity: nextActivity,
+            nextActivity: CS.activitiesModel.getNextActivity(),
             firstThreeStrengths: _.take(this.activity.model.account.data.strengths, 3),
             otherStrengths: _.drop(this.activity.model.account.data.strengths, 3)
         });
@@ -816,15 +814,13 @@ CS.Activities.SpecifyTop1Strength.Controllers.Outro = P(CS.Activities.Controller
     };
 
     c.onReRender = function () {
-        var nextActivity = CS.undoneC1sAndActivities && !_.isEmpty(CS.undoneC1sAndActivities) ? CS.undoneC1sAndActivities[0].instance : null;
-
         var strength = this.activity.model.account.data.strengths[0];
 
         var howWellItAppliesAsHtml = CS.Services.String.textToHtml(strength.specify.howWellItApplies);
         var strengthForPositionAsHtml = CS.Services.String.textToHtml(strength.specify.strengthForPosition);
 
         this.reactInstance.replaceState({
-            nextActivity: nextActivity,
+            nextActivity: CS.activitiesModel.getNextActivity(),
             strengthName: strength.name,
             howWellItApplies: howWellItAppliesAsHtml,
             strengthForPosition: strengthForPositionAsHtml
@@ -1115,15 +1111,13 @@ CS.Activities.SpecifyTop2Strength.Controllers.Outro = P(CS.Activities.Controller
     };
 
     c.onReRender = function () {
-        var nextActivity = CS.undoneC1sAndActivities && !_.isEmpty(CS.undoneC1sAndActivities) ? CS.undoneC1sAndActivities[0].instance : null;
-
         var strength = this.activity.model.account.data.strengths[1];
 
         var howWellItAppliesAsHtml = CS.Services.String.textToHtml(strength.specify.howWellItApplies);
         var strengthForPositionAsHtml = CS.Services.String.textToHtml(strength.specify.strengthForPosition);
 
         this.reactInstance.replaceState({
-            nextActivity: nextActivity,
+            nextActivity: CS.activitiesModel.getNextActivity(),
             strengthName: strength.name,
             howWellItApplies: howWellItAppliesAsHtml,
             strengthForPosition: strengthForPositionAsHtml
@@ -1414,15 +1408,13 @@ CS.Activities.SpecifyTop3Strength.Controllers.Outro = P(CS.Activities.Controller
     };
 
     c.onReRender = function () {
-        var nextActivity = CS.undoneC1sAndActivities && !_.isEmpty(CS.undoneC1sAndActivities) ? CS.undoneC1sAndActivities[0].instance : null;
-
         var strength = this.activity.model.account.data.strengths[2];
 
         var howWellItAppliesAsHtml = CS.Services.String.textToHtml(strength.specify.howWellItApplies);
         var strengthForPositionAsHtml = CS.Services.String.textToHtml(strength.specify.strengthForPosition);
 
         this.reactInstance.replaceState({
-            nextActivity: nextActivity,
+            nextActivity: CS.activitiesModel.getNextActivity(),
             strengthName: strength.name,
             howWellItApplies: howWellItAppliesAsHtml,
             strengthForPosition: strengthForPositionAsHtml

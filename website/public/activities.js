@@ -5,15 +5,11 @@ CS.Activities.Base = P(function (c) {
     c.controllers = {};
 
     c.init = function (className, title, description) {
+        this.className = className;
         this.title = title;
         this.description = description;
 
-        this.model = {
-            className: className,
-            account: {
-                data: _.clone(CS.account.data, true) || {}
-            }
-        };
+        this.initModel();
 
         this.$el.empty();
 
@@ -33,7 +29,7 @@ CS.Activities.Base = P(function (c) {
     };
 
     c.getClassName = function () {
-        return this.model.className;
+        return this.className;
     };
 
     c.getTitle = function () {
@@ -42,6 +38,14 @@ CS.Activities.Base = P(function (c) {
 
     c.getDescription = function () {
         return this.description;
+    };
+
+    c.initModel = function() {
+        this.model = {
+            account: {
+                data: _.clone(CS.account.data, true) || {}
+            }
+        };
     };
 
     c.registerController = function (controllerClass, route) {
@@ -97,7 +101,7 @@ CS.Activities.Base.pageAnimationDuration = 0.15;
         if (!this.isRendered) {
             var uniqueId = _.uniqueId();
 
-            this.activity.$el.append('<div class="activity-page ' + this.activity.model.className + '" id="' + uniqueId + '"></div>');
+            this.activity.$el.append('<div class="activity-page ' + this.activity.getClassName() + '" id="' + uniqueId + '"></div>');
             this.$el = $("#" + uniqueId);
 
             this.reactInstance = React.render(
@@ -129,18 +133,21 @@ CS.Activities.Base.pageAnimationDuration = 0.15;
             type: type,
             contentType: "application/json",
             data: JSON.stringify({
-                className: this.activity.model.className,
+                className: this.activity.getClassName(),
                 accountData: this.activity.model.account.data
             }),
             success: function (data, textStatus, jqXHR) {
                 CS.account.data = this.activity.model.account.data;
-                CS.activityFeedController.refreshData();
 
-                if (callback) {
-                    callback();
-                } else {
-                    this.navigateTo(this.activity.outroController.route);
-                }
+                CS.activitiesModel.updateActivityStatus(function() {
+                    CS.activityFeedController.reRender();
+
+                    if (callback) {
+                        callback();
+                    } else {
+                        this.navigateTo(this.activity.outroController.route);
+                    }
+                }.bind(this));
             }.bind(this),
             error: function (jqXHR, textStatus, errorThrown) {
                 if (this.$submitBtn) {
@@ -180,7 +187,7 @@ CS.Activities.Base.pageAnimationDuration = 0.15;
     };
 
     c.initControllers = function() {
-        this.initRouting([CS.Activities.Custom.Controllers.Step1("activities/" + this.model.className, this)]);
+        this.initRouting([CS.Activities.Custom.Controllers.Step1("activities/" + this.getClassName(), this)]);
     };
 });
 
@@ -191,18 +198,20 @@ CS.Activities.Custom.Controllers = {};
     };
 
     c.isDoable = function() {
+        this.initModel();
+
         return this.model.account.data.Employer && this.model.account.data.Position;
     };
 
     c.initControllers = function() {
         // Initialising all activity controllers
-        this.introController = CS.Activities.IdentifyStrengths.Controllers.Intro("activities/" + this.model.className, this);
-        this.step1Controller = CS.Activities.IdentifyStrengths.Controllers.Step1("activities/" + this.model.className + "/1", this);
-        this.step2Controller = CS.Activities.IdentifyStrengths.Controllers.Step2("activities/" + this.model.className + "/2", this);
-        this.step3Controller = CS.Activities.IdentifyStrengths.Controllers.Step3("activities/" + this.model.className + "/3", this);
-        this.step4Controller = CS.Activities.IdentifyStrengths.Controllers.Step4("activities/" + this.model.className + "/4", this);
-        this.step5Controller = CS.Activities.IdentifyStrengths.Controllers.Step5("activities/" + this.model.className + "/5", this);
-        this.outroController = CS.Activities.IdentifyStrengths.Controllers.Outro("activities/" + this.model.className + "/outro", this);
+        this.introController = CS.Activities.IdentifyStrengths.Controllers.Intro("activities/" + this.getClassName(), this);
+        this.step1Controller = CS.Activities.IdentifyStrengths.Controllers.Step1("activities/" + this.getClassName() + "/1", this);
+        this.step2Controller = CS.Activities.IdentifyStrengths.Controllers.Step2("activities/" + this.getClassName() + "/2", this);
+        this.step3Controller = CS.Activities.IdentifyStrengths.Controllers.Step3("activities/" + this.getClassName() + "/3", this);
+        this.step4Controller = CS.Activities.IdentifyStrengths.Controllers.Step4("activities/" + this.getClassName() + "/4", this);
+        this.step5Controller = CS.Activities.IdentifyStrengths.Controllers.Step5("activities/" + this.getClassName() + "/5", this);
+        this.outroController = CS.Activities.IdentifyStrengths.Controllers.Outro("activities/" + this.getClassName() + "/outro", this);
 
         var controllers = [
             this.introController,
@@ -225,6 +234,8 @@ CS.Activities.IdentifyStrengths.Controllers = {};
     };
 
     c.isDoable = function() {
+        this.initModel();
+
         return this.model.account.data.Employer &&
             this.model.account.data.Position &&
             !_.isEmpty(this.model.account.data.strengths);
@@ -232,11 +243,11 @@ CS.Activities.IdentifyStrengths.Controllers = {};
 
     c.initControllers = function() {
         // Initialising all activity controllers
-        this.introController = CS.Activities.SpecifyTop1Strength.Controllers.Intro("activities/" + this.model.className, this);
-        this.step1Controller = CS.Activities.SpecifyTop1Strength.Controllers.Step1("activities/" + this.model.className + "/1", this);
-        this.step2Controller = CS.Activities.SpecifyTop1Strength.Controllers.Step2("activities/" + this.model.className + "/2", this);
-        this.step3Controller = CS.Activities.SpecifyTop1Strength.Controllers.Step3("activities/" + this.model.className + "/3", this);
-        this.outroController = CS.Activities.SpecifyTop1Strength.Controllers.Outro("activities/" + this.model.className + "/outro", this);
+        this.introController = CS.Activities.SpecifyTop1Strength.Controllers.Intro("activities/" + this.getClassName(), this);
+        this.step1Controller = CS.Activities.SpecifyTop1Strength.Controllers.Step1("activities/" + this.getClassName() + "/1", this);
+        this.step2Controller = CS.Activities.SpecifyTop1Strength.Controllers.Step2("activities/" + this.getClassName() + "/2", this);
+        this.step3Controller = CS.Activities.SpecifyTop1Strength.Controllers.Step3("activities/" + this.getClassName() + "/3", this);
+        this.outroController = CS.Activities.SpecifyTop1Strength.Controllers.Outro("activities/" + this.getClassName() + "/outro", this);
 
         var controllers = [
             this.introController,
@@ -265,6 +276,8 @@ CS.Activities.SpecifyTop1Strength.Controllers = {};
     };
 
     c.isDoable = function() {
+        this.initModel();
+
         return this.model.account.data.Employer &&
             this.model.account.data.Position &&
             this.model.account.data.strengths &&
@@ -273,11 +286,11 @@ CS.Activities.SpecifyTop1Strength.Controllers = {};
 
     c.initControllers = function() {
         // Initialising all activity controllers
-        this.introController = CS.Activities.SpecifyTop2Strength.Controllers.Intro("activities/" + this.model.className, this);
-        this.step1Controller = CS.Activities.SpecifyTop2Strength.Controllers.Step1("activities/" + this.model.className + "/1", this);
-        this.step2Controller = CS.Activities.SpecifyTop2Strength.Controllers.Step2("activities/" + this.model.className + "/2", this);
-        this.step3Controller = CS.Activities.SpecifyTop2Strength.Controllers.Step3("activities/" + this.model.className + "/3", this);
-        this.outroController = CS.Activities.SpecifyTop2Strength.Controllers.Outro("activities/" + this.model.className + "/outro", this);
+        this.introController = CS.Activities.SpecifyTop2Strength.Controllers.Intro("activities/" + this.getClassName(), this);
+        this.step1Controller = CS.Activities.SpecifyTop2Strength.Controllers.Step1("activities/" + this.getClassName() + "/1", this);
+        this.step2Controller = CS.Activities.SpecifyTop2Strength.Controllers.Step2("activities/" + this.getClassName() + "/2", this);
+        this.step3Controller = CS.Activities.SpecifyTop2Strength.Controllers.Step3("activities/" + this.getClassName() + "/3", this);
+        this.outroController = CS.Activities.SpecifyTop2Strength.Controllers.Outro("activities/" + this.getClassName() + "/outro", this);
 
         var controllers = [
             this.introController,
@@ -306,6 +319,8 @@ CS.Activities.SpecifyTop2Strength.Controllers = {};
     };
 
     c.isDoable = function() {
+        this.initModel();
+
         return this.model.account.data.Employer &&
             this.model.account.data.Position &&
             this.model.account.data.strengths &&
@@ -314,11 +329,11 @@ CS.Activities.SpecifyTop2Strength.Controllers = {};
 
     c.initControllers = function() {
         // Initialising all activity controllers
-        this.introController = CS.Activities.SpecifyTop3Strength.Controllers.Intro("activities/" + this.model.className, this);
-        this.step1Controller = CS.Activities.SpecifyTop3Strength.Controllers.Step1("activities/" + this.model.className + "/1", this);
-        this.step2Controller = CS.Activities.SpecifyTop3Strength.Controllers.Step2("activities/" + this.model.className + "/2", this);
-        this.step3Controller = CS.Activities.SpecifyTop3Strength.Controllers.Step3("activities/" + this.model.className + "/3", this);
-        this.outroController = CS.Activities.SpecifyTop3Strength.Controllers.Outro("activities/" + this.model.className + "/outro", this);
+        this.introController = CS.Activities.SpecifyTop3Strength.Controllers.Intro("activities/" + this.getClassName(), this);
+        this.step1Controller = CS.Activities.SpecifyTop3Strength.Controllers.Step1("activities/" + this.getClassName() + "/1", this);
+        this.step2Controller = CS.Activities.SpecifyTop3Strength.Controllers.Step2("activities/" + this.getClassName() + "/2", this);
+        this.step3Controller = CS.Activities.SpecifyTop3Strength.Controllers.Step3("activities/" + this.getClassName() + "/3", this);
+        this.outroController = CS.Activities.SpecifyTop3Strength.Controllers.Outro("activities/" + this.getClassName() + "/outro", this);
 
         var controllers = [
             this.introController,
@@ -400,7 +415,7 @@ CS.Activities.SpecifyTop3Strength.Controllers = {};
         if (this.validator.isValid()) {
             this.$submitBtn.button('loading');
 
-            this.activity.model.account.data.custom[this.activity.model.className] = this.$textarea.val().trim();
+            this.activity.model.account.data.custom[this.activity.getClassName()] = this.$textarea.val().trim();
 
             this.postData(function () {
                 this.navigateTo("insights");
@@ -496,10 +511,8 @@ CS.Activities.IdentifyStrengths.Controllers.Outro = P(CS.Activities.Controller, 
     };
 
     c.onReRender = function () {
-        var nextActivity = CS.undoneC1sAndActivities && !_.isEmpty(CS.undoneC1sAndActivities) ? CS.undoneC1sAndActivities[0].instance : null;
-
         this.reactInstance.replaceState({
-            nextActivity: nextActivity,
+            nextActivity: CS.activitiesModel.getNextActivity(),
             firstThreeStrengths: _.take(this.activity.model.account.data.strengths, 3),
             otherStrengths: _.drop(this.activity.model.account.data.strengths, 3)
         });
@@ -1159,15 +1172,13 @@ CS.Activities.SpecifyTop1Strength.Controllers.Outro = P(CS.Activities.Controller
     };
 
     c.onReRender = function () {
-        var nextActivity = CS.undoneC1sAndActivities && !_.isEmpty(CS.undoneC1sAndActivities) ? CS.undoneC1sAndActivities[0].instance : null;
-
         var strength = this.activity.model.account.data.strengths[0];
 
         var howWellItAppliesAsHtml = CS.Services.String.textToHtml(strength.specify.howWellItApplies);
         var strengthForPositionAsHtml = CS.Services.String.textToHtml(strength.specify.strengthForPosition);
 
         this.reactInstance.replaceState({
-            nextActivity: nextActivity,
+            nextActivity: CS.activitiesModel.getNextActivity(),
             strengthName: strength.name,
             howWellItApplies: howWellItAppliesAsHtml,
             strengthForPosition: strengthForPositionAsHtml
@@ -1458,15 +1469,13 @@ CS.Activities.SpecifyTop2Strength.Controllers.Outro = P(CS.Activities.Controller
     };
 
     c.onReRender = function () {
-        var nextActivity = CS.undoneC1sAndActivities && !_.isEmpty(CS.undoneC1sAndActivities) ? CS.undoneC1sAndActivities[0].instance : null;
-
         var strength = this.activity.model.account.data.strengths[1];
 
         var howWellItAppliesAsHtml = CS.Services.String.textToHtml(strength.specify.howWellItApplies);
         var strengthForPositionAsHtml = CS.Services.String.textToHtml(strength.specify.strengthForPosition);
 
         this.reactInstance.replaceState({
-            nextActivity: nextActivity,
+            nextActivity: CS.activitiesModel.getNextActivity(),
             strengthName: strength.name,
             howWellItApplies: howWellItAppliesAsHtml,
             strengthForPosition: strengthForPositionAsHtml
@@ -1757,15 +1766,13 @@ CS.Activities.SpecifyTop3Strength.Controllers.Outro = P(CS.Activities.Controller
     };
 
     c.onReRender = function () {
-        var nextActivity = CS.undoneC1sAndActivities && !_.isEmpty(CS.undoneC1sAndActivities) ? CS.undoneC1sAndActivities[0].instance : null;
-
         var strength = this.activity.model.account.data.strengths[2];
 
         var howWellItAppliesAsHtml = CS.Services.String.textToHtml(strength.specify.howWellItApplies);
         var strengthForPositionAsHtml = CS.Services.String.textToHtml(strength.specify.strengthForPosition);
 
         this.reactInstance.replaceState({
-            nextActivity: nextActivity,
+            nextActivity: CS.activitiesModel.getNextActivity(),
             strengthName: strength.name,
             howWellItApplies: howWellItAppliesAsHtml,
             strengthForPosition: strengthForPositionAsHtml

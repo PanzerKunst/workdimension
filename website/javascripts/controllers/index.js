@@ -117,8 +117,6 @@ CS.Controllers.Index = P(CS.Controllers.OnePageWebapp, function (c, base) {
     };
 
     c._handlePanelActivated = function () {
-        // TODO: remove?
-        CS.activityFeedController.refreshData();
         this.standoutsController.refreshData();
 
         this.$currentActivitySection.hide();

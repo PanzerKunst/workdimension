@@ -57,7 +57,7 @@ CS.Activities.Custom.Controllers.Step1 = P(CS.Activities.Controller, function (c
         if (this.validator.isValid()) {
             this.$submitBtn.button('loading');
 
-            this.activity.model.account.data.custom[this.activity.model.className] = this.$textarea.val().trim();
+            this.activity.model.account.data.custom[this.activity.getClassName()] = this.$textarea.val().trim();
 
             this.postData(function () {
                 this.navigateTo("insights");

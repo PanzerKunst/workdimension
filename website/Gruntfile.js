@@ -82,6 +82,7 @@ module.exports = function (grunt) {
 
                     // Models
                     "javascripts/models/activity.js",
+                    "javascripts/models/activities.js",
                     "javascripts/models/strength.js",
 
                     // Controllers

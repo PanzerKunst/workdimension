@@ -12,7 +12,7 @@ CS.Activities.Custom = P(CS.Activities.Base, function (c, base) {
     };
 
     c.initControllers = function() {
-        this.initRouting([CS.Activities.Custom.Controllers.Step1("activities/" + this.model.className, this)]);
+        this.initRouting([CS.Activities.Custom.Controllers.Step1("activities/" + this.getClassName(), this)]);
     };
 });
 

@@ -35,15 +35,13 @@ CS.Activities.SpecifyTop2Strength.Controllers.Outro = P(CS.Activities.Controller
     };
 
     c.onReRender = function () {
-        var nextActivity = CS.undoneC1sAndActivities && !_.isEmpty(CS.undoneC1sAndActivities) ? CS.undoneC1sAndActivities[0].instance : null;
-
         var strength = this.activity.model.account.data.strengths[1];
 
         var howWellItAppliesAsHtml = CS.Services.String.textToHtml(strength.specify.howWellItApplies);
         var strengthForPositionAsHtml = CS.Services.String.textToHtml(strength.specify.strengthForPosition);
 
         this.reactInstance.replaceState({
-            nextActivity: nextActivity,
+            nextActivity: CS.activitiesModel.getNextActivity(),
             strengthName: strength.name,
             howWellItApplies: howWellItAppliesAsHtml,
             strengthForPosition: strengthForPositionAsHtml

@@ -48,10 +48,8 @@ CS.Activities.IdentifyStrengths.Controllers.Outro = P(CS.Activities.Controller, 
     };
 
     c.onReRender = function () {
-        var nextActivity = CS.undoneC1sAndActivities && !_.isEmpty(CS.undoneC1sAndActivities) ? CS.undoneC1sAndActivities[0].instance : null;
-
         this.reactInstance.replaceState({
-            nextActivity: nextActivity,
+            nextActivity: CS.activitiesModel.getNextActivity(),
             firstThreeStrengths: _.take(this.activity.model.account.data.strengths, 3),
             otherStrengths: _.drop(this.activity.model.account.data.strengths, 3)
         });
