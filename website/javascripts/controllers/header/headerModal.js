@@ -12,7 +12,7 @@ CS.Controllers.HeaderModal = P(CS.Controllers.OnePageWebapp, function (c) {
         this.$signInLink = this.$headerLinks.filter("#sign-in-link");
         this.$signOutLink = this.$headerLinks.filter("#sign-out-link");
 
-        this.$modal = $("#modal");
+        this.$modal = $("#register-or-sign-in-modal");
         this.$modalTitles = this.$modal.find(".modal-title");
         this.$modalForms = this.$modal.find("form");
         this.$modalSubmitButtons = this.$modal.find(".modal-footer").find("button");

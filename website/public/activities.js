@@ -192,25 +192,6 @@ CS.Activities.Base.pageAnimationDuration = 0.15;
         return this.route === "";
     };
 });
-;CS.Activities.Custom = P(CS.Activities.Base, function (c, base) {
-    c.init = function (className, title, text) {
-        base.init.call(this, className, title);
-
-        this.text = text;
-
-        this.model.account.data.custom = this.model.account.data.custom || {};
-    };
-
-    c.isDoable = function () {
-        return true;    // Always doable
-    };
-
-    c.initControllers = function() {
-        this.initRouting([CS.Activities.Custom.Controllers.Step1("activities/" + this.getClassName(), this)]);
-    };
-});
-
-CS.Activities.Custom.Controllers = {};
 ;CS.Activities.IdentifyStrengths = P(CS.Activities.Base, function (c, base) {
     c.init = function (className, title, description) {
         base.init.call(this, className, title, description);
@@ -375,75 +356,7 @@ CS.Activities.SpecifyTop2Strength.Controllers = {};
 });
 
 CS.Activities.SpecifyTop3Strength.Controllers = {};
-;CS.Activities.Custom.Controllers.Step1 = P(CS.Activities.Controller, function (c) {
-    c.reactClass = React.createClass({displayName: "reactClass",
-        getInitialState: function () {
-            return {text: null};
-        },
-
-        render: function () {
-            return (
-                React.createElement("form", {role: "form"}, 
-                    React.createElement("div", {className: "form-group"}, 
-                        React.createElement("p", {dangerouslySetInnerHTML: {__html: this.state.text}}), 
-
-                        React.createElement("textarea", {id: "custom-activity-answer", className: "form-control"}), 
-
-                        React.createElement("p", {className: "field-error", "data-check": "empty"})
-                    ), 
-
-                    React.createElement("div", {className: "submit-wrapper"}, 
-                        React.createElement("button", {type: "button", className: "btn btn-default"}, "Tillbaka"), 
-                        React.createElement("button", {type: "submit", className: "btn btn-primary", "data-loading-text": "Sparar..."}, "Spara")
-                    )
-                )
-                );
-        }
-    });
-
-    c.initElements = function () {
-        this.$form = this.$el.find("form");
-        this.$textarea = this.$form.find("#custom-activity-answer");
-        this.$goBackBtn = this.$form.find(".btn-default");
-        this.$submitBtn = this.$form.find("[type=submit]");
-    };
-
-    c.initValidation = function () {
-        this.validator = CS.Services.Validator([
-            "custom-activity-answer"
-        ]);
-    };
-
-    c.initEvents = function () {
-        this.$goBackBtn.click($.proxy(this.nagivateToActivityFeed, this));
-        this.$form.submit($.proxy(this._handleSubmit, this));
-
-        this.onReRender();
-    };
-
-    c.onReRender = function () {
-        this.reactInstance.replaceState({text: CS.Services.String.textToHtml(this.activity.text)});
-
-        // The submit button may still be in loading state when navigating back. We make sure it doesn't happen
-        this.$submitBtn.button("reset");
-    };
-
-    c._handleSubmit = function (e) {
-        e.preventDefault();
-
-        if (this.validator.isValid()) {
-            this.$submitBtn.button("loading");
-
-            this.activity.model.account.data.custom[this.activity.getClassName()] = this.$textarea.val().trim();
-
-            this.postData(function () {
-                this.navigateTo("insights");
-            }.bind(this));
-        }
-    };
-});
-
-CS.Activities.IdentifyStrengths.Controllers.Intro = P(CS.Activities.Controller, function (c) {
+;CS.Activities.IdentifyStrengths.Controllers.Intro = P(CS.Activities.Controller, function (c) {
     c.reactClass = React.createClass({displayName: "reactClass",
         render: function () {
             return (

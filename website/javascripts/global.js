@@ -15,7 +15,5 @@ CS.account = {
 };
 CS.router = new Grapnel();
 CS.defaultAnimationDuration = 0.5;
-CS.activityFeedController = null;
 CS.activitiesModel = null;
 CS.indexController = null;
-CS.activityFeedController = null;

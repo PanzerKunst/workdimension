@@ -1,6 +1,4 @@
-#content,
-nav[role="navigation"],
-#header-alerts {
+#content {
   margin: 0 auto;
 
   @include medium-screen {
@@ -8,20 +6,6 @@ nav[role="navigation"],
   }
   @include large-screen {
     max-width: $large-content-width;
-  }
-}
-
-.tab-pane {
-  background-color: $tab-pane-color;
-
-  padding: $spacer-unit-size;
-
-  @include medium-screen {
-    padding: $spacer-unit-size * $medium-screen-ratio-l;
-  }
-
-  @include large-screen {
-    padding: $spacer-unit-size * $large-screen-ratio-l;
   }
 }
 

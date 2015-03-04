@@ -12,12 +12,7 @@ CS.C1s.Base = P(function (c) {
         return this.title;
     };
 });
-;CS.C1s.Employer = P(CS.C1s.Base, function (c, base) {
-    c.init = function (className, title) {
-        base.init.call(this, className, title);
-    };
-});
-;CS.C1s.Position = P(CS.C1s.Base, function (c, base) {
+;CS.C1s.PositionAndEmployer = P(CS.C1s.Base, function (c, base) {
     c.init = function (className, title) {
         base.init.call(this, className, title);
     };

@@ -1,4 +1,4 @@
-#header-links {
+nav {
   text-align: center;
 
   background-color: $action-color;
@@ -52,7 +52,7 @@
   }
 }
 
-#modal {
+#register-or-sign-in-modal {
   form {
     > .centered-contents {
       > p {
@@ -82,19 +82,5 @@
     [type="submit"] {
       display: none;
     }
-  }
-}
-
-#header-alerts {
-  > div {
-    display: none;
-  }
-}
-
-#welcome-panel {
-  padding: $alert-padding;
-
-  span {
-    display: inline-block;
   }
 }

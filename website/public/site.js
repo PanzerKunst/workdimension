@@ -269,10 +269,8 @@ CS.account = {
 };
 CS.router = new Grapnel();
 CS.defaultAnimationDuration = 0.5;
-CS.activityFeedController = null;
 CS.activitiesModel = null;
 CS.indexController = null;
-CS.activityFeedController = null;
 ;CS.Services.Browser = {
     addUserAgentAttributeToHtmlTag: function() {
         document.documentElement.setAttribute("data-useragent", navigator.userAgent);
@@ -687,13 +685,39 @@ CS.activityFeedController = null;
 };
 ;CS.Models.Activity = {
     state: {
-        todo: "TODO",
         done: "DONE"
     }
 };
 ;CS.Models.Activities = P(function (c) {
-    c.init = function (activityFeedItems) {
-        this.classicActivityInstances = activityFeedItems.map(function (item) {
+    c.init = function () {
+        var activityItems = [
+            {
+                className: "IdentifyStrengths",
+                title: "Analysera jobbannonsen",
+                description: "Här får du hjälp att ta fram de viktigaste egenskaperna som efterfrågas och matcha kraven med dina styrkor.",
+                buttonText: "Kom igång"
+            },
+            {
+                className: "SpecifyTop1Strength",
+                title: "Styrkans innebörd{colonAndStrengthName}",
+                description: "Vad innebär <strong>{strengthName}</strong> för dig och vilken nytta skapas för företaget? Vi hjälper dig att ta reda på det!",
+                buttonText: "Definiera och värdera"
+            },
+            {
+                className: "SpecifyTop2Strength",
+                title: "Styrkans innebörd{colonAndStrengthName}",
+                description: "Vad innebär <strong>{strengthName}</strong> för dig och vilken nytta skapas för företaget? Vi hjälper dig att ta reda på det!",
+                buttonText: "Definiera och värdera"
+            },
+            {
+                className: "SpecifyTop3Strength",
+                title: "Styrkans innebörd{colonAndStrengthName}",
+                description: "Vad innebär <strong>{strengthName}</strong> för dig och vilken nytta skapas för företaget? Vi hjälper dig att ta reda på det!",
+                buttonText: "Definiera och värdera"
+            }
+        ];
+
+        this.activityInstances = activityItems.map(function (item) {
             return CS.Activities[item.className](item.className, item.title, item.description);
         });
     };
@@ -708,19 +732,19 @@ CS.activityFeedController = null;
         this._fetchActivityData(onComplete);
     };
 
-    c.getDone = function() {
+    c.getDone = function () {
         return this.activities.done;
     };
 
-    c.getDoable = function() {
+    c.getDoable = function () {
         return this.activities.doable;
     };
 
-    c.getNotDoable = function() {
+    c.getNotDoable = function () {
         return this.activities.notDoable;
     };
 
-    c.getNextActivity = function() {
+    c.getNextActivity = function () {
         if (_.isEmpty(this.activities.doable)) {
             return null;
         }
@@ -746,7 +770,7 @@ CS.activityFeedController = null;
 
     c._updateActivityStatus = function (activityData, onComplete) {
         activityData.forEach(function (activity) {
-            var instance = _.find(this.classicActivityInstances, function (instans) {
+            var instance = _.find(this.activityInstances, function (instans) {
                 return instans.getClassName() === activity.className;
             });
 
@@ -760,7 +784,7 @@ CS.activityFeedController = null;
         }.bind(this));
 
         // We handle instances which didn't have any activity data
-        this.classicActivityInstances.forEach(function (instance) {
+        this.activityInstances.forEach(function (instance) {
             var isTodo = _.isEmpty(_.find(this.activities.done, function (activity) {
                 return activity.getClassName() === instance.getClassName();
             }));
@@ -838,61 +862,35 @@ CS.activityFeedController = null;
         history.back();
     };
 });
-;CS.Controllers.Index = P(CS.Controllers.OnePageWebapp, function (c) {
+;CS.Controllers.Index = P(function (c) {
     c.init = function (accountId, accountEmail, accountData) {
         CS.account.id = accountId;
         CS.account.email = accountEmail;
         CS.account.data = accountData;
 
-        CS.activityFeedController = CS.Controllers.ActivityFeed();
-        this.standoutsController = CS.Controllers.Standouts();
-
+        CS.Controllers.Header();
         CS.Controllers.HeaderModal.Register();
         CS.Controllers.HeaderModal.SignIn();
-        CS.Controllers.RegisterReminder();
+        CS.Controllers.Standouts();
 
+        CS.activitiesModel = CS.Models.Activities();
+        CS.activitiesModel.updateActivityStatus();
+    };
+});
+;CS.Controllers.Header = P(CS.Controllers.Base, function (c) {
+    c.init = function () {
         this._initElements();
         this.initHeaderLinks();
-        this.initActivityTabText();
         this._initEvents();
-
-        this._initRouter();
     };
 
     c._initElements = function () {
-        this.$headerSection = $("#header-links");
-        this.$headerLinks = this.$headerSection.children("a");
+        this.$navSection = $("nav");
+        this.$headerLinks = this.$navSection.children("a");
         this.$signOutLink = this.$headerLinks.filter("#sign-out-link");
-
-        this.$headerNav = $("[role='navigation']");
-        this.$activitiesTab = this.$headerNav.find("#activities-tab");
-        this.$standoutsTab = this.$headerNav.find("#standouts-tab");
-
-        this.$headerAlerts = $("#header-alerts");
-        this.$welcomePanel = this.$headerAlerts.children("#welcome-panel");
-
-        this.$tabPanels = $("[role='tabpanel']");
-        this.$activitiesPanel = this.$tabPanels.filter("#activit1es");
-        this.$standoutsPanel = this.$tabPanels.filter("#standouts");
-
-        this.$feedSection = this.$activitiesPanel.children("#c1-and-activity-feed");
-        this.$currentActivitySection = this.$activitiesPanel.children("#current-activity");
-
-        this.$standoutListSection = this.$standoutsPanel.children("#standout-list");
-        this.$standoutDetailSection = this.$standoutsPanel.children("#standout-detail");
-
-        this.initWelcomePanel();
     };
 
     c._initEvents = function () {
-        this.$activitiesTab.click(function () {
-            this.navigateTo("activities");
-        }.bind(this));
-
-        this.$standoutsTab.click(function () {
-            this.navigateTo("insights");
-        }.bind(this));
-
         this.$signOutLink.click($.proxy(this._signOut, this));
     };
 
@@ -902,68 +900,8 @@ CS.activityFeedController = null;
             this.$signOutLink.hide();
         } else {
             this.$headerLinks.hide();
-            this.$signOutLink.show("display", "inline-block");
+            this.$signOutLink.css("display", "inline-block");
         }
-    };
-
-    c.initActivityTabText = function() {
-        if (CS.account.data && CS.account.data.Employer && CS.account.data.Position) {
-            this.$activitiesTab.html("Aktiviteter");
-        } else {
-            this.$activitiesTab.html("Din ansökan");
-        }
-    };
-
-    c.initWelcomePanel = function () {
-        if (CS.account.data && CS.account.data.Employer && CS.account.data.Position) {
-            CS.Services.Animator.fadeOut(this.$welcomePanel);
-        } else {
-            CS.Services.Animator.fadeIn(this.$welcomePanel);
-        }
-    };
-
-    c._initRouter = function () {
-        CS.router.get("", function () {
-            this._activateActivitiesPanel();
-        }.bind(this));
-
-        CS.router.get("activities", function () {
-            this._activateActivitiesPanel();
-        }.bind(this));
-
-        CS.router.get("insights", function () {
-            this._activateStandoutsPanel();
-        }.bind(this));
-    };
-
-    c._activateActivitiesPanel = function () {
-        if (!this.$activitiesPanel.hasClass("active")) {
-            this.$tabPanels.removeClass("active");
-            this.$activitiesTab.tab("show");
-            this.$activitiesPanel.addClass("active");
-        }
-
-        this._handlePanelActivated();
-    };
-
-    c._activateStandoutsPanel = function () {
-        if (!this.$standoutsPanel.hasClass("active")) {
-            this.$tabPanels.removeClass("active");
-            this.$standoutsTab.tab("show");
-            this.$standoutsPanel.addClass("active");
-        }
-
-        this._handlePanelActivated();
-    };
-
-    c._handlePanelActivated = function () {
-        this.standoutsController.refreshData();
-
-        this.$currentActivitySection.hide();
-        this.$feedSection.show();
-
-        this.$standoutDetailSection.hide();
-        this.$standoutListSection.show();
     };
 
     c._signOut = function () {
@@ -996,7 +934,7 @@ CS.activityFeedController = null;
         this.$signInLink = this.$headerLinks.filter("#sign-in-link");
         this.$signOutLink = this.$headerLinks.filter("#sign-out-link");
 
-        this.$modal = $("#modal");
+        this.$modal = $("#register-or-sign-in-modal");
         this.$modalTitles = this.$modal.find(".modal-title");
         this.$modalForms = this.$modal.find("form");
         this.$modalSubmitButtons = this.$modal.find(".modal-footer").find("button");
@@ -1217,26 +1155,6 @@ CS.activityFeedController = null;
         this.$modal.modal("hide");
     };
 });
-;CS.Controllers.RegisterReminder = P(function (c) {
-    c.init = function () {
-        this.initElements();
-        this.initEvents();
-    };
-
-    c.initElements = function () {
-        this.$mainRegisterLink = $("#register-link");
-
-        this.$registerLink = $("#register-reminder").find("a");
-    };
-
-    c.initEvents = function () {
-        this.$registerLink.click($.proxy(this._clickOnMainLink, this));
-    };
-
-    c._clickOnMainLink = function () {
-        this.$mainRegisterLink.click();
-    };
-});
 ;CS.Controllers.SignInWithLinkedIn = P(function (c) {
     c.init = function () {
         this._initElements();
@@ -1267,492 +1185,35 @@ CS.activityFeedController = null;
             });
     };
 });
-;CS.Controllers.CustomActivity = P(CS.Controllers.Base, function (c) {
-    c.init = function () {
-        this._initElements();
-        this._initValidation();
-        this._initEvents();
-    };
-
-    c._initElements = function () {
-        this.$successAlert = $("#custom-activity-saved");
-
-        this.$form = $("form");
-
-        this.$emailField = this.$form.find("#email");
-        this.$formGroupEmail = this.$emailField.parent();
-        this.$classNameField = this.$form.find("#class-name");
-        this.$titleField = this.$form.find("#title");
-        this.$textField = this.$form.find("#text");
-
-        this.$noAccountFoundForThisEmailError = this.$form.find("#no-account-found-for-this-email");
-
-        this.$submitBtn = this.$form.find("[type=submit]");
-    };
-
-    c._initValidation = function () {
-        this.validator = CS.Services.Validator([
-            "email",
-            "class-name",
-            "title",
-            "text"
-        ]);
-    };
-
-    c._initEvents = function () {
-        this.$form.submit($.proxy(this._handleSubmit, this));
-        this.$emailField.blur($.proxy(this._checkIfAccountExists, this));
-    };
-
-    c._handleSubmit = function (e) {
-        e.preventDefault();
-
-        CS.Services.Animator.fadeOut(this.$successAlert);
-
-        if (this.validator.isValid()) {
-            this._checkIfAccountExists(null, function () {
-                var data = {
-                    accountEmailAddress: this.$emailField.val().trim(),
-                    className: this.$classNameField.val().trim(),
-                    title: this.$titleField.val().trim(),
-                    mainText: this.$textField.val().trim()
-                };
-
-                var type = "POST";
-                var url = "/api/custom-activities";
-
-                $.ajax({
-                    url: url,
-                    type: type,
-                    contentType: "application/json",
-                    data: JSON.stringify(data),
-                    success: function () {
-                        this._resetForm();
-
-                        CS.Services.Animator.fadeIn(this.$successAlert);
-                    }.bind(this),
-                    error: function () {
-                        this.$submitBtn.button("reset");
-                        alert("AJAX failure doing a " + type + " request to \"" + url + "\"");
-                    }.bind(this)
-                });
-            }.bind(this));
-        }
-    };
-
-    c._checkIfAccountExists = function (e, callback) {
-        var emailAddress = this.$emailField.val().trim();
-
-        if (emailAddress) {
-            this.$formGroupEmail.removeClass("has-error");
-            this.validator.hideErrorMessage(this.$noAccountFoundForThisEmailError);
-
-            var type = "GET";
-            var url = "/api/accounts";
-
-            $.ajax({
-                url: url + "?emailAddress=" + emailAddress,
-                type: type,
-                success: function (data, textStatus, jqXHR) {
-                    if (jqXHR.status === this.httpStatusCode.noContent) {
-                        this.$formGroupEmail.addClass("has-error");
-                        this.validator.showErrorMessage(this.$noAccountFoundForThisEmailError);
-                    } else {
-                        this.$formGroupEmail.addClass("has-success");
-
-                        if (callback) {
-                            callback();
-                        }
-                    }
-                }.bind(this),
-                error: function () {
-                    alert("AJAX failure doing a " + type + " request to \"" + url + "\"");
-                }
-            });
-        }
-    };
-
-    c._resetForm = function() {
-        this.$submitBtn.button("reset");
-        this.$form[0].reset();
-        this.$formGroupEmail.removeClass("has-success");
-    };
-});
-;CS.Controllers.ActivityFeed = P(CS.Controllers.Base, function (c) {
+;CS.Controllers.Standouts = P(function (c) {
     c.reactClass = React.createClass({displayName: "reactClass",
         getInitialState: function () {
             return {
-                doableC1sAndActivities: [],
-                doneC1sAndActivities: [],
-                accountData: null
-            };
-        },
-
-        render: function () {
-            var finishedActivitiesTitle;
-            if (!_.isEmpty(this.state.doneC1sAndActivities)) {
-                finishedActivitiesTitle = (
-                    React.createElement("h3", null, "Utförda   aktiviteter")
-                    );
-            }
-
-            return (
-                React.createElement("div", null, 
-                    React.createElement("div", {className: "alert alert-info", id: "intro-to-activities"}, 
-                        React.createElement("button", {type: "button", className: "close", "data-dismiss": "alert", "aria-label": "Close"}, 
-                            React.createElement("span", {"aria-hidden": "true"}, "×")
-                        ), 
-
-                        React.createElement("h2", null, "Aktiviteter att göra"), 
-
-                        React.createElement("p", null, "Det dyker upp ett kort i flödet så fort det finns något nytt att göra."), 
-
-                        React.createElement("p", null, "Den första aktiviteten är att hitta vilka styrkor som efterfrågas i annonsen till jobbet du söker."), 
-
-                        React.createElement("p", null, "När du hittat några styrkor kommer det nya övningar som handlar om att beskriva styrkorna du just har hittat."), 
-
-                        React.createElement("p", null, "Det är bara att sätta igång!")
-                    ), 
-
-                    React.createElement("ul", {className: "styleless"}, 
-                    this.state.doableC1sAndActivities.map(function (c1OrActivity) {
-                        var key = c1OrActivity.instance.getClassName();
-
-                        if (c1OrActivity.type === CS.Controllers.ActivityFeed.itemType.c1) {
-                            return React.createElement(CS.Controllers.C1FeedItem, {key: key, c1: c1OrActivity});
-                        }
-
-                        if (this.state.accountData) {
-                            key += JSON.stringify(this.state.accountData);
-                        }
-
-                        return React.createElement(CS.Controllers.ActivityFeedItem, {key: key, activity: c1OrActivity});
-                    }.bind(this))
-                    ), 
-
-                    finishedActivitiesTitle, 
-
-                    React.createElement("ul", {className: "styleless"}, 
-                    this.state.doneC1sAndActivities.map(function (c1OrActivity) {
-                        var className = c1OrActivity.instance.getClassName();
-                        var key = className;
-
-                        if (c1OrActivity.type === CS.Controllers.ActivityFeed.itemType.c1) {
-                            if (this.state.accountData) {
-                                key += this.state.accountData[className];
-                            }
-
-                            return React.createElement(CS.Controllers.C1FeedItem, {key: key, c1: c1OrActivity});
-                        }
-
-                        if (this.state.accountData) {
-                            key += JSON.stringify(this.state.accountData);
-                        }
-
-                        return React.createElement(CS.Controllers.ActivityFeedItem, {key: key, activity: c1OrActivity});
-                    }.bind(this))
-                    )
-                )
-                );
-        }
-    });
-
-    c.defaultActivityButtonText = "Gör detta";
-
-    c.init = function () {
-        this.reactInstance = React.render(
-            React.createElement(this.reactClass),
-            document.getElementById("c1-and-activity-feed")
-        );
-
-        this._initElements();
-        this._initEvents();
-
-        this.c1FeedItems = [
-            {
-                className: "Employer",
-                title: "Arbetsgivare"
-            },
-            {
-                className: "Position",
-                title: "Tjänst"
-            }
-        ];
-
-        this.activityFeedItems = [
-            {
-                className: "IdentifyStrengths",
-                title: "Analysera jobbannonsen",
-                description: "Här får du hjälp att ta fram de viktigaste egenskaperna som efterfrågas och matcha kraven med dina styrkor.",
-                buttonText: "Kom igång"
-            },
-            {
-                className: "SpecifyTop1Strength",
-                title: "Styrkans innebörd{colonAndStrengthName}",
-                description: "Vad innebär <strong>{strengthName}</strong> för dig och vilken nytta skapas för företaget? Vi hjälper dig att ta reda på det!",
-                buttonText: "Definiera och värdera"
-            },
-            {
-                className: "SpecifyTop2Strength",
-                title: "Styrkans innebörd{colonAndStrengthName}",
-                description: "Vad innebär <strong>{strengthName}</strong> för dig och vilken nytta skapas för företaget? Vi hjälper dig att ta reda på det!",
-                buttonText: "Definiera och värdera"
-            },
-            {
-                className: "SpecifyTop3Strength",
-                title: "Styrkans innebörd{colonAndStrengthName}",
-                description: "Vad innebär <strong>{strengthName}</strong> för dig och vilken nytta skapas för företaget? Vi hjälper dig att ta reda på det!",
-                buttonText: "Definiera och värdera"
-            }
-        ];
-
-        this.c1Instances = this.c1FeedItems.map(function (item) {
-            return CS.C1s[item.className](item.className, item.title);
-        });
-
-        CS.activitiesModel = CS.Models.Activities(this.activityFeedItems);
-
-        CS.activitiesModel.updateActivityStatus($.proxy(this.reRender, this));
-    };
-
-    c._initElements = function () {
-        this.$registerReminderAlert = $("#register-reminder");
-        this.$introToActivitiesAlert = $("#intro-to-activities");
-
-        this.initIntroToActivitiesAlert();
-    };
-
-    c._initEvents = function() {
-        this.$introToActivitiesAlert.on("close.bs.alert", $.proxy(this._onIntroToActivitiesAlertClose, this));
-    };
-
-    c.initIntroToActivitiesAlert = function () {
-        if (CS.account.data && CS.account.data.Employer && CS.account.data.Position && !this.getFromLocalStorage("is-intro-to-activities-alert-closed")) {
-            CS.Services.Animator.fadeIn(this.$introToActivitiesAlert);
-        } else {
-            CS.Services.Animator.fadeOut(this.$introToActivitiesAlert);
-        }
-    };
-
-    c.reRender = function() {
-        var doableC1sAndActivities = [];
-        var doneC1sAndActivities = [];
-
-        this.c1Instances.forEach(function (c1Instance) {
-            var isDone = CS.account.data && CS.account.data[c1Instance.getClassName()];
-
-            if (isDone) {
-                doneC1sAndActivities.unshift({
-                    type: CS.Controllers.ActivityFeed.itemType.c1,
-                    instance: c1Instance
-                });
-            } else {
-                doableC1sAndActivities.push({
-                    type: CS.Controllers.ActivityFeed.itemType.c1,
-                    instance: c1Instance
-                });
-            }
-        });
-
-        CS.activitiesModel.getDoable().forEach(function (activityInstance) {
-            var feedItem = _.find(this.activityFeedItems, function (item) {
-                return item.className === activityInstance.getClassName();
-            });
-
-            doableC1sAndActivities.push({
-                type: CS.Controllers.ActivityFeed.itemType.activity,
-                instance: activityInstance,
-                buttonText: feedItem.buttonText,
-                isDone: false
-            });
-        }.bind(this));
-
-        CS.activitiesModel.getDone().forEach(function (activityInstance) {
-            var feedItem = _.find(this.activityFeedItems, function (item) {
-                return item.className === activityInstance.getClassName();
-            });
-
-            doneC1sAndActivities.unshift({
-                type: CS.Controllers.ActivityFeed.itemType.activity,
-                instance: activityInstance,
-                buttonText: feedItem.buttonText,
-                isDone: true
-            });
-        }.bind(this));
-
-        this._showOrHideRegisterReminder(doneC1sAndActivities.length);
-
-        this.reactInstance.replaceState({
-            doableC1sAndActivities: doableC1sAndActivities,
-            doneC1sAndActivities: doneC1sAndActivities,
-            accountData: CS.account.data
-        });
-    };
-
-    c._showOrHideRegisterReminder = function (doneActivitiesCount) {
-        if (this.isTemporaryAccount() && doneActivitiesCount > 0) {
-            CS.Services.Animator.fadeIn(this.$registerReminderAlert);
-        } else {
-            CS.Services.Animator.fadeOut(this.$registerReminderAlert);
-        }
-    };
-
-    c._onIntroToActivitiesAlertClose = function(e) {
-        e.preventDefault();
-
-        CS.Services.Animator.fadeOut(this.$introToActivitiesAlert);
-        this.saveInLocalStorage("is-intro-to-activities-alert-closed", true);
-    };
-});
-
-CS.Controllers.ActivityFeed.itemType = {
-    c1: "c1",
-    activity: "activity"
-};
-
-CS.Controllers.ActivityFeedItem = React.createClass({displayName: "ActivityFeedItem",
-    render: function () {
-        var liClasses = React.addons.classSet({
-            "well": true,
-            "done": this.props.activity.isDone
-        });
-
-        var buttonText = this.props.activity.isDone ? "Gör om" : this.props.activity.buttonText;
-
-        return (
-            React.createElement("li", {className: liClasses}, 
-                React.createElement("h2", {dangerouslySetInnerHTML: {__html: this.props.activity.instance.getTitle()}}), 
-
-                React.createElement("p", {className: "help-text", dangerouslySetInnerHTML: {__html: this.props.activity.instance.getDescription()}}), 
-
-                React.createElement("div", {className: "centered-contents"}, 
-                    React.createElement("button", {className: "btn btn-primary", onClick: this._handleClick}, buttonText)
-                )
-            )
-            );
-    },
-
-    _handleClick: function () {
-        location.hash = "activities/" + this.props.activity.instance.getClassName();
-    }
-});
-
-CS.Controllers.C1FeedItem = React.createClass({displayName: "C1FeedItem",
-    getInitialState: function() {
-        return {inputValue: CS.account.data ? CS.account.data[this._getClassName()] : null};
-    },
-
-    render: function () {
-        var liClasses = React.addons.classSet({
-            "well": true,
-            "done": CS.account.data && CS.account.data[this._getClassName()]
-        });
-
-        var buttonText = CS.account.data && CS.account.data[this._getClassName()] ? "Ändra" : "Spara";
-
-        return (
-            React.createElement("li", {className: liClasses, onSubmit: this._handleSubmit}, 
-                React.createElement("form", {role: "form", id: this._getFormId()}, 
-                    React.createElement("div", {className: "form-group"}, 
-                        React.createElement("label", {for: this._getClassName()}, this.props.c1.instance.getTitle()), 
-                        React.createElement("input", {type: "text", id: this._getClassName(), className: "form-control", value: this.state.inputValue, onChange: this._handleValueChange}), 
-
-                        React.createElement("p", {className: "field-error", "data-check": "empty"})
-                    ), 
-                    React.createElement("div", {className: "submit-wrapper"}, 
-                        React.createElement("button", {type: "submit", className: "btn btn-primary", "data-loading-text": "Sparar..."}, buttonText)
-                    )
-                )
-            )
-            );
-    },
-
-    _getClassName: function () {
-        return this.props.c1.instance.getClassName();
-    },
-
-    _getFormId: function () {
-        return this._getClassName() + "-input-form";
-    },
-
-    componentDidMount: function () {
-        this.account = {
-            data: _.clone(CS.account.data, true) || {}
-        };
-
-        this._initElements();
-        this._initValidation();
-    },
-
-    _initElements: function () {
-        this.$form = $("#" + this._getFormId());
-        this.$inputField = this.$form.find("#" + this._getClassName());
-        this.$submitBtn = this.$form.find("[type=submit]");
-    },
-
-    _initValidation: function () {
-        this.validator = CS.Services.Validator([
-            this._getClassName()
-        ]);
-    },
-
-    _handleValueChange: function(e) {
-        this.setState({inputValue: e.target.value});
-    },
-
-    _handleSubmit: function (e) {
-        e.preventDefault();
-
-        if (this.validator.isValid()) {
-            this.$submitBtn.button("loading");
-
-            this.account.data[this._getClassName()] = this.$inputField.val().trim();
-
-            var type = "POST";
-            var url = "/api/account-data";
-
-            $.ajax({
-                url: url,
-                type: type,
-                contentType: "application/json",
-                data: JSON.stringify(this.account.data),
-                success: function () {
-                    location.reload();
-                },
-                error: function () {
-                    this.$submitBtn.button("reset");
-                    alert("AJAX failure doing a " + type + " request to \"" + url + "\"");
-                }.bind(this)
-            });
-        }
-    }
-});
-
-CS.Controllers.Standouts = P(function (c) {
-    c.reactClass = React.createClass({displayName: "reactClass",
-        getInitialState: function () {
-            return {
-                employer: null,
                 position: null,
-                standoutInstances: []
+                employer: null,
+                standoutClassNames: []
             };
         },
 
         render: function () {
-            var employerAndPosition;
-            if (this.state.employer && this.state.position) {
-                employerAndPosition = (
+            var positionAndEmployer;
+            if (this.state.position && this.state.employer) {
+                positionAndEmployer = (
                     React.createElement("h1", null, this.state.position, " på ", this.state.employer)
                     );
             }
 
             return (
                 React.createElement("div", null, 
-                    employerAndPosition, 
+                    positionAndEmployer, 
+
+                    React.createElement("p", {id: "empty-standouts-message"}, "Gör en aktivitet för att få insikter!"), 
 
                     React.createElement("ul", {className: "styleless"}, 
-                        this.state.standoutInstances.map(function (standout) {
-                            return React.createElement("li", {id: standout.className});
+                        this.state.standoutClassNames.map(function (standoutClassName) {
+                            var id = standoutClassName + "-standout-wrapper";
+
+                            return React.createElement("li", {id: id, key: id});
                         })
                     )
                 )
@@ -1761,50 +1222,43 @@ CS.Controllers.Standouts = P(function (c) {
     });
 
     c.init = function () {
-        this.itemClassNames = ["Strengths"];
+        this.standoutClassNames = ["Strengths"];
 
         this.reactInstance = React.render(
             React.createElement(this.reactClass),
-            document.getElementById("standout-list")
+            document.getElementById("standouts")
         );
+
+        this._initEvents();
+
+        this._replaceReactState();
     };
 
-    c.refreshData = function () {
-        this._fetchCustomActivities();
+    c._initEvents = function() {
+        this.reactInstance.componentDidUpdate = function () {
+            this._initStandouts();
+        }.bind(this);
     };
 
-    c._fetchCustomActivities = function () {
-        var type = "GET";
-        var url = "/api/custom-activities";
+    c.reRender = function () {
+        this._replaceReactState();
 
-        $.ajax({
-            url: url,
-            type: type,
-            dataType: "json",
-            success: function (data) {
-                var itemInstancesCustomStandouts = data.map(function (customActivity) {
-                    return CS.Standouts.Custom(customActivity.className, customActivity.title);
-                });
+        this.standoutInstances.forEach(function(standout) {
+            standout.reRender();
+        });
+    };
 
-                var itemInstancesClassicStandouts = this.itemClassNames.map(function (className) {
-                    return CS.Standouts[className](className);
-                });
+    c._replaceReactState = function() {
+        this.reactInstance.replaceState({
+            position: CS.account.data ? CS.account.data.position : null,
+            employer: CS.account.data ? CS.account.data.employer : null,
+            standoutClassNames: this.standoutClassNames
+        });
+    };
 
-                var allItemInstances = _.union(itemInstancesCustomStandouts, itemInstancesClassicStandouts);
-
-                this.reactInstance.replaceState({
-                    employer: CS.account.data ? CS.account.data.Employer : null,
-                    position: CS.account.data ? CS.account.data.Position : null,
-                    standoutInstances: allItemInstances
-                });
-
-                allItemInstances.forEach(function(instance) {
-                    instance.run();
-                });
-            }.bind(this),
-            error: function () {
-                alert("AJAX failure doing a " + type + " request to \"" + url + "\"");
-            }
+    c._initStandouts = function() {
+        this.standoutInstances = this.standoutClassNames.map(function (className) {
+            return CS.Standouts[className](className);
         });
     };
 });

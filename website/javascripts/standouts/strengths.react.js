@@ -1,5 +1,5 @@
 CS.Standouts.Strengths = P(CS.Standouts.Base, function (c, base) {
-    c.reactClass = React.createClass({displayName: "reactClass",
+    c.reactClass = React.createClass({
         getInitialState: function () {
             return {
                 strengths: []
@@ -8,11 +8,11 @@ CS.Standouts.Strengths = P(CS.Standouts.Base, function (c, base) {
 
         render: function () {
             return (
-                React.createElement("ul", {className: "styleless"}, 
-                    this.state.strengths.map(function (strength) {
-                        return React.createElement("li", null, strength.name);
-                    })
-                )
+                <ul className="styleless">
+                    {this.state.strengths.map(function (strength) {
+                        return <li>{strength.name}</li>;
+                    })}
+                </ul>
                 );
         }
     });

@@ -3,14 +3,14 @@ module.exports = function (grunt) {
     require("matchdep").filterDev("grunt-*").forEach(grunt.loadNpmTasks);
 
     grunt.initConfig({
-        pkg: grunt.file.readJSON('package.json'),
+        pkg: grunt.file.readJSON("package.json"),
 
         eslint: {
             target: [
-                'javascripts/**/*.js'
+                "javascripts/**/*.js"
             ],
             options: {
-                configFile: 'eslint.json'
+                configFile: "eslint.json"
             }
         },
 
@@ -41,7 +41,7 @@ module.exports = function (grunt) {
         concat: {
             site: {
                 options: {
-                    separator:';'
+                    separator:";"
                 },
                 src: [
                     // Non-CDN libs
@@ -70,32 +70,30 @@ module.exports = function (grunt) {
                     "javascripts/controllers/base.js",
                     "javascripts/controllers/onePageWebapp.js",
                     "javascripts/controllers/index.js",
+                    "javascripts/controllers/header/header.js",
                     "javascripts/controllers/header/headerModal.js",
                     "javascripts/controllers/header/registerHeaderModal.js",
                     "javascripts/controllers/header/signInHeaderModal.js",
-                    "javascripts/controllers/header/registerReminder.js",
                     "javascripts/controllers/header/signInWithLinkedIn.js",
-                    "javascripts/controllers/customActivity.js",
 
                     // React
                     "public/react-site.js"
                 ],
-                dest: 'public/site.js'
+                dest: "public/site.js"
             },
             c1s: {
                 options: {
-                    separator:';'
+                    separator:";"
                 },
                 src: [
                     "javascripts/c1s/base.js",
-                    "javascripts/c1s/employer.js",
-                    "javascripts/c1s/position.js"
+                    "javascripts/c1s/positionAndEmployer.js"
                 ],
-                dest: 'public/c1s.js'
+                dest: "public/c1s.js"
             },
             activities: {
                 options: {
-                    separator:';'
+                    separator:";"
                 },
                 src: [
                     // Base
@@ -103,7 +101,6 @@ module.exports = function (grunt) {
                     "javascripts/activities/controller.js",
 
                     // Non-React
-                    "javascripts/activities/Custom/activity.js",
                     "javascripts/activities/IdentifyStrengths/activity.js",
                     "javascripts/activities/SpecifyTop1Strength/activity.js",
                     "javascripts/activities/SpecifyTop2Strength/activity.js",
@@ -112,28 +109,26 @@ module.exports = function (grunt) {
                     // React
                     "public/react-activities.js"
                 ],
-                dest: 'public/activities.js'
+                dest: "public/activities.js"
             },
             standouts: {
                 options: {
-                    separator:';'
+                    separator:";"
                 },
                 src: [
                     // Base
                     "javascripts/standouts/base.js",
-                    "javascripts/standouts/controller.js",
 
                     // Non-React
-                    "javascripts/standouts/Strengths/standout.js",
 
                     // React
                     "public/react-standouts.js"
                 ],
-                dest: 'public/standouts.js'
+                dest: "public/standouts.js"
             },
             all: {
                 options: {
-                    separator:';'
+                    separator:";"
                 },
                 src: [
                     // Site
@@ -148,43 +143,29 @@ module.exports = function (grunt) {
                     // Standouts
                     "public/standouts.js"
                 ],
-                dest: 'public/<%= pkg.name %>.js'
+                dest: "public/<%= pkg.name %>.js"
             }
         },
 
         sass: {
             build: {
                 files: {
-                    'public/<%= pkg.name %>.css': 'sass/<%= pkg.name %>.scss'
+                    "public/<%= pkg.name %>.css": "sass/<%= pkg.name %>.scss"
                 }
             }
         },
-
-        /* Task fails
-        cssc: {
-            build: {
-                options: {
-                    consolidateViaDeclarations: true,
-                    consolidateViaSelectors: true,
-                    consolidateMediaQueries: true
-                },
-                files: {
-                    'public/<%= pkg.name %>.css': 'public/<%= pkg.name %>.css'
-                }
-            }
-        }, */
 
         cssmin: {
             build: {
                 src: [
                     // Libs
-                    'libs/h5bp/normalize.css',
+                    "libs/h5bp/normalize.css",
                     "libs/bootstrap-slider/bootstrap-slider.css",
 
                     // Rest
-                    'public/<%= pkg.name %>.css'
+                    "public/<%= pkg.name %>.css"
                 ],
-                dest: 'public/<%= pkg.name %>-v1.css'
+                dest: "public/<%= pkg.name %>-v1.css"
             }
         },
 
@@ -194,8 +175,8 @@ module.exports = function (grunt) {
                     {
                         expand: true,
                         cwd: "libs/bootstrap/fonts/bootstrap/",
-                        src: ['*'],
-                        dest: 'public/fonts/bootstrap'
+                        src: ["*"],
+                        dest: "public/fonts/bootstrap"
                     }
                 ]
             }
@@ -204,27 +185,27 @@ module.exports = function (grunt) {
         watch: {
             js: {
                 files: [
-                    '<%= concat.site.src %>',
-                    '<%= concat.c1s.src %>',
-                    '<%= concat.activities.src %>',
-                    '<%= concat.standouts.src %>',
-                    'javascripts/controllers/**/*.react.js',
-                    'javascripts/activities/**/*.react.js',
-                    'javascripts/standouts/**/*.react.js'
+                    "<%= concat.site.src %>",
+                    "<%= concat.c1s.src %>",
+                    "<%= concat.activities.src %>",
+                    "<%= concat.standouts.src %>",
+                    "javascripts/controllers/**/*.react.js",
+                    "javascripts/activities/**/*.react.js",
+                    "javascripts/standouts/**/*.react.js"
                 ],
-                tasks: ['buildjs']
+                tasks: ["buildjs"]
             },
 
             css: {
                 files: [
-                    'sass/**/*.scss'
+                    "sass/**/*.scss"
                 ],
-                tasks: ['buildcss']
+                tasks: ["buildcss"]
             }
         }
     });
 
-    grunt.registerTask('default', ['buildjs', 'buildcss', 'copy']);
-    grunt.registerTask('buildjs',  ['eslint', 'react:site', 'react:activities', 'react:standouts', 'concat:site', 'concat:c1s', 'concat:activities', 'concat:standouts', 'concat:all']);
-    grunt.registerTask('buildcss',  ['sass', 'cssmin']);
+    grunt.registerTask("default", ["buildjs", "buildcss", "copy"]);
+    grunt.registerTask("buildjs",  ["eslint", "react:site", "react:activities", "react:standouts", "concat:site", "concat:c1s", "concat:activities", "concat:standouts", "concat:all"]);
+    grunt.registerTask("buildcss",  ["sass", "cssmin"]);
 };

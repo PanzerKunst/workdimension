@@ -8,16 +8,6 @@ body {
   @include adaptive-font-size;
 }
 
-.nav-tabs {
-  border-color: $tab-pane-color;
-
-  > li.active > a,
-  > li.active > a:focus,
-  > li.active > a:hover {
-    border-color: $tab-pane-color;
-  }
-}
-
 button {
   &.close {
     padding: 0 $alert-padding/2;

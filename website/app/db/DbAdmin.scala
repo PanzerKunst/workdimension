@@ -7,7 +7,6 @@ import play.api.db.DB
 
 object DbAdmin {
   def reCreateTables() {
-    dropTable("custom_activity")
     dropTable("account_activity")
     dropTable("account_data")
     dropTable("account")
@@ -15,7 +14,6 @@ object DbAdmin {
     createTableAccount()
     createTableAccountData()
     createTableAccountActivity()
-    createTableCustomActivity()
   }
 
   private def createTableAccount() {
@@ -63,23 +61,6 @@ object DbAdmin {
           );"""
 
       Logger.info("DbAdmin.createTableAccountActivity():" + query)
-
-      SQL(query).executeUpdate()
-    }
-  }
-
-  private def createTableCustomActivity() {
-    DB.withConnection { implicit c =>
-      val query = """
-          create table custom_activity (
-            id bigserial primary key,
-            account_id bigint not null references account(id),
-            class_name varchar(64) not null,
-            title varchar(128) not null,
-            main_text varchar(1024) not null
-          );"""
-
-      Logger.info("DbAdmin.createTableCustomActivity():" + query)
 
       SQL(query).executeUpdate()
     }

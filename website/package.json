@@ -9,7 +9,6 @@
     "grunt-contrib-cssmin": "*",
     "grunt-contrib-sass": "*",
     "grunt-contrib-watch": "*",
-    "grunt-cssc": "*",
     "grunt-eslint": "*",
     "grunt-jsxhint": "*",
     "grunt-react": "*",

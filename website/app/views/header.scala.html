@@ -1,10 +1,11 @@
-<section id="header-links">
+<nav role="navigation">
     <a id="register-link">Registrera dig</a>
     <a id="sign-in-link">Logga in</a>
     <a id="sign-out-link">Logga ut</a>
-</section>
+    <a id="next-activity-link">Nästa aktivitet</a>
+</nav>
 
-<div class="modal fade" id="modal">
+<div class="modal fade" id="register-or-sign-in-modal">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -88,28 +89,3 @@
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
-
-<section id="header-alerts">
-    <div id="welcome-panel">
-        <h1>Välkommen till WorkDimension</h1>
-
-        <p>WorkDimension hjälper dig utforska de viktigaste budskapen att trycka på i din jobbansökan.</p>
-
-        <p>Det här är en mycket tidig prototyp och funktionaliteten är begränsad.</p>
-
-        <p>Vi älskar feedback och idéer! Kontakt: <a href="mailto:hello@@workdimension.com">hello@@workdimension.com</a> eller <span>0708-37 23 50.</span></p>
-    </div>
-
-    <div class="alert alert-success" id="register-reminder">
-        <p>Grattis! Du har klarat en aktivitet.</p>
-        <p>Du kan <a>registrera dig</a> för att spara dina framsteg.</p>
-    </div>
-</section>
-
-<nav role="navigation">
-    <!-- TODO button>Menu</button -->
-    <ul class="nav nav-tabs" role="tablist">
-        <li role="presentation" class="active"><a id="activities-tab" aria-controls="activities" role="tab" data-toggle="tab"><!-- Text populated in index controller --></a></li>
-        <li role="presentation"><a id="standouts-tab" aria-controls="standouts" role="tab" data-toggle="tab">Insikter</a></li>
-    </ul>
-</nav>

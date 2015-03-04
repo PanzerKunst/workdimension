@@ -35,13 +35,13 @@
         <!-- Javascript CDN libs -->
         <script src="//cdnjs.cloudflare.com/ajax/libs/modernizr/2.8.3/modernizr.min.js"></script>
         <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
-        <script src="//cdnjs.cloudflare.com/ajax/libs/fastclick/1.0.3/fastclick.min.js"></script>
-        <script src="//cdnjs.cloudflare.com/ajax/libs/lodash.js/2.4.1/lodash.min.js"></script>
-        <script src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.1/js/bootstrap.min.js"></script>
-        <script src="//cdnjs.cloudflare.com/ajax/libs/gsap/1.15.0/TweenLite.min.js"></script>
-        <script src="//cdnjs.cloudflare.com/ajax/libs/gsap/1.15.0/easing/EasePack.min.js"></script>
-        <script src="//cdnjs.cloudflare.com/ajax/libs/gsap/1.15.0/plugins/CSSPlugin.min.js"></script>
-        <script src="//cdnjs.cloudflare.com/ajax/libs/react/0.12.2/react-with-addons.min.js"></script>
+        <script src="//cdnjs.cloudflare.com/ajax/libs/fastclick/1.0.6/fastclick.min.js"></script>
+        <script src="//cdnjs.cloudflare.com/ajax/libs/lodash.js/3.3.1/lodash.min.js"></script>
+        <script src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.2/js/bootstrap.min.js"></script>
+        <script src="//cdnjs.cloudflare.com/ajax/libs/gsap/1.15.1/TweenLite.min.js"></script>
+        <script src="//cdnjs.cloudflare.com/ajax/libs/gsap/1.15.1/easing/EasePack.min.js"></script>
+        <script src="//cdnjs.cloudflare.com/ajax/libs/gsap/1.15.1/plugins/CSSPlugin.min.js"></script>
+        <script src="//cdnjs.cloudflare.com/ajax/libs/react/0.12.2/react-with-addons.js"></script>  <!-- TODO: add ".min" when switching to production -->
 
         <!-- Project Javascripts -->
         <script src="@routes.Assets.at("main.js")"></script>
@@ -53,17 +53,6 @@
             window.addEventListener('load', function() {
                 FastClick.attach(document.body);
             }, false);
-
-            // HotJar
-            /* TODO
-            (function(f,b){
-                var c;
-                f.hj=f.hj||function(){(f.hj.q=f.hj.q||[]).push(arguments)};
-                f._hjSettings={hjid:19422, hjsv:3};
-                c=b.createElement("script");c.async=1;
-                c.src="//static.hotjar.com/c/hotjar-19422.js?sv=3";
-                b.getElementsByTagName("head")[0].appendChild(c);
-            })(window,document); */
         </script>
 
         @javascript
