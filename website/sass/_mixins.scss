@@ -19,22 +19,13 @@
 
 // Retina sprite mixin and function inspired by Paul Stamatiou (http://paulstamatiou.com/responsive-retina-blog-development-part-2)
 
-@mixin hdpi-sprite {
+@mixin hdpi-sprite($background-color: transparent) {
   @include retina-image($sprite-url, 1000px 250px);  // Sprite dimensions, halved
-  background-color: transparent;
+  background-color: $background-color;
+  background-repeat: no-repeat;
 }
 // silly function to divide the width and height to save me 2 seconds
 // whenever I need to calculate the halved retina background position
 @function half-pos($w, $h) {
   @return $w/2 $h/2;
-}
-
-@mixin adaptive-font-size($font-size: 14px) {
-  font-size: $font-size; // Initially "#{$font-size}vw", but doesn't work well on the iOS Safari
-  @include medium-screen {
-    font-size: round($font-size * $medium-screen-ratio-m);
-  }
-  @include large-screen {
-    font-size: round($font-size * $large-screen-ratio-m);
-  }
 }

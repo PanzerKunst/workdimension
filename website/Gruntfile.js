@@ -170,13 +170,13 @@ module.exports = function (grunt) {
         },
 
         copy: {
-            glyphicons: {
+            fontAwesome: {
                 files: [
                     {
                         expand: true,
-                        cwd: "libs/bootstrap/fonts/bootstrap/",
+                        cwd: "libs/font-awesome/fonts/",
                         src: ["*"],
-                        dest: "public/fonts/bootstrap"
+                        dest: "public/fonts/font-awesome"
                     }
                 ]
             }

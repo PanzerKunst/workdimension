@@ -3,16 +3,18 @@
 @import "../libs/bootstrap/stylesheets/bootstrap";
 @import "../libs/js-breakpoints/breakpoints";
 
-// Global
+// Utils
 @import "variables";
 @import "mixins";
-@import "base";
-@import "forms";
-@import "projectCommons";
 
 // Vendor overrides
 @import "vendor-overrides/bootstrap";
 @import "vendor-overrides/bootstrapSlider";
+
+// Global
+@import "base";
+@import "forms";
+@import "projectCommons";
 
 // Partials
 @import "partials/header";

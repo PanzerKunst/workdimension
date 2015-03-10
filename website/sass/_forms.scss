@@ -44,13 +44,13 @@ form {
 
     font-style: italic;
     font-weight: bold;
-    @include adaptive-font-size(12px);
+    font-size: $font-size-base-em / $font-size-base-px * 12;
     color: $state-danger-text;
 
     margin-bottom: 0;
 
     &.other-form-error {
-      @include adaptive-font-size($font-size-base);
+      font-size: $font-size-base-em;
 
       text-align: center;
       clear: both;

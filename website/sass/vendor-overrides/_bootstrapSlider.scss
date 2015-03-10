@@ -1,7 +1,7 @@
 .tooltip-inner {
-  $default-slider-tooltip-font-size: 12px;
+  $default-slider-tooltip-font-size: 12;
 
-  @include adaptive-font-size($default-slider-tooltip-font-size);
+  font-size: $font-size-base-em / $font-size-base-px * $default-slider-tooltip-font-size;
 }
 
 .slider .tooltip.top {
