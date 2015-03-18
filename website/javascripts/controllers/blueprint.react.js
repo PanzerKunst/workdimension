@@ -1,5 +1,5 @@
 CS.Controllers.Blueprint = P(function (c) {
-    c.reactClass = React.createClass({displayName: "reactClass",
+    c.reactClass = React.createClass({
         getInitialState: function () {
             return {
                 blueprintAreas: []
@@ -8,13 +8,13 @@ CS.Controllers.Blueprint = P(function (c) {
 
         render: function () {
             return (
-                React.createElement("ul", {className: "styleless"}, 
-                    this.state.blueprintAreas.map(function (blueprintArea) {
+                <ul className="styleless">
+                    {this.state.blueprintAreas.map(function (blueprintArea) {
                         var id = blueprintArea.getClassName() + "-blueprint-area-wrapper";
 
-                        return React.createElement("li", {id: id, key: id});
-                    })
-                )
+                        return <li id={id} key={id}></li>;
+                    })}
+                </ul>
                 );
         },
 

@@ -1,11 +1,10 @@
-// create the base namespace
+// Base namespace
 var CS = {};
 
-// create additional namespace
+// Additional namespaces
 CS.Models = {};
 CS.Controllers = {};
 CS.Services = {};
-CS.C1s = {};
 
 // Global objects
 CS.account = {
@@ -15,5 +14,5 @@ CS.account = {
 };
 CS.router = new Grapnel();
 CS.defaultAnimationDuration = 0.5;
-CS.activitiesModel = null;
+CS.blueprintAreasModel = null;
 CS.indexController = null;

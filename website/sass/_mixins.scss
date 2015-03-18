@@ -29,3 +29,20 @@
 @function half-pos($w, $h) {
   @return $w/2 $h/2;
 }
+
+@mixin icon-font($content) {
+  font-family: "FontAwesome";
+  font-style: normal;
+  font-variant: normal;
+  font-weight: normal;
+  font-stretch: normal;
+
+  line-height: 1;
+
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+  &:before {
+    content: $content;
+  }
+}

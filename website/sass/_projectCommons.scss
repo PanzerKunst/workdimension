@@ -1,14 +1,3 @@
-#content {
-  margin: 0 auto;
-
-  @include medium-screen {
-    max-width: $medium-content-width;
-  }
-  @include large-screen {
-    max-width: $large-content-width;
-  }
-}
-
 .help-text {
   color: rgb(153, 153, 153);  //#999999
 }

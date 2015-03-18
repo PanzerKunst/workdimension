@@ -2,6 +2,7 @@
 @import "../libs/bourbon/bourbon";
 @import "../libs/bootstrap/stylesheets/bootstrap";
 @import "../libs/js-breakpoints/breakpoints";
+@import "../libs/font-awesome/scss/font-awesome";
 
 // Utils
 @import "variables";
@@ -9,7 +10,6 @@
 
 // Vendor overrides
 @import "vendor-overrides/bootstrap";
-@import "vendor-overrides/bootstrapSlider";
 
 // Global
 @import "base";
@@ -19,13 +19,7 @@
 // Partials
 @import "partials/header";
 @import "partials/footer";
-@import "partials/standouts";
-
-// Activities
-@import "partials/activities/identifyStrengths";
-
-// Standouts
-@import "partials/standouts/strengths";
+@import "partials/blueprint";
 
 // [LAST] Browser-specific
 @import "browser-specific/ie";

@@ -5,11 +5,8 @@ CS.Controllers.Index = P(function (c) {
         CS.account.data = accountData;
 
         CS.Controllers.Header();
-        CS.Controllers.HeaderModal.Register();
-        CS.Controllers.HeaderModal.SignIn();
-        CS.Controllers.Standouts();
+        CS.Controllers.MainMenu();
 
-        CS.activitiesModel = CS.Models.Activities();
-        CS.activitiesModel.updateActivityStatus();
+        CS.Controllers.Blueprint();
     };
 });

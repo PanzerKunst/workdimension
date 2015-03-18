@@ -22,17 +22,10 @@ module.exports = function (grunt) {
                     ]
                 }
             },
-            activities: {
+            blueprintAreas: {
                 files: {
-                    "public/react-activities.js": [
-                        "javascripts/activities/**/*.react.js"
-                    ]
-                }
-            },
-            standouts: {
-                files: {
-                    "public/react-standouts.js": [
-                        "javascripts/standouts/**/*.react.js"
+                    "public/react-blueprint-areas.js": [
+                        "javascripts/blueprint-areas/**/*.react.js"
                     ]
                 }
             }
@@ -62,69 +55,32 @@ module.exports = function (grunt) {
                     "javascripts/services/string.js",
 
                     // Models
-                    "javascripts/models/activity.js",
-                    "javascripts/models/activities.js",
-                    "javascripts/models/strength.js",
+                    "javascripts/models/blueprintAreas.js",
 
                     // Controllers
                     "javascripts/controllers/base.js",
                     "javascripts/controllers/onePageWebapp.js",
                     "javascripts/controllers/index.js",
-                    "javascripts/controllers/header/header.js",
-                    "javascripts/controllers/header/headerModal.js",
-                    "javascripts/controllers/header/registerHeaderModal.js",
-                    "javascripts/controllers/header/signInHeaderModal.js",
-                    "javascripts/controllers/header/signInWithLinkedIn.js",
+                    "javascripts/controllers/header.js",
+                    "javascripts/controllers/mainMenu.js",
 
                     // React
                     "public/react-site.js"
                 ],
                 dest: "public/site.js"
             },
-            c1s: {
-                options: {
-                    separator:";"
-                },
-                src: [
-                    "javascripts/c1s/base.js",
-                    "javascripts/c1s/positionAndEmployer.js"
-                ],
-                dest: "public/c1s.js"
-            },
-            activities: {
+            blueprintAreas: {
                 options: {
                     separator:";"
                 },
                 src: [
                     // Base
-                    "javascripts/activities/base.js",
-                    "javascripts/activities/controller.js",
-
-                    // Non-React
-                    "javascripts/activities/IdentifyStrengths/activity.js",
-                    "javascripts/activities/SpecifyTop1Strength/activity.js",
-                    "javascripts/activities/SpecifyTop2Strength/activity.js",
-                    "javascripts/activities/SpecifyTop3Strength/activity.js",
+                    "javascripts/blueprint-areas/base.js",
 
                     // React
-                    "public/react-activities.js"
+                    "public/react-blueprint-areas.js"
                 ],
-                dest: "public/activities.js"
-            },
-            standouts: {
-                options: {
-                    separator:";"
-                },
-                src: [
-                    // Base
-                    "javascripts/standouts/base.js",
-
-                    // Non-React
-
-                    // React
-                    "public/react-standouts.js"
-                ],
-                dest: "public/standouts.js"
+                dest: "public/blueprint-areas.js"
             },
             all: {
                 options: {
@@ -134,14 +90,8 @@ module.exports = function (grunt) {
                     // Site
                     "public/site.js",
 
-                    // C1s
-                    "public/c1s.js",
-
-                    // Activities
-                    "public/activities.js",
-
-                    // Standouts
-                    "public/standouts.js"
+                    // Blueprint areas
+                    "public/blueprint-areas.js"
                 ],
                 dest: "public/<%= pkg.name %>.js"
             }
@@ -160,7 +110,6 @@ module.exports = function (grunt) {
                 src: [
                     // Libs
                     "libs/h5bp/normalize.css",
-                    "libs/bootstrap-slider/bootstrap-slider.css",
 
                     // Rest
                     "public/<%= pkg.name %>.css"
@@ -186,12 +135,9 @@ module.exports = function (grunt) {
             js: {
                 files: [
                     "<%= concat.site.src %>",
-                    "<%= concat.c1s.src %>",
-                    "<%= concat.activities.src %>",
-                    "<%= concat.standouts.src %>",
+                    "<%= concat.blueprintAreas.src %>",
                     "javascripts/controllers/**/*.react.js",
-                    "javascripts/activities/**/*.react.js",
-                    "javascripts/standouts/**/*.react.js"
+                    "javascripts/blueprint-areas/**/*.react.js"
                 ],
                 tasks: ["buildjs"]
             },
@@ -206,6 +152,6 @@ module.exports = function (grunt) {
     });
 
     grunt.registerTask("default", ["buildjs", "buildcss", "copy"]);
-    grunt.registerTask("buildjs",  ["eslint", "react:site", "react:activities", "react:standouts", "concat:site", "concat:c1s", "concat:activities", "concat:standouts", "concat:all"]);
+    grunt.registerTask("buildjs",  ["eslint", "react:site", "react:blueprintAreas", "concat:site", "concat:blueprintAreas", "concat:all"]);
     grunt.registerTask("buildcss",  ["sass", "cssmin"]);
 };
