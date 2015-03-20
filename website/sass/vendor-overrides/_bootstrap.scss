@@ -94,34 +94,6 @@ h6, .h6 {
   margin-top: 0;
 }
 
-h1, .h1,
-h2, .h2,
-h3, .h3 {
-  $default-h123-margin-bottom: ($line-height-computed / 2);
-
-  @include medium-screen {
-    margin-bottom: $default-h123-margin-bottom * $medium-screen-ratio-l;
-  }
-
-  @include large-screen {
-    margin-bottom: $default-h123-margin-bottom * $large-screen-ratio-l;
-  }
-}
-
-h4, .h4,
-h5, .h5,
-h6, .h6 {
-  $default-h456-margin-bottom: ($line-height-computed / 2);
-
-  @include medium-screen {
-    margin-bottom: $default-h456-margin-bottom * $medium-screen-ratio-l;
-  }
-
-  @include large-screen {
-    margin-bottom: $default-h456-margin-bottom * $large-screen-ratio-l;
-  }
-}
-
 p {
   $default-p-margin-bottom: ($line-height-computed / 2);
 

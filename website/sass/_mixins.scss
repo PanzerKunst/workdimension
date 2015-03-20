@@ -30,6 +30,10 @@
   @return $w/2 $h/2;
 }
 
+@function px-to-em($px) {
+  @return #{$px / $font-size-base-px}em;
+}
+
 @mixin icon-font($content) {
   font-family: "FontAwesome";
   font-style: normal;

@@ -1,0 +1,68 @@
+#overview {
+  text-align: center;
+
+  padding-top: px-to-em($header-height-px); // Margin fucks up the absolute-positioning as it is declared now
+
+  $list-item-padding: $spacer-unit-size;
+
+  > ul {
+    display: inline-block;
+
+    margin-top: 1em;
+
+    $blueprint-width-large-screen-percent: 75;
+
+    @media screen and (min-width: $large-content-width * 100 / $blueprint-width-large-screen-percent) {
+      width: percentage($blueprint-width-large-screen-percent / 100);
+    }
+
+    > li {
+      display: inline-block;
+      vertical-align: top;
+
+      text-align: left;
+
+      padding: 0 $list-item-padding;
+
+      width: $small-content-width;
+
+      @media screen and (min-width: $large-content-width * 100 / $blueprint-width-large-screen-percent) {
+        width: (100% / 3);
+      }
+    }
+  }
+
+  .well {
+    padding: 0 0.5em 0.5em 0.5em;
+  }
+
+  h2 {
+    font-size: 1.2em;
+    font-weight: bold;
+    letter-spacing: -0.05em;
+  }
+
+  .item-name {
+    color: white;
+    background-color: $action-color;
+
+    padding: 0 0.5em;
+    margin-bottom: 0.25em;
+  }
+
+  .item-composer {
+    display: none;
+
+    > textarea {
+      height: 2.9em;
+      margin-bottom: 0.5em;
+    }
+
+    > .fa-times {
+      font-size: 1.25em;
+      padding: 0.47em 0.62em 0.53em 0.62em;
+      margin-left: 0.2em;
+      vertical-align: top;
+    }
+  }
+}

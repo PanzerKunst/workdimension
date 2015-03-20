@@ -1,14 +1,6 @@
-/* apply a natural box layout model to all elements, but allowing components to change */
-*:before,
-*:after {
-  box-sizing: inherit;
-}
-
 html {
   // Always display the vertical scrollbar
   overflow-y: scroll;
-
-  box-sizing: border-box;
 
   @include medium-screen {
     @include defineBreakpoint("GLOBAL_MEDIUM_SCREEN_BREAKPOINT");
@@ -20,8 +12,6 @@ html {
 }
 
 body {
-  min-height: 100%;
-
   font-family: "Lato", sans-serif;
 
   -webkit-font-smoothing: antialiased;

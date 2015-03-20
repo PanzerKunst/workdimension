@@ -5,14 +5,8 @@ CS.Controllers.Header = P(function (c) {
     };
 
     c._initElements = function () {
-        this.$menuBtn = $("#menu-btn");
     };
 
     c._initEvents = function () {
-        this.$menuBtn.click();
-    };
-
-    c._toggleMenu = function() {
-        // TODO if (this.$menu)
     };
 });

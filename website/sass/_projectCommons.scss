@@ -1,3 +1,22 @@
+#content {
+  position: relative; // Because absolutely-positioning the menu
+
+  background-color: $background-body-color; // Otherwise we see the contentOverlayWhenMenuOpen even when z-index -1
+}
+
 .help-text {
   color: rgb(153, 153, 153);  //#999999
+}
+
+// To have the footer always at the bottom
+html,
+body {
+  height: 100%;
+}
+#container {
+  min-height: 100%;
+  position: relative; // Because of absolutely-position footer
+}
+#content {
+  padding-bottom: px-to-em($footer-height-px);
 }

@@ -21,13 +21,6 @@ module.exports = function (grunt) {
                         "javascripts/controllers/**/*.react.js"
                     ]
                 }
-            },
-            blueprintAreas: {
-                files: {
-                    "public/react-blueprint-areas.js": [
-                        "javascripts/blueprint-areas/**/*.react.js"
-                    ]
-                }
             }
         },
 
@@ -41,7 +34,6 @@ module.exports = function (grunt) {
                     "libs/p.js",
                     "libs/grapnel.min.js",
                     "libs/js-breakpoints/breakpoints.js",
-                    "libs/bootstrap-slider/bootstrap-slider.min.js",
 
                     // Global
                     "javascripts/global.js",
@@ -53,8 +45,10 @@ module.exports = function (grunt) {
                     "javascripts/services/validator.js",
                     "javascripts/services/animator.js",
                     "javascripts/services/string.js",
+                    "javascripts/services/keyboard.js",
 
                     // Models
+                    "javascripts/models/blueprintArea.js",
                     "javascripts/models/blueprintAreas.js",
 
                     // Controllers
@@ -62,25 +56,21 @@ module.exports = function (grunt) {
                     "javascripts/controllers/onePageWebapp.js",
                     "javascripts/controllers/index.js",
                     "javascripts/controllers/header.js",
-                    "javascripts/controllers/mainMenu.js",
 
                     // React
                     "public/react-site.js"
                 ],
                 dest: "public/site.js"
             },
-            blueprintAreas: {
+            mockData: { // TODO: remove
                 options: {
                     separator:";"
                 },
                 src: [
-                    // Base
-                    "javascripts/blueprint-areas/base.js",
-
-                    // React
-                    "public/react-blueprint-areas.js"
+                    "javascripts/mock-data/blueprintCategories.js",
+                    "javascripts/mock-data/blueprintAreas.js"
                 ],
-                dest: "public/blueprint-areas.js"
+                dest: "public/mock-data.js"
             },
             all: {
                 options: {
@@ -90,8 +80,8 @@ module.exports = function (grunt) {
                     // Site
                     "public/site.js",
 
-                    // Blueprint areas
-                    "public/blueprint-areas.js"
+                    // Mock data    TODO: remove
+                    "public/mock-data.js"
                 ],
                 dest: "public/<%= pkg.name %>.js"
             }
@@ -135,9 +125,8 @@ module.exports = function (grunt) {
             js: {
                 files: [
                     "<%= concat.site.src %>",
-                    "<%= concat.blueprintAreas.src %>",
-                    "javascripts/controllers/**/*.react.js",
-                    "javascripts/blueprint-areas/**/*.react.js"
+                    "<%= concat.mockData.src %>",   // TODO: remove
+                    "javascripts/controllers/**/*.react.js"
                 ],
                 tasks: ["buildjs"]
             },
@@ -152,6 +141,6 @@ module.exports = function (grunt) {
     });
 
     grunt.registerTask("default", ["buildjs", "buildcss", "copy"]);
-    grunt.registerTask("buildjs",  ["eslint", "react:site", "react:blueprintAreas", "concat:site", "concat:blueprintAreas", "concat:all"]);
+    grunt.registerTask("buildjs",  ["eslint", "react:site", "concat:site", "concat:mockData" /* TODO: remove */, "concat:all"]);
     grunt.registerTask("buildcss",  ["sass", "cssmin"]);
 };

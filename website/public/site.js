@@ -243,7 +243,35 @@ CS.defaultAnimationDuration = 0.5;
 CS.blueprintAreasModel = null;
 CS.indexController = null;
 ;CS.Services.Browser = {
-    addUserAgentAttributeToHtmlTag: function() {
+    cssRules: function () {
+        if (CS.Services.Browser.allCssRules) {
+            return CS.Services.Browser.allCssRules;
+        }
+
+        CS.Services.Browser.allCssRules = {};
+
+        var styleSheets = document.styleSheets;
+
+        for (var i = 0; i < styleSheets.length; i++) {
+            var styleSheet = styleSheets[i];
+            var styleSheetRules = styleSheet.cssRules || styleSheet.rules;  // .rules for IE, .cssRules for other browsers
+
+            if (styleSheetRules) {
+                for (var j = 0; j < styleSheetRules.length; j++) {
+                    var rule = styleSheetRules[j];
+                    CS.Services.Browser.allCssRules[rule.selectorText] = rule.style;
+                }
+            }
+        }
+
+        return CS.Services.Browser.allCssRules;
+    },
+
+    getCssRule: function (selector, property) {
+        return CS.Services.Browser.cssRules()[selector].getPropertyValue(property);
+    },
+
+    addUserAgentAttributeToHtmlTag: function () {
         document.documentElement.setAttribute("data-useragent", navigator.userAgent);
     },
 
@@ -266,6 +294,24 @@ CS.indexController = null;
 
     isSmallScreen: function () {
         return !this.isMediumScreen() && !this.isLargeScreen();
+    },
+
+    saveInLocalStorage: function (key, value) {
+        if (Modernizr.localstorage) {
+            localStorage.setItem(key, JSON.stringify(value));
+        }
+    },
+
+    getFromLocalStorage: function (key) {
+        if (Modernizr.localstorage) {
+            return JSON.parse(localStorage.getItem(key));
+        }
+    },
+
+    removeFromLocalStorage: function (key) {
+        if (Modernizr.localstorage) {
+            localStorage.removeItem(key);
+        }
     }
 };
 ;CS.Services.Validator = P(function (c) {
@@ -654,25 +700,65 @@ CS.indexController = null;
         }
     }
 };
+;CS.Services.Keyboard = {
+    keyCode: {
+        backspace: 8,
+        tab: 9,
+        enter: 13,
+        shift: 16,
+        ctrl: 17,
+        alt: 18,
+        space: 32
+    },
+
+    isPressedKeyText: function (e) {
+        var keyCode = e.keyCode;
+
+        return keyCode !== this.keyCode.tab &&
+            keyCode !== this.keyCode.enter &&
+            keyCode !== this.keyCode.shift &&
+            keyCode !== this.keyCode.ctrl &&
+            keyCode !== this.keyCode.alt &&
+            keyCode !== this.keyCode.space;
+    }
+};
+;CS.Models.BlueprintArea = P(function (c) {
+    c.init = function (className, blueprintCategoryId, title, priority) {
+        this.className = className;
+        this.blueprintCategoryId = blueprintCategoryId;
+        this.title = title;
+        this.priority = priority;
+    };
+
+    c.getClassName = function() {
+        return this.className;
+    };
+
+    c.getTitle = function() {
+        return this.title;
+    };
+
+    // TODO: use DB instead of local storage
+    c.isActive = function() {
+        return CS.Services.Browser.getFromLocalStorage("isBlueprintArea" + this.className + "Active");
+    };
+
+    c.activate = function() {
+        return CS.Services.Browser.saveInLocalStorage("isBlueprintArea" + this.className + "Active", true);
+    };
+
+    c.deactivate = function() {
+        return CS.Services.Browser.removeFromLocalStorage("isBlueprintArea" + this.className + "Active");
+    };
+});
 ;CS.Models.BlueprintAreas = P(function (c) {
-    c.maxTodoCategoriesDisplayed = 3;
+    c.nbDefaultActiveBlueprintAreas = 3;
 
     c.init = function () {
-        var blueprintAreaItems = [
-            {
-                className: "Strengths",
-                title: "Styrkor",
-                category: "Capabilities"
-            },
-            {
-                className: "WhatIveDone",
-                title: "What I've done",
-                category: "Capabilities"
-            }
-        ];
+        var sortedBlueprintAreas = _.sortByAll(CS.BlueprintAreas, "priority");
 
-        this.blueprintAreaInstances = blueprintAreaItems.map(function (item) {
-            return CS.BlueprintAreas[item.className](item.className, item.title);
+        this.blueprintAreaInstances = sortedBlueprintAreas.map(function (item) {
+            return CS.Models.BlueprintArea(item.className, item.blueprintCategoryId, item.title, item.priority);
         });
     };
 
@@ -701,6 +787,16 @@ CS.indexController = null;
                 this.blueprintAreas.inactive.push(instance);
             }
         }.bind(this));
+
+        // If none is active, we set the top-N priority as active
+        if (_.isEmpty(this.blueprintAreas.active)) {
+            for (var i = 0; i < this.nbDefaultActiveBlueprintAreas; i++) {
+                var instanceToActivate = this.blueprintAreaInstances[i];
+                instanceToActivate.activate();
+                this.blueprintAreas.active.push(instanceToActivate);
+                this.blueprintAreas.inactive = _.without(this.blueprintAreas.inactive, instanceToActivate);
+            }
+        }
     };
 });
 ;CS.Controllers.Base = P(function(c) {
@@ -711,24 +807,6 @@ CS.indexController = null;
 
     c.isTemporaryAccount = function () {
         return CS.account.id < 0;
-    };
-
-    c.saveInLocalStorage = function (key, value) {
-        if (Modernizr.localstorage) {
-            localStorage.setItem(key, JSON.stringify(value));
-        }
-    };
-
-    c.getFromLocalStorage = function (key) {
-        if (Modernizr.localstorage) {
-            return JSON.parse(localStorage.getItem(key));
-        }
-    };
-
-    c.removeFromLocalStorage = function (key) {
-        if (Modernizr.localstorage) {
-            localStorage.removeItem(key);
-        }
     };
 });
 ;CS.Controllers.OnePageWebapp = P(CS.Controllers.Base, function (c) {
@@ -744,12 +822,15 @@ CS.indexController = null;
     c.init = function (accountId, accountEmail, accountData) {
         CS.account.id = accountId;
         CS.account.email = accountEmail;
-        CS.account.data = accountData;
+        CS.account.data = accountData || {};
+
+        CS.blueprintAreasModel = CS.Models.BlueprintAreas();
+        CS.blueprintAreasModel.updateStatus();
 
         CS.Controllers.Header();
         CS.Controllers.MainMenu();
 
-        CS.Controllers.Blueprint();
+        CS.Controllers.Overview();
     };
 });
 ;CS.Controllers.Header = P(function (c) {
@@ -759,75 +840,284 @@ CS.indexController = null;
     };
 
     c._initElements = function () {
-        this.$menuBtn = $("#menu-btn");
     };
 
     c._initEvents = function () {
-        this.$menuBtn.click();
-    };
-
-    c._toggleMenu = function() {
-        // TODO if (this.$menu)
     };
 });
-;CS.Controllers.MainMenu = P(function (c) {
-    c.init = function () {
-        this._initElements();
-        this._initEvents();
-    };
+;CS.Controllers.MainMenuInactiveItem = React.createClass({displayName: "MainMenuInactiveItem",
+    render: function () {
+        return (
+            React.createElement("li", null, 
+                React.createElement("a", {onClick: this._activateBlueprintArea}, this.props.blueprintArea.getTitle())
+            )
+            );
+    },
 
-    c._initElements = function () {
-        // TODO
-    };
+    _activateBlueprintArea: function() {
 
-    c._initEvents = function () {
-        // TODO
-    };
+    }
 });
-;CS.Controllers.Blueprint = P(function (c) {
+
+CS.Controllers.MainMenu = P(function (c) {
     c.reactClass = React.createClass({displayName: "reactClass",
         getInitialState: function () {
             return {
-                blueprintAreas: []
+                activeBlueprintAreas: [],
+                inactiveBlueprintAreas: []
             };
         },
 
         render: function () {
             return (
-                React.createElement("ul", {className: "styleless"}, 
-                    this.state.blueprintAreas.map(function (blueprintArea) {
-                        var id = blueprintArea.getClassName() + "-blueprint-area-wrapper";
+                React.createElement("div", null, 
+                    React.createElement("ul", {className: "styleless"}, 
+                        this.state.activeBlueprintAreas.map(function (blueprintArea) {
+                            var id = "main-menu-" + blueprintArea.getClassName() + "-blueprint-area-item";
 
-                        return React.createElement("li", {id: id, key: id});
-                    })
+                            return React.createElement("li", {id: id, key: id}, blueprintArea.getTitle());
+                        })
+                    ), 
+                    React.createElement("ul", {className: "styleless"}, 
+                        this.state.inactiveBlueprintAreas.map(function (blueprintArea) {
+                            // TODO: remove var id = "main-menu-" + blueprintArea.getClassName() + "-blueprint-area-item";
+
+                            return React.createElement(CS.Controllers.MainMenuInactiveItem, {blueprintArea: blueprintArea});
+                        })
+                    ), 
+                    React.createElement("a", null, "More")
                 )
                 );
-        },
-
-        componentDidUpdate: function() {
-            var blueprintAreasToRerender = _.union(CS.blueprintAreasModel.getActive());
-
-            blueprintAreasToRerender.forEach(function(blueprintArea) {
-                blueprintArea.reRender();
-            });
         }
     });
 
     c.init = function () {
         this.reactInstance = React.render(
             React.createElement(this.reactClass),
-            document.getElementById("blueprint")
+            document.getElementById("main-menu")
         );
 
-        CS.blueprintAreasModel = CS.Models.BlueprintAreas();
-        CS.blueprintAreasModel.updateStatus();
+        this._initElements();
+        this._initEvents();
+
+        this.reRender();
+    };
+
+    c._initElements = function () {
+        this.$menuBtn = $("#menu-btn");
+        this.$menu = $("#main-menu");
+        this.$contentOverlayWhenMenuOpen = $("#content-overlay-when-menu-open");
+    };
+
+    c._initEvents = function () {
+        this.$menuBtn.click($.proxy(this._toggleMenu, this));
+        this.$contentOverlayWhenMenuOpen.click($.proxy(this._toggleMenu, this));
+    };
+
+    c.reRender = function () {
+        var shownInactiveBlueprintAreas = _.take(CS.blueprintAreasModel.getInactive(), 3);
+
+        this.reactInstance.replaceState({
+            activeBlueprintAreas: _.sortByAll(CS.blueprintAreasModel.getActive(), "title"),
+            inactiveBlueprintAreas: _.sortByAll(shownInactiveBlueprintAreas, "title")
+        });
+    };
+
+    c._toggleMenu = function () {
+        var isToShowMenu = this.$menu.css("visibility") === "hidden";
+
+        var contentOverlayZIndex = -1;
+        var futureVisibility = "hidden";
+
+        if (isToShowMenu) {
+            contentOverlayZIndex = parseInt(this.$menu.css("z-index"), 10) - 1;
+            futureVisibility = "visible";
+        }
+
+        this.$contentOverlayWhenMenuOpen.css("z-index", contentOverlayZIndex);
+        this.$menu.css("visibility", futureVisibility);
+    };
+});
+
+CS.Controllers.OverviewBlueprintAreaComposer = React.createClass({displayName: "OverviewBlueprintAreaComposer",
+    render: function () {
+        return (
+            React.createElement("div", null, 
+                React.createElement("form", {role: "form", className: "item-composer", ref: "form", onSubmit: this._handleComposerFormSubmit}, 
+                    React.createElement("textarea", {className: "form-control", ref: "textarea", onKeyUp: this._handleTextareaKeyUp}), 
+                    React.createElement("button", {className: "btn btn-primary"}, "Add"), 
+                    React.createElement("button", {type: "button", className: "styleless fa fa-times", onClick: this._hideForm})
+                ), 
+
+                React.createElement("a", {onClick: this._showComposer}, "+ Add item")
+            )
+            );
+    },
+
+    componentDidMount: function () {
+        this._initElements();
+
+        this.textareaDefaultHeightPx = 41;
+    },
+
+    _getController: function () {
+        return this.props.controller;
+    },
+
+    _getBlueprintAreaClassName: function () {
+        return this.props.blueprintArea.className;
+    },
+
+    _initElements: function() {
+        var controller = this._getController();
+
+        if (controller) {
+            this.$composerForms = controller.$el.find(".item-composer");
+            this.$addItemLinks = this.$composerForms.siblings("a");
+
+            this.$form = $(React.findDOMNode(this.refs.form));
+            this.$textarea = $(React.findDOMNode(this.refs.textarea));
+        }
+    },
+
+    _showComposer: function (e) {
+        // TODO: remove
+        console.log("_showComposer");
+
+        this.$addItemLinks.show();
+        this.$composerForms.hide();
+        this.$form.show();
+        this.$textarea.focus();
+
+        var $link = $(e.currentTarget);
+        $link.hide();
+    },
+
+    _handleComposerFormSubmit: function (e) {
+        if (e) {
+            e.preventDefault();
+        }
+
+        // TODO: remove
+        console.log("_handleComposerFormSubmit");
+
+        var itemNameToAdd = this.$textarea.val().trim();
+
+        if (itemNameToAdd) {
+            var updatedBlueprintAreaData = _.clone(CS.account.data[this._getBlueprintAreaClassName()], true) || [];
+            updatedBlueprintAreaData.push({name: itemNameToAdd});
+
+            CS.account.data[this._getBlueprintAreaClassName()] = updatedBlueprintAreaData;
+
+            this._getController().reRender();
+        }
+
+        this._resetAndHideForm();
+    },
+
+    _handleTextareaKeyUp: function (e) {
+        if (e.keyCode === CS.Services.Keyboard.keyCode.enter) {
+            this._handleComposerFormSubmit();
+        } else {
+            var $textarea = $(e.currentTarget);
+            this._countTextareaLines($textarea);
+        }
+    },
+
+    _countTextareaLines: function ($textarea) {
+        var lineHeight = parseInt($textarea.css("lineHeight"), 10);
+        var padding = parseInt($textarea.css("paddingTop"), 10) + parseInt($textarea.css("paddingBottom"), 10);
+        var lineCount = Math.round(($textarea.prop("scrollHeight") - padding) / lineHeight);
+
+        // TODO: remove
+        console.log("lineCount: " + lineCount);
+
+        var currentTextAreaHeightPx = parseFloat($textarea.css("height"));
+        var newTextAreaHeightPx = this.textareaDefaultHeightPx - lineHeight + lineCount * lineHeight;
+
+        if (newTextAreaHeightPx !== currentTextAreaHeightPx) {
+
+            // TODO: remove
+            console.log("newTextAreaHeightPx: " + newTextAreaHeightPx);
+
+            $textarea.css("height", newTextAreaHeightPx);
+        }
+    },
+
+    _resetAndHideForm: function() {
+        this.$textarea.val(null);
+        this.$textarea.css("height", this.textareaDefaultHeightPx);
+
+        this._hideForm();
+    },
+
+    _hideForm: function() {
+        this.$form.hide();
+        this.$form.siblings("a").show();
+    }
+});
+
+CS.Controllers.Overview = P(function (c) {
+    c.$el = $(document.getElementById("overview"));
+
+    c.reactClass = React.createClass({displayName: "reactClass",
+        getInitialState: function () {
+            return {
+                controller: null,
+                blueprintAreasWithData: []
+            };
+        },
+
+        render: function () {
+            return (
+                React.createElement("ul", {className: "styleless"}, 
+                    this.state.blueprintAreasWithData.map(function (blueprintAreaWithData) {
+                        var id = blueprintAreaWithData.className + "-blueprint-area-panel";
+
+                        return (
+                            React.createElement("li", {id: id, key: id}, 
+                                React.createElement("div", {className: "well"}, 
+                                    React.createElement("h2", null, blueprintAreaWithData.title), 
+
+                                    React.createElement("ul", {className: "styleless"}, 
+                                        blueprintAreaWithData.items.map(function (item) {
+                                            var reactItemId = blueprintAreaWithData.className + "-blueprint-item-" + item.name;
+
+                                            return React.createElement("li", {id: reactItemId, key: reactItemId, className: "item-name"}, item.name);
+                                        })
+                                    ), 
+
+                                    React.createElement(CS.Controllers.OverviewBlueprintAreaComposer, {controller: this.state.controller, blueprintArea: blueprintAreaWithData})
+                                )
+                            )
+                            );
+                    }.bind(this))
+                )
+                );
+        }
+    });
+
+    c.init = function () {
+        this.reactInstance = React.render(
+            React.createElement(this.reactClass),
+            this.$el[0]
+        );
 
         this.reRender();
     };
 
     c.reRender = function () {
+        var blueprintAreasWithData = CS.blueprintAreasModel.getActive().map(function (blueprintArea) {
+            return {
+                className: blueprintArea.getClassName(),
+                title: blueprintArea.getTitle(),
+                items: CS.account.data[blueprintArea.getClassName()] || []
+            };
+        });
+
         this.reactInstance.replaceState({
-            blueprintAreas: CS.blueprintAreasModel.getActive()
+            controller: this,
+            blueprintAreasWithData: _.sortByAll(blueprintAreasWithData, "title")
         });
     };
 });

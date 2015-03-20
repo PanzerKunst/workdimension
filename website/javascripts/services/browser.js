@@ -1,5 +1,33 @@
 CS.Services.Browser = {
-    addUserAgentAttributeToHtmlTag: function() {
+    cssRules: function () {
+        if (CS.Services.Browser.allCssRules) {
+            return CS.Services.Browser.allCssRules;
+        }
+
+        CS.Services.Browser.allCssRules = {};
+
+        var styleSheets = document.styleSheets;
+
+        for (var i = 0; i < styleSheets.length; i++) {
+            var styleSheet = styleSheets[i];
+            var styleSheetRules = styleSheet.cssRules || styleSheet.rules;  // .rules for IE, .cssRules for other browsers
+
+            if (styleSheetRules) {
+                for (var j = 0; j < styleSheetRules.length; j++) {
+                    var rule = styleSheetRules[j];
+                    CS.Services.Browser.allCssRules[rule.selectorText] = rule.style;
+                }
+            }
+        }
+
+        return CS.Services.Browser.allCssRules;
+    },
+
+    getCssRule: function (selector, property) {
+        return CS.Services.Browser.cssRules()[selector].getPropertyValue(property);
+    },
+
+    addUserAgentAttributeToHtmlTag: function () {
         document.documentElement.setAttribute("data-useragent", navigator.userAgent);
     },
 
@@ -22,5 +50,23 @@ CS.Services.Browser = {
 
     isSmallScreen: function () {
         return !this.isMediumScreen() && !this.isLargeScreen();
+    },
+
+    saveInLocalStorage: function (key, value) {
+        if (Modernizr.localstorage) {
+            localStorage.setItem(key, JSON.stringify(value));
+        }
+    },
+
+    getFromLocalStorage: function (key) {
+        if (Modernizr.localstorage) {
+            return JSON.parse(localStorage.getItem(key));
+        }
+    },
+
+    removeFromLocalStorage: function (key) {
+        if (Modernizr.localstorage) {
+            localStorage.removeItem(key);
+        }
     }
 };

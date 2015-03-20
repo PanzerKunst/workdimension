@@ -1,3 +1,8 @@
 footer {
-  min-height: $spacer-unit-size * 3;
+  height: px-to-em($footer-height-px);
+  background-color: $action-color;
+
+  position: absolute;
+  bottom: 0;
+  width: 100%;
 }
