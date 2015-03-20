@@ -16,3 +16,5 @@ CS.router = new Grapnel();
 CS.defaultAnimationDuration = 0.5;
 CS.blueprintAreasModel = null;
 CS.indexController = null;
+CS.mainMenuController = null;
+CS.overviewController = null;

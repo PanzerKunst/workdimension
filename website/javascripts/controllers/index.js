@@ -4,12 +4,12 @@ CS.Controllers.Index = P(function (c) {
         CS.account.email = accountEmail;
         CS.account.data = accountData || {};
 
+        CS.mainMenuController = CS.Controllers.MainMenu();
+        CS.overviewController = CS.Controllers.Overview();
+
         CS.blueprintAreasModel = CS.Models.BlueprintAreas();
         CS.blueprintAreasModel.updateStatus();
 
         CS.Controllers.Header();
-        CS.Controllers.MainMenu();
-
-        CS.Controllers.Overview();
     };
 });

@@ -44,5 +44,8 @@ CS.Models.BlueprintAreas = P(function (c) {
                 this.blueprintAreas.inactive = _.without(this.blueprintAreas.inactive, instanceToActivate);
             }
         }
+
+        CS.mainMenuController.reRender();
+        CS.overviewController.reRender();
     };
 });

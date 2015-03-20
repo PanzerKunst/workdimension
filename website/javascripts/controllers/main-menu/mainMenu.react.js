@@ -19,9 +19,9 @@ CS.Controllers.MainMenu = P(function (c) {
                     </ul>
                     <ul className="styleless">
                         {this.state.inactiveBlueprintAreas.map(function (blueprintArea) {
-                            // TODO: remove var id = "main-menu-" + blueprintArea.getClassName() + "-blueprint-area-item";
+                            var id = "main-menu-" + blueprintArea.getClassName() + "-blueprint-area-item";
 
-                            return <CS.Controllers.MainMenuInactiveItem blueprintArea={blueprintArea} />;
+                            return <CS.Controllers.MainMenuInactiveItem key={id} blueprintArea={blueprintArea} />;
                         })}
                     </ul>
                     <a>More</a>
@@ -38,8 +38,6 @@ CS.Controllers.MainMenu = P(function (c) {
 
         this._initElements();
         this._initEvents();
-
-        this.reRender();
     };
 
     c._initElements = function () {

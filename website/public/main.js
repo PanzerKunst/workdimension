@@ -242,6 +242,8 @@ CS.router = new Grapnel();
 CS.defaultAnimationDuration = 0.5;
 CS.blueprintAreasModel = null;
 CS.indexController = null;
+CS.mainMenuController = null;
+CS.overviewController = null;
 ;CS.Services.Browser = {
     cssRules: function () {
         if (CS.Services.Browser.allCssRules) {
@@ -797,6 +799,9 @@ CS.indexController = null;
                 this.blueprintAreas.inactive = _.without(this.blueprintAreas.inactive, instanceToActivate);
             }
         }
+
+        CS.mainMenuController.reRender();
+        CS.overviewController.reRender();
     };
 });
 ;CS.Controllers.Base = P(function(c) {
@@ -824,13 +829,13 @@ CS.indexController = null;
         CS.account.email = accountEmail;
         CS.account.data = accountData || {};
 
+        CS.mainMenuController = CS.Controllers.MainMenu();
+        CS.overviewController = CS.Controllers.Overview();
+
         CS.blueprintAreasModel = CS.Models.BlueprintAreas();
         CS.blueprintAreasModel.updateStatus();
 
         CS.Controllers.Header();
-        CS.Controllers.MainMenu();
-
-        CS.Controllers.Overview();
     };
 });
 ;CS.Controllers.Header = P(function (c) {
@@ -854,8 +859,13 @@ CS.indexController = null;
             );
     },
 
-    _activateBlueprintArea: function() {
+    _getBlueprintArea: function() {
+        return this.props.blueprintArea;
+    },
 
+    _activateBlueprintArea: function() {
+        this._getBlueprintArea().activate();
+        CS.blueprintAreasModel.updateStatus();
     }
 });
 
@@ -880,9 +890,9 @@ CS.Controllers.MainMenu = P(function (c) {
                     ), 
                     React.createElement("ul", {className: "styleless"}, 
                         this.state.inactiveBlueprintAreas.map(function (blueprintArea) {
-                            // TODO: remove var id = "main-menu-" + blueprintArea.getClassName() + "-blueprint-area-item";
+                            var id = "main-menu-" + blueprintArea.getClassName() + "-blueprint-area-item";
 
-                            return React.createElement(CS.Controllers.MainMenuInactiveItem, {blueprintArea: blueprintArea});
+                            return React.createElement(CS.Controllers.MainMenuInactiveItem, {key: id, blueprintArea: blueprintArea});
                         })
                     ), 
                     React.createElement("a", null, "More")
@@ -899,8 +909,6 @@ CS.Controllers.MainMenu = P(function (c) {
 
         this._initElements();
         this._initEvents();
-
-        this.reRender();
     };
 
     c._initElements = function () {
@@ -1102,8 +1110,6 @@ CS.Controllers.Overview = P(function (c) {
             React.createElement(this.reactClass),
             this.$el[0]
         );
-
-        this.reRender();
     };
 
     c.reRender = function () {

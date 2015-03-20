@@ -7,7 +7,12 @@ CS.Controllers.MainMenuInactiveItem = React.createClass({
             );
     },
 
-    _activateBlueprintArea: function() {
+    _getBlueprintArea: function() {
+        return this.props.blueprintArea;
+    },
 
+    _activateBlueprintArea: function() {
+        this._getBlueprintArea().activate();
+        CS.blueprintAreasModel.updateStatus();
     }
 });
