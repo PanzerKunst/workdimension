@@ -3,9 +3,9 @@ CS.Controllers.OverviewBlueprintAreaComposer = React.createClass({
         return (
             <div>
                 <form role="form" className="item-composer" ref="form" onSubmit={this._handleComposerFormSubmit}>
-                    <textarea className="form-control" ref="textarea" onKeyUp={this._handleTextareaKeyUp} />
+                    <textarea className="form-control" onKeyUp={this._handleTextareaKeyUp} onBlur={this._hideForm} />
                     <button className="btn btn-primary">Add</button>
-                    <button type="button" className="styleless fa fa-times" onClick={this._hideForm}></button>
+                    <button type="button" className="styleless fa fa-times"></button>
                 </form>
 
                 <a onClick={this._showComposer}>+ Add item</a>
@@ -28,23 +28,19 @@ CS.Controllers.OverviewBlueprintAreaComposer = React.createClass({
     },
 
     _initElements: function() {
-        var controller = this._getController();
-
-        if (controller) {
-            this.$composerForms = controller.$el.find(".item-composer");
-            this.$addItemLinks = this.$composerForms.siblings("a");
-
-            this.$form = $(React.findDOMNode(this.refs.form));
-            this.$textarea = $(React.findDOMNode(this.refs.textarea));
-        }
+        this.$form = $(React.findDOMNode(this.refs.form));
+        this.$textarea = this.$form.children("textarea");
     },
 
     _showComposer: function (e) {
         // TODO: remove
         console.log("_showComposer");
 
-        this.$addItemLinks.show();
-        this.$composerForms.hide();
+        var $composerForms = this._getController().$el.find(".item-composer");
+        var $addItemLinks = $composerForms.siblings("a");
+
+        $addItemLinks.show();
+        $composerForms.hide();
         this.$form.show();
         this.$textarea.focus();
 
@@ -68,6 +64,8 @@ CS.Controllers.OverviewBlueprintAreaComposer = React.createClass({
 
             CS.account.data[this._getBlueprintAreaClassName()] = updatedBlueprintAreaData;
 
+            CS.Services.Browser.saveInLocalStorage("accountData", CS.account.data);
+
             this._getController().reRender();
         }
 
@@ -78,20 +76,19 @@ CS.Controllers.OverviewBlueprintAreaComposer = React.createClass({
         if (e.keyCode === CS.Services.Keyboard.keyCode.enter) {
             this._handleComposerFormSubmit();
         } else {
-            var $textarea = $(e.currentTarget);
-            this._countTextareaLines($textarea);
+            this._countTextareaLines();
         }
     },
 
-    _countTextareaLines: function ($textarea) {
-        var lineHeight = parseInt($textarea.css("lineHeight"), 10);
-        var padding = parseInt($textarea.css("paddingTop"), 10) + parseInt($textarea.css("paddingBottom"), 10);
-        var lineCount = Math.round(($textarea.prop("scrollHeight") - padding) / lineHeight);
+    _countTextareaLines: function () {
+        var lineHeight = parseInt(this.$textarea.css("lineHeight"), 10);
+        var padding = parseInt(this.$textarea.css("paddingTop"), 10) + parseInt(this.$textarea.css("paddingBottom"), 10);
+        var lineCount = Math.round((this.$textarea.prop("scrollHeight") - padding) / lineHeight);
 
         // TODO: remove
         console.log("lineCount: " + lineCount);
 
-        var currentTextAreaHeightPx = parseFloat($textarea.css("height"));
+        var currentTextAreaHeightPx = parseFloat(this.$textarea.css("height"));
         var newTextAreaHeightPx = this.textareaDefaultHeightPx - lineHeight + lineCount * lineHeight;
 
         if (newTextAreaHeightPx !== currentTextAreaHeightPx) {
@@ -99,7 +96,7 @@ CS.Controllers.OverviewBlueprintAreaComposer = React.createClass({
             // TODO: remove
             console.log("newTextAreaHeightPx: " + newTextAreaHeightPx);
 
-            $textarea.css("height", newTextAreaHeightPx);
+            this.$textarea.css("height", newTextAreaHeightPx);
         }
     },
 

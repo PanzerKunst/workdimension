@@ -15,7 +15,7 @@ body {
 }
 #container {
   min-height: 100%;
-  position: relative; // Because of absolutely-position footer
+  position: relative; // Because of absolutely-positioning footer
 }
 #content {
   padding-bottom: px-to-em($footer-height-px);

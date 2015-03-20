@@ -92,6 +92,10 @@ button {
     &:focus {
       @include styleless-btn;
     }
+
+    &:hover {
+      cursor: pointer;
+    }
   }
 }
 

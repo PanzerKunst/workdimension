@@ -24,7 +24,6 @@ CS.Controllers.MainMenu = P(function (c) {
                             return <CS.Controllers.MainMenuInactiveItem key={id} blueprintArea={blueprintArea} />;
                         })}
                     </ul>
-                    <a>More</a>
                 </div>
                 );
         }
@@ -64,14 +63,14 @@ CS.Controllers.MainMenu = P(function (c) {
         var isToShowMenu = this.$menu.css("visibility") === "hidden";
 
         var contentOverlayZIndex = -1;
-        var futureVisibility = "hidden";
+        var menuVisibility = "hidden";
 
         if (isToShowMenu) {
             contentOverlayZIndex = parseInt(this.$menu.css("z-index"), 10) - 1;
-            futureVisibility = "visible";
+            menuVisibility = "visible";
         }
 
         this.$contentOverlayWhenMenuOpen.css("z-index", contentOverlayZIndex);
-        this.$menu.css("visibility", futureVisibility);
+        this.$menu.css("visibility", menuVisibility);
     };
 });

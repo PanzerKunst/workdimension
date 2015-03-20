@@ -21,11 +21,11 @@ CS.Controllers.Overview = P(function (c) {
                                     <h2>{blueprintAreaWithData.title}</h2>
 
                                     <ul className="styleless">
-                                        {blueprintAreaWithData.items.map(function (item) {
+                                        {blueprintAreaWithData.items.map(function (item, index) {
                                             var reactItemId = blueprintAreaWithData.className + "-blueprint-item-" + item.name;
 
-                                            return <li id={reactItemId} key={reactItemId} className="item-name">{item.name}</li>;
-                                        })}
+                                            return <CS.Controllers.OverviewBlueprintItem key={reactItemId} controller={this.state.controller} blueprintAreaWithData={blueprintAreaWithData} blueprintItemIndex={index} />;
+                                        }.bind(this))}
                                     </ul>
 
                                     <CS.Controllers.OverviewBlueprintAreaComposer controller={this.state.controller} blueprintArea={blueprintAreaWithData} />
