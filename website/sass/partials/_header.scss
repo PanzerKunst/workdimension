@@ -2,14 +2,14 @@ header {
   background-color: $action-color;
 
   position: fixed;
-  height: px-to-em($header-height-px);
+  height: $header-height;
   width: 100%;
 
   z-index: $z-index-menu;
 }
 
 #menu-btn {
-  font-size: 1.5em;
-  padding: 0.45em 0.52em 0.45em;
+  font-size: $font-size-menu-btn;
+  padding: $padding-menu-btn;
   color: white;
 }

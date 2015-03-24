@@ -13,22 +13,28 @@ CS.Controllers.MainMenuInactiveItem = React.createClass({displayName: "MainMenuI
 
     _activateBlueprintArea: function() {
         this._getBlueprintArea().activate();
-        CS.blueprintAreasModel.updateStatus();
     }
 });
 
-CS.Controllers.MainMenu = P(function (c) {
+CS.Controllers.MainMenu = P(CS.Controllers.Base, function (c) {
     c.reactClass = React.createClass({displayName: "reactClass",
         getInitialState: function () {
             return {
                 activeBlueprintAreas: [],
-                inactiveBlueprintAreas: []
+                inactiveBlueprintAreas: [],
+                isSignedIn: false
             };
         },
 
         render: function () {
+            var wrapperClasses = classNames({"signed-in": this.state.isSignedIn});
+
             return (
-                React.createElement("div", null, 
+                React.createElement("div", {className: wrapperClasses}, 
+                    /* TODO <div id="header-placeholder">
+                        <button className="styleless fa fa-times"></button>
+                    </div>*/
+
                     React.createElement("ul", {className: "styleless"}, 
                         this.state.activeBlueprintAreas.map(function (blueprintArea) {
                             var id = "main-menu-" + blueprintArea.getClassName() + "-blueprint-area-item";
@@ -42,7 +48,10 @@ CS.Controllers.MainMenu = P(function (c) {
 
                             return React.createElement(CS.Controllers.MainMenuInactiveItem, {key: id, blueprintArea: blueprintArea});
                         })
-                    )
+                    ), 
+
+                    React.createElement("a", {id: "sign-in-with-linked-in"}, "Sign in with LinkedIn"), 
+                    React.createElement("a", {id: "sign-out"}, "Sign out")
                 )
                 );
         }
@@ -65,8 +74,8 @@ CS.Controllers.MainMenu = P(function (c) {
     };
 
     c._initEvents = function () {
-        this.$menuBtn.click($.proxy(this._toggleMenu, this));
-        this.$contentOverlayWhenMenuOpen.click($.proxy(this._toggleMenu, this));
+        this.$menuBtn.click($.proxy(this.toggleMenu, this));
+        this.$contentOverlayWhenMenuOpen.click($.proxy(this.toggleMenu, this));
     };
 
     c.reRender = function () {
@@ -74,11 +83,12 @@ CS.Controllers.MainMenu = P(function (c) {
 
         this.reactInstance.replaceState({
             activeBlueprintAreas: _.sortByAll(CS.blueprintAreasModel.getActive(), "title"),
-            inactiveBlueprintAreas: _.sortByAll(shownInactiveBlueprintAreas, "title")
+            inactiveBlueprintAreas: _.sortByAll(shownInactiveBlueprintAreas, "title"),
+            isSignedIn: !this.isTemporaryAccount()
         });
     };
 
-    c._toggleMenu = function () {
+    c.toggleMenu = function () {
         var isToShowMenu = this.$menu.css("visibility") === "hidden";
 
         var contentOverlayZIndex = -1;
@@ -99,9 +109,9 @@ CS.Controllers.OverviewBlueprintAreaComposer = React.createClass({displayName: "
         return (
             React.createElement("div", null, 
                 React.createElement("form", {role: "form", className: "item-composer", ref: "form", onSubmit: this._handleComposerFormSubmit}, 
-                    React.createElement("textarea", {className: "form-control", onKeyUp: this._handleTextareaKeyUp, onBlur: this._hideForm}), 
+                    React.createElement("textarea", {className: "form-control", onKeyUp: this._handleTextareaKeyUp}), 
                     React.createElement("button", {className: "btn btn-primary"}, "Add"), 
-                    React.createElement("button", {type: "button", className: "styleless fa fa-times"})
+                    React.createElement("button", {type: "button", className: "styleless fa fa-times", onClick: this._hideForm})
                 ), 
 
                 React.createElement("a", {onClick: this._showComposer}, "+ Add item")
@@ -155,14 +165,13 @@ CS.Controllers.OverviewBlueprintAreaComposer = React.createClass({displayName: "
         var itemNameToAdd = this.$textarea.val().trim();
 
         if (itemNameToAdd) {
-            var updatedBlueprintAreaData = _.clone(CS.account.data[this._getBlueprintAreaClassName()], true) || [];
+            var updatedBlueprintAreaData = CS.account.data && !_.isEmpty(CS.account.data[this._getBlueprintAreaClassName()]) ? _.clone(CS.account.data[this._getBlueprintAreaClassName()], true) : [];
             updatedBlueprintAreaData.push({name: itemNameToAdd});
 
+            CS.account.data = CS.account.data || {};
             CS.account.data[this._getBlueprintAreaClassName()] = updatedBlueprintAreaData;
 
-            CS.Services.Browser.saveInLocalStorage("accountData", CS.account.data);
-
-            this._getController().reRender();
+            this._getController().saveAccountData();
         }
 
         this._resetAndHideForm();
@@ -216,9 +225,9 @@ CS.Controllers.OverviewBlueprintItem = React.createClass({displayName: "Overview
                 React.createElement("p", null, this._getBlueprintItemName()), 
                 React.createElement("button", {className: "styleless fa fa-pencil", onClick: this._showEditor}), 
                 React.createElement("form", {role: "form", className: "item-composer", ref: "form", onSubmit: this._handleComposerFormSubmit}, 
-                    React.createElement("textarea", {className: "form-control", ref: "textarea", onKeyUp: this._handleTextareaKeyUp, onBlur: this._hideForm}), 
+                    React.createElement("textarea", {className: "form-control", ref: "textarea", onKeyUp: this._handleTextareaKeyUp}), 
                     React.createElement("button", {className: "btn btn-primary"}, "Save changes"), 
-                    React.createElement("button", {type: "button", className: "styleless fa fa-times"})
+                    React.createElement("button", {type: "button", className: "styleless fa fa-times", onClick: this._hideForm})
                 )
             )
             );
@@ -279,7 +288,7 @@ CS.Controllers.OverviewBlueprintItem = React.createClass({displayName: "Overview
         console.log("_handleComposerFormSubmit");
 
         var newItemName = this.$textarea.val().trim();
-        var updatedBlueprintAreaData = _.clone(CS.account.data[this._getBlueprintAreaClassName()], true) || [];
+        var updatedBlueprintAreaData = CS.account.data && !_.isEmpty(CS.account.data[this._getBlueprintAreaClassName()]) ? _.clone(CS.account.data[this._getBlueprintAreaClassName()], true) : [];
 
         if (newItemName) {
             updatedBlueprintAreaData[this._getBlueprintItemIndex()] = {name: newItemName};
@@ -287,11 +296,10 @@ CS.Controllers.OverviewBlueprintItem = React.createClass({displayName: "Overview
             updatedBlueprintAreaData.splice(this._getBlueprintItemIndex(), 1);
         }
 
+        CS.account.data = CS.account.data || {};
         CS.account.data[this._getBlueprintAreaClassName()] = updatedBlueprintAreaData;
 
-        CS.Services.Browser.saveInLocalStorage("accountData", CS.account.data);
-
-        this._getController().reRender();
+        this._getController().saveAccountData();
 
         this._resetAndHideForm();
     },
@@ -391,7 +399,7 @@ CS.Controllers.Overview = P(function (c) {
             return {
                 className: blueprintArea.getClassName(),
                 title: blueprintArea.getTitle(),
-                items: CS.account.data[blueprintArea.getClassName()] || []
+                items: CS.account.data && !_.isEmpty(CS.account.data[blueprintArea.getClassName()]) ? CS.account.data[blueprintArea.getClassName()] : []
             };
         });
 
@@ -399,5 +407,11 @@ CS.Controllers.Overview = P(function (c) {
             controller: this,
             blueprintAreasWithData: _.sortByAll(blueprintAreasWithData, "title")
         });
+    };
+
+    c.saveAccountData = function () {
+        CS.saveAccountData(function () {
+            this.reRender();
+        }.bind(this));
     };
 });

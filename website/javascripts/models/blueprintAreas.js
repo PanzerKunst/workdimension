@@ -2,9 +2,7 @@ CS.Models.BlueprintAreas = P(function (c) {
     c.nbDefaultActiveBlueprintAreas = 3;
 
     c.init = function () {
-        var sortedBlueprintAreas = _.sortByAll(CS.BlueprintAreas, "priority");
-
-        this.blueprintAreaInstances = sortedBlueprintAreas.map(function (item) {
+        this.blueprintAreaInstances = CS.BlueprintAreas.map(function (item) {
             return CS.Models.BlueprintArea(item.className, item.blueprintCategoryId, item.title, item.priority);
         });
     };
@@ -39,10 +37,11 @@ CS.Models.BlueprintAreas = P(function (c) {
         if (_.isEmpty(this.blueprintAreas.active)) {
             for (var i = 0; i < this.nbDefaultActiveBlueprintAreas; i++) {
                 var instanceToActivate = this.blueprintAreaInstances[i];
-                instanceToActivate.activate();
+                instanceToActivate.activate(true);
                 this.blueprintAreas.active.push(instanceToActivate);
                 this.blueprintAreas.inactive = _.without(this.blueprintAreas.inactive, instanceToActivate);
             }
+            CS.saveAccountData();
         }
 
         CS.mainMenuController.reRender();

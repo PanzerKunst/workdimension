@@ -28,5 +28,8 @@ $large-screen-ratio-l: 2.5;
 $z-index-menu: 10;
 $z-index-content-overlay-when-menu-open: $z-index-menu - 1;
 
-$header-height-px: 40;
-$footer-height-px: 40;
+$header-height: 40px;
+$footer-height: 40px;
+
+$font-size-menu-btn: 21px;
+$padding-menu-btn: ($header-height - $font-size-menu-btn)/2 11px;

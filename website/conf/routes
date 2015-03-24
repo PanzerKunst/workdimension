@@ -11,13 +11,10 @@ GET     /                                           controllers.Application.inde
 # API
 POST    /api/db/re-create-tables                    controllers.api.DbAdminApi.reCreateTables
 
-GET     /api/activities                             controllers.api.ActivityApi.get
-POST    /api/activities                             controllers.api.ActivityApi.add
-
 GET     /api/accounts                               controllers.api.AccountApi.get
 POST    /api/accounts                               controllers.api.AccountApi.create
 
-POST    /api/auth                                   controllers.api.AuthApi.signIn
+POST    /api/auth                                   controllers.api.AuthApi.signIn(emailAddress: String)
 DELETE  /api/auth                                   controllers.api.AuthApi.signOut
 
 POST    /api/account-data                           controllers.api.AccountDataApi.add

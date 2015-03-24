@@ -34,6 +34,7 @@ module.exports = function (grunt) {
                     "libs/p.js",
                     "libs/grapnel.min.js",
                     "libs/js-breakpoints/breakpoints.js",
+                    "libs/classnames.js",
 
                     // Global
                     "javascripts/global.js",
@@ -56,6 +57,7 @@ module.exports = function (grunt) {
                     "javascripts/controllers/onePageWebapp.js",
                     "javascripts/controllers/index.js",
                     "javascripts/controllers/header.js",
+                    "javascripts/controllers/main-menu/authenticator.js",
 
                     // React
                     "public/react-site.js"

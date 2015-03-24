@@ -3,9 +3,9 @@ CS.Controllers.OverviewBlueprintAreaComposer = React.createClass({
         return (
             <div>
                 <form role="form" className="item-composer" ref="form" onSubmit={this._handleComposerFormSubmit}>
-                    <textarea className="form-control" onKeyUp={this._handleTextareaKeyUp} onBlur={this._hideForm} />
+                    <textarea className="form-control" onKeyUp={this._handleTextareaKeyUp} />
                     <button className="btn btn-primary">Add</button>
-                    <button type="button" className="styleless fa fa-times"></button>
+                    <button type="button" className="styleless fa fa-times" onClick={this._hideForm}></button>
                 </form>
 
                 <a onClick={this._showComposer}>+ Add item</a>
@@ -59,14 +59,13 @@ CS.Controllers.OverviewBlueprintAreaComposer = React.createClass({
         var itemNameToAdd = this.$textarea.val().trim();
 
         if (itemNameToAdd) {
-            var updatedBlueprintAreaData = _.clone(CS.account.data[this._getBlueprintAreaClassName()], true) || [];
+            var updatedBlueprintAreaData = CS.account.data && !_.isEmpty(CS.account.data[this._getBlueprintAreaClassName()]) ? _.clone(CS.account.data[this._getBlueprintAreaClassName()], true) : [];
             updatedBlueprintAreaData.push({name: itemNameToAdd});
 
+            CS.account.data = CS.account.data || {};
             CS.account.data[this._getBlueprintAreaClassName()] = updatedBlueprintAreaData;
 
-            CS.Services.Browser.saveInLocalStorage("accountData", CS.account.data);
-
-            this._getController().reRender();
+            this._getController().saveAccountData();
         }
 
         this._resetAndHideForm();

@@ -18,3 +18,24 @@ CS.blueprintAreasModel = null;
 CS.indexController = null;
 CS.mainMenuController = null;
 CS.overviewController = null;
+
+// Global functions
+CS.saveAccountData = function (callback) {
+    var type = "POST";
+    var url = "/api/account-data";
+
+    $.ajax({
+        url: url,
+        type: type,
+        contentType: "application/json",
+        data: JSON.stringify(CS.account.data),
+        success: function () {
+            if (callback) {
+                callback();
+            }
+        },
+        error: function () {
+            alert("AJAX failure doing a " + type + " request to \"" + url + "\"");
+        }
+    });
+};

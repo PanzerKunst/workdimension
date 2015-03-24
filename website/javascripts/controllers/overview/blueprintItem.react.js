@@ -5,9 +5,9 @@ CS.Controllers.OverviewBlueprintItem = React.createClass({
                 <p>{this._getBlueprintItemName()}</p>
                 <button className="styleless fa fa-pencil" onClick={this._showEditor}></button>
                 <form role="form" className="item-composer" ref="form" onSubmit={this._handleComposerFormSubmit}>
-                    <textarea className="form-control" ref="textarea" onKeyUp={this._handleTextareaKeyUp} onBlur={this._hideForm} />
+                    <textarea className="form-control" ref="textarea" onKeyUp={this._handleTextareaKeyUp} />
                     <button className="btn btn-primary">Save changes</button>
-                    <button type="button" className="styleless fa fa-times"></button>
+                    <button type="button" className="styleless fa fa-times" onClick={this._hideForm}></button>
                 </form>
             </li>
             );
@@ -68,7 +68,7 @@ CS.Controllers.OverviewBlueprintItem = React.createClass({
         console.log("_handleComposerFormSubmit");
 
         var newItemName = this.$textarea.val().trim();
-        var updatedBlueprintAreaData = _.clone(CS.account.data[this._getBlueprintAreaClassName()], true) || [];
+        var updatedBlueprintAreaData = CS.account.data && !_.isEmpty(CS.account.data[this._getBlueprintAreaClassName()]) ? _.clone(CS.account.data[this._getBlueprintAreaClassName()], true) : [];
 
         if (newItemName) {
             updatedBlueprintAreaData[this._getBlueprintItemIndex()] = {name: newItemName};
@@ -76,11 +76,10 @@ CS.Controllers.OverviewBlueprintItem = React.createClass({
             updatedBlueprintAreaData.splice(this._getBlueprintItemIndex(), 1);
         }
 
+        CS.account.data = CS.account.data || {};
         CS.account.data[this._getBlueprintAreaClassName()] = updatedBlueprintAreaData;
 
-        CS.Services.Browser.saveInLocalStorage("accountData", CS.account.data);
-
-        this._getController().reRender();
+        this._getController().saveAccountData();
 
         this._resetAndHideForm();
     },

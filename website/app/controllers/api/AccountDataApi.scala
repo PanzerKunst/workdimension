@@ -13,23 +13,23 @@ object AccountDataApi extends Controller {
       case None => BadRequest("Account ID not found in session")
 
       case Some(accountId) =>
-        request.body.validate[JsObject] match {
-          case s: JsSuccess[JsObject] =>
-            val accountData = s.get
+        AccountDto.getOfId(accountId) match {
+          case None => InternalServerError("The account ID found in session didn't have a corresponding database entry")
 
-            AccountDataDto.create(accountId, accountData)
+          case Some(account) =>
+            request.body.validate[JsObject] match {
+              case s: JsSuccess[JsObject] =>
+                val accountData = s.get
 
-            AccountDto.getOfId(accountId) match {
-              case Some(account) =>
+                AccountDataDto.create(accountId, accountData)
+
                 account.emailAddress match {
                   case Some(emailAddress) => EmailService.sendAccountDataUpdatedEmail(emailAddress, accountData)
                   case None =>
                 }
-
-              case None => InternalServerError("The account ID found in session didn't have a corresponding database entry")
+                Ok
+              case e: JsError => BadRequest("Account data must be JSON")
             }
-            Ok
-          case e: JsError => BadRequest("Account data must be JSON")
         }
     }
   }

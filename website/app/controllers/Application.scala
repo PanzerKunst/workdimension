@@ -15,7 +15,10 @@ object Application extends Controller {
       case Some(id) =>
         AccountDto.getOfId(id) match {
           case Some(account) => (id, account.emailAddress)
-          case None => (id, None)
+
+          case None =>
+            AccountDto.createTemporary(id)
+            (id, None)
         }
     }
 

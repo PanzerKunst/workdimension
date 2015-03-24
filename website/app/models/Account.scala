@@ -6,6 +6,7 @@ import play.api.libs.json.{JsPath, Writes}
 case class Account(id: Option[Long],
                    emailAddress: Option[String],
                    password: Option[String],
+                   linkedInAccountId: Option[String],
                    creationTimestamp: Long)
 
 object Account {
@@ -13,6 +14,7 @@ object Account {
     (JsPath \ "id").writeNullable[Long] and
       (JsPath \ "emailAddress").writeNullable[String] and
       (JsPath \ "password").writeNullable[String] and
+      (JsPath \ "linkedInAccountId").writeNullable[String] and
       (JsPath \ "creationTimestamp").write[Long]
     )(unlift(Account.unapply))
 }

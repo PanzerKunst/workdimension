@@ -1,12 +1,20 @@
 #main-menu {
   position: fixed;
-  top: px-to-em($header-height-px);
+  top: $header-height;
   z-index: $z-index-menu;
 
-  background-color: white;
-  padding: 0.5em;
+  background-color: $background-body-color;
 
-  visibility: hidden;
+  > div {
+    > ul,
+    > a {
+      margin: 0 $spacer-unit-size/2;
+    }
+
+    > a {
+      margin-bottom: $spacer-unit-size;
+    }
+  }
 }
 
 #content-overlay-when-menu-open {
@@ -17,4 +25,61 @@
   background-color: rgba(0, 0, 0, 0.2);
 
   z-index: -1;
+}
+
+/* TODO: remove
+#header-placeholder {
+  height: $header-height;
+  background-color: $action-color;
+
+  > .fa {
+    font-size: $font-size-menu-btn;
+    padding: $padding-menu-btn;
+
+    color: $action-color;
+    background-color: $background-body-color;
+  }
+} */
+
+#sign-in-with-linked-in {
+  @include hide-text;
+
+  $sign-in-with-linked-in-button-image-location-x: 0;
+  $sign-in-with-linked-in-button-image-location-y: 0;
+
+  @include hdpi-sprite;
+  background-position: $sign-in-with-linked-in-button-image-location-x $sign-in-with-linked-in-button-image-location-y;
+  @include hidpi {
+    background-position: half-pos($sign-in-with-linked-in-button-image-location-x, $sign-in-with-linked-in-button-image-location-y);
+  }
+
+  width: 146px;
+  height: 21px;
+
+  @include medium-screen {
+    $sign-in-with-linked-in-button-image-location-x: -300px;
+
+    @include hdpi-sprite;
+    background-position: $sign-in-with-linked-in-button-image-location-x $sign-in-with-linked-in-button-image-location-y;
+    @include hidpi {
+      background-position: half-pos($sign-in-with-linked-in-button-image-location-x, $sign-in-with-linked-in-button-image-location-y);
+    }
+
+    width: 215px;
+    height: 41px;
+  }
+}
+
+#sign-out {
+  display: none;
+}
+
+.signed-in {
+  > #sign-in-with-linked-in {
+    display: none;
+  }
+
+  > #sign-out {
+    display: inline-block;
+  }
 }

@@ -18,5 +18,5 @@ body {
   position: relative; // Because of absolutely-positioning footer
 }
 #content {
-  padding-bottom: px-to-em($footer-height-px);
+  padding-bottom: $footer-height;
 }

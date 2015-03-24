@@ -12,7 +12,8 @@
         "TweenLite": 1,
         "Modernizr": 1,
         "IN": 1,
-        "Grapnel": 1
+        "Grapnel": 1,
+        "classNames": 1
     },
 
     "rules": {

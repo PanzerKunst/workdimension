@@ -7,13 +7,11 @@ import play.api.db.DB
 
 object DbAdmin {
   def reCreateTables() {
-    dropTable("account_activity")
     dropTable("account_data")
     dropTable("account")
 
     createTableAccount()
     createTableAccountData()
-    createTableAccountActivity()
   }
 
   private def createTableAccount() {
@@ -23,8 +21,10 @@ object DbAdmin {
             id bigserial primary key,
             email_address varchar(128),
             password varchar(128),
+            linkedin_account_id varchar(24),
             creation_timestamp bigint not null,
-            unique(email_address)
+            unique(email_address),
+            unique(linkedin_account_id)
           );"""
 
       Logger.info("DbAdmin.createTableAccount():" + query)
@@ -44,23 +44,6 @@ object DbAdmin {
           );"""
 
       Logger.info("DbAdmin.createTableAccountData():" + query)
-
-      SQL(query).executeUpdate()
-    }
-  }
-
-  private def createTableAccountActivity() {
-    DB.withConnection { implicit c =>
-      val query = """
-          create table account_activity (
-            id bigserial primary key,
-            account_id bigint not null references account(id),
-            activity_class_name varchar(64) not null,
-            activity_state varchar(8),  /* One of: "DONE" */
-            creation_timestamp bigint not null
-          );"""
-
-      Logger.info("DbAdmin.createTableAccountActivity():" + query)
 
       SQL(query).executeUpdate()
     }

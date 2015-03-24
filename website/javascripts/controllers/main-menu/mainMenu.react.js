@@ -1,15 +1,22 @@
-CS.Controllers.MainMenu = P(function (c) {
+CS.Controllers.MainMenu = P(CS.Controllers.Base, function (c) {
     c.reactClass = React.createClass({
         getInitialState: function () {
             return {
                 activeBlueprintAreas: [],
-                inactiveBlueprintAreas: []
+                inactiveBlueprintAreas: [],
+                isSignedIn: false
             };
         },
 
         render: function () {
+            var wrapperClasses = classNames({"signed-in": this.state.isSignedIn});
+
             return (
-                <div>
+                <div className={wrapperClasses}>
+                    {/* TODO <div id="header-placeholder">
+                        <button className="styleless fa fa-times"></button>
+                    </div>*/}
+
                     <ul className="styleless">
                         {this.state.activeBlueprintAreas.map(function (blueprintArea) {
                             var id = "main-menu-" + blueprintArea.getClassName() + "-blueprint-area-item";
@@ -24,6 +31,9 @@ CS.Controllers.MainMenu = P(function (c) {
                             return <CS.Controllers.MainMenuInactiveItem key={id} blueprintArea={blueprintArea} />;
                         })}
                     </ul>
+
+                    <a id="sign-in-with-linked-in">Sign in with LinkedIn</a>
+                    <a id="sign-out">Sign out</a>
                 </div>
                 );
         }
@@ -46,8 +56,8 @@ CS.Controllers.MainMenu = P(function (c) {
     };
 
     c._initEvents = function () {
-        this.$menuBtn.click($.proxy(this._toggleMenu, this));
-        this.$contentOverlayWhenMenuOpen.click($.proxy(this._toggleMenu, this));
+        this.$menuBtn.click($.proxy(this.toggleMenu, this));
+        this.$contentOverlayWhenMenuOpen.click($.proxy(this.toggleMenu, this));
     };
 
     c.reRender = function () {
@@ -55,11 +65,12 @@ CS.Controllers.MainMenu = P(function (c) {
 
         this.reactInstance.replaceState({
             activeBlueprintAreas: _.sortByAll(CS.blueprintAreasModel.getActive(), "title"),
-            inactiveBlueprintAreas: _.sortByAll(shownInactiveBlueprintAreas, "title")
+            inactiveBlueprintAreas: _.sortByAll(shownInactiveBlueprintAreas, "title"),
+            isSignedIn: !this.isTemporaryAccount()
         });
     };
 
-    c._toggleMenu = function () {
+    c.toggleMenu = function () {
         var isToShowMenu = this.$menu.css("visibility") === "hidden";
 
         var contentOverlayZIndex = -1;

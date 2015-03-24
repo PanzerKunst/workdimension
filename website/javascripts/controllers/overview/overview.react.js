@@ -50,7 +50,7 @@ CS.Controllers.Overview = P(function (c) {
             return {
                 className: blueprintArea.getClassName(),
                 title: blueprintArea.getTitle(),
-                items: CS.account.data[blueprintArea.getClassName()] || []
+                items: CS.account.data && !_.isEmpty(CS.account.data[blueprintArea.getClassName()]) ? CS.account.data[blueprintArea.getClassName()] : []
             };
         });
 
@@ -58,5 +58,11 @@ CS.Controllers.Overview = P(function (c) {
             controller: this,
             blueprintAreasWithData: _.sortByAll(blueprintAreasWithData, "title")
         });
+    };
+
+    c.saveAccountData = function () {
+        CS.saveAccountData(function () {
+            this.reRender();
+        }.bind(this));
     };
 });

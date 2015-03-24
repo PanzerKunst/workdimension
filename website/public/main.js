@@ -224,6 +224,36 @@ window.Breakpoints = (function (window, document) {
 	return init();
 
 })(window, document);
+;function classNames() {
+	var classes = '';
+	var arg;
+
+	for (var i = 0; i < arguments.length; i++) {
+		arg = arguments[i];
+		if (!arg) {
+			continue;
+		}
+
+		if ('string' === typeof arg || 'number' === typeof arg) {
+			classes += ' ' + arg;
+		} else if (Object.prototype.toString.call(arg) === '[object Array]') {
+			classes += ' ' + classNames.apply(null, arg);
+		} else if ('object' === typeof arg) {
+			for (var key in arg) {
+				if (!arg.hasOwnProperty(key) || !arg[key]) {
+					continue;
+				}
+				classes += ' ' + key;
+			}
+		}
+	}
+	return classes.substr(1);
+}
+
+// safely export classNames in case the script is included directly on a page
+if (typeof module !== 'undefined' && module.exports) {
+	module.exports = classNames;
+}
 ;// Base namespace
 var CS = {};
 
@@ -244,6 +274,27 @@ CS.blueprintAreasModel = null;
 CS.indexController = null;
 CS.mainMenuController = null;
 CS.overviewController = null;
+
+// Global functions
+CS.saveAccountData = function (callback) {
+    var type = "POST";
+    var url = "/api/account-data";
+
+    $.ajax({
+        url: url,
+        type: type,
+        contentType: "application/json",
+        data: JSON.stringify(CS.account.data),
+        success: function () {
+            if (callback) {
+                callback();
+            }
+        },
+        error: function () {
+            alert("AJAX failure doing a " + type + " request to \"" + url + "\"");
+        }
+    });
+};
 ;CS.Services.Browser = {
     cssRules: function () {
         if (CS.Services.Browser.allCssRules) {
@@ -732,24 +783,35 @@ CS.overviewController = null;
         this.priority = priority;
     };
 
-    c.getClassName = function() {
+    c.getClassName = function () {
         return this.className;
     };
 
-    c.getTitle = function() {
+    c.getTitle = function () {
         return this.title;
     };
 
+    c.isActive = function () {
+        if (!CS.account.data || !CS.account.data.activeBlueprintAreas) {
+            return false;
+        }
+
+        return CS.account.data.activeBlueprintAreas.indexOf(this.className) > -1;
+    };
+
+    c.activate = function (isDefault) {
+        CS.account.data = CS.account.data || {};
+        CS.account.data.activeBlueprintAreas = CS.account.data.activeBlueprintAreas || [];
+        CS.account.data.activeBlueprintAreas.push(this.className);
+
+        if (!isDefault) {
+            CS.saveAccountData();
+            CS.blueprintAreasModel.updateStatus();
+        }
+    };
+
     // TODO: use DB instead of local storage
-    c.isActive = function() {
-        return CS.Services.Browser.getFromLocalStorage("isBlueprintArea" + this.className + "Active");
-    };
-
-    c.activate = function() {
-        return CS.Services.Browser.saveInLocalStorage("isBlueprintArea" + this.className + "Active", true);
-    };
-
-    c.deactivate = function() {
+    c.deactivate = function () {
         return CS.Services.Browser.removeFromLocalStorage("isBlueprintArea" + this.className + "Active");
     };
 });
@@ -757,9 +819,7 @@ CS.overviewController = null;
     c.nbDefaultActiveBlueprintAreas = 3;
 
     c.init = function () {
-        var sortedBlueprintAreas = _.sortByAll(CS.BlueprintAreas, "priority");
-
-        this.blueprintAreaInstances = sortedBlueprintAreas.map(function (item) {
+        this.blueprintAreaInstances = CS.BlueprintAreas.map(function (item) {
             return CS.Models.BlueprintArea(item.className, item.blueprintCategoryId, item.title, item.priority);
         });
     };
@@ -794,10 +854,11 @@ CS.overviewController = null;
         if (_.isEmpty(this.blueprintAreas.active)) {
             for (var i = 0; i < this.nbDefaultActiveBlueprintAreas; i++) {
                 var instanceToActivate = this.blueprintAreaInstances[i];
-                instanceToActivate.activate();
+                instanceToActivate.activate(true);
                 this.blueprintAreas.active.push(instanceToActivate);
                 this.blueprintAreas.inactive = _.without(this.blueprintAreas.inactive, instanceToActivate);
             }
+            CS.saveAccountData();
         }
 
         CS.mainMenuController.reRender();
@@ -807,7 +868,8 @@ CS.overviewController = null;
 ;CS.Controllers.Base = P(function(c) {
     c.httpStatusCode = {
         noContent: 204,
-        emailAlreadyRegistered: 230
+        emailAlreadyRegistered: 230,
+        linkedInAccountIdAlreadyRegistered: 231
     };
 
     c.isTemporaryAccount = function () {
@@ -827,7 +889,7 @@ CS.overviewController = null;
     c.init = function (accountId, accountEmail, accountData) {
         CS.account.id = accountId;
         CS.account.email = accountEmail;
-        CS.account.data = accountData || CS.Services.Browser.getFromLocalStorage("accountData") || {};
+        CS.account.data = accountData;
 
         CS.mainMenuController = CS.Controllers.MainMenu();
         CS.overviewController = CS.Controllers.Overview();
@@ -850,6 +912,111 @@ CS.overviewController = null;
     c._initEvents = function () {
     };
 });
+;CS.Controllers.MainMenuAuthenticator = P(CS.Controllers.Base, function (c) {
+    c.init = function () {
+        this._initElements();
+        this._initEvents();
+    };
+
+    c._initElements = function () {
+        this.$signInWithLinkedInLink = $("#sign-in-with-linked-in");
+        this.$signOut = $("#sign-out");
+    };
+
+    c._initEvents = function () {
+        this.$signInWithLinkedInLink.click($.proxy(this._signInWithLinkedIn, this));
+        this.$signOut.click($.proxy(this._signOut, this));
+    };
+
+    c._signInWithLinkedIn = function () {
+        IN.User.authorize(this._getProfileData, this);
+    };
+
+    c._signOut = function() {
+        var type = "DELETE";
+        var url = "/api/auth";
+
+        $.ajax({
+            url: url,
+            type: type,
+            success: function () {
+                location.href = "/";
+            },
+            error: function () {
+                alert("AJAX failure doing a " + type + " request to \"" + url + "\"");
+            }
+        });
+    };
+
+    c._getProfileData = function () {
+        IN.API.Raw("/people/~:(id,first-name,last-name,maiden-name,formatted-name,phonetic-first-name,phonetic-last-name,formatted-phonetic-name,headline,location,industry,current-share,num-connections,num-connections-capped,summary,specialties,positions,picture-url,picture-urls::(original),site-standard-profile-request,api-standard-profile-request,public-profile-url,email-address)")
+            .result(function (data) {
+                this._signIn(data);
+            }.bind(this))
+            .error(function (error) {
+                alert("Error while signing-in with LinkedIn: " + error);
+            });
+    };
+
+    c._signIn = function(linkedInAccountData) {
+        var type = "POST";
+        var url = "/api/auth?emailAddress=" + linkedInAccountData.emailAddress;
+
+        $.ajax({
+            url: url,
+            type: type,
+            success: function (data, textStatus, jqXHR) {
+                if (jqXHR.status === this.httpStatusCode.noContent) {
+                    this._createAccount(linkedInAccountData);
+                } else {
+                    this._loadAccountData(data);
+                }
+            }.bind(this),
+            error: function () {
+                alert("AJAX failure doing a " + type + " request to \"" + url + "\"");
+            }
+        });
+    };
+
+    c._createAccount = function (linkedInAccountData) {
+        var data = {
+            emailAddress: linkedInAccountData.emailAddress.trim(),
+            linkedInAccountId: linkedInAccountData.id.trim()
+        };
+
+        var type = "POST";
+        var url = "/api/accounts";
+
+        $.ajax({
+            url: url,
+            type: type,
+            contentType: "application/json",
+            data: JSON.stringify(data),
+            success: function (d4ta, textStatus, jqXHR) {
+                if (jqXHR.status === this.httpStatusCode.emailAlreadyRegistered) {
+                    alert("Trying to create an account for an already registered email address. This is a bug!");
+                } else if (jqXHR.status === this.httpStatusCode.linkedInAccountIdAlreadyRegistered) {
+                    alert("Trying to create an account for an already registered LinkedIn account ID. This is a bug!");
+                } else {
+                    this._loadAccountData(d4ta);
+                }
+            }.bind(this),
+            error: function () {
+                alert("AJAX failure doing a " + type + " request to \"" + url + "\"");
+            }
+        });
+    };
+
+    c._loadAccountData = function(data) {
+        CS.account.id = data.accountId;
+        CS.account.email = data.accountEmail;
+        CS.account.data = data.accountData;
+
+        CS.blueprintAreasModel.updateStatus();
+
+        CS.mainMenuController.toggleMenu();
+    };
+});
 ;CS.Controllers.MainMenuInactiveItem = React.createClass({displayName: "MainMenuInactiveItem",
     render: function () {
         return (
@@ -865,22 +1032,28 @@ CS.overviewController = null;
 
     _activateBlueprintArea: function() {
         this._getBlueprintArea().activate();
-        CS.blueprintAreasModel.updateStatus();
     }
 });
 
-CS.Controllers.MainMenu = P(function (c) {
+CS.Controllers.MainMenu = P(CS.Controllers.Base, function (c) {
     c.reactClass = React.createClass({displayName: "reactClass",
         getInitialState: function () {
             return {
                 activeBlueprintAreas: [],
-                inactiveBlueprintAreas: []
+                inactiveBlueprintAreas: [],
+                isSignedIn: false
             };
         },
 
         render: function () {
+            var wrapperClasses = classNames({"signed-in": this.state.isSignedIn});
+
             return (
-                React.createElement("div", null, 
+                React.createElement("div", {className: wrapperClasses}, 
+                    /* TODO <div id="header-placeholder">
+                        <button className="styleless fa fa-times"></button>
+                    </div>*/
+
                     React.createElement("ul", {className: "styleless"}, 
                         this.state.activeBlueprintAreas.map(function (blueprintArea) {
                             var id = "main-menu-" + blueprintArea.getClassName() + "-blueprint-area-item";
@@ -894,7 +1067,10 @@ CS.Controllers.MainMenu = P(function (c) {
 
                             return React.createElement(CS.Controllers.MainMenuInactiveItem, {key: id, blueprintArea: blueprintArea});
                         })
-                    )
+                    ), 
+
+                    React.createElement("a", {id: "sign-in-with-linked-in"}, "Sign in with LinkedIn"), 
+                    React.createElement("a", {id: "sign-out"}, "Sign out")
                 )
                 );
         }
@@ -917,8 +1093,8 @@ CS.Controllers.MainMenu = P(function (c) {
     };
 
     c._initEvents = function () {
-        this.$menuBtn.click($.proxy(this._toggleMenu, this));
-        this.$contentOverlayWhenMenuOpen.click($.proxy(this._toggleMenu, this));
+        this.$menuBtn.click($.proxy(this.toggleMenu, this));
+        this.$contentOverlayWhenMenuOpen.click($.proxy(this.toggleMenu, this));
     };
 
     c.reRender = function () {
@@ -926,11 +1102,12 @@ CS.Controllers.MainMenu = P(function (c) {
 
         this.reactInstance.replaceState({
             activeBlueprintAreas: _.sortByAll(CS.blueprintAreasModel.getActive(), "title"),
-            inactiveBlueprintAreas: _.sortByAll(shownInactiveBlueprintAreas, "title")
+            inactiveBlueprintAreas: _.sortByAll(shownInactiveBlueprintAreas, "title"),
+            isSignedIn: !this.isTemporaryAccount()
         });
     };
 
-    c._toggleMenu = function () {
+    c.toggleMenu = function () {
         var isToShowMenu = this.$menu.css("visibility") === "hidden";
 
         var contentOverlayZIndex = -1;
@@ -951,9 +1128,9 @@ CS.Controllers.OverviewBlueprintAreaComposer = React.createClass({displayName: "
         return (
             React.createElement("div", null, 
                 React.createElement("form", {role: "form", className: "item-composer", ref: "form", onSubmit: this._handleComposerFormSubmit}, 
-                    React.createElement("textarea", {className: "form-control", onKeyUp: this._handleTextareaKeyUp, onBlur: this._hideForm}), 
+                    React.createElement("textarea", {className: "form-control", onKeyUp: this._handleTextareaKeyUp}), 
                     React.createElement("button", {className: "btn btn-primary"}, "Add"), 
-                    React.createElement("button", {type: "button", className: "styleless fa fa-times"})
+                    React.createElement("button", {type: "button", className: "styleless fa fa-times", onClick: this._hideForm})
                 ), 
 
                 React.createElement("a", {onClick: this._showComposer}, "+ Add item")
@@ -1007,14 +1184,13 @@ CS.Controllers.OverviewBlueprintAreaComposer = React.createClass({displayName: "
         var itemNameToAdd = this.$textarea.val().trim();
 
         if (itemNameToAdd) {
-            var updatedBlueprintAreaData = _.clone(CS.account.data[this._getBlueprintAreaClassName()], true) || [];
+            var updatedBlueprintAreaData = CS.account.data && !_.isEmpty(CS.account.data[this._getBlueprintAreaClassName()]) ? _.clone(CS.account.data[this._getBlueprintAreaClassName()], true) : [];
             updatedBlueprintAreaData.push({name: itemNameToAdd});
 
+            CS.account.data = CS.account.data || {};
             CS.account.data[this._getBlueprintAreaClassName()] = updatedBlueprintAreaData;
 
-            CS.Services.Browser.saveInLocalStorage("accountData", CS.account.data);
-
-            this._getController().reRender();
+            this._getController().saveAccountData();
         }
 
         this._resetAndHideForm();
@@ -1068,9 +1244,9 @@ CS.Controllers.OverviewBlueprintItem = React.createClass({displayName: "Overview
                 React.createElement("p", null, this._getBlueprintItemName()), 
                 React.createElement("button", {className: "styleless fa fa-pencil", onClick: this._showEditor}), 
                 React.createElement("form", {role: "form", className: "item-composer", ref: "form", onSubmit: this._handleComposerFormSubmit}, 
-                    React.createElement("textarea", {className: "form-control", ref: "textarea", onKeyUp: this._handleTextareaKeyUp, onBlur: this._hideForm}), 
+                    React.createElement("textarea", {className: "form-control", ref: "textarea", onKeyUp: this._handleTextareaKeyUp}), 
                     React.createElement("button", {className: "btn btn-primary"}, "Save changes"), 
-                    React.createElement("button", {type: "button", className: "styleless fa fa-times"})
+                    React.createElement("button", {type: "button", className: "styleless fa fa-times", onClick: this._hideForm})
                 )
             )
             );
@@ -1131,7 +1307,7 @@ CS.Controllers.OverviewBlueprintItem = React.createClass({displayName: "Overview
         console.log("_handleComposerFormSubmit");
 
         var newItemName = this.$textarea.val().trim();
-        var updatedBlueprintAreaData = _.clone(CS.account.data[this._getBlueprintAreaClassName()], true) || [];
+        var updatedBlueprintAreaData = CS.account.data && !_.isEmpty(CS.account.data[this._getBlueprintAreaClassName()]) ? _.clone(CS.account.data[this._getBlueprintAreaClassName()], true) : [];
 
         if (newItemName) {
             updatedBlueprintAreaData[this._getBlueprintItemIndex()] = {name: newItemName};
@@ -1139,11 +1315,10 @@ CS.Controllers.OverviewBlueprintItem = React.createClass({displayName: "Overview
             updatedBlueprintAreaData.splice(this._getBlueprintItemIndex(), 1);
         }
 
+        CS.account.data = CS.account.data || {};
         CS.account.data[this._getBlueprintAreaClassName()] = updatedBlueprintAreaData;
 
-        CS.Services.Browser.saveInLocalStorage("accountData", CS.account.data);
-
-        this._getController().reRender();
+        this._getController().saveAccountData();
 
         this._resetAndHideForm();
     },
@@ -1243,7 +1418,7 @@ CS.Controllers.Overview = P(function (c) {
             return {
                 className: blueprintArea.getClassName(),
                 title: blueprintArea.getTitle(),
-                items: CS.account.data[blueprintArea.getClassName()] || []
+                items: CS.account.data && !_.isEmpty(CS.account.data[blueprintArea.getClassName()]) ? CS.account.data[blueprintArea.getClassName()] : []
             };
         });
 
@@ -1251,6 +1426,12 @@ CS.Controllers.Overview = P(function (c) {
             controller: this,
             blueprintAreasWithData: _.sortByAll(blueprintAreasWithData, "title")
         });
+    };
+
+    c.saveAccountData = function () {
+        CS.saveAccountData(function () {
+            this.reRender();
+        }.bind(this));
     };
 });
 ;CS.BlueprintCategories = [
@@ -1272,133 +1453,108 @@ CS.Controllers.Overview = P(function (c) {
         id: 1,
         blueprintCategoryId: 1,
         className: "Drivers",
-        title: "Drivers",
-        priority: 2
+        title: "What motivates me"
     },
     {
         id: 2,
-        blueprintCategoryId: 1,
-        className: "LessMores",
-        title: "LessMores",
-        priority: 1
+        blueprintCategoryId: 3,
+        className: "Strengths",
+        title: "My Strengths"
     },
     {
         id: 3,
-        blueprintCategoryId: 1,
-        className: "Tracks",
-        title: "Tracks",
-        priority: 3
+        blueprintCategoryId: 2,
+        className: "Workplace",
+        title: "Good Attributes in a Workplace"
     },
     {
         id: 4,
-        blueprintCategoryId: 1,
-        className: "Values",
-        title: "Values",
-        priority: 4
+        blueprintCategoryId: 3,
+        className: "Achievements",
+        title: "Things I've achieved"
     },
     {
         id: 5,
         blueprintCategoryId: 2,
-        className: "Leadership",
-        title: "Leadership",
-        priority: 5
+        className: "Coworkers",
+        title: "How I'd like my coworkers"
     },
     {
         id: 6,
         blueprintCategoryId: 2,
-        className: "Coworkers",
-        title: "Coworkers",
-        priority: 6
+        className: "Culture",
+        title: "The company culture I prefer"
     },
     {
         id: 7,
-        blueprintCategoryId: 2,
-        className: "Industries",
-        title: "Industries",
-        priority: 7
+        blueprintCategoryId: 3,
+        className: "Expertise",
+        title: "Things I'm an expert in"
     },
     {
         id: 8,
         blueprintCategoryId: 2,
-        className: "Roles",
-        title: "Roles",
-        priority: 8
+        className: "Leadership",
+        title: "The Leadership I Need"
     },
     {
         id: 9,
-        blueprintCategoryId: 2,
-        className: "Organizations",
-        title: "Organizations",
-        priority: 9
+        blueprintCategoryId: 1,
+        className: "Lesses",
+        title: "Lesses"
     },
     {
         id: 10,
-        blueprintCategoryId: 2,
-        className: "Projects",
-        title: "Projects",
-        priority: 10
+        blueprintCategoryId: 3,
+        className: "ManagementStyle",
+        title: "My Management Style"
     },
     {
         id: 11,
         blueprintCategoryId: 2,
-        className: "Culture",
-        title: "Culture",
-        priority: 11
+        className: "Mores",
+        title: "Mores"
     },
     {
         id: 12,
         blueprintCategoryId: 2,
-        className: "Workplace",
-        title: "Workplace",
-        priority: 12
+        className: "Organizations",
+        title: "Interesting Organizations to work for"
     },
     {
         id: 13,
         blueprintCategoryId: 2,
         className: "PhaseAndSize",
-        title: "Phase & Size",
-        priority: 13
+        title: "Phase & Size"
     },
     {
         id: 14,
-        blueprintCategoryId: 3,
-        className: "Achievements",
-        title: "Achievements",
-        priority: 14
+        blueprintCategoryId: 2,
+        className: "Projects",
+        title: "Projects I've done"
     },
     {
         id: 15,
-        blueprintCategoryId: 3,
-        className: "Benefits",
-        title: "Benefits",
-        priority: 15
+        blueprintCategoryId: 2,
+        className: "Roles",
+        title: "Roles I'd like to have"
     },
     {
         id: 16,
         blueprintCategoryId: 3,
-        className: "Expertise",
-        title: "Expertise",
-        priority: 16
+        className: "ToolsAndMethods",
+        title: "Tools & Methods I like"
     },
     {
         id: 17,
-        blueprintCategoryId: 3,
-        className: "ManagementStyle",
-        title: "Management Style",
-        priority: 17
+        blueprintCategoryId: 1,
+        className: "Tracks",
+        title: "Tracks I'd like to pursue"
     },
     {
         id: 18,
-        blueprintCategoryId: 3,
-        className: "Strengths",
-        title: "Strengths",
-        priority: 18
-    },
-    {
-        id: 19,
-        blueprintCategoryId: 3,
-        className: "ToolsAndMethods",
-        title: "Tools & Methods",
-        priority: 19
+        blueprintCategoryId: 1,
+        className: "Values",
+        title: "My Values"
     }
 ];
