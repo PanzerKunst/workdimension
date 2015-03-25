@@ -13,7 +13,8 @@
         "Modernizr": 1,
         "IN": 1,
         "Grapnel": 1,
-        "classNames": 1
+        "classNames": 1,
+        "Packery": 1
     },
 
     "rules": {

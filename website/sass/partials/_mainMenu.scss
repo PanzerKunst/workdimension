@@ -5,10 +5,16 @@
 
   background-color: $background-body-color;
 
+  visibility: hidden; // Hidden by default
+
   > div {
     > ul,
     > a {
       margin: 0 $spacer-unit-size/2;
+    }
+
+    > ul {
+      margin-top: $spacer-unit-size;
     }
 
     > a {

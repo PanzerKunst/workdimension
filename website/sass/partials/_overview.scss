@@ -3,41 +3,41 @@
 
   padding-top: $header-height; // Margin fucks up the absolute-positioning as it is declared now
 
-  $list-item-padding: $spacer-unit-size;
+  $list-item-padding: $spacer-unit-size/2;
 
   > ul {
-    display: inline-block;
+    margin: $spacer-unit-size auto;
 
-    margin-top: 1em;
+    font-size: #{$font-size-base-px}px;
 
-    $blueprint-width-large-screen-percent: 75;
+    max-width: $small-content-width;
 
-    @media screen and (min-width: $large-content-width * 100 / $blueprint-width-large-screen-percent) {
-      width: percentage($blueprint-width-large-screen-percent / 100);
+    @include medium-screen {
+      max-width: $medium-content-width;
+    }
+    @include large-screen {
+      max-width: $large-content-width;
+    }
+    @media screen and (min-width: $small-content-width * 4) {
+      max-width: $small-content-width * 4;
     }
 
-    > li {
-      display: inline-block;
-      vertical-align: top;
-
+    > .blueprint-area-panel {
       text-align: left;
 
       padding: 0 $list-item-padding;
 
       width: $small-content-width;
-
-      @media screen and (min-width: $large-content-width * 100 / $blueprint-width-large-screen-percent) {
-        width: (100% / 3);
-      }
     }
   }
 
   .well {
     padding: 0 0.5em 0.5em 0.5em;
+    margin-bottom: $spacer-unit-size;
   }
 
   h2 {
-    font-size: 1.2em;
+    font-size: #{1.2 * $font-size-base-px}px;
     font-weight: bold;
     letter-spacing: -0.05em;
   }
@@ -83,13 +83,6 @@
       vertical-align: top;
 
       font-size: 1.25em;
-
-      @include medium-screen {
-        font-size: 1.1em;
-      }
-      @include large-screen {
-        font-size: 1.05em;
-      }
     }
   }
 }

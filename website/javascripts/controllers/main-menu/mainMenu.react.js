@@ -2,7 +2,6 @@ CS.Controllers.MainMenu = P(CS.Controllers.Base, function (c) {
     c.reactClass = React.createClass({
         getInitialState: function () {
             return {
-                activeBlueprintAreas: [],
                 inactiveBlueprintAreas: [],
                 isSignedIn: false
             };
@@ -17,13 +16,6 @@ CS.Controllers.MainMenu = P(CS.Controllers.Base, function (c) {
                         <button className="styleless fa fa-times"></button>
                     </div>*/}
 
-                    <ul className="styleless">
-                        {this.state.activeBlueprintAreas.map(function (blueprintArea) {
-                            var id = "main-menu-" + blueprintArea.getClassName() + "-blueprint-area-item";
-
-                            return <li id={id} key={id}>{blueprintArea.getTitle()}</li>;
-                        })}
-                    </ul>
                     <ul className="styleless">
                         {this.state.inactiveBlueprintAreas.map(function (blueprintArea) {
                             var id = "main-menu-" + blueprintArea.getClassName() + "-blueprint-area-item";
@@ -64,7 +56,6 @@ CS.Controllers.MainMenu = P(CS.Controllers.Base, function (c) {
         var shownInactiveBlueprintAreas = _.take(CS.blueprintAreasModel.getInactive(), 3);
 
         this.reactInstance.replaceState({
-            activeBlueprintAreas: _.sortByAll(CS.blueprintAreasModel.getActive(), "title"),
             inactiveBlueprintAreas: _.sortByAll(shownInactiveBlueprintAreas, "title"),
             isSignedIn: !this.isTemporaryAccount()
         });

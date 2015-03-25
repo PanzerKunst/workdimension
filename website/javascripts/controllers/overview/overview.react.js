@@ -11,12 +11,12 @@ CS.Controllers.Overview = P(function (c) {
 
         render: function () {
             return (
-                <ul className="styleless">
+                <ul className="styleless" ref="list">
                     {this.state.blueprintAreasWithData.map(function (blueprintAreaWithData) {
                         var id = blueprintAreaWithData.className + "-blueprint-area-panel";
 
                         return (
-                            <li id={id} key={id}>
+                            <li id={id} key={id} className="blueprint-area-panel">
                                 <div className="well">
                                     <h2>{blueprintAreaWithData.title}</h2>
 
@@ -35,6 +35,24 @@ CS.Controllers.Overview = P(function (c) {
                     }.bind(this))}
                 </ul>
                 );
+        },
+
+        componentDidMount: function() {
+            this._initElements();
+        },
+
+        componentDidUpdate: function() {
+            this.rePackerise();
+        },
+
+        rePackerise: function() {
+            this.unusedVariable = new Packery(this.list, {
+                itemSelector: ".blueprint-area-panel"
+            });
+        },
+
+        _initElements: function() {
+            this.list = React.findDOMNode(this.refs.list);
         }
     });
 

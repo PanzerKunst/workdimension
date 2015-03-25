@@ -1039,7 +1039,6 @@ CS.Controllers.MainMenu = P(CS.Controllers.Base, function (c) {
     c.reactClass = React.createClass({displayName: "reactClass",
         getInitialState: function () {
             return {
-                activeBlueprintAreas: [],
                 inactiveBlueprintAreas: [],
                 isSignedIn: false
             };
@@ -1054,13 +1053,6 @@ CS.Controllers.MainMenu = P(CS.Controllers.Base, function (c) {
                         <button className="styleless fa fa-times"></button>
                     </div>*/
 
-                    React.createElement("ul", {className: "styleless"}, 
-                        this.state.activeBlueprintAreas.map(function (blueprintArea) {
-                            var id = "main-menu-" + blueprintArea.getClassName() + "-blueprint-area-item";
-
-                            return React.createElement("li", {id: id, key: id}, blueprintArea.getTitle());
-                        })
-                    ), 
                     React.createElement("ul", {className: "styleless"}, 
                         this.state.inactiveBlueprintAreas.map(function (blueprintArea) {
                             var id = "main-menu-" + blueprintArea.getClassName() + "-blueprint-area-item";
@@ -1101,7 +1093,6 @@ CS.Controllers.MainMenu = P(CS.Controllers.Base, function (c) {
         var shownInactiveBlueprintAreas = _.take(CS.blueprintAreasModel.getInactive(), 3);
 
         this.reactInstance.replaceState({
-            activeBlueprintAreas: _.sortByAll(CS.blueprintAreasModel.getActive(), "title"),
             inactiveBlueprintAreas: _.sortByAll(shownInactiveBlueprintAreas, "title"),
             isSignedIn: !this.isTemporaryAccount()
         });
@@ -1379,12 +1370,12 @@ CS.Controllers.Overview = P(function (c) {
 
         render: function () {
             return (
-                React.createElement("ul", {className: "styleless"}, 
+                React.createElement("ul", {className: "styleless", ref: "list"}, 
                     this.state.blueprintAreasWithData.map(function (blueprintAreaWithData) {
                         var id = blueprintAreaWithData.className + "-blueprint-area-panel";
 
                         return (
-                            React.createElement("li", {id: id, key: id}, 
+                            React.createElement("li", {id: id, key: id, className: "blueprint-area-panel"}, 
                                 React.createElement("div", {className: "well"}, 
                                     React.createElement("h2", null, blueprintAreaWithData.title), 
 
@@ -1403,6 +1394,24 @@ CS.Controllers.Overview = P(function (c) {
                     }.bind(this))
                 )
                 );
+        },
+
+        componentDidMount: function() {
+            this._initElements();
+        },
+
+        componentDidUpdate: function() {
+            this.rePackerise();
+        },
+
+        rePackerise: function() {
+            this.unusedVariable = new Packery(this.list, {
+                itemSelector: ".blueprint-area-panel"
+            });
+        },
+
+        _initElements: function() {
+            this.list = React.findDOMNode(this.refs.list);
         }
     });
 
