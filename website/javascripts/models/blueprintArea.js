@@ -1,9 +1,8 @@
 CS.Models.BlueprintArea = P(function (c) {
-    c.init = function (className, blueprintCategoryId, title, priority) {
+    c.init = function (className, blueprintCategoryId, title) {
         this.className = className;
         this.blueprintCategoryId = blueprintCategoryId;
         this.title = title;
-        this.priority = priority;
     };
 
     c.getClassName = function () {
@@ -22,19 +21,25 @@ CS.Models.BlueprintArea = P(function (c) {
         return CS.account.data.activeBlueprintAreas.indexOf(this.className) > -1;
     };
 
-    c.activate = function (isDefault) {
+    c.activate = function (isInitial) {
         CS.account.data = CS.account.data || {};
         CS.account.data.activeBlueprintAreas = CS.account.data.activeBlueprintAreas || [];
         CS.account.data.activeBlueprintAreas.push(this.className);
 
-        if (!isDefault) {
+        if (!isInitial) {
             CS.saveAccountData();
             CS.blueprintAreasModel.updateStatus();
         }
     };
 
-    // TODO: use DB instead of local storage
     c.deactivate = function () {
-        return CS.Services.Browser.removeFromLocalStorage("isBlueprintArea" + this.className + "Active");
+        CS.account.data = CS.account.data || {};
+        CS.account.data.activeBlueprintAreas = CS.account.data.activeBlueprintAreas || [];
+        _.remove(CS.account.data.activeBlueprintAreas, function(className) {
+            return className === this.className;
+        }.bind(this));
+
+        CS.saveAccountData();
+        CS.blueprintAreasModel.updateStatus();
     };
 });

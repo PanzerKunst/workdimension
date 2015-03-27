@@ -7,18 +7,21 @@
 
   visibility: hidden; // Hidden by default
 
-  > div {
-    > ul,
-    > a {
-      margin: 0 $spacer-unit-size/2;
+  > a {
+    display: block;
+  }
+
+  > #sign-out {
+    display: none;
+  }
+
+  &.signed-in {
+    > #sign-in-with-linkedin {
+      display: none;
     }
 
-    > ul {
-      margin-top: $spacer-unit-size;
-    }
-
-    > a {
-      margin-bottom: $spacer-unit-size;
+    > #sign-out {
+      display: block;
     }
   }
 }
@@ -33,21 +36,7 @@
   z-index: -1;
 }
 
-/* TODO: remove
-#header-placeholder {
-  height: $header-height;
-  background-color: $action-color;
-
-  > .fa {
-    font-size: $font-size-menu-btn;
-    padding: $padding-menu-btn;
-
-    color: $action-color;
-    background-color: $background-body-color;
-  }
-} */
-
-#sign-in-with-linked-in {
+#sign-in-with-linkedin {
   @include hide-text;
 
   $sign-in-with-linked-in-button-image-location-x: 0;
@@ -73,19 +62,5 @@
 
     width: 215px;
     height: 41px;
-  }
-}
-
-#sign-out {
-  display: none;
-}
-
-.signed-in {
-  > #sign-in-with-linked-in {
-    display: none;
-  }
-
-  > #sign-out {
-    display: inline-block;
   }
 }

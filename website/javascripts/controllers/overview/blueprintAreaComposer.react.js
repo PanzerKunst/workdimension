@@ -8,15 +8,13 @@ CS.Controllers.OverviewBlueprintAreaComposer = React.createClass({
                     <button type="button" className="styleless fa fa-times" onClick={this._hideForm}></button>
                 </form>
 
-                <a onClick={this._showComposer}>+ Add item</a>
+                <a className="add-item-link" onClick={this._showComposer}>+ Add item</a>
             </div>
             );
     },
 
     componentDidMount: function () {
         this._initElements();
-
-        this.textareaDefaultHeightPx = 41;
     },
 
     _getController: function () {
@@ -24,10 +22,10 @@ CS.Controllers.OverviewBlueprintAreaComposer = React.createClass({
     },
 
     _getBlueprintAreaClassName: function () {
-        return this.props.blueprintArea.className;
+        return this.props.blueprintAreaClassName;
     },
 
-    _initElements: function() {
+    _initElements: function () {
         this.$form = $(React.findDOMNode(this.refs.form));
         this.$textarea = this.$form.children("textarea");
     },
@@ -36,16 +34,23 @@ CS.Controllers.OverviewBlueprintAreaComposer = React.createClass({
         // TODO: remove
         console.log("_showComposer");
 
-        var $composerForms = this._getController().$el.find(".item-composer");
-        var $addItemLinks = $composerForms.siblings("a");
+        this._hideOtherOpenComposers();
 
-        $addItemLinks.show();
-        $composerForms.hide();
         this.$form.show();
         this.$textarea.focus();
 
         var $link = $(e.currentTarget);
         $link.hide();
+
+        CS.overviewController.rePackerise();
+    },
+
+    _hideOtherOpenComposers: function() {
+        var $composerForms = CS.overviewController.$el.find(".item-composer");
+        var $addItemLinks = $composerForms.siblings(".add-item-link");
+
+        $composerForms.hide();
+        $addItemLinks.show();
     },
 
     _handleComposerFormSubmit: function (e) {
@@ -65,49 +70,20 @@ CS.Controllers.OverviewBlueprintAreaComposer = React.createClass({
             CS.account.data = CS.account.data || {};
             CS.account.data[this._getBlueprintAreaClassName()] = updatedBlueprintAreaData;
 
-            this._getController().saveAccountData();
+            CS.overviewController.saveAccountData();
         }
 
-        this._resetAndHideForm();
+        CS.Controllers.OverviewBlueprintAreaCommon.resetAndHideForm(this.$textarea, $.proxy(this._hideForm, this));
     },
 
-    _handleTextareaKeyUp: function (e) {
-        if (e.keyCode === CS.Services.Keyboard.keyCode.enter) {
-            this._handleComposerFormSubmit();
-        } else {
-            this._countTextareaLines();
-        }
+    _handleTextareaKeyUp: function(e) {
+        CS.Controllers.OverviewBlueprintAreaCommon.handleTextareaKeyUp(e, $.proxy(this._handleComposerFormSubmit, this), $.proxy(this._hideForm, this));
     },
 
-    _countTextareaLines: function () {
-        var lineHeight = parseInt(this.$textarea.css("lineHeight"), 10);
-        var padding = parseInt(this.$textarea.css("paddingTop"), 10) + parseInt(this.$textarea.css("paddingBottom"), 10);
-        var lineCount = Math.round((this.$textarea.prop("scrollHeight") - padding) / lineHeight);
-
-        // TODO: remove
-        console.log("lineCount: " + lineCount);
-
-        var currentTextAreaHeightPx = parseFloat(this.$textarea.css("height"));
-        var newTextAreaHeightPx = this.textareaDefaultHeightPx - lineHeight + lineCount * lineHeight;
-
-        if (newTextAreaHeightPx !== currentTextAreaHeightPx) {
-
-            // TODO: remove
-            console.log("newTextAreaHeightPx: " + newTextAreaHeightPx);
-
-            this.$textarea.css("height", newTextAreaHeightPx);
-        }
-    },
-
-    _resetAndHideForm: function() {
-        this.$textarea.val(null);
-        this.$textarea.css("height", this.textareaDefaultHeightPx);
-
-        this._hideForm();
-    },
-
-    _hideForm: function() {
+    _hideForm: function () {
         this.$form.hide();
         this.$form.siblings("a").show();
+
+        CS.overviewController.rePackerise();
     }
 });

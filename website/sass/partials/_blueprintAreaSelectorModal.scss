@@ -1,0 +1,27 @@
+#select-areas-modal {
+  .modal-title {
+    font-size: 1.2em;
+    font-weight: bold;
+  }
+
+  ul {
+    @include medium-screen {
+      @include columns(2);
+      @include column-rule(2px dotted);
+    }
+    @include large-screen {
+      @include columns(3);
+    }
+
+    a {
+      line-height: $line-height-base;
+
+      display: block;
+      margin-bottom: 1em;
+
+      @include large-screen {
+        font-size: #{$medium-screen-ratio-m / $large-screen-ratio-m}em; // Otherwise the font is just too big
+      }
+    }
+  }
+}

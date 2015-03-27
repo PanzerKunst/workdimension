@@ -15,9 +15,9 @@ CS.account = {
 CS.router = new Grapnel();
 CS.defaultAnimationDuration = 0.5;
 CS.blueprintAreasModel = null;
-CS.indexController = null;
 CS.mainMenuController = null;
 CS.overviewController = null;
+CS.blueprintAreasSelector = null;
 
 // Global functions
 CS.saveAccountData = function (callback) {

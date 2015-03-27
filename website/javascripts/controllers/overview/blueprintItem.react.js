@@ -13,20 +13,14 @@ CS.Controllers.OverviewBlueprintItem = React.createClass({
             );
     },
 
-    // TODO: a lot of code is duplicated from blueprintAreaComposer
     componentDidMount: function () {
         this._initElements();
 
-        this.textareaDefaultHeightPx = 41;
         this.listItemEditModeClass = "editing";
     },
 
-    _getController: function () {
-        return this.props.controller;
-    },
-
     _getBlueprintAreaClassName: function() {
-        return this.props.blueprintAreaWithData.className;
+        return this.props.blueprintAreaWithData.blueprintArea.getClassName();
     },
 
     _getBlueprintItemIndex: function () {
@@ -41,13 +35,18 @@ CS.Controllers.OverviewBlueprintItem = React.createClass({
         this.$listItem = $(React.findDOMNode(this.refs.li));
         this.$itemNameParagraph = this.$listItem.children("p");
         this.$editBtn = this.$listItem.children("button");
-        this.$form = this.$listItem.children("form");
+        this.$form = this.$listItem.children(".item-composer");
         this.$textarea = this.$form.children("textarea");
+
+        this.$blueprintAreaPanel = this.$listItem.parents(".blueprint-area-panel");
+        this.$addItemLink = this.$blueprintAreaPanel.find(".add-item-link");
     },
 
     _showEditor: function () {
         // TODO: remove
         console.log("_showEditor. Blueprint item name:", this._getBlueprintItemName());
+
+        this._hideOtherOpenComposers();
 
         this.$textarea.val(this._getBlueprintItemName());
 
@@ -55,8 +54,26 @@ CS.Controllers.OverviewBlueprintItem = React.createClass({
 
         this.$itemNameParagraph.hide();
         this.$editBtn.hide();
+        this.$addItemLink.hide();
         this.$form.show();
+        CS.Controllers.OverviewBlueprintAreaCommon.adaptTextareaHeight(this.$textarea);
         this.$textarea.focus();
+
+        CS.overviewController.rePackerise();
+    },
+
+    _hideOtherOpenComposers: function() {
+        var $listItems = CS.overviewController.$el.find(".item-name");
+        var $composerForms = $listItems.children(".item-composer");
+        var $itemNameParagraphs = $listItems.children("p");
+        var $editBtns = $listItems.children("button");
+        var $addItemLinks = CS.overviewController.$el.find(".add-item-link");
+
+        $listItems.removeClass(this.listItemEditModeClass);
+        $composerForms.hide();
+        $itemNameParagraphs.show();
+        $editBtns.show();
+        $addItemLinks.show();
     },
 
     _handleComposerFormSubmit: function (e) {
@@ -74,49 +91,20 @@ CS.Controllers.OverviewBlueprintItem = React.createClass({
             updatedBlueprintAreaData[this._getBlueprintItemIndex()] = {name: newItemName};
         } else {
             updatedBlueprintAreaData.splice(this._getBlueprintItemIndex(), 1);
+
+            // We hide it from the UI to give faster feedback
+            this.$listItem.hide();
         }
 
         CS.account.data = CS.account.data || {};
         CS.account.data[this._getBlueprintAreaClassName()] = updatedBlueprintAreaData;
 
-        this._getController().saveAccountData();
-
-        this._resetAndHideForm();
+        CS.Controllers.OverviewBlueprintAreaCommon.resetAndHideForm(this.$textarea, $.proxy(this._hideForm, this));
+        CS.overviewController.saveAccountData();
     },
 
-    _handleTextareaKeyUp: function (e) {
-        if (e.keyCode === CS.Services.Keyboard.keyCode.enter) {
-            this._handleComposerFormSubmit();
-        } else {
-            this._countTextareaLines();
-        }
-    },
-
-    _countTextareaLines: function () {
-        var lineHeight = parseInt(this.$textarea.css("lineHeight"), 10);
-        var padding = parseInt(this.$textarea.css("paddingTop"), 10) + parseInt(this.$textarea.css("paddingBottom"), 10);
-        var lineCount = Math.round((this.$textarea.prop("scrollHeight") - padding) / lineHeight);
-
-        // TODO: remove
-        console.log("lineCount: " + lineCount);
-
-        var currentTextAreaHeightPx = parseFloat(this.$textarea.css("height"));
-        var newTextAreaHeightPx = this.textareaDefaultHeightPx - lineHeight + lineCount * lineHeight;
-
-        if (newTextAreaHeightPx !== currentTextAreaHeightPx) {
-
-            // TODO: remove
-            console.log("newTextAreaHeightPx: " + newTextAreaHeightPx);
-
-            this.$textarea.css("height", newTextAreaHeightPx);
-        }
-    },
-
-    _resetAndHideForm: function() {
-        this.$textarea.val(null);
-        this.$textarea.css("height", this.textareaDefaultHeightPx);
-
-        this._hideForm();
+    _handleTextareaKeyUp: function(e) {
+        CS.Controllers.OverviewBlueprintAreaCommon.handleTextareaKeyUp(e, $.proxy(this._handleComposerFormSubmit, this), $.proxy(this._hideForm, this));
     },
 
     _hideForm: function() {
@@ -124,5 +112,8 @@ CS.Controllers.OverviewBlueprintItem = React.createClass({
         this.$form.hide();
         this.$itemNameParagraph.show();
         this.$editBtn.show();
+        this.$addItemLink.show();
+
+        CS.overviewController.rePackerise();
     }
 });

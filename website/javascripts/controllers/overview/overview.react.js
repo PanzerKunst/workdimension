@@ -13,25 +13,9 @@ CS.Controllers.Overview = P(function (c) {
             return (
                 <ul className="styleless" ref="list">
                     {this.state.blueprintAreasWithData.map(function (blueprintAreaWithData) {
-                        var id = blueprintAreaWithData.className + "-blueprint-area-panel";
+                        var id = blueprintAreaWithData.blueprintArea.getClassName() + "-blueprint-area-panel";
 
-                        return (
-                            <li id={id} key={id} className="blueprint-area-panel">
-                                <div className="well">
-                                    <h2>{blueprintAreaWithData.title}</h2>
-
-                                    <ul className="styleless">
-                                        {blueprintAreaWithData.items.map(function (item, index) {
-                                            var reactItemId = blueprintAreaWithData.className + "-blueprint-item-" + item.name;
-
-                                            return <CS.Controllers.OverviewBlueprintItem key={reactItemId} controller={this.state.controller} blueprintAreaWithData={blueprintAreaWithData} blueprintItemIndex={index} />;
-                                        }.bind(this))}
-                                    </ul>
-
-                                    <CS.Controllers.OverviewBlueprintAreaComposer controller={this.state.controller} blueprintArea={blueprintAreaWithData} />
-                                </div>
-                            </li>
-                            );
+                        return <CS.Controllers.OverviewBlueprintAreaPanel key={id} controller={this.state.controller} blueprintAreaWithData={blueprintAreaWithData} />;
                     }.bind(this))}
                 </ul>
                 );
@@ -57,6 +41,9 @@ CS.Controllers.Overview = P(function (c) {
     });
 
     c.init = function () {
+        CS.blueprintAreasModel = CS.Models.BlueprintAreas();
+        CS.blueprintAreasModel.updateStatus();
+
         this.reactInstance = React.render(
             React.createElement(this.reactClass),
             this.$el[0]
@@ -66,21 +53,25 @@ CS.Controllers.Overview = P(function (c) {
     c.reRender = function () {
         var blueprintAreasWithData = CS.blueprintAreasModel.getActive().map(function (blueprintArea) {
             return {
-                className: blueprintArea.getClassName(),
-                title: blueprintArea.getTitle(),
+                blueprintArea: blueprintArea,
                 items: CS.account.data && !_.isEmpty(CS.account.data[blueprintArea.getClassName()]) ? CS.account.data[blueprintArea.getClassName()] : []
             };
         });
 
         this.reactInstance.replaceState({
             controller: this,
-            blueprintAreasWithData: _.sortByAll(blueprintAreasWithData, "title")
+            blueprintAreasWithData: _.sortBy(blueprintAreasWithData, function(blueprintAreaWithData) {
+                return blueprintAreaWithData.blueprintArea.getTitle();
+            })
         });
     };
 
+    c.rePackerise = function() {
+        this.reactInstance.rePackerise();
+    };
+
     c.saveAccountData = function () {
-        CS.saveAccountData(function () {
-            this.reRender();
-        }.bind(this));
+        this.reRender();
+        CS.saveAccountData();
     };
 });

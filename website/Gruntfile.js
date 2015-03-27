@@ -55,9 +55,9 @@ module.exports = function (grunt) {
                     // Controllers
                     "javascripts/controllers/base.js",
                     "javascripts/controllers/onePageWebapp.js",
-                    "javascripts/controllers/index.js",
-                    "javascripts/controllers/header.js",
-                    "javascripts/controllers/main-menu/authenticator.js",
+                    "javascripts/controllers/main-menu/mainMenu.js",
+                    "javascripts/controllers/main-menu/linkedInAuthenticator.js",
+                    "javascripts/controllers/overview/blueprintAreaCommon.js",
 
                     // React
                     "public/react-site.js"

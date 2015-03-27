@@ -3,8 +3,10 @@ CS.Models.BlueprintAreas = P(function (c) {
 
     c.init = function () {
         this.blueprintAreaInstances = CS.BlueprintAreas.map(function (item) {
-            return CS.Models.BlueprintArea(item.className, item.blueprintCategoryId, item.title, item.priority);
+            return CS.Models.BlueprintArea(item.className, item.blueprintCategoryId, item.title);
         });
+
+        this.isInitial = true;
     };
 
     c.updateStatus = function () {
@@ -34,17 +36,18 @@ CS.Models.BlueprintAreas = P(function (c) {
         }.bind(this));
 
         // If none is active, we set the top-N priority as active
-        if (_.isEmpty(this.blueprintAreas.active)) {
+        if (this.isInitial && _.isEmpty(this.blueprintAreas.active)) {
             for (var i = 0; i < this.nbDefaultActiveBlueprintAreas; i++) {
                 var instanceToActivate = this.blueprintAreaInstances[i];
-                instanceToActivate.activate(true);
+                instanceToActivate.activate(this.isInitial);
                 this.blueprintAreas.active.push(instanceToActivate);
                 this.blueprintAreas.inactive = _.without(this.blueprintAreas.inactive, instanceToActivate);
             }
             CS.saveAccountData();
         }
 
-        CS.mainMenuController.reRender();
         CS.overviewController.reRender();
+
+        this.isInitial = false;
     };
 });

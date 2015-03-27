@@ -6,6 +6,7 @@ CS.Services.Keyboard = {
         shift: 16,
         ctrl: 17,
         alt: 18,
+        escape: 27,
         space: 32
     },
 
@@ -17,6 +18,7 @@ CS.Services.Keyboard = {
             keyCode !== this.keyCode.shift &&
             keyCode !== this.keyCode.ctrl &&
             keyCode !== this.keyCode.alt &&
+            keyCode !== this.keyCode.escape &&
             keyCode !== this.keyCode.space;
     }
 };

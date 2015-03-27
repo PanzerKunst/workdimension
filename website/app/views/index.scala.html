@@ -9,10 +9,7 @@
 <!--
     Content
 -->
-<nav role="navigation" id="main-menu">
-</nav>
-
-<div id="content-overlay-when-menu-open"></div>
+@mainMenu()
 
 <section id="overview">
 </section>
@@ -20,18 +17,17 @@
 <!--
     Javascript
 -->
-<!-- LinkedIn -->
-<script type="text/javascript" src="//platform.linkedin.com/in.js">
-    api_key: 78w7zhq4cqqphu
-    onLoad: CS.Controllers.MainMenuAuthenticator
-</script>
 
 <script type="text/javascript">
     document.addEventListener("DOMContentLoaded", function () {
-        CS.indexController = CS.Controllers.Index(@accountId,
-            @if(accountEmail.isDefined) { "@accountEmail.get"} else { null },
-            @Html(play.api.libs.json.Json.toJson(accountData).toString)
-        )
+        CS.account.id = @accountId;
+        CS.account.email = @if(accountEmail.isDefined) { "@accountEmail.get"} else { null };
+        CS.account.data = @Html(play.api.libs.json.Json.toJson(accountData).toString);
+
+        CS.mainMenuController = CS.Controllers.MainMenu();
+        CS.blueprintAreasSelector = CS.Controllers.BlueprintAreasSelector();
+
+        CS.overviewController = CS.Controllers.Overview();
     });
 </script>
 }

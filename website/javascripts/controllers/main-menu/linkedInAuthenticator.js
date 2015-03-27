@@ -1,42 +1,29 @@
-CS.Controllers.MainMenuAuthenticator = P(CS.Controllers.Base, function (c) {
+// This controller is seperate from the main menu because initialized by LinkedIn platform
+CS.Controllers.MainMenuLinkedInAuthenticator = P(CS.Controllers.Base, function (c) {
     c.init = function () {
         this._initElements();
         this._initEvents();
     };
 
     c._initElements = function () {
-        this.$signInWithLinkedInLink = $("#sign-in-with-linked-in");
-        this.$signOut = $("#sign-out");
+        this.$signInWithLinkedInLink = $("#sign-in-with-linkedin");
+        this.$signOutLink = $("#sign-out");
     };
 
     c._initEvents = function () {
         this.$signInWithLinkedInLink.click($.proxy(this._signInWithLinkedIn, this));
-        this.$signOut.click($.proxy(this._signOut, this));
     };
 
     c._signInWithLinkedIn = function () {
         IN.User.authorize(this._getProfileData, this);
     };
 
-    c._signOut = function() {
-        var type = "DELETE";
-        var url = "/api/auth";
-
-        $.ajax({
-            url: url,
-            type: type,
-            success: function () {
-                location.href = "/";
-            },
-            error: function () {
-                alert("AJAX failure doing a " + type + " request to \"" + url + "\"");
-            }
-        });
-    };
-
     c._getProfileData = function () {
         IN.API.Raw("/people/~:(id,first-name,last-name,maiden-name,formatted-name,phonetic-first-name,phonetic-last-name,formatted-phonetic-name,headline,location,industry,current-share,num-connections,num-connections-capped,summary,specialties,positions,picture-url,picture-urls::(original),site-standard-profile-request,api-standard-profile-request,public-profile-url,email-address)")
             .result(function (data) {
+                this.$signInWithLinkedInLink.hide();
+                this.$signOutLink.show();
+
                 this._signIn(data);
             }.bind(this))
             .error(function (error) {
@@ -98,8 +85,7 @@ CS.Controllers.MainMenuAuthenticator = P(CS.Controllers.Base, function (c) {
         CS.account.email = data.accountEmail;
         CS.account.data = data.accountData;
 
-        CS.blueprintAreasModel.updateStatus();
-
         CS.mainMenuController.toggleMenu();
+        CS.blueprintAreasModel.updateStatus();
     };
 });
