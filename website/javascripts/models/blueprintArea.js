@@ -1,16 +1,9 @@
 CS.Models.BlueprintArea = P(function (c) {
-    c.init = function (className, blueprintCategoryId, title) {
+    c.init = function (id, className, blueprintCategoryId, title) {
+        this.id = id;
         this.className = className;
         this.blueprintCategoryId = blueprintCategoryId;
         this.title = title;
-    };
-
-    c.getClassName = function () {
-        return this.className;
-    };
-
-    c.getTitle = function () {
-        return this.title;
     };
 
     c.isActive = function () {

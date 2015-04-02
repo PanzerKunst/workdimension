@@ -1,0 +1,28 @@
+@(workbookArea: WorkbookArea, accountId: Long, accountEmail: Option[String], accountData: Option[play.api.libs.json.JsObject])
+@main("Workbook area", "workbook-area") {
+<!--
+    Header
+-->
+@header("workbook-area", workbookArea.title)
+
+} {
+<!--
+    Content
+-->
+
+} {
+<!--
+    Javascript
+-->
+
+<script type="text/javascript">
+    document.addEventListener("DOMContentLoaded", function () {
+        CS.account.id = @accountId;
+        CS.account.email = @if(accountEmail.isDefined) { "@accountEmail.get" } else { null };
+        CS.account.data = @Html(play.api.libs.json.Json.toJson(accountData).toString);
+
+        CS.mainMenuController = CS.Controllers.MainMenu();
+        CS.workbookAreaController = CS.Controllers.WorkbookArea(@Html(play.api.libs.json.Json.toJson(workbookArea).toString));
+    });
+</script>
+}

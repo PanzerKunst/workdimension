@@ -17,20 +17,13 @@ CS.Controllers.OverviewBlueprintAreaComposer = React.createClass({
         this._initElements();
     },
 
-    _getController: function () {
-        return this.props.controller;
-    },
-
-    _getBlueprintAreaClassName: function () {
-        return this.props.blueprintAreaClassName;
-    },
-
     _initElements: function () {
         this.$form = $(React.findDOMNode(this.refs.form));
+        this.$addItemLink = this.$form.siblings(".add-item-link");
         this.$textarea = this.$form.children("textarea");
     },
 
-    _showComposer: function (e) {
+    _showComposer: function () {
         // TODO: remove
         console.log("_showComposer");
 
@@ -39,8 +32,7 @@ CS.Controllers.OverviewBlueprintAreaComposer = React.createClass({
         this.$form.show();
         this.$textarea.focus();
 
-        var $link = $(e.currentTarget);
-        $link.hide();
+        this.$addItemLink.hide();
 
         CS.overviewController.rePackerise();
     },
@@ -64,25 +56,25 @@ CS.Controllers.OverviewBlueprintAreaComposer = React.createClass({
         var itemNameToAdd = this.$textarea.val().trim();
 
         if (itemNameToAdd) {
-            var updatedBlueprintAreaData = CS.account.data && !_.isEmpty(CS.account.data[this._getBlueprintAreaClassName()]) ? _.clone(CS.account.data[this._getBlueprintAreaClassName()], true) : [];
+            var updatedBlueprintAreaData = CS.account.data && !_.isEmpty(CS.account.data[this.props.blueprintAreaClassName]) ? _.clone(CS.account.data[this.props.blueprintAreaClassName], true) : [];
             updatedBlueprintAreaData.push({name: itemNameToAdd});
 
             CS.account.data = CS.account.data || {};
-            CS.account.data[this._getBlueprintAreaClassName()] = updatedBlueprintAreaData;
+            CS.account.data[this.props.blueprintAreaClassName] = updatedBlueprintAreaData;
 
             CS.overviewController.saveAccountData();
         }
 
-        CS.Controllers.OverviewBlueprintAreaCommon.resetAndHideForm(this.$textarea, $.proxy(this._hideForm, this));
+        CS.Controllers.WorkbookAreaCommon.resetAndHideForm(this.$textarea, $.proxy(this._hideForm, this));
     },
 
     _handleTextareaKeyUp: function(e) {
-        CS.Controllers.OverviewBlueprintAreaCommon.handleTextareaKeyUp(e, $.proxy(this._handleComposerFormSubmit, this), $.proxy(this._hideForm, this));
+        CS.Controllers.WorkbookAreaCommon.handleTextareaKeyUp(e, $.proxy(this._handleComposerFormSubmit, this), $.proxy(this._hideForm, this));
     },
 
     _hideForm: function () {
         this.$form.hide();
-        this.$form.siblings("a").show();
+        this.$addItemLink.show();
 
         CS.overviewController.rePackerise();
     }

@@ -6139,30 +6139,6 @@ blockquote {
 .centered-contents {
   text-align: center; }
 
-.tag {
-  background-color: #eeeeee;
-  border-radius: 4px;
-  display: inline-block;
-  padding: 0 7px; }
-  .tag.with-close-btn {
-    padding-right: 0; }
-  .tag > span {
-    display: inline-block;
-    vertical-align: top;
-    margin-top: 5px; }
-    @media screen and (min-width: 640px) {
-      .tag > span {
-        margin-top: 2px; } }
-    @media screen and (min-width: 960px) {
-      .tag > span {
-        margin-top: 0; } }
-  .tag > .close {
-    vertical-align: top;
-    float: none; }
-    @media screen and (min-width: 960px) {
-      .tag > .close {
-        margin-top: 1px; } }
-
 @media screen and (min-width: 640px) {
   form:before, form:after {
     content: " ";
@@ -6237,12 +6213,9 @@ form .field-error {
       .submit-wrapper > [type="submit"] {
         margin: 17.5px; } }
 
-#content {
+[role="main"] {
   position: relative;
   background-color: white; }
-
-.help-text {
-  color: #999999; }
 
 html,
 body {
@@ -6252,8 +6225,39 @@ body {
   min-height: 100%;
   position: relative; }
 
-#content {
+[role="main"] {
   padding-bottom: 40px; }
+
+#content {
+  padding-top: 40px; }
+
+a.fa:hover, a.fa:focus {
+  text-decoration: none; }
+
+.item-names-list > li {
+  background-color: #f5f5f5;
+  margin-bottom: 0.25em;
+  position: relative; }
+  .item-names-list > li.editing {
+    background-color: white; }
+  .item-names-list > li > p {
+    padding: 0 1.5em 0 0.5em; }
+  .item-names-list > li > button {
+    position: absolute;
+    top: -0.55em;
+    right: -0.55em;
+    padding: 0.92em 1em; }
+
+.item-composer {
+  display: none; }
+  .item-composer > textarea {
+    height: 2.9em;
+    margin-bottom: 0.5em; }
+  .item-composer > .fa-times {
+    padding: 0.47em 0.62em 0.53em 0.62em;
+    margin-left: 0.2em;
+    vertical-align: top;
+    font-size: 1.25em; }
 
 header {
   background-color: #ff8a38;
@@ -6261,22 +6265,29 @@ header {
   height: 40px;
   width: 100%;
   z-index: 10; }
+  header > .fa {
+    font-size: 21px;
+    padding: 9.5px 11px;
+    color: white;
+    float: left; }
+  header > h1 {
+    padding: 4px 0 0 0;
+    margin: 0;
+    color: white;
+    font-size: 20px;
+    float: left;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 74%; }
 
 #menu-btn {
-  font-size: 21px;
-  padding: 9.5px 11px;
-  color: white; }
-
-footer {
-  height: 40px;
-  background-color: #ff8a38;
-  position: absolute;
-  bottom: 0;
-  width: 100%; }
+  float: right; }
 
 #main-menu {
   position: fixed;
   top: 40px;
+  right: 0;
   z-index: 10;
   background-color: white;
   visibility: hidden; }
@@ -6331,67 +6342,56 @@ footer {
     #sign-in-with-linkedin {
       background-position: -150px 0; } }
 
-#overview {
-  text-align: center;
-  padding-top: 40px; }
-  #overview > ul {
+footer {
+  height: 40px;
+  background-color: #ff8a38;
+  position: absolute;
+  bottom: 0;
+  width: 100%; }
+
+#index header > h1 {
+  padding-left: 14px; }
+#index #content {
+  text-align: center; }
+  #index #content > ul {
     margin: 14px auto;
     font-size: 14px;
     max-width: 320px; }
     @media screen and (min-width: 640px) {
-      #overview > ul {
+      #index #content > ul {
         max-width: 640px; } }
     @media screen and (min-width: 960px) {
-      #overview > ul {
+      #index #content > ul {
         max-width: 960px; } }
     @media screen and (min-width: 1280px) {
-      #overview > ul {
+      #index #content > ul {
         max-width: 1280px; } }
-    #overview > ul > .blueprint-area-panel {
+    #index #content > ul > .blueprint-area-panel {
       text-align: left;
       padding: 0 7px;
       width: 320px; }
-  #overview .well {
+  #index #content .well {
     padding: 0 0.5em 0.5em 0.5em;
     margin-bottom: 14px;
     position: relative; }
-    #overview .well > button {
+    #index #content .well > button {
       position: absolute;
       top: -0.45em;
       right: -0.45em;
       padding: .93em .93em;
       color: #999999; }
-  #overview h2 {
+  #index #content h2 {
     font-size: 16.8px;
     font-weight: bold;
     letter-spacing: -0.05em;
     padding-right: 1em; }
-  #overview .item-name {
-    color: white;
-    background-color: #ff8a38;
-    margin-bottom: 0.25em;
-    position: relative; }
-    #overview .item-name.editing {
-      background-color: #f5f5f5;
-      color: #333333; }
-    #overview .item-name > p {
-      padding: 0 1.5em 0 0.5em;
+  #index #content .item-names-list > li {
+    background-color: white;
+    margin-bottom: 0.25em; }
+    #index #content .item-names-list > li.editing {
+      background-color: #f5f5f5; }
+    #index #content .item-names-list > li > p {
       margin-bottom: 0; }
-    #overview .item-name > button {
-      position: absolute;
-      top: -0.55em;
-      right: -0.55em;
-      padding: 0.92em 1em; }
-  #overview .item-composer {
-    display: none; }
-    #overview .item-composer > textarea {
-      height: 2.9em;
-      margin-bottom: 0.5em; }
-    #overview .item-composer > .fa-times {
-      padding: 0.47em 0.62em 0.53em 0.62em;
-      margin-left: 0.2em;
-      vertical-align: top;
-      font-size: 1.25em; }
 
 #select-areas-modal .modal-title {
   font-size: 1.2em;
@@ -6416,6 +6416,20 @@ footer {
   @media screen and (min-width: 960px) {
     #select-areas-modal ul a {
       font-size: 0.8125em; } }
+
+#workbook-area #content > div {
+  max-width: 23em;
+  margin-left: auto;
+  margin-right: auto; }
+#workbook-area .item-names-list {
+  margin-top: 10vw; }
+  @media screen and (min-width: 960px) {
+    #workbook-area .item-names-list {
+      margin-top: 98px; } }
+#workbook-area li > p {
+  background-color: #f5f5f5; }
+#workbook-area .item-composer > .fa-times {
+  font-size: 1.1em; }
 
 html[data-useragent*='MSIE 9'] .input-group .form-control[type="text"],
 html[data-useragent*='MSIE 9'] .input-group .input-group-btn > .btn,

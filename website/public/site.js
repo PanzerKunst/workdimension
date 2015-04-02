@@ -273,6 +273,7 @@ CS.defaultAnimationDuration = 0.5;
 CS.blueprintAreasModel = null;
 CS.mainMenuController = null;
 CS.overviewController = null;
+CS.workbookAreaController = null;
 CS.blueprintAreasSelector = null;
 
 // Global functions
@@ -778,18 +779,11 @@ CS.saveAccountData = function (callback) {
     }
 };
 ;CS.Models.BlueprintArea = P(function (c) {
-    c.init = function (className, blueprintCategoryId, title) {
+    c.init = function (id, className, blueprintCategoryId, title) {
+        this.id = id;
         this.className = className;
         this.blueprintCategoryId = blueprintCategoryId;
         this.title = title;
-    };
-
-    c.getClassName = function () {
-        return this.className;
-    };
-
-    c.getTitle = function () {
-        return this.title;
     };
 
     c.isActive = function () {
@@ -825,9 +819,9 @@ CS.saveAccountData = function (callback) {
 ;CS.Models.BlueprintAreas = P(function (c) {
     c.nbDefaultActiveBlueprintAreas = 3;
 
-    c.init = function () {
-        this.blueprintAreaInstances = CS.BlueprintAreas.map(function (item) {
-            return CS.Models.BlueprintArea(item.className, item.blueprintCategoryId, item.title);
+    c.init = function (blueprintAreas) {
+        this.blueprintAreaInstances = blueprintAreas.map(function (item) {
+            return CS.Models.BlueprintArea(item.id, item.className, item.workbookCategoryId, item.title);
         });
 
         this.isInitial = true;
@@ -895,6 +889,59 @@ CS.saveAccountData = function (callback) {
         history.back();
     };
 });
+;CS.Controllers.Index = P(function(c) {
+    c.init = function (blueprintAreas) {
+        CS.overviewController = CS.Controllers.Overview();
+        CS.blueprintAreasSelector = CS.Controllers.BlueprintAreasSelector(blueprintAreas);
+    };
+});
+;CS.Controllers.WorkbookAreaCommon = {
+    textareaDefaultHeightPx: 41,
+
+    handleTextareaKeyUp: function (e, formSubmitFunction, formCancelFunction) {
+        if (e.keyCode === CS.Services.Keyboard.keyCode.enter) {
+            formSubmitFunction();
+        } else if (e.keyCode === CS.Services.Keyboard.keyCode.escape) {
+            formCancelFunction();
+        } else {
+            var $textarea = $(e.currentTarget);
+            CS.Controllers.WorkbookAreaCommon.adaptTextareaHeight($textarea);
+        }
+    },
+
+    adaptTextareaHeight: function ($textarea) {
+        var lineHeight = parseInt($textarea.css("lineHeight"), 10);
+        var padding = parseInt($textarea.css("paddingTop"), 10) + parseInt($textarea.css("paddingBottom"), 10);
+        var lineCount = Math.round(($textarea.prop("scrollHeight") - padding) / lineHeight);
+
+        // TODO: remove
+        console.log("lineCount: " + lineCount);
+
+        var currentTextAreaHeightPx = parseFloat($textarea.css("height"));
+        var newTextAreaHeightPx = this.textareaDefaultHeightPx - lineHeight + lineCount * lineHeight;
+
+        if (newTextAreaHeightPx !== currentTextAreaHeightPx) {
+
+            // TODO: remove
+            console.log("newTextAreaHeightPx: " + newTextAreaHeightPx);
+
+            $textarea.css("height", newTextAreaHeightPx);
+
+            if (CS.overviewController) {
+                CS.overviewController.rePackerise();
+            }
+        }
+    },
+
+    resetAndHideForm: function ($textarea, callback) {
+        $textarea.val(null);
+        $textarea.css("height", this.textareaDefaultHeightPx);
+
+        if (callback) {
+            callback();
+        }
+    }
+};
 ;CS.Controllers.MainMenu = P(CS.Controllers.Base, function (c) {
     c.init = function () {
         this._initElements();
@@ -1064,51 +1111,6 @@ CS.Controllers.MainMenuLinkedInAuthenticator = P(CS.Controllers.Base, function (
         CS.blueprintAreasModel.updateStatus();
     };
 });
-;CS.Controllers.OverviewBlueprintAreaCommon = {
-    textareaDefaultHeightPx: 41,
-
-    handleTextareaKeyUp: function (e, formSubmitFunction, formCancelFunction) {
-        if (e.keyCode === CS.Services.Keyboard.keyCode.enter) {
-            formSubmitFunction();
-        } else if (e.keyCode === CS.Services.Keyboard.keyCode.escape) {
-            formCancelFunction();
-        } else {
-            var $textarea = $(e.currentTarget);
-            CS.Controllers.OverviewBlueprintAreaCommon.adaptTextareaHeight($textarea);
-        }
-    },
-
-    adaptTextareaHeight: function ($textarea) {
-        var lineHeight = parseInt($textarea.css("lineHeight"), 10);
-        var padding = parseInt($textarea.css("paddingTop"), 10) + parseInt($textarea.css("paddingBottom"), 10);
-        var lineCount = Math.round(($textarea.prop("scrollHeight") - padding) / lineHeight);
-
-        // TODO: remove
-        console.log("lineCount: " + lineCount);
-
-        var currentTextAreaHeightPx = parseFloat($textarea.css("height"));
-        var newTextAreaHeightPx = this.textareaDefaultHeightPx - lineHeight + lineCount * lineHeight;
-
-        if (newTextAreaHeightPx !== currentTextAreaHeightPx) {
-
-            // TODO: remove
-            console.log("newTextAreaHeightPx: " + newTextAreaHeightPx);
-
-            $textarea.css("height", newTextAreaHeightPx);
-
-            CS.overviewController.rePackerise();
-        }
-    },
-
-    resetAndHideForm: function ($textarea, callback) {
-        $textarea.val(null);
-        $textarea.css("height", this.textareaDefaultHeightPx);
-
-        if (callback) {
-            callback();
-        }
-    }
-};
 ;CS.Controllers.BlueprintAreasSelector = P(function (c) {
     c.reactClass = React.createClass({displayName: "reactClass",
         getInitialState: function () {
@@ -1122,7 +1124,7 @@ CS.Controllers.MainMenuLinkedInAuthenticator = P(CS.Controllers.Base, function (
                 React.createElement("div", {ref: "wrapper"}, 
                     React.createElement("ul", {className: "styleless"}, 
                         this.state.inactiveBlueprintAreas.map(function (blueprintArea) {
-                            var id = blueprintArea.getClassName() + "-blueprint-area-selector-item";
+                            var id = blueprintArea.className + "-blueprint-area-selector-item";
 
                             return React.createElement(CS.Controllers.BlueprintAreaSelectorItem, {key: id, blueprintArea: blueprintArea});
                         })
@@ -1140,7 +1142,7 @@ CS.Controllers.MainMenuLinkedInAuthenticator = P(CS.Controllers.Base, function (
         }
     });
 
-    c.init = function () {
+    c.init = function (blueprintAreas) {
         this._initElements();
         this._initEvents();
 
@@ -1148,6 +1150,9 @@ CS.Controllers.MainMenuLinkedInAuthenticator = P(CS.Controllers.Base, function (
             React.createElement(this.reactClass),
             this.$modal.find(".modal-body")[0]
         );
+
+        CS.blueprintAreasModel = CS.Models.BlueprintAreas(blueprintAreas);
+        CS.blueprintAreasModel.updateStatus();
 
         this.reRender();
         this._initModalWidth();
@@ -1178,17 +1183,13 @@ CS.Controllers.MainMenuLinkedInAuthenticator = P(CS.Controllers.Base, function (
 
 CS.Controllers.BlueprintAreaSelectorItem = React.createClass({displayName: "BlueprintAreaSelectorItem",
     render: function () {
-        return React.createElement("a", {onClick: this._activateBlueprintArea}, this._getBlueprintArea().getTitle());
-    },
-
-    _getBlueprintArea: function() {
-        return this.props.blueprintArea;
+        return React.createElement("a", {onClick: this._activateBlueprintArea}, this.props.blueprintArea.title);
     },
 
     _activateBlueprintArea: function() {
         CS.mainMenuController.hideModal();
 
-        this._getBlueprintArea().activate();
+        this.props.blueprintArea.activate();
     }
 });
 
@@ -1211,20 +1212,13 @@ CS.Controllers.OverviewBlueprintAreaComposer = React.createClass({displayName: "
         this._initElements();
     },
 
-    _getController: function () {
-        return this.props.controller;
-    },
-
-    _getBlueprintAreaClassName: function () {
-        return this.props.blueprintAreaClassName;
-    },
-
     _initElements: function () {
         this.$form = $(React.findDOMNode(this.refs.form));
+        this.$addItemLink = this.$form.siblings(".add-item-link");
         this.$textarea = this.$form.children("textarea");
     },
 
-    _showComposer: function (e) {
+    _showComposer: function () {
         // TODO: remove
         console.log("_showComposer");
 
@@ -1233,8 +1227,7 @@ CS.Controllers.OverviewBlueprintAreaComposer = React.createClass({displayName: "
         this.$form.show();
         this.$textarea.focus();
 
-        var $link = $(e.currentTarget);
-        $link.hide();
+        this.$addItemLink.hide();
 
         CS.overviewController.rePackerise();
     },
@@ -1258,25 +1251,25 @@ CS.Controllers.OverviewBlueprintAreaComposer = React.createClass({displayName: "
         var itemNameToAdd = this.$textarea.val().trim();
 
         if (itemNameToAdd) {
-            var updatedBlueprintAreaData = CS.account.data && !_.isEmpty(CS.account.data[this._getBlueprintAreaClassName()]) ? _.clone(CS.account.data[this._getBlueprintAreaClassName()], true) : [];
+            var updatedBlueprintAreaData = CS.account.data && !_.isEmpty(CS.account.data[this.props.blueprintAreaClassName]) ? _.clone(CS.account.data[this.props.blueprintAreaClassName], true) : [];
             updatedBlueprintAreaData.push({name: itemNameToAdd});
 
             CS.account.data = CS.account.data || {};
-            CS.account.data[this._getBlueprintAreaClassName()] = updatedBlueprintAreaData;
+            CS.account.data[this.props.blueprintAreaClassName] = updatedBlueprintAreaData;
 
             CS.overviewController.saveAccountData();
         }
 
-        CS.Controllers.OverviewBlueprintAreaCommon.resetAndHideForm(this.$textarea, $.proxy(this._hideForm, this));
+        CS.Controllers.WorkbookAreaCommon.resetAndHideForm(this.$textarea, $.proxy(this._hideForm, this));
     },
 
     _handleTextareaKeyUp: function(e) {
-        CS.Controllers.OverviewBlueprintAreaCommon.handleTextareaKeyUp(e, $.proxy(this._handleComposerFormSubmit, this), $.proxy(this._hideForm, this));
+        CS.Controllers.WorkbookAreaCommon.handleTextareaKeyUp(e, $.proxy(this._handleComposerFormSubmit, this), $.proxy(this._hideForm, this));
     },
 
     _hideForm: function () {
         this.$form.hide();
-        this.$form.siblings("a").show();
+        this.$addItemLink.show();
 
         CS.overviewController.rePackerise();
     }
@@ -1284,21 +1277,23 @@ CS.Controllers.OverviewBlueprintAreaComposer = React.createClass({displayName: "
 
 CS.Controllers.OverviewBlueprintAreaPanel = React.createClass({displayName: "OverviewBlueprintAreaPanel",
     render: function () {
+        var workbookAreaTitleHref = "/workbook-area/" + this._getBlueprintArea().className;
+
         return (
             React.createElement("li", {className: "blueprint-area-panel", ref: "li"}, 
                 React.createElement("div", {className: "well"}, 
-                    React.createElement("h2", null, this._getBlueprintArea().getTitle()), 
+                    React.createElement("h2", null, React.createElement("a", {href: workbookAreaTitleHref}, this._getBlueprintArea().title)), 
                     React.createElement("button", {className: "styleless fa fa-eye-slash", onClick: this._hideBlueprintAreaPanel}), 
 
-                    React.createElement("ul", {className: "styleless"}, 
-                        this._getBlueprintAreaWithData().items.map(function (item, index) {
-                            var reactItemId = this._getBlueprintArea().getClassName() + "-blueprint-item-" + item.name;
+                    React.createElement("ul", {className: "styleless item-names-list"}, 
+                        this.props.blueprintAreaWithData.items.map(function (item, index) {
+                            var reactItemId = this._getBlueprintArea().className + "-blueprint-item-" + item.name;
 
-                            return React.createElement(CS.Controllers.OverviewBlueprintItem, {key: reactItemId, blueprintAreaWithData: this._getBlueprintAreaWithData(), blueprintItemIndex: index});
+                            return React.createElement(CS.Controllers.OverviewBlueprintItem, {key: reactItemId, blueprintAreaWithData: this.props.blueprintAreaWithData, blueprintItemIndex: index});
                         }.bind(this))
                     ), 
 
-                    React.createElement(CS.Controllers.OverviewBlueprintAreaComposer, {blueprintAreaClassName: this._getBlueprintArea().getClassName()})
+                    React.createElement(CS.Controllers.OverviewBlueprintAreaComposer, {blueprintAreaClassName: this._getBlueprintArea().className})
                 )
             )
             );
@@ -1306,10 +1301,6 @@ CS.Controllers.OverviewBlueprintAreaPanel = React.createClass({displayName: "Ove
 
     componentDidMount: function () {
         this._initElements();
-    },
-
-    _getBlueprintAreaWithData: function() {
-        return this.props.blueprintAreaWithData;
     },
 
     _getBlueprintArea: function() {
@@ -1329,7 +1320,7 @@ CS.Controllers.OverviewBlueprintAreaPanel = React.createClass({displayName: "Ove
 CS.Controllers.OverviewBlueprintItem = React.createClass({displayName: "OverviewBlueprintItem",
     render: function () {
         return (
-            React.createElement("li", {className: "item-name", ref: "li"}, 
+            React.createElement("li", {ref: "li"}, 
                 React.createElement("p", null, this._getBlueprintItemName()), 
                 React.createElement("button", {className: "styleless fa fa-pencil", onClick: this._showEditor}), 
                 React.createElement("form", {role: "form", className: "item-composer", ref: "form", onSubmit: this._handleComposerFormSubmit}, 
@@ -1348,15 +1339,11 @@ CS.Controllers.OverviewBlueprintItem = React.createClass({displayName: "Overview
     },
 
     _getBlueprintAreaClassName: function() {
-        return this.props.blueprintAreaWithData.blueprintArea.getClassName();
-    },
-
-    _getBlueprintItemIndex: function () {
-        return this.props.blueprintItemIndex;
+        return this.props.blueprintAreaWithData.blueprintArea.className;
     },
 
     _getBlueprintItemName: function () {
-        return this.props.blueprintAreaWithData.items[this._getBlueprintItemIndex()].name;
+        return this.props.blueprintAreaWithData.items[this.props.blueprintItemIndex].name;
     },
 
     _initElements: function() {
@@ -1384,14 +1371,14 @@ CS.Controllers.OverviewBlueprintItem = React.createClass({displayName: "Overview
         this.$editBtn.hide();
         this.$addItemLink.hide();
         this.$form.show();
-        CS.Controllers.OverviewBlueprintAreaCommon.adaptTextareaHeight(this.$textarea);
+        CS.Controllers.WorkbookAreaCommon.adaptTextareaHeight(this.$textarea);
         this.$textarea.focus();
 
         CS.overviewController.rePackerise();
     },
 
     _hideOtherOpenComposers: function() {
-        var $listItems = CS.overviewController.$el.find(".item-name");
+        var $listItems = CS.overviewController.$el.find(".item-names-list").children();
         var $composerForms = $listItems.children(".item-composer");
         var $itemNameParagraphs = $listItems.children("p");
         var $editBtns = $listItems.children("button");
@@ -1416,9 +1403,9 @@ CS.Controllers.OverviewBlueprintItem = React.createClass({displayName: "Overview
         var updatedBlueprintAreaData = CS.account.data && !_.isEmpty(CS.account.data[this._getBlueprintAreaClassName()]) ? _.clone(CS.account.data[this._getBlueprintAreaClassName()], true) : [];
 
         if (newItemName) {
-            updatedBlueprintAreaData[this._getBlueprintItemIndex()] = {name: newItemName};
+            updatedBlueprintAreaData[this.props.blueprintItemIndex] = {name: newItemName};
         } else {
-            updatedBlueprintAreaData.splice(this._getBlueprintItemIndex(), 1);
+            updatedBlueprintAreaData.splice(this.props.blueprintItemIndex, 1);
 
             // We hide it from the UI to give faster feedback
             this.$listItem.hide();
@@ -1427,12 +1414,12 @@ CS.Controllers.OverviewBlueprintItem = React.createClass({displayName: "Overview
         CS.account.data = CS.account.data || {};
         CS.account.data[this._getBlueprintAreaClassName()] = updatedBlueprintAreaData;
 
-        CS.Controllers.OverviewBlueprintAreaCommon.resetAndHideForm(this.$textarea, $.proxy(this._hideForm, this));
+        CS.Controllers.WorkbookAreaCommon.resetAndHideForm(this.$textarea, $.proxy(this._hideForm, this));
         CS.overviewController.saveAccountData();
     },
 
     _handleTextareaKeyUp: function(e) {
-        CS.Controllers.OverviewBlueprintAreaCommon.handleTextareaKeyUp(e, $.proxy(this._handleComposerFormSubmit, this), $.proxy(this._hideForm, this));
+        CS.Controllers.WorkbookAreaCommon.handleTextareaKeyUp(e, $.proxy(this._handleComposerFormSubmit, this), $.proxy(this._hideForm, this));
     },
 
     _hideForm: function() {
@@ -1447,7 +1434,7 @@ CS.Controllers.OverviewBlueprintItem = React.createClass({displayName: "Overview
 });
 
 CS.Controllers.Overview = P(function (c) {
-    c.$el = $(document.getElementById("overview"));
+    c.$el = $(document.getElementById("content"));
 
     c.reactClass = React.createClass({displayName: "reactClass",
         getInitialState: function () {
@@ -1461,7 +1448,7 @@ CS.Controllers.Overview = P(function (c) {
             return (
                 React.createElement("ul", {className: "styleless", ref: "list"}, 
                     this.state.blueprintAreasWithData.map(function (blueprintAreaWithData) {
-                        var id = blueprintAreaWithData.blueprintArea.getClassName() + "-blueprint-area-panel";
+                        var id = blueprintAreaWithData.blueprintArea.className + "-blueprint-area-panel";
 
                         return React.createElement(CS.Controllers.OverviewBlueprintAreaPanel, {key: id, controller: this.state.controller, blueprintAreaWithData: blueprintAreaWithData});
                     }.bind(this))
@@ -1489,9 +1476,6 @@ CS.Controllers.Overview = P(function (c) {
     });
 
     c.init = function () {
-        CS.blueprintAreasModel = CS.Models.BlueprintAreas();
-        CS.blueprintAreasModel.updateStatus();
-
         this.reactInstance = React.render(
             React.createElement(this.reactClass),
             this.$el[0]
@@ -1502,14 +1486,14 @@ CS.Controllers.Overview = P(function (c) {
         var blueprintAreasWithData = CS.blueprintAreasModel.getActive().map(function (blueprintArea) {
             return {
                 blueprintArea: blueprintArea,
-                items: CS.account.data && !_.isEmpty(CS.account.data[blueprintArea.getClassName()]) ? CS.account.data[blueprintArea.getClassName()] : []
+                items: CS.account.data && !_.isEmpty(CS.account.data[blueprintArea.className]) ? CS.account.data[blueprintArea.className] : []
             };
         });
 
         this.reactInstance.replaceState({
             controller: this,
             blueprintAreasWithData: _.sortBy(blueprintAreasWithData, function(blueprintAreaWithData) {
-                return blueprintAreaWithData.blueprintArea.getTitle();
+                return blueprintAreaWithData.blueprintArea.title;
             })
         });
     };
@@ -1522,4 +1506,215 @@ CS.Controllers.Overview = P(function (c) {
         this.reRender();
         CS.saveAccountData();
     };
+});
+
+CS.Controllers.WorkbookArea = P(function (c) {
+    c.$el = $(document.getElementById("content"));
+
+    c.reactClass = React.createClass({displayName: "reactClass",
+        getInitialState: function () {
+            return {
+                controller: null,
+                workbookAreaClassName: null,
+                workbookItems: []
+            };
+        },
+
+        render: function () {
+            return (
+                React.createElement("div", null, 
+                    React.createElement("ul", {className: "styleless item-names-list"}, 
+                        this.state.workbookItems.map(function (item, index) {
+                            var reactItemId = "blueprint-item-" + item.name;
+
+                            return React.createElement(CS.Controllers.WorkbookAreaWorkbookItem, {key: reactItemId, workbookAreaClassName: this.state.workbookAreaClassName, workbookItem: item, workbookItemIndex: index});
+                        }.bind(this))
+                    ), 
+
+                    React.createElement("form", {role: "form", className: "item-composer", ref: "form", onSubmit: this._handleComposerFormSubmit}, 
+                        React.createElement("textarea", {className: "form-control", onKeyUp: this._handleTextareaKeyUp}), 
+                        React.createElement("button", {className: "btn btn-primary"}, "Add"), 
+                        React.createElement("button", {type: "button", className: "styleless fa fa-times", onClick: this._hideForm})
+                    ), 
+
+                    React.createElement("a", {className: "add-item-link", onClick: this._showComposer}, "+ Add item")
+                )
+                );
+        },
+
+        componentDidMount: function () {
+            this._initElements();
+        },
+
+        _initElements: function () {
+            this.$form = $(React.findDOMNode(this.refs.form));
+            this.$addItemLink = this.$form.siblings(".add-item-link");
+            this.$textarea = this.$form.children("textarea");
+        },
+
+        _showComposer: function () {
+            this.$form.show();
+            this.$textarea.focus();
+
+            this.$addItemLink.hide();
+        },
+
+        _handleComposerFormSubmit: function (e) {
+            if (e) {
+                e.preventDefault();
+            }
+
+            // TODO: remove
+            console.log("_handleComposerFormSubmit");
+
+            var itemNameToAdd = this.$textarea.val().trim();
+
+            if (itemNameToAdd) {
+                var updatedBlueprintAreaData = CS.account.data && !_.isEmpty(CS.account.data[this.state.workbookAreaClassName]) ? _.clone(CS.account.data[this.state.workbookAreaClassName], true) : [];
+                updatedBlueprintAreaData.push({name: itemNameToAdd});
+
+                CS.account.data = CS.account.data || {};
+                CS.account.data[this.state.workbookAreaClassName] = updatedBlueprintAreaData;
+
+                this.state.controller._reRender();
+                CS.saveAccountData();
+            }
+
+            CS.Controllers.WorkbookAreaCommon.resetAndHideForm(this.$textarea, $.proxy(this._hideForm, this));
+        },
+
+        _handleTextareaKeyUp: function(e) {
+            CS.Controllers.WorkbookAreaCommon.handleTextareaKeyUp(e, $.proxy(this._handleComposerFormSubmit, this), $.proxy(this._hideForm, this));
+        },
+
+        _hideForm: function () {
+            this.$form.hide();
+            this.$addItemLink.show();
+        }
+    });
+
+    c.init = function (workbookArea) {
+        this.workbookArea = workbookArea;
+
+        this.reactInstance = React.render(
+            React.createElement(this.reactClass),
+            this.$el[0]
+        );
+
+        this._reRender();
+    };
+
+    c._reRender = function() {
+        this.reactInstance.replaceState({
+            controller: this,
+            workbookAreaClassName: this.workbookArea.className,
+            workbookItems: CS.account.data[this.workbookArea.className] ? CS.account.data[this.workbookArea.className] : []
+        });
+    };
+
+    c.saveAccountData = function () {
+        this._reRender();
+        CS.saveAccountData();
+    };
+});
+
+CS.Controllers.WorkbookAreaWorkbookItem = React.createClass({displayName: "WorkbookAreaWorkbookItem",
+    render: function () {
+        return (
+            React.createElement("li", {ref: "li"}, 
+                React.createElement("p", null, this.props.workbookItem.name), 
+                React.createElement("button", {className: "styleless fa fa-pencil", onClick: this._showEditor}), 
+                React.createElement("form", {role: "form", className: "item-composer", ref: "form", onSubmit: this._handleComposerFormSubmit}, 
+                    React.createElement("textarea", {className: "form-control", ref: "textarea", onKeyUp: this._handleTextareaKeyUp}), 
+                    React.createElement("button", {className: "btn btn-primary"}, "Save changes"), 
+                    React.createElement("button", {type: "button", className: "styleless fa fa-times", onClick: this._hideForm})
+                )
+            )
+            );
+    },
+
+    componentDidMount: function () {
+        this._initElements();
+
+        this.listItemEditModeClass = "editing";
+    },
+
+    _initElements: function() {
+        this.$listItem = $(React.findDOMNode(this.refs.li));
+        this.$list = this.$listItem.parent();
+
+        this.$itemNameParagraph = this.$listItem.children("p");
+        this.$editBtn = this.$listItem.children("button");
+        this.$form = this.$listItem.children(".item-composer");
+        this.$textarea = this.$form.children("textarea");
+
+        this.$addItemLink = this.$list.siblings(".add-item-link");
+    },
+
+    _showEditor: function () {
+        this._hideOtherOpenComposers();
+
+        this.$textarea.val(this.props.workbookItem.name);
+
+        this.$listItem.addClass(this.listItemEditModeClass);
+
+        this.$itemNameParagraph.hide();
+        this.$editBtn.hide();
+        this.$addItemLink.hide();
+        this.$form.show();
+        CS.Controllers.WorkbookAreaCommon.adaptTextareaHeight(this.$textarea);
+        this.$textarea.focus();
+    },
+
+    _hideOtherOpenComposers: function() {
+        var $listItems = this.$list.children();
+        var $composerForms = $listItems.children(".item-composer");
+        var $itemNameParagraphs = $listItems.children("p");
+        var $editBtns = $listItems.children("button");
+
+        $listItems.removeClass(this.listItemEditModeClass);
+        $composerForms.hide();
+        $itemNameParagraphs.show();
+        $editBtns.show();
+        this.$addItemLink.show();
+    },
+
+    _handleComposerFormSubmit: function (e) {
+        if (e) {
+            e.preventDefault();
+        }
+
+        // TODO: remove
+        console.log("_handleComposerFormSubmit");
+
+        var newItemName = this.$textarea.val().trim();
+        var updatedBlueprintAreaData = CS.account.data && !_.isEmpty(CS.account.data[this.props.workbookAreaClassName]) ? _.clone(CS.account.data[this.props.workbookAreaClassName], true) : [];
+
+        if (newItemName) {
+            updatedBlueprintAreaData[this.props.workbookItemIndex] = {name: newItemName};
+        } else {
+            updatedBlueprintAreaData.splice(this.props.workbookItemIndex, 1);
+
+            // We hide it from the UI to give faster feedback
+            this.$listItem.hide();
+        }
+
+        CS.account.data = CS.account.data || {};
+        CS.account.data[this.props.workbookAreaClassName] = updatedBlueprintAreaData;
+
+        CS.Controllers.WorkbookAreaCommon.resetAndHideForm(this.$textarea, $.proxy(this._hideForm, this));
+        CS.workbookAreaController.saveAccountData();
+    },
+
+    _handleTextareaKeyUp: function(e) {
+        CS.Controllers.WorkbookAreaCommon.handleTextareaKeyUp(e, $.proxy(this._handleComposerFormSubmit, this), $.proxy(this._hideForm, this));
+    },
+
+    _hideForm: function() {
+        this.$listItem.removeClass(this.listItemEditModeClass);
+        this.$form.hide();
+        this.$itemNameParagraph.show();
+        this.$editBtn.show();
+        this.$addItemLink.show();
+    }
 });

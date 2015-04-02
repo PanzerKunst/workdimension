@@ -6,10 +6,97 @@ header {
   width: 100%;
 
   z-index: $z-index-menu;
+
+  > .fa {
+    font-size: $font-size-menu-btn;
+    padding: $padding-menu-btn;
+    color: white;
+    float: left;
+  }
+
+  > h1 {
+    padding: 4px 0 0 0;
+    margin: 0;
+
+    color: white;
+    font-size: 20px;
+
+    float: left;
+
+    @include ellipsis;
+
+    max-width: 74%;
+  }
 }
 
 #menu-btn {
-  font-size: $font-size-menu-btn;
-  padding: $padding-menu-btn;
-  color: white;
+  float: right;
+}
+
+#main-menu {
+  position: fixed;
+  top: $header-height;
+  right: 0;
+  z-index: $z-index-menu;
+
+  background-color: $background-body-color;
+
+  visibility: hidden; // Hidden by default
+
+  > a {
+    display: block;
+  }
+
+  > #sign-out {
+    display: none;
+  }
+
+  &.signed-in {
+    > #sign-in-with-linkedin {
+      display: none;
+    }
+
+    > #sign-out {
+      display: block;
+    }
+  }
+}
+
+#content-overlay-when-menu-open {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+
+  background-color: rgba(0, 0, 0, 0.2);
+
+  z-index: -1;
+}
+
+#sign-in-with-linkedin {
+  @include hide-text;
+
+  $sign-in-with-linked-in-button-image-location-x: 0;
+  $sign-in-with-linked-in-button-image-location-y: 0;
+
+  @include hdpi-sprite;
+  background-position: $sign-in-with-linked-in-button-image-location-x $sign-in-with-linked-in-button-image-location-y;
+  @include hidpi {
+    background-position: half-pos($sign-in-with-linked-in-button-image-location-x, $sign-in-with-linked-in-button-image-location-y);
+  }
+
+  width: 146px;
+  height: 21px;
+
+  @include medium-screen {
+    $sign-in-with-linked-in-button-image-location-x: -300px;
+
+    @include hdpi-sprite;
+    background-position: $sign-in-with-linked-in-button-image-location-x $sign-in-with-linked-in-button-image-location-y;
+    @include hidpi {
+      background-position: half-pos($sign-in-with-linked-in-button-image-location-x, $sign-in-with-linked-in-button-image-location-y);
+    }
+
+    width: 215px;
+    height: 41px;
+  }
 }

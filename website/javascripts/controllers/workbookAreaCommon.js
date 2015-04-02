@@ -1,4 +1,4 @@
-CS.Controllers.OverviewBlueprintAreaCommon = {
+CS.Controllers.WorkbookAreaCommon = {
     textareaDefaultHeightPx: 41,
 
     handleTextareaKeyUp: function (e, formSubmitFunction, formCancelFunction) {
@@ -8,7 +8,7 @@ CS.Controllers.OverviewBlueprintAreaCommon = {
             formCancelFunction();
         } else {
             var $textarea = $(e.currentTarget);
-            CS.Controllers.OverviewBlueprintAreaCommon.adaptTextareaHeight($textarea);
+            CS.Controllers.WorkbookAreaCommon.adaptTextareaHeight($textarea);
         }
     },
 
@@ -30,7 +30,9 @@ CS.Controllers.OverviewBlueprintAreaCommon = {
 
             $textarea.css("height", newTextAreaHeightPx);
 
-            CS.overviewController.rePackerise();
+            if (CS.overviewController) {
+                CS.overviewController.rePackerise();
+            }
         }
     },
 

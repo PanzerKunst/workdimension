@@ -22,9 +22,27 @@ object Application extends Controller {
         }
     }
 
-    Ok(views.html.index(accountId, accountEmail, AccountDataDto.getOfAccountId(accountId))).withSession(request.session
+    Ok(views.html.index(WorkbookAreaDto.getAll, accountId, accountEmail, AccountDataDto.getOfAccountId(accountId))).withSession(request.session
       +("accountId", accountId.toString)
     )
+  }
+
+  def workbookArea(className: String) = Action { request =>
+    getAccountId(request.session) match {
+      case None => Redirect("/")
+
+      case Some(accountId) =>
+        AccountDto.getOfId(accountId) match {
+          case None => Redirect("/")
+
+          case Some(account) =>
+            WorkbookAreaDto.getOfClassName(className) match {
+              case None => BadRequest("No workbook area found for class name " + className)
+
+              case Some(workbookArea) => Ok(views.html.workbookArea(workbookArea, accountId, account.emailAddress, AccountDataDto.getOfAccountId(accountId)))
+            }
+        }
+    }
   }
 
   def getAccountId(session: Session): Option[Long] = {

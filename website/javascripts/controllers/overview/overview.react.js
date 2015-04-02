@@ -1,5 +1,5 @@
 CS.Controllers.Overview = P(function (c) {
-    c.$el = $(document.getElementById("overview"));
+    c.$el = $(document.getElementById("content"));
 
     c.reactClass = React.createClass({
         getInitialState: function () {
@@ -13,7 +13,7 @@ CS.Controllers.Overview = P(function (c) {
             return (
                 <ul className="styleless" ref="list">
                     {this.state.blueprintAreasWithData.map(function (blueprintAreaWithData) {
-                        var id = blueprintAreaWithData.blueprintArea.getClassName() + "-blueprint-area-panel";
+                        var id = blueprintAreaWithData.blueprintArea.className + "-blueprint-area-panel";
 
                         return <CS.Controllers.OverviewBlueprintAreaPanel key={id} controller={this.state.controller} blueprintAreaWithData={blueprintAreaWithData} />;
                     }.bind(this))}
@@ -41,9 +41,6 @@ CS.Controllers.Overview = P(function (c) {
     });
 
     c.init = function () {
-        CS.blueprintAreasModel = CS.Models.BlueprintAreas();
-        CS.blueprintAreasModel.updateStatus();
-
         this.reactInstance = React.render(
             React.createElement(this.reactClass),
             this.$el[0]
@@ -54,14 +51,14 @@ CS.Controllers.Overview = P(function (c) {
         var blueprintAreasWithData = CS.blueprintAreasModel.getActive().map(function (blueprintArea) {
             return {
                 blueprintArea: blueprintArea,
-                items: CS.account.data && !_.isEmpty(CS.account.data[blueprintArea.getClassName()]) ? CS.account.data[blueprintArea.getClassName()] : []
+                items: CS.account.data && !_.isEmpty(CS.account.data[blueprintArea.className]) ? CS.account.data[blueprintArea.className] : []
             };
         });
 
         this.reactInstance.replaceState({
             controller: this,
             blueprintAreasWithData: _.sortBy(blueprintAreasWithData, function(blueprintAreaWithData) {
-                return blueprintAreaWithData.blueprintArea.getTitle();
+                return blueprintAreaWithData.blueprintArea.title;
             })
         });
     };

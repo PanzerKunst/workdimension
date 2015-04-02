@@ -11,7 +11,7 @@ CS.Controllers.BlueprintAreasSelector = P(function (c) {
                 <div ref="wrapper">
                     <ul className="styleless">
                         {this.state.inactiveBlueprintAreas.map(function (blueprintArea) {
-                            var id = blueprintArea.getClassName() + "-blueprint-area-selector-item";
+                            var id = blueprintArea.className + "-blueprint-area-selector-item";
 
                             return <CS.Controllers.BlueprintAreaSelectorItem key={id} blueprintArea={blueprintArea} />;
                         })}
@@ -29,7 +29,7 @@ CS.Controllers.BlueprintAreasSelector = P(function (c) {
         }
     });
 
-    c.init = function () {
+    c.init = function (blueprintAreas) {
         this._initElements();
         this._initEvents();
 
@@ -37,6 +37,9 @@ CS.Controllers.BlueprintAreasSelector = P(function (c) {
             React.createElement(this.reactClass),
             this.$modal.find(".modal-body")[0]
         );
+
+        CS.blueprintAreasModel = CS.Models.BlueprintAreas(blueprintAreas);
+        CS.blueprintAreasModel.updateStatus();
 
         this.reRender();
         this._initModalWidth();

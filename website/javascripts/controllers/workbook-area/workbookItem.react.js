@@ -1,8 +1,8 @@
-CS.Controllers.OverviewBlueprintItem = React.createClass({
+CS.Controllers.WorkbookAreaWorkbookItem = React.createClass({
     render: function () {
         return (
             <li ref="li">
-                <p>{this._getBlueprintItemName()}</p>
+                <p>{this.props.workbookItem.name}</p>
                 <button className="styleless fa fa-pencil" onClick={this._showEditor}></button>
                 <form role="form" className="item-composer" ref="form" onSubmit={this._handleComposerFormSubmit}>
                     <textarea className="form-control" ref="textarea" onKeyUp={this._handleTextareaKeyUp} />
@@ -19,32 +19,22 @@ CS.Controllers.OverviewBlueprintItem = React.createClass({
         this.listItemEditModeClass = "editing";
     },
 
-    _getBlueprintAreaClassName: function() {
-        return this.props.blueprintAreaWithData.blueprintArea.className;
-    },
-
-    _getBlueprintItemName: function () {
-        return this.props.blueprintAreaWithData.items[this.props.blueprintItemIndex].name;
-    },
-
     _initElements: function() {
         this.$listItem = $(React.findDOMNode(this.refs.li));
+        this.$list = this.$listItem.parent();
+
         this.$itemNameParagraph = this.$listItem.children("p");
         this.$editBtn = this.$listItem.children("button");
         this.$form = this.$listItem.children(".item-composer");
         this.$textarea = this.$form.children("textarea");
 
-        this.$blueprintAreaPanel = this.$listItem.parents(".blueprint-area-panel");
-        this.$addItemLink = this.$blueprintAreaPanel.find(".add-item-link");
+        this.$addItemLink = this.$list.siblings(".add-item-link");
     },
 
     _showEditor: function () {
-        // TODO: remove
-        console.log("_showEditor. Blueprint item name:", this._getBlueprintItemName());
-
         this._hideOtherOpenComposers();
 
-        this.$textarea.val(this._getBlueprintItemName());
+        this.$textarea.val(this.props.workbookItem.name);
 
         this.$listItem.addClass(this.listItemEditModeClass);
 
@@ -54,22 +44,19 @@ CS.Controllers.OverviewBlueprintItem = React.createClass({
         this.$form.show();
         CS.Controllers.WorkbookAreaCommon.adaptTextareaHeight(this.$textarea);
         this.$textarea.focus();
-
-        CS.overviewController.rePackerise();
     },
 
     _hideOtherOpenComposers: function() {
-        var $listItems = CS.overviewController.$el.find(".item-names-list").children();
+        var $listItems = this.$list.children();
         var $composerForms = $listItems.children(".item-composer");
         var $itemNameParagraphs = $listItems.children("p");
         var $editBtns = $listItems.children("button");
-        var $addItemLinks = CS.overviewController.$el.find(".add-item-link");
 
         $listItems.removeClass(this.listItemEditModeClass);
         $composerForms.hide();
         $itemNameParagraphs.show();
         $editBtns.show();
-        $addItemLinks.show();
+        this.$addItemLink.show();
     },
 
     _handleComposerFormSubmit: function (e) {
@@ -81,22 +68,22 @@ CS.Controllers.OverviewBlueprintItem = React.createClass({
         console.log("_handleComposerFormSubmit");
 
         var newItemName = this.$textarea.val().trim();
-        var updatedBlueprintAreaData = CS.account.data && !_.isEmpty(CS.account.data[this._getBlueprintAreaClassName()]) ? _.clone(CS.account.data[this._getBlueprintAreaClassName()], true) : [];
+        var updatedBlueprintAreaData = CS.account.data && !_.isEmpty(CS.account.data[this.props.workbookAreaClassName]) ? _.clone(CS.account.data[this.props.workbookAreaClassName], true) : [];
 
         if (newItemName) {
-            updatedBlueprintAreaData[this.props.blueprintItemIndex] = {name: newItemName};
+            updatedBlueprintAreaData[this.props.workbookItemIndex] = {name: newItemName};
         } else {
-            updatedBlueprintAreaData.splice(this.props.blueprintItemIndex, 1);
+            updatedBlueprintAreaData.splice(this.props.workbookItemIndex, 1);
 
             // We hide it from the UI to give faster feedback
             this.$listItem.hide();
         }
 
         CS.account.data = CS.account.data || {};
-        CS.account.data[this._getBlueprintAreaClassName()] = updatedBlueprintAreaData;
+        CS.account.data[this.props.workbookAreaClassName] = updatedBlueprintAreaData;
 
         CS.Controllers.WorkbookAreaCommon.resetAndHideForm(this.$textarea, $.proxy(this._hideForm, this));
-        CS.overviewController.saveAccountData();
+        CS.workbookAreaController.saveAccountData();
     },
 
     _handleTextareaKeyUp: function(e) {
@@ -109,7 +96,5 @@ CS.Controllers.OverviewBlueprintItem = React.createClass({
         this.$itemNameParagraph.show();
         this.$editBtn.show();
         this.$addItemLink.show();
-
-        CS.overviewController.rePackerise();
     }
 });

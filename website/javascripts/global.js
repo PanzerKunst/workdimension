@@ -17,6 +17,7 @@ CS.defaultAnimationDuration = 0.5;
 CS.blueprintAreasModel = null;
 CS.mainMenuController = null;
 CS.overviewController = null;
+CS.workbookAreaController = null;
 CS.blueprintAreasSelector = null;
 
 // Global functions

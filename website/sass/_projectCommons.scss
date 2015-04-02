@@ -1,11 +1,7 @@
-#content {
+[role="main"] {
   position: relative; // Because absolutely-positioning the menu
 
   background-color: $background-body-color; // Otherwise we see the contentOverlayWhenMenuOpen even when z-index -1
-}
-
-.help-text {
-  color: rgb(153, 153, 153);  //#999999
 }
 
 // To have the footer always at the bottom
@@ -17,6 +13,58 @@ body {
   min-height: 100%;
   position: relative; // Because of absolutely-positioning footer
 }
-#content {
+[role="main"] {
   padding-bottom: $footer-height;
+}
+
+#content {
+  padding-top: $header-height; // Margin fucks up the absolute-positioning as it is declared now
+}
+
+a.fa {
+  &:hover,
+  &:focus {
+    text-decoration: none;
+  }
+}
+
+.item-names-list > li {
+  background-color: $well-bg;
+
+  margin-bottom: 0.25em;
+
+  position: relative; // Because of absolutely-positioned edit button
+
+  &.editing {
+    background-color: $background-body-color;
+  }
+
+  > p {
+    padding: 0 1.5em 0 0.5em;
+  }
+
+  > button {
+    position: absolute;
+    top: -0.55em;
+    right: -0.55em;
+
+    padding: 0.92em 1em;
+  }
+}
+
+.item-composer {
+  display: none;
+
+  > textarea {
+    height: 2.9em;
+    margin-bottom: 0.5em;
+  }
+
+  > .fa-times {
+    padding: 0.47em 0.62em 0.53em 0.62em;
+    margin-left: 0.2em;
+    vertical-align: top;
+
+    font-size: 1.25em;
+  }
 }

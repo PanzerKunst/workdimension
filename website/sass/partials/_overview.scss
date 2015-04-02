@@ -1,102 +1,76 @@
-#overview {
-  text-align: center;
-
-  padding-top: $header-height; // Margin fucks up the absolute-positioning as it is declared now
-
-  $list-item-padding: $spacer-unit-size/2;
-
-  > ul {
-    margin: $spacer-unit-size auto;
-
-    font-size: #{$font-size-base-px}px;
-
-    max-width: $small-content-width;
-
-    @include medium-screen {
-      max-width: $medium-content-width;
-    }
-    @include large-screen {
-      max-width: $large-content-width;
-    }
-    @media screen and (min-width: $small-content-width * 4) {
-      max-width: $small-content-width * 4;
-    }
-
-    > .blueprint-area-panel {
-      text-align: left;
-
-      padding: 0 $list-item-padding;
-
-      width: $small-content-width;
-    }
+#index {
+  header > h1 {
+    padding-left: $spacer-unit-size;
   }
 
-  .well {
-    padding: 0 0.5em 0.5em 0.5em;
-    margin-bottom: $spacer-unit-size;
+  #content {
+    text-align: center;
 
-    position: relative; // Because of absolutely-positioned menu button
+    $list-item-padding: $spacer-unit-size/2;
 
-    > button {
-      position: absolute;
-      top: -0.45em;
-      right: -0.45em;
+    > ul {
+      margin: $spacer-unit-size auto;
 
-      padding: .93em .93em;
+      font-size: #{$font-size-base-px}px;
 
-      color: lighten($gray-base, 60%);
-    }
-  }
+      max-width: $small-content-width;
 
-  h2 {
-    font-size: #{1.2 * $font-size-base-px}px;
-    font-weight: bold;
-    letter-spacing: -0.05em;
+      @include medium-screen {
+        max-width: $medium-content-width;
+      }
+      @include large-screen {
+        max-width: $large-content-width;
+      }
+      @media screen and (min-width: $small-content-width * 4) {
+        max-width: $small-content-width * 4;
+      }
 
-    padding-right: 1em;
-  }
+      > .blueprint-area-panel {
+        text-align: left;
 
-  .item-name {
-    color: white;
-    background-color: $action-color;
+        padding: 0 $list-item-padding;
 
-    margin-bottom: 0.25em;
-
-    position: relative; // Because of absolutely-positioned edit button
-
-    &.editing {
-      background-color: $well-bg;
-      color: $text-color;
+        width: $small-content-width;
+      }
     }
 
-    > p {
-      padding: 0 1.5em 0 0.5em;
-      margin-bottom: 0;
+    .well {
+      padding: 0 0.5em 0.5em 0.5em;
+      margin-bottom: $spacer-unit-size;
+
+      position: relative; // Because of absolutely-positioned menu button
+
+      > button {
+        position: absolute;
+        top: -0.45em;
+        right: -0.45em;
+
+        padding: .93em .93em;
+
+        color: lighten($gray-base, 60%);
+      }
     }
 
-    > button {
-      position: absolute;
-      top: -0.55em;
-      right: -0.55em;
+    h2 {
+      font-size: #{1.2 * $font-size-base-px}px;
+      font-weight: bold;
+      letter-spacing: -0.05em;
 
-      padding: 0.92em 1em;
-    }
-  }
-
-  .item-composer {
-    display: none;
-
-    > textarea {
-      height: 2.9em;
-      margin-bottom: 0.5em;
+      padding-right: 1em;
     }
 
-    > .fa-times {
-      padding: 0.47em 0.62em 0.53em 0.62em;
-      margin-left: 0.2em;
-      vertical-align: top;
+    .item-names-list > li {
+      background-color: white;
 
-      font-size: 1.25em;
+      margin-bottom: 0.25em;
+
+      &.editing {
+        background-color: $well-bg;
+      }
+
+      > p {
+        margin-bottom: 0;
+      }
     }
   }
 }

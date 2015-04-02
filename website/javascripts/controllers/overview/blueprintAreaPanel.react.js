@@ -1,20 +1,22 @@
 CS.Controllers.OverviewBlueprintAreaPanel = React.createClass({
     render: function () {
+        var workbookAreaTitleHref = "/workbook-area/" + this._getBlueprintArea().className;
+
         return (
             <li className="blueprint-area-panel" ref="li">
                 <div className="well">
-                    <h2>{this._getBlueprintArea().getTitle()}</h2>
+                    <h2><a href={workbookAreaTitleHref}>{this._getBlueprintArea().title}</a></h2>
                     <button className="styleless fa fa-eye-slash" onClick={this._hideBlueprintAreaPanel}></button>
 
-                    <ul className="styleless">
-                        {this._getBlueprintAreaWithData().items.map(function (item, index) {
-                            var reactItemId = this._getBlueprintArea().getClassName() + "-blueprint-item-" + item.name;
+                    <ul className="styleless item-names-list">
+                        {this.props.blueprintAreaWithData.items.map(function (item, index) {
+                            var reactItemId = this._getBlueprintArea().className + "-blueprint-item-" + item.name;
 
-                            return <CS.Controllers.OverviewBlueprintItem key={reactItemId} blueprintAreaWithData={this._getBlueprintAreaWithData()} blueprintItemIndex={index} />;
+                            return <CS.Controllers.OverviewBlueprintItem key={reactItemId} blueprintAreaWithData={this.props.blueprintAreaWithData} blueprintItemIndex={index} />;
                         }.bind(this))}
                     </ul>
 
-                    <CS.Controllers.OverviewBlueprintAreaComposer blueprintAreaClassName={this._getBlueprintArea().getClassName()} />
+                    <CS.Controllers.OverviewBlueprintAreaComposer blueprintAreaClassName={this._getBlueprintArea().className} />
                 </div>
             </li>
             );
@@ -22,10 +24,6 @@ CS.Controllers.OverviewBlueprintAreaPanel = React.createClass({
 
     componentDidMount: function () {
         this._initElements();
-    },
-
-    _getBlueprintAreaWithData: function() {
-        return this.props.blueprintAreaWithData;
     },
 
     _getBlueprintArea: function() {

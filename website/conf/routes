@@ -7,6 +7,7 @@ GET     /assets/*file                               controllers.Assets.at(path="
 
 # Pages
 GET     /                                           controllers.Application.index
+GET     /workbook-area/:className                   controllers.Application.workbookArea(className: String)
 
 # API
 POST    /api/db/re-create-tables                    controllers.api.DbAdminApi.reCreateTables

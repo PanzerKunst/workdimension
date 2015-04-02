@@ -1,33 +1,34 @@
-@(accountId: Long, accountEmail: Option[String], accountData: Option[play.api.libs.json.JsObject])
+@(workbookAreas: List[WorkbookArea], accountId: Long, accountEmail: Option[String], accountData: Option[play.api.libs.json.JsObject])
 @main("Work Dimension", "index") {
 <!--
     Header
 -->
-@header()
+@header("index", "Workbook")
 
 } {
 <!--
     Content
 -->
-@mainMenu()
 
-<section id="overview">
-</section>
 } {
 <!--
     Javascript
 -->
 
+<!-- LinkedIn -->
+<script type="text/javascript" src="//platform.linkedin.com/in.js">
+    api_key: 78w7zhq4cqqphu
+    onLoad: CS.Controllers.MainMenuLinkedInAuthenticator
+</script>
+
 <script type="text/javascript">
     document.addEventListener("DOMContentLoaded", function () {
         CS.account.id = @accountId;
-        CS.account.email = @if(accountEmail.isDefined) { "@accountEmail.get"} else { null };
+        CS.account.email = @if(accountEmail.isDefined) { "@accountEmail.get" } else { null };
         CS.account.data = @Html(play.api.libs.json.Json.toJson(accountData).toString);
 
         CS.mainMenuController = CS.Controllers.MainMenu();
-        CS.blueprintAreasSelector = CS.Controllers.BlueprintAreasSelector();
-
-        CS.overviewController = CS.Controllers.Overview();
+        CS.Controllers.Index(@Html(play.api.libs.json.Json.toJson(workbookAreas).toString));
     });
 </script>
 }

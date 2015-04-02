@@ -1,0 +1,23 @@
+#workbook-area {
+  #content > div {
+    max-width: 23em;
+
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .item-names-list {
+    margin-top: $default-spacer-size;
+    @include large-screen {
+      margin-top: $default-spacer-size-large-screen;
+    }
+  }
+
+  li > p {
+    background-color: $well-bg;
+  }
+
+  .item-composer > .fa-times {
+    font-size: 1.1em;
+  }
+}

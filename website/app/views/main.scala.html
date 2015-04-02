@@ -1,4 +1,4 @@
-@(title: String, page: String)(header: Html)(content: Html)(javascript: Html)
+@(title: String, pageId: String)(header: Html)(content: Html)(javascript: Html)
 
 <!DOCTYPE html>
 <!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
@@ -25,10 +25,13 @@
         <link rel="stylesheet" href="@routes.Assets.at("main-v1.css")">
     </head>
 
-    <body id="@page">
+    <body id="@pageId">
         <div id="container">
             <header>@header</header>
-            <div id="content" role="main">@content</div>
+            <div role="main">
+                <div id="content-overlay-when-menu-open"></div>
+                <div id="content">@content</div>
+            </div>
             <footer></footer>
         </div>
 
@@ -54,12 +57,6 @@
             window.addEventListener('load', function() {
                 FastClick.attach(document.body);
             }, false);
-        </script>
-
-        <!-- LinkedIn -->
-        <script type="text/javascript" src="//platform.linkedin.com/in.js">
-            api_key: 78w7zhq4cqqphu
-            onLoad: CS.Controllers.MainMenuLinkedInAuthenticator
         </script>
 
         @javascript

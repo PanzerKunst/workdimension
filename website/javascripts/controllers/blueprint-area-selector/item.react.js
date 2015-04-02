@@ -1,15 +1,11 @@
 CS.Controllers.BlueprintAreaSelectorItem = React.createClass({
     render: function () {
-        return <a onClick={this._activateBlueprintArea}>{this._getBlueprintArea().getTitle()}</a>;
-    },
-
-    _getBlueprintArea: function() {
-        return this.props.blueprintArea;
+        return <a onClick={this._activateBlueprintArea}>{this.props.blueprintArea.title}</a>;
     },
 
     _activateBlueprintArea: function() {
         CS.mainMenuController.hideModal();
 
-        this._getBlueprintArea().activate();
+        this.props.blueprintArea.activate();
     }
 });
