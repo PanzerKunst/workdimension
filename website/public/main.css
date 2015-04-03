@@ -6145,26 +6145,26 @@ blockquote {
     display: table; }
   form:after {
     clear: both; } }
-@media screen and (min-width: 640px) {
-  form .form-group {
-    margin-bottom: 19.5px;
-    width: 480px;
-    margin-left: auto;
-    margin-right: auto; } }
-@media screen and (min-width: 960px) {
-  form .form-group {
-    margin-bottom: 24px;
-    width: 640px; } }
-form .form-group > label,
-form .form-group > input,
-form .form-group > select,
-form .form-group > textarea {
-  display: block;
-  width: 100%; }
-form .form-group > label {
-  margin-bottom: 0; }
-  form .form-group > label.mdnz-polyfill {
-    display: none; }
+form .form-group {
+  margin-bottom: 0.5em; }
+  @media screen and (min-width: 640px) {
+    form .form-group {
+      width: 480px;
+      margin-left: auto;
+      margin-right: auto; } }
+  @media screen and (min-width: 960px) {
+    form .form-group {
+      width: 640px; } }
+  form .form-group > label,
+  form .form-group > input,
+  form .form-group > select,
+  form .form-group > textarea {
+    display: block;
+    width: 100%; }
+  form .form-group > label {
+    line-height: 1.25em; }
+    form .form-group > label.mdnz-polyfill {
+      display: none; }
 form .field-error {
   height: 0;
   overflow: hidden;
@@ -6257,7 +6257,7 @@ a.fa:hover, a.fa:focus {
 
 .item-composer {
   display: none; }
-  .item-composer > textarea {
+  .item-composer textarea {
     height: 2.9em;
     margin-bottom: 0.5em; }
   .item-composer > .fa-times {
@@ -6429,9 +6429,14 @@ footer {
       font-size: 0.8125em; } }
 
 #workbook-area #content > div {
-  max-width: 23em;
   margin-left: auto;
   margin-right: auto; }
+  @media screen and (min-width: 640px) {
+    #workbook-area #content > div {
+      width: 480px; } }
+  @media screen and (min-width: 960px) {
+    #workbook-area #content > div {
+      width: 640px; } }
 #workbook-area .item-names-list {
   margin-top: 10vw; }
   @media screen and (min-width: 960px) {

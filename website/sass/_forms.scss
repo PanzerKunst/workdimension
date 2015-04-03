@@ -4,11 +4,9 @@ form {
   }
 
   .form-group {
-    $default-margin-bottom: 15px;
+    margin-bottom: 0.5em;
 
     @include medium-screen {
-      margin-bottom: $default-margin-bottom * $medium-screen-ratio-m;
-
       width: ($small-content-width + $medium-content-width) / 2;
 
       margin-left: auto;
@@ -16,8 +14,6 @@ form {
     }
 
     @include large-screen {
-      margin-bottom: $default-margin-bottom * $large-screen-ratio-m;
-
       width: $medium-content-width;
     }
 
@@ -30,7 +26,7 @@ form {
     }
 
     > label {
-      margin-bottom: 0;
+      line-height: 1.25em;
 
       &.mdnz-polyfill {
         display: none;

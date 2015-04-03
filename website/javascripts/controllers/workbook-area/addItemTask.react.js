@@ -15,8 +15,10 @@ CS.Controllers.WorkbookAreaAddItemTask = React.createClass({
                     <div></div>
                 </div>
                 <form role="form" className="item-composer task" onSubmit={this._handleFormSubmit}>
-                    <label htmlFor={textareaId}>{this.currentTask.text}</label>
-                    <textarea className="form-control" id={textareaId} onKeyUp={this._handleTextareaKeyUp} />
+                    <div className="form-group">
+                        <label htmlFor={textareaId}>{this.currentTask.text}</label>
+                        <textarea className="form-control" id={textareaId} onKeyUp={this._handleTextareaKeyUp} />
+                    </div>
                     <button className="btn btn-primary">Add item</button>
                     <a onClick={this._setCurrentTaskAsSkippedAndReRender}>Try another one</a>
                 </form>
@@ -35,7 +37,7 @@ CS.Controllers.WorkbookAreaAddItemTask = React.createClass({
 
     _initElements: function () {
         this.$form = $(React.findDOMNode(this.refs.wrapper)).children("form");
-        this.$textarea = this.$form.children("textarea");
+        this.$textarea = this.$form.find("textarea");
     },
 
     _getLocalStorageKeyForSkippedTaskIds: function () {

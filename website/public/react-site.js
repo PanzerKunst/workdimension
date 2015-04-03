@@ -519,8 +519,10 @@ CS.Controllers.WorkbookAreaAddItemTask = React.createClass({displayName: "Workbo
                     React.createElement("div", null)
                 ), 
                 React.createElement("form", {role: "form", className: "item-composer task", onSubmit: this._handleFormSubmit}, 
-                    React.createElement("label", {htmlFor: textareaId}, this.currentTask.text), 
-                    React.createElement("textarea", {className: "form-control", id: textareaId, onKeyUp: this._handleTextareaKeyUp}), 
+                    React.createElement("div", {className: "form-group"}, 
+                        React.createElement("label", {htmlFor: textareaId}, this.currentTask.text), 
+                        React.createElement("textarea", {className: "form-control", id: textareaId, onKeyUp: this._handleTextareaKeyUp})
+                    ), 
                     React.createElement("button", {className: "btn btn-primary"}, "Add item"), 
                     React.createElement("a", {onClick: this._setCurrentTaskAsSkippedAndReRender}, "Try another one")
                 )
@@ -539,7 +541,7 @@ CS.Controllers.WorkbookAreaAddItemTask = React.createClass({displayName: "Workbo
 
     _initElements: function () {
         this.$form = $(React.findDOMNode(this.refs.wrapper)).children("form");
-        this.$textarea = this.$form.children("textarea");
+        this.$textarea = this.$form.find("textarea");
     },
 
     _getLocalStorageKeyForSkippedTaskIds: function () {

@@ -896,6 +896,8 @@ CS.saveAccountData = function (callback) {
 });
 ;CS.Controllers.WorkbookAreaCommon = {
     textareaDefaultHeightPx: 41,
+    mediumScreenTextareaDefaultHeightPx: 53,
+    largeScreenTextareaDefaultHeightPx: 65,
 
     handleTextareaKeyUp: function (e, formSubmitFunction, formCancelFunction) {
         if (e.keyCode === CS.Services.Keyboard.keyCode.enter) {
@@ -911,10 +913,10 @@ CS.saveAccountData = function (callback) {
     adaptTextareaHeight: function ($textarea) {
         var lineHeight = parseInt($textarea.css("lineHeight"), 10);
         var padding = parseInt($textarea.css("paddingTop"), 10) + parseInt($textarea.css("paddingBottom"), 10);
-        var lineCount = Math.round(($textarea.prop("scrollHeight") - padding) / lineHeight);
+        var lineCount = Math.floor(($textarea.prop("scrollHeight") - padding) / lineHeight);
 
         var currentTextAreaHeightPx = parseFloat($textarea.css("height"));
-        var newTextAreaHeightPx = this.textareaDefaultHeightPx - lineHeight + lineCount * lineHeight;
+        var newTextAreaHeightPx = this._getTextAreaDefaultHeight() - lineHeight + lineCount * lineHeight;
 
         if (newTextAreaHeightPx !== currentTextAreaHeightPx) {
             $textarea.css("height", newTextAreaHeightPx);
@@ -932,6 +934,16 @@ CS.saveAccountData = function (callback) {
         if (callback) {
             callback();
         }
+    },
+
+    _getTextAreaDefaultHeight: function() {
+        if (CS.Services.Browser.isLargeScreen()) {
+            return this.largeScreenTextareaDefaultHeightPx;
+        }
+        if (CS.Services.Browser.isMediumScreen()) {
+            return this.mediumScreenTextareaDefaultHeightPx;
+        }
+        return this.textareaDefaultHeightPx;
     }
 };
 ;// This controller is seperate from the main menu because initialized by LinkedIn platform
@@ -1546,8 +1558,10 @@ CS.Controllers.WorkbookAreaAddItemTask = React.createClass({displayName: "Workbo
                     React.createElement("div", null)
                 ), 
                 React.createElement("form", {role: "form", className: "item-composer task", onSubmit: this._handleFormSubmit}, 
-                    React.createElement("label", {htmlFor: textareaId}, this.currentTask.text), 
-                    React.createElement("textarea", {className: "form-control", id: textareaId, onKeyUp: this._handleTextareaKeyUp}), 
+                    React.createElement("div", {className: "form-group"}, 
+                        React.createElement("label", {htmlFor: textareaId}, this.currentTask.text), 
+                        React.createElement("textarea", {className: "form-control", id: textareaId, onKeyUp: this._handleTextareaKeyUp})
+                    ), 
                     React.createElement("button", {className: "btn btn-primary"}, "Add item"), 
                     React.createElement("a", {onClick: this._setCurrentTaskAsSkippedAndReRender}, "Try another one")
                 )
@@ -1566,7 +1580,7 @@ CS.Controllers.WorkbookAreaAddItemTask = React.createClass({displayName: "Workbo
 
     _initElements: function () {
         this.$form = $(React.findDOMNode(this.refs.wrapper)).children("form");
-        this.$textarea = this.$form.children("textarea");
+        this.$textarea = this.$form.find("textarea");
     },
 
     _getLocalStorageKeyForSkippedTaskIds: function () {

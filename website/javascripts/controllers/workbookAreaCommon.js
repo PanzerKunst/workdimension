@@ -1,5 +1,7 @@
 CS.Controllers.WorkbookAreaCommon = {
     textareaDefaultHeightPx: 41,
+    mediumScreenTextareaDefaultHeightPx: 53,
+    largeScreenTextareaDefaultHeightPx: 65,
 
     handleTextareaKeyUp: function (e, formSubmitFunction, formCancelFunction) {
         if (e.keyCode === CS.Services.Keyboard.keyCode.enter) {
@@ -15,10 +17,10 @@ CS.Controllers.WorkbookAreaCommon = {
     adaptTextareaHeight: function ($textarea) {
         var lineHeight = parseInt($textarea.css("lineHeight"), 10);
         var padding = parseInt($textarea.css("paddingTop"), 10) + parseInt($textarea.css("paddingBottom"), 10);
-        var lineCount = Math.round(($textarea.prop("scrollHeight") - padding) / lineHeight);
+        var lineCount = Math.floor(($textarea.prop("scrollHeight") - padding) / lineHeight);
 
         var currentTextAreaHeightPx = parseFloat($textarea.css("height"));
-        var newTextAreaHeightPx = this.textareaDefaultHeightPx - lineHeight + lineCount * lineHeight;
+        var newTextAreaHeightPx = this._getTextAreaDefaultHeight() - lineHeight + lineCount * lineHeight;
 
         if (newTextAreaHeightPx !== currentTextAreaHeightPx) {
             $textarea.css("height", newTextAreaHeightPx);
@@ -36,5 +38,15 @@ CS.Controllers.WorkbookAreaCommon = {
         if (callback) {
             callback();
         }
+    },
+
+    _getTextAreaDefaultHeight: function() {
+        if (CS.Services.Browser.isLargeScreen()) {
+            return this.largeScreenTextareaDefaultHeightPx;
+        }
+        if (CS.Services.Browser.isMediumScreen()) {
+            return this.mediumScreenTextareaDefaultHeightPx;
+        }
+        return this.textareaDefaultHeightPx;
     }
 };
