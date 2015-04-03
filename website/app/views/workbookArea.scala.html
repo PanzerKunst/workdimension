@@ -23,6 +23,7 @@
 
         CS.mainMenuController = CS.Controllers.MainMenu(@Html(play.api.libs.json.Json.toJson(workbookAreas).toString));
         CS.workbookAreaController = CS.Controllers.WorkbookArea(@Html(play.api.libs.json.Json.toJson(workbookArea).toString));
+        CS.blueprintAreasSelector = CS.Controllers.BlueprintAreasSelector();
     });
 </script>
 }

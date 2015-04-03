@@ -65,7 +65,7 @@ CS.Controllers.MainMenu = P(CS.Controllers.Base, function (c) {
 
     c.reRender = function() {
         this.reactInstance.replaceState({
-            activeWorkbookAreas: CS.blueprintAreasModel.getActive()
+            activeWorkbookAreas: _.sortByAll(CS.blueprintAreasModel.getActive(), "title")
         });
     };
 

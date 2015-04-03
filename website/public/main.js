@@ -894,12 +894,6 @@ CS.saveAccountData = function (callback) {
         history.back();
     };
 });
-;CS.Controllers.Index = P(function(c) {
-    c.init = function () {
-        CS.overviewController = CS.Controllers.Overview();
-        CS.blueprintAreasSelector = CS.Controllers.BlueprintAreasSelector();
-    };
-});
 ;CS.Controllers.WorkbookAreaCommon = {
     textareaDefaultHeightPx: 41,
 
@@ -1107,6 +1101,10 @@ CS.Controllers.BlueprintAreaSelectorItem = React.createClass({displayName: "Blue
         CS.mainMenuController.hideModal();
 
         this.props.blueprintArea.activate();
+
+        if (window.location.pathname !== "/") {
+            location.href = "/workbook-area/" + this.props.blueprintArea.className;
+        }
     }
 });
 
@@ -1177,7 +1175,7 @@ CS.Controllers.MainMenu = P(CS.Controllers.Base, function (c) {
 
     c.reRender = function() {
         this.reactInstance.replaceState({
-            activeWorkbookAreas: CS.blueprintAreasModel.getActive()
+            activeWorkbookAreas: _.sortByAll(CS.blueprintAreasModel.getActive(), "title")
         });
     };
 
