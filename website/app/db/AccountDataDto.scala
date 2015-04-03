@@ -18,7 +18,7 @@ object AccountDataDto {
       order by creation_timestamp desc
       limit 1;"""
 
-      Logger.info("AccountDataDto.create():" + query)
+      Logger.info("AccountDataDto.getOfAccountId():" + query)
 
       SQL(query).apply().headOption match {
         case Some(row) =>

@@ -1,8 +1,4 @@
 #index {
-  header > h1 {
-    padding-left: $spacer-unit-size;
-  }
-
   #content {
     text-align: center;
 
@@ -60,12 +56,17 @@
     }
 
     .item-names-list > li {
-      background-color: white;
+      background-color: $gray-light;
 
       margin-bottom: 0.25em;
 
       &.editing {
         background-color: $well-bg;
+      }
+
+      > p,
+      > .fa-pencil {
+        color: white;
       }
 
       > p {

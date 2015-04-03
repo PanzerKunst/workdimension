@@ -4,8 +4,8 @@ CS.Controllers.WorkbookAreaWorkbookItem = React.createClass({
             <li ref="li">
                 <p>{this.props.workbookItem.name}</p>
                 <button className="styleless fa fa-pencil" onClick={this._showEditor}></button>
-                <form role="form" className="item-composer" ref="form" onSubmit={this._handleComposerFormSubmit}>
-                    <textarea className="form-control" ref="textarea" onKeyUp={this._handleTextareaKeyUp} />
+                <form role="form" className="item-composer" onSubmit={this._handleComposerFormSubmit}>
+                    <textarea className="form-control" onKeyUp={this._handleTextareaKeyUp} />
                     <button className="btn btn-primary">Save changes</button>
                     <button type="button" className="styleless fa fa-times" onClick={this._hideForm}></button>
                 </form>
@@ -63,9 +63,6 @@ CS.Controllers.WorkbookAreaWorkbookItem = React.createClass({
         if (e) {
             e.preventDefault();
         }
-
-        // TODO: remove
-        console.log("_handleComposerFormSubmit");
 
         var newItemName = this.$textarea.val().trim();
         var updatedBlueprintAreaData = CS.account.data && !_.isEmpty(CS.account.data[this.props.workbookAreaClassName]) ? _.clone(CS.account.data[this.props.workbookAreaClassName], true) : [];

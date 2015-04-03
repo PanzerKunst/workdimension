@@ -24,9 +24,6 @@ CS.Controllers.OverviewBlueprintAreaComposer = React.createClass({
     },
 
     _showComposer: function () {
-        // TODO: remove
-        console.log("_showComposer");
-
         this._hideOtherOpenComposers();
 
         this.$form.show();
@@ -49,9 +46,6 @@ CS.Controllers.OverviewBlueprintAreaComposer = React.createClass({
         if (e) {
             e.preventDefault();
         }
-
-        // TODO: remove
-        console.log("_handleComposerFormSubmit");
 
         var itemNameToAdd = this.$textarea.val().trim();
 

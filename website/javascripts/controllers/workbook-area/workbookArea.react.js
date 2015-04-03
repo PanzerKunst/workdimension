@@ -2,22 +2,32 @@ CS.Controllers.WorkbookArea = P(function (c) {
     c.$el = $(document.getElementById("content"));
 
     c.reactClass = React.createClass({
+        minItemCountForAddItemTasksComplete: 3,
+
         getInitialState: function () {
             return {
                 controller: null,
-                workbookAreaClassName: null,
+                workbookArea: null,
                 workbookItems: []
             };
         },
 
         render: function () {
+            var taskReact = null;
+
+            if (this.state.workbookArea && this.state.workbookItems.length < this.minItemCountForAddItemTasksComplete) {
+                taskReact = <CS.Controllers.WorkbookAreaAddItemTask controller={this.state.controller} workbookArea={this.state.workbookArea} />;
+            }
+
             return (
                 <div>
+                    {taskReact}
+
                     <ul className="styleless item-names-list">
                         {this.state.workbookItems.map(function (item, index) {
                             var reactItemId = "blueprint-item-" + item.name;
 
-                            return <CS.Controllers.WorkbookAreaWorkbookItem key={reactItemId} workbookAreaClassName={this.state.workbookAreaClassName} workbookItem={item} workbookItemIndex={index} />;
+                            return <CS.Controllers.WorkbookAreaWorkbookItem key={reactItemId} workbookAreaClassName={this.state.workbookArea.className} workbookItem={item} workbookItemIndex={index} />;
                         }.bind(this))}
                     </ul>
 
@@ -54,19 +64,16 @@ CS.Controllers.WorkbookArea = P(function (c) {
                 e.preventDefault();
             }
 
-            // TODO: remove
-            console.log("_handleComposerFormSubmit");
-
             var itemNameToAdd = this.$textarea.val().trim();
 
             if (itemNameToAdd) {
-                var updatedBlueprintAreaData = CS.account.data && !_.isEmpty(CS.account.data[this.state.workbookAreaClassName]) ? _.clone(CS.account.data[this.state.workbookAreaClassName], true) : [];
+                var updatedBlueprintAreaData = CS.account.data && !_.isEmpty(CS.account.data[this.state.workbookArea.className]) ? _.clone(CS.account.data[this.state.workbookArea.className], true) : [];
                 updatedBlueprintAreaData.push({name: itemNameToAdd});
 
                 CS.account.data = CS.account.data || {};
-                CS.account.data[this.state.workbookAreaClassName] = updatedBlueprintAreaData;
+                CS.account.data[this.state.workbookArea.className] = updatedBlueprintAreaData;
 
-                this.state.controller._reRender();
+                this.state.controller.reRender();
                 CS.saveAccountData();
             }
 
@@ -91,19 +98,19 @@ CS.Controllers.WorkbookArea = P(function (c) {
             this.$el[0]
         );
 
-        this._reRender();
+        this.reRender();
     };
 
-    c._reRender = function() {
+    c.reRender = function() {
         this.reactInstance.replaceState({
             controller: this,
-            workbookAreaClassName: this.workbookArea.className,
+            workbookArea: this.workbookArea,
             workbookItems: CS.account.data[this.workbookArea.className] ? CS.account.data[this.workbookArea.className] : []
         });
     };
 
     c.saveAccountData = function () {
-        this._reRender();
+        this.reRender();
         CS.saveAccountData();
     };
 });

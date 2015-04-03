@@ -17,17 +17,10 @@ CS.Controllers.WorkbookAreaCommon = {
         var padding = parseInt($textarea.css("paddingTop"), 10) + parseInt($textarea.css("paddingBottom"), 10);
         var lineCount = Math.round(($textarea.prop("scrollHeight") - padding) / lineHeight);
 
-        // TODO: remove
-        console.log("lineCount: " + lineCount);
-
         var currentTextAreaHeightPx = parseFloat($textarea.css("height"));
         var newTextAreaHeightPx = this.textareaDefaultHeightPx - lineHeight + lineCount * lineHeight;
 
         if (newTextAreaHeightPx !== currentTextAreaHeightPx) {
-
-            // TODO: remove
-            console.log("newTextAreaHeightPx: " + newTextAreaHeightPx);
-
             $textarea.css("height", newTextAreaHeightPx);
 
             if (CS.overviewController) {

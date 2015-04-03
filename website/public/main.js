@@ -914,17 +914,10 @@ CS.saveAccountData = function (callback) {
         var padding = parseInt($textarea.css("paddingTop"), 10) + parseInt($textarea.css("paddingBottom"), 10);
         var lineCount = Math.round(($textarea.prop("scrollHeight") - padding) / lineHeight);
 
-        // TODO: remove
-        console.log("lineCount: " + lineCount);
-
         var currentTextAreaHeightPx = parseFloat($textarea.css("height"));
         var newTextAreaHeightPx = this.textareaDefaultHeightPx - lineHeight + lineCount * lineHeight;
 
         if (newTextAreaHeightPx !== currentTextAreaHeightPx) {
-
-            // TODO: remove
-            console.log("newTextAreaHeightPx: " + newTextAreaHeightPx);
-
             $textarea.css("height", newTextAreaHeightPx);
 
             if (CS.overviewController) {
@@ -1219,9 +1212,6 @@ CS.Controllers.OverviewBlueprintAreaComposer = React.createClass({displayName: "
     },
 
     _showComposer: function () {
-        // TODO: remove
-        console.log("_showComposer");
-
         this._hideOtherOpenComposers();
 
         this.$form.show();
@@ -1244,9 +1234,6 @@ CS.Controllers.OverviewBlueprintAreaComposer = React.createClass({displayName: "
         if (e) {
             e.preventDefault();
         }
-
-        // TODO: remove
-        console.log("_handleComposerFormSubmit");
 
         var itemNameToAdd = this.$textarea.val().trim();
 
@@ -1323,8 +1310,8 @@ CS.Controllers.OverviewBlueprintItem = React.createClass({displayName: "Overview
             React.createElement("li", {ref: "li"}, 
                 React.createElement("p", null, this._getBlueprintItemName()), 
                 React.createElement("button", {className: "styleless fa fa-pencil", onClick: this._showEditor}), 
-                React.createElement("form", {role: "form", className: "item-composer", ref: "form", onSubmit: this._handleComposerFormSubmit}, 
-                    React.createElement("textarea", {className: "form-control", ref: "textarea", onKeyUp: this._handleTextareaKeyUp}), 
+                React.createElement("form", {role: "form", className: "item-composer", onSubmit: this._handleComposerFormSubmit}, 
+                    React.createElement("textarea", {className: "form-control", onKeyUp: this._handleTextareaKeyUp}), 
                     React.createElement("button", {className: "btn btn-primary"}, "Save changes"), 
                     React.createElement("button", {type: "button", className: "styleless fa fa-times", onClick: this._hideForm})
                 )
@@ -1358,9 +1345,6 @@ CS.Controllers.OverviewBlueprintItem = React.createClass({displayName: "Overview
     },
 
     _showEditor: function () {
-        // TODO: remove
-        console.log("_showEditor. Blueprint item name:", this._getBlueprintItemName());
-
         this._hideOtherOpenComposers();
 
         this.$textarea.val(this._getBlueprintItemName());
@@ -1395,9 +1379,6 @@ CS.Controllers.OverviewBlueprintItem = React.createClass({displayName: "Overview
         if (e) {
             e.preventDefault();
         }
-
-        // TODO: remove
-        console.log("_handleComposerFormSubmit");
 
         var newItemName = this.$textarea.val().trim();
         var updatedBlueprintAreaData = CS.account.data && !_.isEmpty(CS.account.data[this._getBlueprintAreaClassName()]) ? _.clone(CS.account.data[this._getBlueprintAreaClassName()], true) : [];
@@ -1508,26 +1489,167 @@ CS.Controllers.Overview = P(function (c) {
     };
 });
 
+CS.Controllers.WorkbookAreaAddItemTask = React.createClass({displayName: "WorkbookAreaAddItemTask",
+    render: function () {
+        this._initCurrentTask();
+
+        if (!this.currentTask) {
+            return null;
+        }
+
+        var textareaId = "task-" + this.currentTask.id;
+
+        return (
+            React.createElement("div", {ref: "wrapper"}, 
+                React.createElement("p", null, "Working on: making inventory of ", this.props.workbookArea.className.toLowerCase()), 
+                React.createElement("div", {className: "task-progress-bar"}, 
+                    React.createElement("div", null)
+                ), 
+                React.createElement("form", {role: "form", className: "item-composer task", onSubmit: this._handleFormSubmit}, 
+                    React.createElement("label", {htmlFor: textareaId}, this.currentTask.text), 
+                    React.createElement("textarea", {className: "form-control", id: textareaId, onKeyUp: this._handleTextareaKeyUp}), 
+                    React.createElement("button", {className: "btn btn-primary"}, "Add item"), 
+                    React.createElement("a", {onClick: this._setCurrentTaskAsSkippedAndReRender}, "Try another one")
+                )
+            )
+            );
+    },
+
+    componentDidMount: function () {
+        this._initElements();
+        this._initTextareaValue();
+    },
+
+    componentDidUpdate: function() {
+        this._initTextareaValue();
+    },
+
+    _initElements: function () {
+        this.$form = $(React.findDOMNode(this.refs.wrapper)).children("form");
+        this.$textarea = this.$form.children("textarea");
+    },
+
+    _getLocalStorageKeyForSkippedTaskIds: function () {
+        return "skippedTaskIds-" + this.props.workbookArea.className;
+    },
+
+    _initCurrentTask: function () {
+        this.areaTasks = _.where(CS.AddItemToAreaTasks, {workbookAreaId: this.props.workbookArea.id});
+        this.currentTask = this._getNextTask();
+    },
+
+    _initTextareaValue: function () {
+        if (this.currentTask.sentenceStart) {
+            this.$textarea.val(this.currentTask.sentenceStart);
+        }
+    },
+
+    _getNextTask: function () {
+        var firstNotSkipped = _.find(this.areaTasks, function (task) {
+            return !_.includes(CS.Services.Browser.getFromLocalStorage(this._getLocalStorageKeyForSkippedTaskIds()), task.id);
+        }.bind(this));
+
+        if (firstNotSkipped) {
+            return firstNotSkipped;
+        }
+
+        // All have been skipped, we need to unskip them all
+        this._unskipAll();
+
+        return _.find(this.areaTasks, function (task) {
+            return !_.includes(CS.Services.Browser.getFromLocalStorage(this._getLocalStorageKeyForSkippedTaskIds()), task.id);
+        }.bind(this));
+    },
+
+    _handleFormSubmit: function (e) {
+        if (e) {
+            e.preventDefault();
+        }
+
+        var itemNameToAdd = this.$textarea.val().trim();
+
+        if (this._isValid(itemNameToAdd)) {
+            var updatedBlueprintAreaData = CS.account.data && !_.isEmpty(CS.account.data[this.props.workbookArea.className]) ? _.clone(CS.account.data[this.props.workbookArea.className], true) : [];
+            updatedBlueprintAreaData.push({name: itemNameToAdd});
+
+            CS.account.data = CS.account.data || {};
+            CS.account.data[this.props.workbookArea.className] = updatedBlueprintAreaData;
+
+            CS.saveAccountData();
+        }
+
+        this._setCurrentTaskAsSkippedAndReRender();
+    },
+
+    _isValid: function(trimmedItemName) {
+        if (!trimmedItemName) {
+            return false;
+        }
+
+        if (!this.currentTask.sentenceStart) {
+            return true;
+        }
+
+        return this.currentTask.sentenceStart.trim() !== trimmedItemName;
+    },
+
+    _handleTextareaKeyUp: function (e) {
+        if (this.currentTask.sentenceStart && !_.startsWith(this.$textarea.val(), this.currentTask.sentenceStart)) {
+            this.$textarea.val(this.currentTask.sentenceStart);
+        }
+
+        CS.Controllers.WorkbookAreaCommon.handleTextareaKeyUp(e, $.proxy(this._handleFormSubmit, this));
+    },
+
+    _resetForm: function () {
+        this.$textarea.val(null);
+    },
+
+    _setCurrentTaskAsSkippedAndReRender: function () {
+        var skippedTaskIds = CS.Services.Browser.getFromLocalStorage(this._getLocalStorageKeyForSkippedTaskIds()) || [];
+        skippedTaskIds.push(this.currentTask.id);
+
+        CS.Services.Browser.saveInLocalStorage(this._getLocalStorageKeyForSkippedTaskIds(), skippedTaskIds);
+
+        this._resetForm();
+        this.props.controller.reRender();
+    },
+
+    _unskipAll: function () {
+        CS.Services.Browser.removeFromLocalStorage(this._getLocalStorageKeyForSkippedTaskIds());
+    }
+});
+
 CS.Controllers.WorkbookArea = P(function (c) {
     c.$el = $(document.getElementById("content"));
 
     c.reactClass = React.createClass({displayName: "reactClass",
+        minItemCountForAddItemTasksComplete: 3,
+
         getInitialState: function () {
             return {
                 controller: null,
-                workbookAreaClassName: null,
+                workbookArea: null,
                 workbookItems: []
             };
         },
 
         render: function () {
+            var taskReact = null;
+
+            if (this.state.workbookArea && this.state.workbookItems.length < this.minItemCountForAddItemTasksComplete) {
+                taskReact = React.createElement(CS.Controllers.WorkbookAreaAddItemTask, {controller: this.state.controller, workbookArea: this.state.workbookArea});
+            }
+
             return (
                 React.createElement("div", null, 
+                    taskReact, 
+
                     React.createElement("ul", {className: "styleless item-names-list"}, 
                         this.state.workbookItems.map(function (item, index) {
                             var reactItemId = "blueprint-item-" + item.name;
 
-                            return React.createElement(CS.Controllers.WorkbookAreaWorkbookItem, {key: reactItemId, workbookAreaClassName: this.state.workbookAreaClassName, workbookItem: item, workbookItemIndex: index});
+                            return React.createElement(CS.Controllers.WorkbookAreaWorkbookItem, {key: reactItemId, workbookAreaClassName: this.state.workbookArea.className, workbookItem: item, workbookItemIndex: index});
                         }.bind(this))
                     ), 
 
@@ -1564,19 +1686,16 @@ CS.Controllers.WorkbookArea = P(function (c) {
                 e.preventDefault();
             }
 
-            // TODO: remove
-            console.log("_handleComposerFormSubmit");
-
             var itemNameToAdd = this.$textarea.val().trim();
 
             if (itemNameToAdd) {
-                var updatedBlueprintAreaData = CS.account.data && !_.isEmpty(CS.account.data[this.state.workbookAreaClassName]) ? _.clone(CS.account.data[this.state.workbookAreaClassName], true) : [];
+                var updatedBlueprintAreaData = CS.account.data && !_.isEmpty(CS.account.data[this.state.workbookArea.className]) ? _.clone(CS.account.data[this.state.workbookArea.className], true) : [];
                 updatedBlueprintAreaData.push({name: itemNameToAdd});
 
                 CS.account.data = CS.account.data || {};
-                CS.account.data[this.state.workbookAreaClassName] = updatedBlueprintAreaData;
+                CS.account.data[this.state.workbookArea.className] = updatedBlueprintAreaData;
 
-                this.state.controller._reRender();
+                this.state.controller.reRender();
                 CS.saveAccountData();
             }
 
@@ -1601,19 +1720,19 @@ CS.Controllers.WorkbookArea = P(function (c) {
             this.$el[0]
         );
 
-        this._reRender();
+        this.reRender();
     };
 
-    c._reRender = function() {
+    c.reRender = function() {
         this.reactInstance.replaceState({
             controller: this,
-            workbookAreaClassName: this.workbookArea.className,
+            workbookArea: this.workbookArea,
             workbookItems: CS.account.data[this.workbookArea.className] ? CS.account.data[this.workbookArea.className] : []
         });
     };
 
     c.saveAccountData = function () {
-        this._reRender();
+        this.reRender();
         CS.saveAccountData();
     };
 });
@@ -1624,8 +1743,8 @@ CS.Controllers.WorkbookAreaWorkbookItem = React.createClass({displayName: "Workb
             React.createElement("li", {ref: "li"}, 
                 React.createElement("p", null, this.props.workbookItem.name), 
                 React.createElement("button", {className: "styleless fa fa-pencil", onClick: this._showEditor}), 
-                React.createElement("form", {role: "form", className: "item-composer", ref: "form", onSubmit: this._handleComposerFormSubmit}, 
-                    React.createElement("textarea", {className: "form-control", ref: "textarea", onKeyUp: this._handleTextareaKeyUp}), 
+                React.createElement("form", {role: "form", className: "item-composer", onSubmit: this._handleComposerFormSubmit}, 
+                    React.createElement("textarea", {className: "form-control", onKeyUp: this._handleTextareaKeyUp}), 
                     React.createElement("button", {className: "btn btn-primary"}, "Save changes"), 
                     React.createElement("button", {type: "button", className: "styleless fa fa-times", onClick: this._hideForm})
                 )
@@ -1684,9 +1803,6 @@ CS.Controllers.WorkbookAreaWorkbookItem = React.createClass({displayName: "Workb
             e.preventDefault();
         }
 
-        // TODO: remove
-        console.log("_handleComposerFormSubmit");
-
         var newItemName = this.$textarea.val().trim();
         var updatedBlueprintAreaData = CS.account.data && !_.isEmpty(CS.account.data[this.props.workbookAreaClassName]) ? _.clone(CS.account.data[this.props.workbookAreaClassName], true) : [];
 
@@ -1718,4 +1834,21 @@ CS.Controllers.WorkbookAreaWorkbookItem = React.createClass({displayName: "Workb
         this.$addItemLink.show();
     }
 });
-;
+;CS.AddItemToAreaTasks = [
+    {
+        id: 1,
+        workbookAreaId: 4,
+        text: "Describe a situation where you've solved a problem in a very good or unexpected way"
+    },
+    {
+        id: 2,
+        workbookAreaId: 4,
+        text: "Something you feel really proud of"
+    },
+    {
+        id: 3,
+        workbookAreaId: 4,
+        text: "Have you won any awards or prices for you work or educational achievements?",
+        sentenceStart: "I was "
+    }
+];

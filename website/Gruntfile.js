@@ -70,6 +70,7 @@ module.exports = function (grunt) {
                     separator:";"
                 },
                 src: [
+                    "javascripts/mock-data/addItemToAreaTasks.js"
                 ],
                 dest: "public/mock-data.js"
             },

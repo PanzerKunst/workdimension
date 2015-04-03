@@ -6271,7 +6271,7 @@ header {
     color: white;
     float: left; }
   header > h1 {
-    padding: 4px 0 0 0;
+    padding: 3px 0 0 14px;
     margin: 0;
     color: white;
     font-size: 20px;
@@ -6349,8 +6349,6 @@ footer {
   bottom: 0;
   width: 100%; }
 
-#index header > h1 {
-  padding-left: 14px; }
 #index #content {
   text-align: center; }
   #index #content > ul {
@@ -6386,10 +6384,13 @@ footer {
     letter-spacing: -0.05em;
     padding-right: 1em; }
   #index #content .item-names-list > li {
-    background-color: white;
+    background-color: #777777;
     margin-bottom: 0.25em; }
     #index #content .item-names-list > li.editing {
       background-color: #f5f5f5; }
+    #index #content .item-names-list > li > p,
+    #index #content .item-names-list > li > .fa-pencil {
+      color: white; }
     #index #content .item-names-list > li > p {
       margin-bottom: 0; }
 
@@ -6430,6 +6431,12 @@ footer {
   background-color: #f5f5f5; }
 #workbook-area .item-composer > .fa-times {
   font-size: 1.1em; }
+
+.item-composer.task {
+  display: block; }
+  .item-composer.task > a {
+    margin-left: 1em;
+    vertical-align: middle; }
 
 html[data-useragent*='MSIE 9'] .input-group .form-control[type="text"],
 html[data-useragent*='MSIE 9'] .input-group .input-group-btn > .btn,
