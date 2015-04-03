@@ -1145,6 +1145,8 @@ CS.Controllers.MainMenu = P(CS.Controllers.Base, function (c) {
     };
 
     c._initElements = function () {
+        this.$mainContainer = $("#container");
+
         this.$menuBtn = $("#menu-btn");
         this.$menu = $("#main-menu");
         this.$contentOverlayWhenMenuOpen = $("#content-overlay-when-menu-open");
@@ -1192,18 +1194,7 @@ CS.Controllers.MainMenu = P(CS.Controllers.Base, function (c) {
     c.toggleMenu = function () {
         this._initSignInLinks();
 
-        var isToShowMenu = this.$menu.css("visibility") === "hidden";
-
-        var contentOverlayZIndex = -1;
-        var menuVisibility = "hidden";
-
-        if (isToShowMenu) {
-            contentOverlayZIndex = parseInt(this.$menu.css("z-index"), 10) - 1;
-            menuVisibility = "visible";
-        }
-
-        this.$contentOverlayWhenMenuOpen.css("z-index", contentOverlayZIndex);
-        this.$menu.css("visibility", menuVisibility);
+        this.$mainContainer.toggleClass("menu-open");
     };
 
     c.hideModal = function() {

@@ -12,6 +12,18 @@ body {
 #container {
   min-height: 100%;
   position: relative; // Because of absolutely-positioning footer
+
+  &.menu-open {
+    max-height: 100%;
+    overflow-y: hidden;
+
+    #content-overlay-when-menu-open {
+      z-index: $z-index-content-overlay-when-menu-open;
+    }
+    #main-menu {
+      visibility: visible;
+    }
+  }
 }
 [role="main"] {
   padding-bottom: $footer-height;

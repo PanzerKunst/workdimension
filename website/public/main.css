@@ -6224,6 +6224,13 @@ body {
 #container {
   min-height: 100%;
   position: relative; }
+  #container.menu-open {
+    max-height: 100%;
+    overflow-y: hidden; }
+    #container.menu-open #content-overlay-when-menu-open {
+      z-index: 9; }
+    #container.menu-open #main-menu {
+      visibility: visible; }
 
 [role="main"] {
   padding-bottom: 40px; }
