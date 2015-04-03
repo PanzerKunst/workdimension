@@ -46,7 +46,12 @@ CS.Models.BlueprintAreas = P(function (c) {
             CS.saveAccountData();
         }
 
-        CS.overviewController.reRender();
+        if (CS.overviewController) {
+            CS.overviewController.reRender();
+        }
+        if (CS.mainMenuController) {
+            CS.mainMenuController.reRender();
+        }
 
         this.isInitial = false;
     };

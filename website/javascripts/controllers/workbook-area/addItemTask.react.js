@@ -48,7 +48,7 @@ CS.Controllers.WorkbookAreaAddItemTask = React.createClass({
     },
 
     _initTextareaValue: function () {
-        if (this.currentTask.sentenceStart) {
+        if (this.currentTask && this.currentTask.sentenceStart) {
             this.$textarea.val(this.currentTask.sentenceStart);
         }
     },

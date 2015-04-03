@@ -29,7 +29,7 @@ CS.Controllers.BlueprintAreasSelector = P(function (c) {
         }
     });
 
-    c.init = function (blueprintAreas) {
+    c.init = function () {
         this._initElements();
         this._initEvents();
 
@@ -37,9 +37,6 @@ CS.Controllers.BlueprintAreasSelector = P(function (c) {
             React.createElement(this.reactClass),
             this.$modal.find(".modal-body")[0]
         );
-
-        CS.blueprintAreasModel = CS.Models.BlueprintAreas(blueprintAreas);
-        CS.blueprintAreasModel.updateStatus();
 
         this.reRender();
         this._initModalWidth();

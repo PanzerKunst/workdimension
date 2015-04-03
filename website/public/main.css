@@ -6288,8 +6288,11 @@ header {
   position: fixed;
   top: 40px;
   right: 0;
+  bottom: 0;
   z-index: 10;
+  overflow-y: scroll;
   background-color: white;
+  padding: 1em;
   visibility: hidden; }
   #main-menu > a {
     display: block; }

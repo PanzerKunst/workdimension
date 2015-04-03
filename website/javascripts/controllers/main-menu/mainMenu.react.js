@@ -1,6 +1,36 @@
 CS.Controllers.MainMenu = P(CS.Controllers.Base, function (c) {
-    c.init = function () {
+    c.reactClass = React.createClass({
+        getInitialState: function () {
+            return {
+                activeWorkbookAreas: []
+            };
+        },
+
+        render: function () {
+            return (
+                <ul className="styleless">
+                    {this.state.activeWorkbookAreas.map(function (workbookArea) {
+                        var id = workbookArea.className + "-workbook-area-menu-item";
+
+                        var href = "/workbook-area/" + workbookArea.className;
+
+                        return (
+                            <li key={id}>
+                                <a href={href}>{workbookArea.title}</a>
+                            </li>
+                            );
+                    })}
+                </ul>
+                );
+        }
+    });
+
+    c.init = function (blueprintAreas) {
+        CS.blueprintAreasModel = CS.Models.BlueprintAreas(blueprintAreas);
+        CS.blueprintAreasModel.updateStatus();
+
         this._initElements();
+        this._addLinksToActiveWorkbookAreas();
         this._initEvents();
     };
 
@@ -10,6 +40,7 @@ CS.Controllers.MainMenu = P(CS.Controllers.Base, function (c) {
         this.$contentOverlayWhenMenuOpen = $("#content-overlay-when-menu-open");
         this.$selectAreasModal = $("#select-areas-modal");
 
+        this.$activeAreasSection = this.$menu.children("section");
         this.$selectAreasLink = this.$menu.children("#select-areas");
         this.$signInWithLinkedInLink = $("#sign-in-with-linkedin");
         this.$signOutLink = this.$menu.children("#sign-out");
@@ -21,6 +52,21 @@ CS.Controllers.MainMenu = P(CS.Controllers.Base, function (c) {
 
         this.$selectAreasLink.click($.proxy(this._showModal, this));
         this.$signOutLink.click($.proxy(this._signOut, this));
+    };
+
+    c._addLinksToActiveWorkbookAreas = function() {
+        this.reactInstance = React.render(
+            React.createElement(this.reactClass),
+            this.$activeAreasSection[0]
+        );
+
+        this.reRender();
+    };
+
+    c.reRender = function() {
+        this.reactInstance.replaceState({
+            activeWorkbookAreas: CS.blueprintAreasModel.getActive()
+        });
     };
 
     c._initSignInLinks = function() {

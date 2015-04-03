@@ -27,8 +27,8 @@
         CS.account.email = @if(accountEmail.isDefined) { "@accountEmail.get" } else { null };
         CS.account.data = @Html(play.api.libs.json.Json.toJson(accountData).toString);
 
-        CS.mainMenuController = CS.Controllers.MainMenu();
-        CS.Controllers.Index(@Html(play.api.libs.json.Json.toJson(workbookAreas).toString));
+        CS.mainMenuController = CS.Controllers.MainMenu(@Html(play.api.libs.json.Json.toJson(workbookAreas).toString));
+        CS.Controllers.Index();
     });
 </script>
 }

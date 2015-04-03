@@ -34,5 +34,5 @@ CS.AddItemToAreaTasks = [
         id: 7,
         workbookAreaId: 17,
         text: "If you get a salary for working on anything you want, what would you work with? "
-    } 
+    }
 ];

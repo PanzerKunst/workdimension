@@ -45,6 +45,8 @@ CS.Controllers.Overview = P(function (c) {
             React.createElement(this.reactClass),
             this.$el[0]
         );
+
+        this.reRender();
     };
 
     c.reRender = function () {

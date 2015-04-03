@@ -39,7 +39,7 @@ object Application extends Controller {
             WorkbookAreaDto.getOfClassName(className) match {
               case None => BadRequest("No workbook area found for class name " + className)
 
-              case Some(workbookArea) => Ok(views.html.workbookArea(workbookArea, accountId, account.emailAddress, AccountDataDto.getOfAccountId(accountId)))
+              case Some(workbookArea) => Ok(views.html.workbookArea(WorkbookAreaDto.getAll, workbookArea, accountId, account.emailAddress, AccountDataDto.getOfAccountId(accountId)))
             }
         }
     }

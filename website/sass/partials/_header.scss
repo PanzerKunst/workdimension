@@ -37,9 +37,13 @@ header {
   position: fixed;
   top: $header-height;
   right: 0;
+  bottom: 0;
   z-index: $z-index-menu;
 
+  overflow-y: scroll;
+
   background-color: $background-body-color;
+  padding: 1em;
 
   visibility: hidden; // Hidden by default
 
