@@ -503,6 +503,8 @@ CS.Controllers.Overview = P(function (c) {
 });
 
 CS.Controllers.WorkbookAreaAddItemTask = React.createClass({displayName: "WorkbookAreaAddItemTask",
+    itemCountForTaskComplete: 3,
+
     render: function () {
         this._initCurrentTask();
 
@@ -513,7 +515,7 @@ CS.Controllers.WorkbookAreaAddItemTask = React.createClass({displayName: "Workbo
         var textareaId = "task-" + this.currentTask.id;
 
         return (
-            React.createElement("div", {ref: "wrapper"}, 
+            React.createElement("div", {className: "add-item-task", ref: "wrapper"}, 
                 React.createElement("p", null, "Working on: making inventory of ", this.props.workbookArea.className.toLowerCase()), 
                 React.createElement("div", {className: "task-progress-bar"}, 
                     React.createElement("div", null)
@@ -532,16 +534,20 @@ CS.Controllers.WorkbookAreaAddItemTask = React.createClass({displayName: "Workbo
 
     componentDidMount: function () {
         this._initElements();
+        this._initProgressBar();
         this._initTextareaValue();
     },
 
     componentDidUpdate: function() {
+        this._initProgressBar();
         this._initTextareaValue();
     },
 
     _initElements: function () {
-        this.$form = $(React.findDOMNode(this.refs.wrapper)).children("form");
+        this.$el = $(React.findDOMNode(this.refs.wrapper));
+        this.$form = this.$el.children("form");
         this.$textarea = this.$form.find("textarea");
+        this.$progressBar = this.$el.children(".task-progress-bar").children();
     },
 
     _getLocalStorageKeyForSkippedTaskIds: function () {
@@ -551,6 +557,18 @@ CS.Controllers.WorkbookAreaAddItemTask = React.createClass({displayName: "Workbo
     _initCurrentTask: function () {
         this.areaTasks = _.where(CS.AddItemToAreaTasks, {workbookAreaId: this.props.workbookArea.id});
         this.currentTask = this._getNextTask();
+    },
+
+    _initProgressBar: function() {
+        var itemCount = 0;
+
+        if (CS.account.data && !_.isEmpty(CS.account.data[this.props.workbookArea.className])) {
+            itemCount = CS.account.data[this.props.workbookArea.className].length;
+        }
+
+        var itemPercent = itemCount / this.itemCountForTaskComplete * 100;
+
+        this.$progressBar.css("width", itemPercent + "%");
     },
 
     _initTextareaValue: function () {

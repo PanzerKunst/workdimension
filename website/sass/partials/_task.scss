@@ -1,8 +1,25 @@
+.add-item-task {
+  > p {
+    margin-bottom: 0;
+  }
+}
+
 .item-composer.task {
   display: block;
 
   > a {
     margin-left: 1em;
     vertical-align: middle;
+  }
+}
+
+.task-progress-bar {
+  background-color: $gray-light;
+
+  margin-bottom: 1em;
+
+  > div {
+    height: 0.4em;
+    background-color: $brand-success;
   }
 }

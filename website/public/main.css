@@ -6447,11 +6447,21 @@ footer {
 #workbook-area .item-composer > .fa-times {
   font-size: 1.1em; }
 
+.add-item-task > p {
+  margin-bottom: 0; }
+
 .item-composer.task {
   display: block; }
   .item-composer.task > a {
     margin-left: 1em;
     vertical-align: middle; }
+
+.task-progress-bar {
+  background-color: #777777;
+  margin-bottom: 1em; }
+  .task-progress-bar > div {
+    height: 0.4em;
+    background-color: #5cb85c; }
 
 html[data-useragent*='MSIE 9'] .input-group .form-control[type="text"],
 html[data-useragent*='MSIE 9'] .input-group .input-group-btn > .btn,
