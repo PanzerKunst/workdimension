@@ -1,4 +1,7 @@
 .add-item-task {
+  padding: 1em;
+  background-color: $well-bg;
+
   > p {
     margin-bottom: 0;
   }
@@ -6,6 +9,10 @@
 
 .item-composer.task {
   display: block;
+
+  > .form-group {
+    width: auto;
+  }
 
   > a {
     margin-left: 1em;

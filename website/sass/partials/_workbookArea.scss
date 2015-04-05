@@ -1,7 +1,6 @@
 #workbook-area {
   #content > div {
-    margin-left: auto;
-    margin-right: auto;
+    margin: 0 auto;
 
     @include medium-screen {
       width: ($small-content-width + $medium-content-width) / 2;
@@ -9,10 +8,23 @@
     @include large-screen {
       width: $medium-content-width;
     }
+
+    > .item-composer,
+    > .add-item-link {
+      margin: 0 $spacer-unit-size;
+
+      @include medium-screen {
+        margin: 0;
+      }
+    }
   }
 
   .item-names-list {
-    margin-top: $default-spacer-size;
+    margin: $default-spacer-size $spacer-unit-size 0 $spacer-unit-size;
+    @include medium-screen {
+      margin-left: 0;
+      margin-right: 0;
+    }
     @include large-screen {
       margin-top: $default-spacer-size-large-screen;
     }
@@ -22,7 +34,12 @@
     background-color: $well-bg;
   }
 
-  .item-composer > .fa-times {
-    font-size: 1.1em;
+  .fa-times {
+    @include medium-screen {
+      font-size: 1.1em;
+    }
+    @include large-screen {
+      font-size: 1em;
+    }
   }
 }
