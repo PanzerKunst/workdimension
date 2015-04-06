@@ -22,13 +22,14 @@ CS.Controllers.NextTask = P(function (c) {
     c.initNextTask = function () {
         var nextTask = this._getNextTask();
 
-        if (!this.nextTask ||
-            (this.nextTask && this.nextTask.text !== nextTask.text)) {
-            if (nextTask) {
-                this.$nextTaskSpan.html(nextTask.text);
-                this.$nextTaskActionBtn.unbind();
-                this.$nextTaskActionBtn.click(nextTask.action);
-            }
+        if (!nextTask) {
+            this.$nextTaskBtn.hide();
+        } else {
+            this.$nextTaskBtn.show();
+
+            this.$nextTaskSpan.html(nextTask.text);
+            this.$nextTaskActionBtn.unbind();
+            this.$nextTaskActionBtn.click(nextTask.action);
 
             this.nextTask = nextTask;
 
@@ -80,7 +81,7 @@ CS.Controllers.NextTask = P(function (c) {
         }
     };
 
-    c._markTaskAsRead = function() {
+    c._markTaskAsRead = function () {
         this.$nextTaskBtn.addClass("read");
 
         if (!this._isTaskRead()) {
@@ -90,7 +91,7 @@ CS.Controllers.NextTask = P(function (c) {
         }
     };
 
-    c._isTaskRead = function() {
+    c._isTaskRead = function () {
         return _.indexOf(CS.account.data.readTaskTexts, this.nextTask.text) > -1;
     };
 });
