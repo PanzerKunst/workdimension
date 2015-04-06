@@ -42,6 +42,15 @@ CS.Controllers.WorkbookAreaCommon = {
         }
     },
 
+    doesItemAlreadyExist: function(itemName, workbookAreaClassName) {
+        if (!CS.account.data || _.isEmpty(CS.account.data[workbookAreaClassName])) {
+            return false;
+        }
+
+        var areaItems = CS.account.data[workbookAreaClassName];
+        return !_.isEmpty(_.find(areaItems, "name", itemName));
+    },
+
     _getTextAreaDefaultHeight: function($textarea) {
         var fontSizeStr = $textarea.css("font-size");
         var fontSizePx = parseInt(fontSizeStr.substring(0, fontSizeStr.indexOf("px")), 10);

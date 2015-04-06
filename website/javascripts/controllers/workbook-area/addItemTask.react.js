@@ -97,7 +97,7 @@ CS.Controllers.WorkbookAreaAddItemTask = React.createClass({
 
         var itemNameToAdd = this.$textarea.val().trim();
 
-        if (this._isValid(itemNameToAdd)) {
+        if (this._isValid(itemNameToAdd) && !CS.Controllers.WorkbookAreaCommon.doesItemAlreadyExist(itemNameToAdd, this.props.workbookArea.className)) {
             var updatedBlueprintAreaData = CS.account.data && !_.isEmpty(CS.account.data[this.props.workbookArea.className]) ? _.clone(CS.account.data[this.props.workbookArea.className], true) : [];
             updatedBlueprintAreaData.push({name: itemNameToAdd});
 

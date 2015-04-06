@@ -943,6 +943,15 @@ CS.saveAccountData = function (callback) {
         }
     },
 
+    doesItemAlreadyExist: function(itemName, workbookAreaClassName) {
+        if (!CS.account.data || _.isEmpty(CS.account.data[workbookAreaClassName])) {
+            return false;
+        }
+
+        var areaItems = CS.account.data[workbookAreaClassName];
+        return !_.isEmpty(_.find(areaItems, "name", itemName));
+    },
+
     _getTextAreaDefaultHeight: function($textarea) {
         var fontSizeStr = $textarea.css("font-size");
         var fontSizePx = parseInt(fontSizeStr.substring(0, fontSizeStr.indexOf("px")), 10);
@@ -1393,7 +1402,7 @@ CS.Controllers.OverviewBlueprintAreaComposer = React.createClass({displayName: "
 
         var itemNameToAdd = this.$textarea.val().trim();
 
-        if (itemNameToAdd) {
+        if (itemNameToAdd && !CS.Controllers.WorkbookAreaCommon.doesItemAlreadyExist(itemNameToAdd, this.props.blueprintAreaClassName)) {
             var updatedBlueprintAreaData = CS.account.data && !_.isEmpty(CS.account.data[this.props.blueprintAreaClassName]) ? _.clone(CS.account.data[this.props.blueprintAreaClassName], true) : [];
             updatedBlueprintAreaData.push({name: itemNameToAdd});
 
@@ -1746,7 +1755,7 @@ CS.Controllers.WorkbookAreaAddItemTask = React.createClass({displayName: "Workbo
 
         var itemNameToAdd = this.$textarea.val().trim();
 
-        if (this._isValid(itemNameToAdd)) {
+        if (this._isValid(itemNameToAdd) && !CS.Controllers.WorkbookAreaCommon.doesItemAlreadyExist(itemNameToAdd, this.props.workbookArea.className)) {
             var updatedBlueprintAreaData = CS.account.data && !_.isEmpty(CS.account.data[this.props.workbookArea.className]) ? _.clone(CS.account.data[this.props.workbookArea.className], true) : [];
             updatedBlueprintAreaData.push({name: itemNameToAdd});
 
@@ -1866,7 +1875,7 @@ CS.Controllers.WorkbookArea = P(function (c) {
 
             var itemNameToAdd = this.$textarea.val().trim();
 
-            if (itemNameToAdd) {
+            if (itemNameToAdd && !CS.Controllers.WorkbookAreaCommon.doesItemAlreadyExist(itemNameToAdd, this.state.workbookArea.className)) {
                 var updatedBlueprintAreaData = CS.account.data && !_.isEmpty(CS.account.data[this.state.workbookArea.className]) ? _.clone(CS.account.data[this.state.workbookArea.className], true) : [];
                 updatedBlueprintAreaData.push({name: itemNameToAdd});
 

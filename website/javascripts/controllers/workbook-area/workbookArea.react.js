@@ -66,7 +66,7 @@ CS.Controllers.WorkbookArea = P(function (c) {
 
             var itemNameToAdd = this.$textarea.val().trim();
 
-            if (itemNameToAdd) {
+            if (itemNameToAdd && !CS.Controllers.WorkbookAreaCommon.doesItemAlreadyExist(itemNameToAdd, this.state.workbookArea.className)) {
                 var updatedBlueprintAreaData = CS.account.data && !_.isEmpty(CS.account.data[this.state.workbookArea.className]) ? _.clone(CS.account.data[this.state.workbookArea.className], true) : [];
                 updatedBlueprintAreaData.push({name: itemNameToAdd});
 
