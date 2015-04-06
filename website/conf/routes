@@ -12,10 +12,10 @@ GET     /workbook-areas/:className                  controllers.Application.work
 # API
 POST    /api/db/re-create-tables                    controllers.api.DbAdminApi.reCreateTables
 
-GET     /api/accounts                               controllers.api.AccountApi.get
+GET     /api/accounts/:linkedinAccountId            controllers.api.AccountApi.get(linkedinAccountId: String)
 POST    /api/accounts                               controllers.api.AccountApi.create
 
-POST    /api/auth                                   controllers.api.AuthApi.signIn(emailAddress: String)
+POST    /api/auth                                   controllers.api.AuthApi.signIn(linkedinAccountId: String)
 DELETE  /api/auth                                   controllers.api.AuthApi.signOut
 
 POST    /api/account-data                           controllers.api.AccountDataApi.add

@@ -76,7 +76,7 @@ CS.Controllers.BlueprintAreaSelectorItem = React.createClass({displayName: "Blue
         this.props.blueprintArea.activate();
 
         if (window.location.pathname !== "/") {
-            location.href = "/workbook-area/" + this.props.blueprintArea.className;
+            location.href = "/workbook-areas/" + this.props.blueprintArea.className;
         }
     }
 });
@@ -136,16 +136,6 @@ CS.Controllers.MainMenu = P(CS.Controllers.Base, function (c) {
         this.$contentOverlayWhenMenuOpen.click($.proxy(this.toggleMenu, this));
 
         this.$selectAreasLink.click($.proxy(this._showModal, this));
-        this.$signOutLink.click($.proxy(this._signOut, this));
-    };
-
-    c._addLinksToActiveWorkbookAreas = function() {
-        this.reactInstance = React.render(
-            React.createElement(this.reactClass),
-            this.$activeAreasSection[0]
-        );
-
-        this.reRender();
     };
 
     c.reRender = function() {
@@ -154,33 +144,21 @@ CS.Controllers.MainMenu = P(CS.Controllers.Base, function (c) {
         });
     };
 
-    c._initSignInLinks = function() {
-        if (this.isTemporaryAccount()) {
-            this.$signOutLink.hide();
-            this.$signInWithLinkedInLink.show();
-        } else {
-            this.$signInWithLinkedInLink.hide();
-            this.$signOutLink.show();
-        }
-    };
-
     c.toggleMenu = function () {
         this._initSignInLinks();
 
         this.$mainContainer.toggleClass("menu-open");
     };
 
+    c.hideMenu = function () {
+        this.$mainContainer.removeClass("menu-open");
+    };
+
     c.hideModal = function() {
         this.$selectAreasModal.modal("hide");
     };
 
-    c._showModal = function() {
-        CS.blueprintAreasSelector.reRender();
-        this.$selectAreasModal.modal();
-        this.toggleMenu();
-    };
-
-    c._signOut = function() {
+    c.signOut = function() {
         var type = "DELETE";
         var url = "/api/auth";
 
@@ -194,6 +172,31 @@ CS.Controllers.MainMenu = P(CS.Controllers.Base, function (c) {
                 alert("AJAX failure doing a " + type + " request to \"" + url + "\"");
             }
         });
+    };
+
+    c._addLinksToActiveWorkbookAreas = function() {
+        this.reactInstance = React.render(
+            React.createElement(this.reactClass),
+            this.$activeAreasSection[0]
+        );
+
+        this.reRender();
+    };
+
+    c._initSignInLinks = function() {
+        if (this.isTemporaryAccount()) {
+            this.$signOutLink.hide();
+            this.$signInWithLinkedInLink.show();
+        } else {
+            this.$signInWithLinkedInLink.hide();
+            this.$signOutLink.show();
+        }
+    };
+
+    c._showModal = function() {
+        CS.blueprintAreasSelector.reRender();
+        this.$selectAreasModal.modal();
+        this.toggleMenu();
     };
 });
 

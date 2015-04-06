@@ -39,7 +39,6 @@ object AccountApi extends Controller {
 
                   val jsonToReturn = JsObject(Seq(
                     "accountId" -> JsNumber(newAccountId),
-                    "accountEmail" -> JsString(frontendAccount.emailAddress),
                     "accountData" -> AccountDataDto.getOfAccountId(newAccountId).getOrElse(JsNull)
                   ))
 
@@ -56,14 +55,10 @@ object AccountApi extends Controller {
     }
   }
 
-  def get = Action { request =>
-    if (request.queryString.contains("emailAddress")) {
-      val emailAddress = request.queryString.get("emailAddress").get.head
-      AccountDto.getOfEmailAddress(emailAddress) match {
-        case None => NoContent
-        case Some(account) => Ok(Json.toJson(account))
-      }
-    } else
-      BadRequest("Query string param 'emailAddress' must be set")
+  def get(linkedinAccountId: String) = Action { request =>
+    AccountDto.getOfLinkedinAccountId(linkedinAccountId) match {
+      case None => NoContent
+      case Some(account) => Ok(Json.toJson(account))
+    }
   }
 }

@@ -6283,7 +6283,7 @@ header {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    max-width: 74%; }
+    max-width: 60%; }
   header button.fa {
     float: right; }
 
@@ -6327,11 +6327,12 @@ header {
   overflow: hidden;
   background-color: rgba(255, 138, 56, 0.3); }
   #next-task-prompt > span {
-    display: inline-block; }
+    display: inline-block;
+    vertical-align: middle; }
   #next-task-prompt > .btn {
     font-size: 0.75em;
-    vertical-align: text-top;
-    margin-left: 1em; }
+    vertical-align: bottom;
+    margin: 0.2em 0 0.2em 1em; }
 
 #sign-in-with-linkedin {
   font: 0/0 a;

@@ -9,7 +9,7 @@ CS.Controllers.BlueprintAreaSelectorItem = React.createClass({
         this.props.blueprintArea.activate();
 
         if (window.location.pathname !== "/") {
-            location.href = "/workbook-area/" + this.props.blueprintArea.className;
+            location.href = "/workbook-areas/" + this.props.blueprintArea.className;
         }
     }
 });

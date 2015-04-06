@@ -6,14 +6,13 @@ import play.api.libs.json._
 import play.api.mvc.{Action, Controller}
 
 object AuthApi extends Controller {
-  def signIn(emailAddress: String) = Action { request =>
-    AccountDto.getOfEmailAddress(emailAddress) match {
+  def signIn(linkedinAccountId: String) = Action { request =>
+    AccountDto.getOfLinkedinAccountId(linkedinAccountId) match {
       case Some(account) =>
         val accountId = account.id.get
 
         val jsonToReturn = JsObject(Seq(
           "accountId" -> JsNumber(accountId),
-          "accountEmail" -> JsString(emailAddress),
           "accountData" -> AccountDataDto.getOfAccountId(accountId).getOrElse(JsNull)
         ))
 

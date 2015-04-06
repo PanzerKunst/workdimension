@@ -881,6 +881,7 @@ CS.saveAccountData = function (callback) {
 });
 ;CS.Controllers.Base = P(function(c) {
     c.httpStatusCode = {
+        ok: 200,
         noContent: 204,
         emailAlreadyRegistered: 230,
         linkedInAccountIdAlreadyRegistered: 231
@@ -979,28 +980,35 @@ CS.Controllers.MainMenuLinkedInAuthenticator = P(CS.Controllers.Base, function (
 
     c._initEvents = function () {
         this.$signInWithLinkedInLink.click($.proxy(this._signInWithLinkedIn, this));
+        this.$signOutLink.click($.proxy(this._signOut, this));
+
+        IN.Event.on(IN, "auth", function () {
+            IN.API.Profile("me").result(function (profiles) {
+                this._signIn(profiles.values[0], true);
+            }.bind(this));
+        }.bind(this));
     };
 
     c._signInWithLinkedIn = function () {
-        IN.User.authorize(this._getProfileData, this);
+        IN.User.authorize(this._saveProfileData, this);
     };
 
-    c._getProfileData = function () {
+    c._saveProfileData = function () {
+        // TODO: remove
+        console.log("_saveProfileData");
+
         IN.API.Raw("/people/~:(id,first-name,last-name,maiden-name,formatted-name,phonetic-first-name,phonetic-last-name,formatted-phonetic-name,headline,location,industry,current-share,num-connections,num-connections-capped,summary,specialties,positions,picture-url,picture-urls::(original),site-standard-profile-request,api-standard-profile-request,public-profile-url,email-address)")
             .result(function (data) {
-                this.$signInWithLinkedInLink.hide();
-                this.$signOutLink.show();
-
-                this._signIn(data);
+                this._checkIfAccountExists(data);
             }.bind(this))
             .error(function (error) {
                 alert("Error while signing-in with LinkedIn: " + error);
             });
     };
 
-    c._signIn = function(linkedInAccountData) {
-        var type = "POST";
-        var url = "/api/auth?emailAddress=" + linkedInAccountData.emailAddress;
+    c._checkIfAccountExists = function (linkedInAccountData) {
+        var type = "GET";
+        var url = "/api/accounts/" + linkedInAccountData.id;
 
         $.ajax({
             url: url,
@@ -1008,7 +1016,27 @@ CS.Controllers.MainMenuLinkedInAuthenticator = P(CS.Controllers.Base, function (
             success: function (data, textStatus, jqXHR) {
                 if (jqXHR.status === this.httpStatusCode.noContent) {
                     this._createAccount(linkedInAccountData);
-                } else {
+                }
+            }.bind(this),
+            error: function () {
+                alert("AJAX failure doing a " + type + " request to \"" + url + "\"");
+            }
+        });
+    };
+
+    c._signIn = function (linkedInAccountData) {
+
+        // TODO: remove
+        console.log("_signIn");
+
+        var type = "POST";
+        var url = "/api/auth?linkedinAccountId=" + linkedInAccountData.id;
+
+        $.ajax({
+            url: url,
+            type: type,
+            success: function (data, textStatus, jqXHR) {
+                if (jqXHR.status === this.httpStatusCode.ok) {
                     this._loadAccountData(data);
                 }
             }.bind(this),
@@ -1019,6 +1047,10 @@ CS.Controllers.MainMenuLinkedInAuthenticator = P(CS.Controllers.Base, function (
     };
 
     c._createAccount = function (linkedInAccountData) {
+
+        // TODO: remove
+        console.log("_createAccount");
+
         var data = {
             emailAddress: linkedInAccountData.emailAddress.trim(),
             linkedInAccountId: linkedInAccountData.id.trim()
@@ -1047,13 +1079,23 @@ CS.Controllers.MainMenuLinkedInAuthenticator = P(CS.Controllers.Base, function (
         });
     };
 
-    c._loadAccountData = function(data) {
+    c._loadAccountData = function (data) {
+
+        // TODO: remove
+        console.log("_loadAccountData");
+
         CS.account.id = data.accountId;
-        CS.account.email = data.accountEmail;
         CS.account.data = data.accountData;
 
-        CS.mainMenuController.toggleMenu();
+        this.$signInWithLinkedInLink.hide();
+        this.$signOutLink.show();
+
+        CS.mainMenuController.hideMenu();
         CS.blueprintAreasModel.updateStatus();
+    };
+
+    c._signOut = function () {
+        IN.User.logout(CS.mainMenuController.signOut, this);
     };
 });
 ;CS.Controllers.NextTask = P(function (c) {
@@ -1231,7 +1273,7 @@ CS.Controllers.BlueprintAreaSelectorItem = React.createClass({displayName: "Blue
         this.props.blueprintArea.activate();
 
         if (window.location.pathname !== "/") {
-            location.href = "/workbook-area/" + this.props.blueprintArea.className;
+            location.href = "/workbook-areas/" + this.props.blueprintArea.className;
         }
     }
 });
@@ -1291,16 +1333,6 @@ CS.Controllers.MainMenu = P(CS.Controllers.Base, function (c) {
         this.$contentOverlayWhenMenuOpen.click($.proxy(this.toggleMenu, this));
 
         this.$selectAreasLink.click($.proxy(this._showModal, this));
-        this.$signOutLink.click($.proxy(this._signOut, this));
-    };
-
-    c._addLinksToActiveWorkbookAreas = function() {
-        this.reactInstance = React.render(
-            React.createElement(this.reactClass),
-            this.$activeAreasSection[0]
-        );
-
-        this.reRender();
     };
 
     c.reRender = function() {
@@ -1309,33 +1341,21 @@ CS.Controllers.MainMenu = P(CS.Controllers.Base, function (c) {
         });
     };
 
-    c._initSignInLinks = function() {
-        if (this.isTemporaryAccount()) {
-            this.$signOutLink.hide();
-            this.$signInWithLinkedInLink.show();
-        } else {
-            this.$signInWithLinkedInLink.hide();
-            this.$signOutLink.show();
-        }
-    };
-
     c.toggleMenu = function () {
         this._initSignInLinks();
 
         this.$mainContainer.toggleClass("menu-open");
     };
 
+    c.hideMenu = function () {
+        this.$mainContainer.removeClass("menu-open");
+    };
+
     c.hideModal = function() {
         this.$selectAreasModal.modal("hide");
     };
 
-    c._showModal = function() {
-        CS.blueprintAreasSelector.reRender();
-        this.$selectAreasModal.modal();
-        this.toggleMenu();
-    };
-
-    c._signOut = function() {
+    c.signOut = function() {
         var type = "DELETE";
         var url = "/api/auth";
 
@@ -1349,6 +1369,31 @@ CS.Controllers.MainMenu = P(CS.Controllers.Base, function (c) {
                 alert("AJAX failure doing a " + type + " request to \"" + url + "\"");
             }
         });
+    };
+
+    c._addLinksToActiveWorkbookAreas = function() {
+        this.reactInstance = React.render(
+            React.createElement(this.reactClass),
+            this.$activeAreasSection[0]
+        );
+
+        this.reRender();
+    };
+
+    c._initSignInLinks = function() {
+        if (this.isTemporaryAccount()) {
+            this.$signOutLink.hide();
+            this.$signInWithLinkedInLink.show();
+        } else {
+            this.$signInWithLinkedInLink.hide();
+            this.$signOutLink.show();
+        }
+    };
+
+    c._showModal = function() {
+        CS.blueprintAreasSelector.reRender();
+        this.$selectAreasModal.modal();
+        this.toggleMenu();
     };
 });
 

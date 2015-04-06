@@ -117,4 +117,30 @@ object AccountDto {
         }
     }
   }
+
+  def getOfLinkedinAccountId(linkedInAccountId: String): Option[Account] = {
+    DB.withConnection {
+      implicit c =>
+        val query = """
+        select id, email_address, creation_timestamp
+        from account
+        where linkedin_account_id = '""" + DbUtil.safetize(linkedInAccountId) + """';"""
+
+        Logger.info("AccountDto.getOfLinkedinAccountId():" + query)
+
+        SQL(query).apply().headOption match {
+          case Some(row) =>
+            Some(
+              Account(
+                row[Option[Long]]("id"),
+                row[Option[String]]("email_address"),
+                None,
+                Some(linkedInAccountId),
+                row[Long]("creation_timestamp")
+              )
+            )
+          case None => None
+        }
+    }
+  }
 }

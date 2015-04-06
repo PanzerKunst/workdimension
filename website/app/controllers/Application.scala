@@ -9,20 +9,20 @@ object Application extends Controller {
   val doNotCachePage = Array(CACHE_CONTROL -> "no-cache, no-store")
 
   def index = Action { request =>
-    val (accountId, accountEmail) = getAccountId(request.session) match {
-      case None => (generateTempAccountIdAndInitialiseTables(request.session), None)
+    val accountId = getAccountId(request.session) match {
+      case None => generateTempAccountIdAndInitialiseTables(request.session)
 
       case Some(id) =>
         AccountDto.getOfId(id) match {
-          case Some(account) => (id, account.emailAddress)
+          case Some(account) => id
 
           case None =>
             AccountDto.createTemporary(id)
-            (id, None)
+            id
         }
     }
 
-    Ok(views.html.index(WorkbookAreaDto.getAll, accountId, accountEmail, AccountDataDto.getOfAccountId(accountId))).withSession(request.session
+    Ok(views.html.index(WorkbookAreaDto.getAll, accountId, AccountDataDto.getOfAccountId(accountId))).withSession(request.session
       +("accountId", accountId.toString)
     )
   }
@@ -38,8 +38,7 @@ object Application extends Controller {
           case Some(account) =>
             WorkbookAreaDto.getOfClassName(className) match {
               case None => BadRequest("No workbook area found for class name " + className)
-
-              case Some(workbookArea) => Ok(views.html.workbookArea(WorkbookAreaDto.getAll, workbookArea, accountId, account.emailAddress, AccountDataDto.getOfAccountId(accountId)))
+              case Some(workbookArea) => Ok(views.html.workbookArea(WorkbookAreaDto.getAll, workbookArea, accountId, AccountDataDto.getOfAccountId(accountId)))
             }
         }
     }
