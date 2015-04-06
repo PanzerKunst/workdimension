@@ -27,10 +27,21 @@ header {
 
     max-width: 74%;
   }
+
+  button.fa {
+    float: right;
+  }
 }
 
-#menu-btn {
-  float: right;
+#next-task-btn.read {
+  color: transparentize(white, 0.5);
+}
+
+#container.menu-open {
+  #menu-btn {
+    color: $action-color;
+    background-color: $background-body-color;
+  }
 }
 
 #main-menu {
@@ -74,6 +85,26 @@ header {
   background-color: rgba(0, 0, 0, 0.2);
 
   z-index: -1;
+}
+
+#next-task-prompt {
+  padding-top: $header-height; // Margin fucks up the absolute-positioning as it is declared now
+  text-align: center;
+
+  height: 0;
+  overflow: hidden;
+
+  background-color: transparentize($action-color, 0.7);
+
+  > span {
+    display: inline-block;
+  }
+
+  > .btn {
+    font-size: 0.75em;
+    vertical-align: text-top;
+    margin-left: 1em;
+  }
 }
 
 #sign-in-with-linkedin {

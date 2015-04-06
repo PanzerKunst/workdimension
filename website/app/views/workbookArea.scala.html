@@ -22,6 +22,7 @@
         CS.account.data = @Html(play.api.libs.json.Json.toJson(accountData).toString);
 
         CS.mainMenuController = CS.Controllers.MainMenu(@Html(play.api.libs.json.Json.toJson(workbookAreas).toString));
+        CS.nextTaskController = CS.Controllers.NextTask();
         CS.workbookAreaController = CS.Controllers.WorkbookArea(@Html(play.api.libs.json.Json.toJson(workbookArea).toString));
         CS.blueprintAreasSelector = CS.Controllers.BlueprintAreasSelector();
     });

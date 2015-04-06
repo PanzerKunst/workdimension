@@ -6235,9 +6235,6 @@ body {
 [role="main"] {
   padding-bottom: 40px; }
 
-#content {
-  padding-top: 40px; }
-
 a.fa:hover, a.fa:focus {
   text-decoration: none; }
 
@@ -6287,9 +6284,15 @@ header {
     overflow: hidden;
     text-overflow: ellipsis;
     max-width: 74%; }
+  header button.fa {
+    float: right; }
 
-#menu-btn {
-  float: right; }
+#next-task-btn.read {
+  color: rgba(255, 255, 255, 0.5); }
+
+#container.menu-open #menu-btn {
+  color: #ff8a38;
+  background-color: white; }
 
 #main-menu {
   position: fixed;
@@ -6316,6 +6319,19 @@ header {
   height: 100%;
   background-color: rgba(0, 0, 0, 0.2);
   z-index: -1; }
+
+#next-task-prompt {
+  padding-top: 40px;
+  text-align: center;
+  height: 0;
+  overflow: hidden;
+  background-color: rgba(255, 138, 56, 0.3); }
+  #next-task-prompt > span {
+    display: inline-block; }
+  #next-task-prompt > .btn {
+    font-size: 0.75em;
+    vertical-align: text-top;
+    margin-left: 1em; }
 
 #sign-in-with-linkedin {
   font: 0/0 a;

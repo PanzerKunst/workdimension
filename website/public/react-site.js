@@ -95,7 +95,7 @@ CS.Controllers.MainMenu = P(CS.Controllers.Base, function (c) {
                     this.state.activeWorkbookAreas.map(function (workbookArea) {
                         var id = workbookArea.className + "-workbook-area-menu-item";
 
-                        var href = "/workbook-area/" + workbookArea.className;
+                        var href = "/workbook-areas/" + workbookArea.className;
 
                         return (
                             React.createElement("li", {key: id}, 
@@ -275,7 +275,7 @@ CS.Controllers.OverviewBlueprintAreaComposer = React.createClass({displayName: "
 
 CS.Controllers.OverviewBlueprintAreaPanel = React.createClass({displayName: "OverviewBlueprintAreaPanel",
     render: function () {
-        var workbookAreaTitleHref = "/workbook-area/" + this._getBlueprintArea().className;
+        var workbookAreaTitleHref = "/workbook-areas/" + this._getBlueprintArea().className;
 
         return (
             React.createElement("li", {className: "blueprint-area-panel", ref: "li"}, 

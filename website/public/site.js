@@ -272,6 +272,7 @@ CS.router = new Grapnel();
 CS.defaultAnimationDuration = 0.5;
 CS.blueprintAreasModel = null;
 CS.mainMenuController = null;
+CS.nextTaskController = null;
 CS.overviewController = null;
 CS.workbookAreaController = null;
 CS.blueprintAreasSelector = null;
@@ -295,6 +296,10 @@ CS.saveAccountData = function (callback) {
             alert("AJAX failure doing a " + type + " request to \"" + url + "\"");
         }
     });
+
+    if (CS.nextTaskController) {
+        CS.nextTaskController.initNextTask();
+    }
 };
 ;CS.Services.Browser = {
     cssRules: function () {
@@ -898,6 +903,8 @@ CS.saveAccountData = function (callback) {
     textareaDefaultHeightPx: 41,
     mediumScreenTextareaDefaultHeightPx: 53,
     largeScreenTextareaDefaultHeightPx: 65,
+    fontSizeLargeScreen: 22.3,
+    fontSizeMediumScreen: 18.1,
 
     handleTextareaKeyUp: function (e, formSubmitFunction, formCancelFunction) {
         if (e.keyCode === CS.Services.Keyboard.keyCode.enter) {
@@ -916,7 +923,7 @@ CS.saveAccountData = function (callback) {
         var lineCount = Math.floor(($textarea.prop("scrollHeight") - padding) / lineHeight);
 
         var currentTextAreaHeightPx = parseFloat($textarea.css("height"));
-        var newTextAreaHeightPx = this._getTextAreaDefaultHeight() - lineHeight + lineCount * lineHeight;
+        var newTextAreaHeightPx = this._getTextAreaDefaultHeight($textarea) - lineHeight + lineCount * lineHeight;
 
         if (newTextAreaHeightPx !== currentTextAreaHeightPx) {
             $textarea.css("height", newTextAreaHeightPx);
@@ -936,11 +943,14 @@ CS.saveAccountData = function (callback) {
         }
     },
 
-    _getTextAreaDefaultHeight: function() {
-        if (CS.Services.Browser.isLargeScreen()) {
+    _getTextAreaDefaultHeight: function($textarea) {
+        var fontSizeStr = $textarea.css("font-size");
+        var fontSizePx = parseInt(fontSizeStr.substring(0, fontSizeStr.indexOf("px")), 10);
+
+        if (fontSizePx > this.fontSizeLargeScreen) {
             return this.largeScreenTextareaDefaultHeightPx;
         }
-        if (CS.Services.Browser.isMediumScreen()) {
+        if (fontSizePx > this.fontSizeMediumScreen) {
             return this.mediumScreenTextareaDefaultHeightPx;
         }
         return this.textareaDefaultHeightPx;
@@ -1035,6 +1045,102 @@ CS.Controllers.MainMenuLinkedInAuthenticator = P(CS.Controllers.Base, function (
 
         CS.mainMenuController.toggleMenu();
         CS.blueprintAreasModel.updateStatus();
+    };
+});
+;CS.Controllers.NextTask = P(function (c) {
+    c.init = function () {
+        this._initElements();
+        this._initEvents();
+
+        this.initNextTask();
+    };
+
+    c._initElements = function () {
+        this.$mainContainer = $("#container");
+        this.$nextTaskBtn = $("#next-task-btn");
+        this.$nextTaskPrompt = $("#next-task-prompt");
+
+        this.$nextTaskSpan = this.$nextTaskPrompt.children("span");
+        this.$nextTaskActionBtn = this.$nextTaskPrompt.children("button");
+    };
+
+    c._initEvents = function () {
+        this.$nextTaskBtn.click($.proxy(this._toggleNextTaskPrompt, this));
+    };
+
+    c.initNextTask = function () {
+        var nextTask = this._getNextTask();
+
+        if (!this.nextTask ||
+            (this.nextTask && this.nextTask.text !== nextTask.text)) {
+            if (nextTask) {
+                this.$nextTaskSpan.html(nextTask.text);
+                this.$nextTaskActionBtn.unbind();
+                this.$nextTaskActionBtn.click(nextTask.action);
+            }
+
+            this.nextTask = nextTask;
+
+            if (this._isTaskRead()) {
+                this.$nextTaskBtn.addClass("read");
+            } else {
+                this.$nextTaskBtn.removeClass("read");
+                TweenLite.set(this.$nextTaskBtn, {backgroundColor: "rgb(255, 255, 255)"});
+                TweenLite.to(this.$nextTaskBtn, CS.defaultAnimationDuration * 2, {backgroundColor: "rgb(255, 138, 56)"});
+            }
+        }
+    };
+
+    c._toggleNextTaskPrompt = function () {
+        var newHeight = "0px";
+
+        if (this.$nextTaskPrompt.height() === 0) {
+            newHeight = "auto";
+            this._markTaskAsRead();
+        }
+
+        this.$nextTaskPrompt.css("height", newHeight);
+    };
+
+    c._getNextTask = function () {
+        var activeWorkbookAreaToInventorize = _.find(CS.blueprintAreasModel.getActive(), function (workbookArea) {
+            return CS.account.data[workbookArea.className] && CS.account.data[workbookArea.className].length === 2;
+        });
+
+        if (!activeWorkbookAreaToInventorize) {
+            activeWorkbookAreaToInventorize = _.find(CS.blueprintAreasModel.getActive(), function (workbookArea) {
+                return CS.account.data[workbookArea.className] && CS.account.data[workbookArea.className].length === 1;
+            });
+        }
+
+        if (!activeWorkbookAreaToInventorize) {
+            activeWorkbookAreaToInventorize = _.find(CS.blueprintAreasModel.getActive(), function (workbookArea) {
+                return !CS.account.data[workbookArea.className] || CS.account.data[workbookArea.className].length === 0;
+            });
+        }
+
+        if (activeWorkbookAreaToInventorize) {
+            return {
+                text: "Making inventory of " + activeWorkbookAreaToInventorize.className.toLowerCase(),
+                action: function () {
+                    location.href = "/workbook-areas/" + activeWorkbookAreaToInventorize.className;
+                }
+            };
+        }
+    };
+
+    c._markTaskAsRead = function() {
+        this.$nextTaskBtn.addClass("read");
+
+        if (!this._isTaskRead()) {
+            CS.account.data.readTaskTexts = CS.account.data.readTaskTexts || [];
+            CS.account.data.readTaskTexts.push(this.nextTask.text);
+            CS.saveAccountData();
+        }
+    };
+
+    c._isTaskRead = function() {
+        return _.indexOf(CS.account.data.readTaskTexts, this.nextTask.text) > -1;
     };
 });
 ;CS.Controllers.BlueprintAreasSelector = P(function (c) {
@@ -1134,7 +1240,7 @@ CS.Controllers.MainMenu = P(CS.Controllers.Base, function (c) {
                     this.state.activeWorkbookAreas.map(function (workbookArea) {
                         var id = workbookArea.className + "-workbook-area-menu-item";
 
-                        var href = "/workbook-area/" + workbookArea.className;
+                        var href = "/workbook-areas/" + workbookArea.className;
 
                         return (
                             React.createElement("li", {key: id}, 
@@ -1314,7 +1420,7 @@ CS.Controllers.OverviewBlueprintAreaComposer = React.createClass({displayName: "
 
 CS.Controllers.OverviewBlueprintAreaPanel = React.createClass({displayName: "OverviewBlueprintAreaPanel",
     render: function () {
-        var workbookAreaTitleHref = "/workbook-area/" + this._getBlueprintArea().className;
+        var workbookAreaTitleHref = "/workbook-areas/" + this._getBlueprintArea().className;
 
         return (
             React.createElement("li", {className: "blueprint-area-panel", ref: "li"}, 

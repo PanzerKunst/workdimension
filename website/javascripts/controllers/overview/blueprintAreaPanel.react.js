@@ -1,6 +1,6 @@
 CS.Controllers.OverviewBlueprintAreaPanel = React.createClass({
     render: function () {
-        var workbookAreaTitleHref = "/workbook-area/" + this._getBlueprintArea().className;
+        var workbookAreaTitleHref = "/workbook-areas/" + this._getBlueprintArea().className;
 
         return (
             <li className="blueprint-area-panel" ref="li">

@@ -29,10 +29,6 @@ body {
   padding-bottom: $footer-height;
 }
 
-#content {
-  padding-top: $header-height; // Margin fucks up the absolute-positioning as it is declared now
-}
-
 a.fa {
   &:hover,
   &:focus {

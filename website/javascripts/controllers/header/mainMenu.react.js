@@ -12,7 +12,7 @@ CS.Controllers.MainMenu = P(CS.Controllers.Base, function (c) {
                     {this.state.activeWorkbookAreas.map(function (workbookArea) {
                         var id = workbookArea.className + "-workbook-area-menu-item";
 
-                        var href = "/workbook-area/" + workbookArea.className;
+                        var href = "/workbook-areas/" + workbookArea.className;
 
                         return (
                             <li key={id}>
