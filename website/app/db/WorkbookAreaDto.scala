@@ -11,7 +11,8 @@ object WorkbookAreaDto {
     DB.withConnection { implicit c =>
       val query = """
       select distinct id, workbook_category_id, class_name, title
-      from workbook_area;"""
+      from workbook_area
+      order by id;"""
 
       Logger.info("WorkbookAreaDto.getAll():" + query)
 
