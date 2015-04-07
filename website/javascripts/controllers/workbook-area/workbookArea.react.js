@@ -20,7 +20,7 @@ CS.Controllers.WorkbookArea = P(function (c) {
             }
 
             return (
-                <div>
+                <div ref="wrapper">
                     {taskReact}
 
                     <ul className="styleless item-names-list">
@@ -31,7 +31,7 @@ CS.Controllers.WorkbookArea = P(function (c) {
                         }.bind(this))}
                     </ul>
 
-                    <form role="form" className="item-composer" ref="form" onSubmit={this._handleComposerFormSubmit}>
+                    <form role="form" className="item-composer" onSubmit={this._handleComposerFormSubmit}>
                         <textarea className="form-control" onKeyUp={this._handleTextareaKeyUp} />
                         <button className="btn btn-primary">Add</button>
                         <button type="button" className="styleless fa fa-times" onClick={this._hideForm}></button>
@@ -44,12 +44,21 @@ CS.Controllers.WorkbookArea = P(function (c) {
 
         componentDidMount: function () {
             this._initElements();
+            this._initSortable();
         },
 
         _initElements: function () {
-            this.$form = $(React.findDOMNode(this.refs.form));
+            this.$wrapper = $(React.findDOMNode(this.refs.wrapper));
+            this.$list = this.$wrapper.children("ul");
+            this.$form = this.$wrapper.children("form");
             this.$addItemLink = this.$form.siblings(".add-item-link");
             this.$textarea = this.$form.children("textarea");
+        },
+
+        _initSortable: function () {
+            Sortable.create(this.$list[0], {onUpdate: function() {
+                CS.Controllers.WorkbookAreaCommon.handleWorkbookItemsReordered(this.$list, this.state.workbookArea.className);
+            }.bind(this)});
         },
 
         _showComposer: function () {
@@ -80,7 +89,7 @@ CS.Controllers.WorkbookArea = P(function (c) {
             CS.Controllers.WorkbookAreaCommon.resetAndHideForm(this.$textarea, $.proxy(this._hideForm, this));
         },
 
-        _handleTextareaKeyUp: function(e) {
+        _handleTextareaKeyUp: function (e) {
             CS.Controllers.WorkbookAreaCommon.handleTextareaKeyUp(e, $.proxy(this._handleComposerFormSubmit, this), $.proxy(this._hideForm, this));
         },
 
@@ -101,7 +110,7 @@ CS.Controllers.WorkbookArea = P(function (c) {
         this.reRender();
     };
 
-    c.reRender = function() {
+    c.reRender = function () {
         this.reactInstance.replaceState({
             controller: this,
             workbookArea: this.workbookArea,

@@ -34,7 +34,7 @@ CS.Controllers.OverviewBlueprintAreaComposer = React.createClass({
         CS.overviewController.rePackerise();
     },
 
-    _hideOtherOpenComposers: function() {
+    _hideOtherOpenComposers: function () {
         var $composerForms = CS.overviewController.$el.find(".item-composer");
         var $addItemLinks = $composerForms.siblings(".add-item-link");
 
@@ -62,7 +62,7 @@ CS.Controllers.OverviewBlueprintAreaComposer = React.createClass({
         CS.Controllers.WorkbookAreaCommon.resetAndHideForm(this.$textarea, $.proxy(this._hideForm, this));
     },
 
-    _handleTextareaKeyUp: function(e) {
+    _handleTextareaKeyUp: function (e) {
         CS.Controllers.WorkbookAreaCommon.handleTextareaKeyUp(e, $.proxy(this._handleComposerFormSubmit, this), $.proxy(this._hideForm, this));
     },
 

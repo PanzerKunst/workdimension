@@ -6242,6 +6242,8 @@ a.fa:hover, a.fa:focus {
   background-color: #f5f5f5;
   margin-bottom: 0.25em;
   position: relative; }
+  .item-names-list > li:hover {
+    cursor: pointer; }
   .item-names-list > li.editing {
     background-color: white; }
   .item-names-list > li > p {

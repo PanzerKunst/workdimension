@@ -14,7 +14,8 @@
         "IN": 1,
         "Grapnel": 1,
         "classNames": 1,
-        "Packery": 1
+        "Packery": 1,
+        "Sortable": 1
     },
 
     "rules": {

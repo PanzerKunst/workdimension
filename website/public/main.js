@@ -953,6 +953,18 @@ CS.saveAccountData = function (callback) {
         return !_.isEmpty(_.find(areaItems, "name", itemName));
     },
 
+    handleWorkbookItemsReordered: function($list, workbookAreaClassName) {
+        var newlyOrderedItems = [];
+
+        $list.children().each(function () {
+            var itemName = $(this).children("p").text();
+            newlyOrderedItems.push(_.find(CS.account.data[workbookAreaClassName], "name", itemName));
+        });
+
+        CS.account.data[workbookAreaClassName] = newlyOrderedItems;
+        CS.saveAccountData();
+    },
+
     _getTextAreaDefaultHeight: function($textarea) {
         var fontSizeStr = $textarea.css("font-size");
         var fontSizePx = parseInt(fontSizeStr.substring(0, fontSizeStr.indexOf("px")), 10);
@@ -1434,7 +1446,7 @@ CS.Controllers.OverviewBlueprintAreaComposer = React.createClass({displayName: "
         CS.overviewController.rePackerise();
     },
 
-    _hideOtherOpenComposers: function() {
+    _hideOtherOpenComposers: function () {
         var $composerForms = CS.overviewController.$el.find(".item-composer");
         var $addItemLinks = $composerForms.siblings(".add-item-link");
 
@@ -1462,7 +1474,7 @@ CS.Controllers.OverviewBlueprintAreaComposer = React.createClass({displayName: "
         CS.Controllers.WorkbookAreaCommon.resetAndHideForm(this.$textarea, $.proxy(this._hideForm, this));
     },
 
-    _handleTextareaKeyUp: function(e) {
+    _handleTextareaKeyUp: function (e) {
         CS.Controllers.WorkbookAreaCommon.handleTextareaKeyUp(e, $.proxy(this._handleComposerFormSubmit, this), $.proxy(this._hideForm, this));
     },
 
@@ -1500,6 +1512,7 @@ CS.Controllers.OverviewBlueprintAreaPanel = React.createClass({displayName: "Ove
 
     componentDidMount: function () {
         this._initElements();
+        this._initSortable();
     },
 
     _getBlueprintArea: function() {
@@ -1508,6 +1521,13 @@ CS.Controllers.OverviewBlueprintAreaPanel = React.createClass({displayName: "Ove
 
     _initElements: function() {
         this.$listItem = $(React.findDOMNode(this.refs.li));
+        this.$itemNamesList = this.$listItem.find(".item-names-list");
+    },
+
+    _initSortable: function () {
+        Sortable.create(this.$itemNamesList[0], {onUpdate: function() {
+            CS.Controllers.WorkbookAreaCommon.handleWorkbookItemsReordered(this.$itemNamesList, this._getBlueprintArea().className);
+        }.bind(this)});
     },
 
     _hideBlueprintAreaPanel: function () {
@@ -1876,7 +1896,7 @@ CS.Controllers.WorkbookArea = P(function (c) {
             }
 
             return (
-                React.createElement("div", null, 
+                React.createElement("div", {ref: "wrapper"}, 
                     taskReact, 
 
                     React.createElement("ul", {className: "styleless item-names-list"}, 
@@ -1887,7 +1907,7 @@ CS.Controllers.WorkbookArea = P(function (c) {
                         }.bind(this))
                     ), 
 
-                    React.createElement("form", {role: "form", className: "item-composer", ref: "form", onSubmit: this._handleComposerFormSubmit}, 
+                    React.createElement("form", {role: "form", className: "item-composer", onSubmit: this._handleComposerFormSubmit}, 
                         React.createElement("textarea", {className: "form-control", onKeyUp: this._handleTextareaKeyUp}), 
                         React.createElement("button", {className: "btn btn-primary"}, "Add"), 
                         React.createElement("button", {type: "button", className: "styleless fa fa-times", onClick: this._hideForm})
@@ -1900,12 +1920,21 @@ CS.Controllers.WorkbookArea = P(function (c) {
 
         componentDidMount: function () {
             this._initElements();
+            this._initSortable();
         },
 
         _initElements: function () {
-            this.$form = $(React.findDOMNode(this.refs.form));
+            this.$wrapper = $(React.findDOMNode(this.refs.wrapper));
+            this.$list = this.$wrapper.children("ul");
+            this.$form = this.$wrapper.children("form");
             this.$addItemLink = this.$form.siblings(".add-item-link");
             this.$textarea = this.$form.children("textarea");
+        },
+
+        _initSortable: function () {
+            Sortable.create(this.$list[0], {onUpdate: function() {
+                CS.Controllers.WorkbookAreaCommon.handleWorkbookItemsReordered(this.$list, this.state.workbookArea.className);
+            }.bind(this)});
         },
 
         _showComposer: function () {
@@ -1936,7 +1965,7 @@ CS.Controllers.WorkbookArea = P(function (c) {
             CS.Controllers.WorkbookAreaCommon.resetAndHideForm(this.$textarea, $.proxy(this._hideForm, this));
         },
 
-        _handleTextareaKeyUp: function(e) {
+        _handleTextareaKeyUp: function (e) {
             CS.Controllers.WorkbookAreaCommon.handleTextareaKeyUp(e, $.proxy(this._handleComposerFormSubmit, this), $.proxy(this._hideForm, this));
         },
 
@@ -1957,7 +1986,7 @@ CS.Controllers.WorkbookArea = P(function (c) {
         this.reRender();
     };
 
-    c.reRender = function() {
+    c.reRender = function () {
         this.reactInstance.replaceState({
             controller: this,
             workbookArea: this.workbookArea,

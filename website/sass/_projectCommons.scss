@@ -43,6 +43,10 @@ a.fa {
 
   position: relative; // Because of absolutely-positioned edit button
 
+  &:hover {
+    cursor: pointer;
+  }
+
   &.editing {
     background-color: $background-body-color;
   }

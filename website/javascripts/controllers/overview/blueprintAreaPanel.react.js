@@ -24,6 +24,7 @@ CS.Controllers.OverviewBlueprintAreaPanel = React.createClass({
 
     componentDidMount: function () {
         this._initElements();
+        this._initSortable();
     },
 
     _getBlueprintArea: function() {
@@ -32,6 +33,13 @@ CS.Controllers.OverviewBlueprintAreaPanel = React.createClass({
 
     _initElements: function() {
         this.$listItem = $(React.findDOMNode(this.refs.li));
+        this.$itemNamesList = this.$listItem.find(".item-names-list");
+    },
+
+    _initSortable: function () {
+        Sortable.create(this.$itemNamesList[0], {onUpdate: function() {
+            CS.Controllers.WorkbookAreaCommon.handleWorkbookItemsReordered(this.$itemNamesList, this._getBlueprintArea().className);
+        }.bind(this)});
     },
 
     _hideBlueprintAreaPanel: function () {

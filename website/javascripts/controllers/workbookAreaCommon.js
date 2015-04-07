@@ -51,6 +51,18 @@ CS.Controllers.WorkbookAreaCommon = {
         return !_.isEmpty(_.find(areaItems, "name", itemName));
     },
 
+    handleWorkbookItemsReordered: function($list, workbookAreaClassName) {
+        var newlyOrderedItems = [];
+
+        $list.children().each(function () {
+            var itemName = $(this).children("p").text();
+            newlyOrderedItems.push(_.find(CS.account.data[workbookAreaClassName], "name", itemName));
+        });
+
+        CS.account.data[workbookAreaClassName] = newlyOrderedItems;
+        CS.saveAccountData();
+    },
+
     _getTextAreaDefaultHeight: function($textarea) {
         var fontSizeStr = $textarea.css("font-size");
         var fontSizePx = parseInt(fontSizeStr.substring(0, fontSizeStr.indexOf("px")), 10);
