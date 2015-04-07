@@ -122,5 +122,32 @@ CS.AddItemToAreaTasks = [
         id: 24,
         workbookAreaId: 9,
         text: "This is something my boss should keep in mind to make me stay... "
+    },
+    {
+        id: 25,
+        workbookAreaId: 3,
+        text: "Name a position or role you'd like to have! ",
+        sentenceStart: "I would like to work as "
+    },
+    {
+        id: 26,
+        workbookAreaId: 3,
+        text: "Name an industry you're interested in working in! "
+    },
+    {
+        id: 27,
+        workbookAreaId: 3,
+        text: "What position would you chose, if given the possibility to decide all by yourself? "
+    },
+    {
+        id: 28,
+        workbookAreaId: 3,
+        text: "Please name an organization that you would find interesting to work with"
+    },
+    {
+        id: 29,
+        workbookAreaId: 3,
+        text: "What industries would you not work in? ",
+        sentenceStart: "I would never work in "
     }
 ];
