@@ -6275,15 +6275,22 @@ header {
     color: white;
     float: left; }
   header > h1 {
-    padding: 3px 0 0 14px;
     margin: 0;
+    padding-left: 14px;
+    font-size: 1em;
     color: white;
-    font-size: 20px;
     float: left;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    max-width: 60%; }
+    max-width: 60%;
+    padding-top: 9px; }
+    @media screen and (min-width: 640px) {
+      header > h1 {
+        padding-top: 5px; } }
+    @media screen and (min-width: 960px) {
+      header > h1 {
+        padding-top: 1px; } }
   header button.fa {
     float: right; }
 

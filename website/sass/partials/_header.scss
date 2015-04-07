@@ -15,17 +15,25 @@ header {
   }
 
   > h1 {
-    padding: 3px 0 0 $spacer-unit-size;
     margin: 0;
+    padding-left: $spacer-unit-size;
 
+    font-size: 1em;
     color: white;
-    font-size: 20px;
 
     float: left;
 
     @include ellipsis;
 
     max-width: 60%;
+
+    padding-top: 9px;
+    @include medium-screen {
+      padding-top: 5px;
+    }
+    @include large-screen {
+      padding-top: 1px;
+    }
   }
 
   button.fa {

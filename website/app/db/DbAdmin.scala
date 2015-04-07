@@ -111,8 +111,9 @@ object DbAdmin {
     DB.withConnection {
       implicit c =>
 
-        SQL("insert into workbook_area(workbook_category_id, class_name, title) values(1, 'Drivers', 'What motivates me');").execute()
         SQL("insert into workbook_area(workbook_category_id, class_name, title) values(3, 'Strengths', 'My strengths');").execute()
+        SQL("insert into workbook_area(workbook_category_id, class_name, title) values(1, 'Drivers', 'What motivates me');").execute()
+        SQL("insert into workbook_area(workbook_category_id, class_name, title) values(2, 'Contexts', 'Contexts');").execute()
         SQL("insert into workbook_area(workbook_category_id, class_name, title) values(2, 'Workplace', 'Good attributes in a workplace');").execute()
         SQL("insert into workbook_area(workbook_category_id, class_name, title) values(3, 'Achievements', 'Things I''ve achieved');").execute()
         SQL("insert into workbook_area(workbook_category_id, class_name, title) values(2, 'Coworkers', 'How I''d like my coworkers');").execute()
