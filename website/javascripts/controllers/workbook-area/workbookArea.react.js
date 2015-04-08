@@ -20,6 +20,21 @@ CS.Controllers.WorkbookArea = P(function (c) {
                     taskReact = <CS.Controllers.WorkbookAreaAddItemTask controller={this.state.controller} workbookArea={this.state.workbookArea} />;
                 } else if(this.state.workbookItems.length < this.minItemCountForAddItemTasksComplete + 3) {
                     taskReact = <CS.Controllers.WorkbookAreaContinueAddingItemsTask controller={this.state.controller} workbookArea={this.state.workbookArea} />;
+                } else {
+                    var isWorkbookAreaPrioritized = _.includes(CS.account.data.prioritizedWorkbookAreaIds, this.state.workbookArea.id);
+
+                    if (!isWorkbookAreaPrioritized) {
+                        taskReact = <CS.Controllers.WorkbookAreaPrioritizeItemsTask controller={this.state.controller} workbookArea={this.state.workbookArea} />;
+                    } else {
+                        taskReact = (
+                            <div className="workbook-area-task">
+                                <p>Prioritizing {this.state.workbookArea.className.toLowerCase()} - Task complete!</p>
+                                <div className="task-progress-bar">
+                                    <div style={{width: "100%"}}></div>
+                                </div>
+                            </div>
+                            );
+                    }
                 }
             }
 

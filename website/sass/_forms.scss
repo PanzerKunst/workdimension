@@ -74,35 +74,3 @@ form {
     cursor: pointer;
   }
 }
-
-.submit-wrapper {
-  padding-top: $line-height-project;
-
-  @include medium-screen {
-    padding-top: $line-height-project * $medium-screen-ratio-l;
-  }
-
-  @include large-screen {
-    padding-top: $line-height-project * $large-screen-ratio-l;
-  }
-
-  text-align: center;
-
-  @include medium-screen {
-    clear: both;
-    padding-top: 0;
-  }
-
-  > [type="button"],
-  > [type="submit"] {
-    margin: $spacer-unit-size/2;
-
-    @include medium-screen {
-      margin: $spacer-unit-size/2 * $medium-screen-ratio-l;
-    }
-
-    @include large-screen {
-      margin: $spacer-unit-size/2 * $large-screen-ratio-l;
-    }
-  }
-}

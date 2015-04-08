@@ -58,7 +58,7 @@ module.exports = function (grunt) {
                     "javascripts/controllers/workbookAreaCommon.js",
                     "javascripts/controllers/header/linkedInAuthenticator.js",
                     "javascripts/controllers/header/nextTask.js",
-                    "javascripts/controllers/workbook-area/addItemTaskCommon.js",
+                    "javascripts/controllers/workbook-area/tasks/addItemTaskCommon.js",
 
                     // React
                     "public/react-site.js"
@@ -70,7 +70,8 @@ module.exports = function (grunt) {
                     separator:";"
                 },
                 src: [
-                    "javascripts/mock-data/addItemToAreaTasks.js"
+                    "javascripts/mock-data/addItemToAreaTasks.js",
+                    "javascripts/mock-data/prioritizeItemsTasks.js"
                 ],
                 dest: "public/mock-data.js"
             },

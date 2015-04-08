@@ -527,7 +527,7 @@ CS.Controllers.WorkbookAreaAddItemTask = React.createClass({displayName: "Workbo
         }
 
         return (
-            React.createElement("div", {className: "add-item-task"}, 
+            React.createElement("div", {className: "workbook-area-task"}, 
                 React.createElement("p", null, "Working on: making inventory of ", this.props.workbookArea.className.toLowerCase()), 
                 React.createElement("div", {className: "task-progress-bar", ref: "progressBar"}, 
                     React.createElement("div", null)
@@ -672,7 +672,7 @@ CS.Controllers.WorkbookAreaContinueAddingItemsTask = React.createClass({displayN
         }
 
         return (
-            React.createElement("div", {className: "add-item-task"}, 
+            React.createElement("div", {className: "workbook-area-task"}, 
                 React.createElement("p", null, "Making inventory of ", this.props.workbookArea.className.toLowerCase(), " - Task complete!"), 
                 React.createElement("div", {className: "task-progress-bar", ref: "progressBar"}, 
                     React.createElement("div", {style: {width: "100%"}})
@@ -682,17 +682,52 @@ CS.Controllers.WorkbookAreaContinueAddingItemsTask = React.createClass({displayN
             );
     },
 
-    componentDidMount: function () {
-        this._initElements();
-    },
-
-    _initElements: function () {
-        this.$progressBar = $(React.findDOMNode(this.refs.progressBar)).children();
-    },
-
     _initCurrentTask: function () {
         this.areaTasks = _.where(CS.AddItemToAreaTasks, {workbookAreaId: this.props.workbookArea.id});
         this.currentTask = CS.Controllers.AddItemTaskCommon.getNextTask(this.areaTasks, this.props.workbookArea.className);
+    }
+});
+
+CS.Controllers.WorkbookAreaPrioritizeItemsTask = React.createClass({displayName: "WorkbookAreaPrioritizeItemsTask",
+    render: function () {
+        this._initCurrentTask();
+
+        if (!this.currentTask) {
+            return null;
+        }
+
+        return (
+            React.createElement("div", {className: "workbook-area-task"}, 
+                React.createElement("p", null, "Working on: prioritizing ", this.props.workbookArea.className.toLowerCase()), 
+                React.createElement("div", {className: "task-progress-bar"}, 
+                    React.createElement("div", null)
+                ), 
+                React.createElement("label", null, this.currentTask.text), 
+                React.createElement("button", {className: "btn btn-primary", onClick: this._setCurrentWorkbookAreaAsPrioritizedAndReRender}, "I'm done prioritizing")
+            )
+            );
+    },
+
+    _getLocalStorageKeyForPrioritizedWorkbookAreas: function() {
+        return this.props.controller.reactInstance.localStorageKeyForPrioritizedWorkbookAreas;
+    },
+
+    _initCurrentTask: function () {
+        this.currentTask = _.find(CS.PrioritizeItemsTasks, "workbookAreaId", this.props.workbookArea.id) || {
+            id: 0,
+            workbookAreaId: this.props.workbookArea.id,
+            text: "What's most important to you? Prioritize by drag-and-dropping the items"
+        };
+    },
+
+    _setCurrentWorkbookAreaAsPrioritizedAndReRender: function () {
+        var prioritizedWorkbookAreaIds = CS.account.data.prioritizedWorkbookAreaIds || [];
+        prioritizedWorkbookAreaIds.push(this.props.workbookArea.id);
+
+        CS.account.data.prioritizedWorkbookAreaIds = prioritizedWorkbookAreaIds;
+
+        CS.saveAccountData();
+        this.props.controller.reRender();
     }
 });
 
@@ -718,6 +753,21 @@ CS.Controllers.WorkbookArea = P(function (c) {
                     taskReact = React.createElement(CS.Controllers.WorkbookAreaAddItemTask, {controller: this.state.controller, workbookArea: this.state.workbookArea});
                 } else if(this.state.workbookItems.length < this.minItemCountForAddItemTasksComplete + 3) {
                     taskReact = React.createElement(CS.Controllers.WorkbookAreaContinueAddingItemsTask, {controller: this.state.controller, workbookArea: this.state.workbookArea});
+                } else {
+                    var isWorkbookAreaPrioritized = _.includes(CS.account.data.prioritizedWorkbookAreaIds, this.state.workbookArea.id);
+
+                    if (!isWorkbookAreaPrioritized) {
+                        taskReact = React.createElement(CS.Controllers.WorkbookAreaPrioritizeItemsTask, {controller: this.state.controller, workbookArea: this.state.workbookArea});
+                    } else {
+                        taskReact = (
+                            React.createElement("div", {className: "workbook-area-task"}, 
+                                React.createElement("p", null, "Prioritizing ", this.state.workbookArea.className.toLowerCase(), " - Task complete!"), 
+                                React.createElement("div", {className: "task-progress-bar"}, 
+                                    React.createElement("div", {style: {width: "100%"}})
+                                )
+                            )
+                            );
+                    }
                 }
             }
 

@@ -7,7 +7,7 @@ CS.Controllers.WorkbookAreaContinueAddingItemsTask = React.createClass({
         }
 
         return (
-            <div className="add-item-task">
+            <div className="workbook-area-task">
                 <p>Making inventory of {this.props.workbookArea.className.toLowerCase()} - Task complete!</p>
                 <div className="task-progress-bar" ref="progressBar">
                     <div style={{width: "100%"}}></div>
@@ -15,14 +15,6 @@ CS.Controllers.WorkbookAreaContinueAddingItemsTask = React.createClass({
                 <CS.Controllers.WorkbookAreaAddItemTaskForm currentTask={this.currentTask} workbookArea={this.props.workbookArea} controller={this.props.controller} />
             </div>
             );
-    },
-
-    componentDidMount: function () {
-        this._initElements();
-    },
-
-    _initElements: function () {
-        this.$progressBar = $(React.findDOMNode(this.refs.progressBar)).children();
     },
 
     _initCurrentTask: function () {

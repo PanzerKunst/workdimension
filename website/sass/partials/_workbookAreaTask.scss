@@ -1,4 +1,4 @@
-.add-item-task {
+.workbook-area-task {
   padding: 1em;
   background-color: $well-bg;
 
@@ -28,5 +28,6 @@
   > div {
     height: 0.4em;
     background-color: $brand-success;
+    width: 0;
   }
 }
