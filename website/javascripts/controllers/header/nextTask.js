@@ -38,7 +38,8 @@ CS.Controllers.NextTask = P(function (c) {
             } else {
                 this.$nextTaskBtn.removeClass("read");
                 TweenLite.set(this.$nextTaskBtn, {backgroundColor: "rgb(255, 255, 255)"});
-                TweenLite.to(this.$nextTaskBtn, CS.defaultAnimationDuration * 2, {backgroundColor: "rgb(255, 138, 56)"});
+                TweenLite.to(this.$nextTaskBtn, CS.defaultAnimationDuration * 2, {backgroundColor: "rgb(255, 138, 56)", onComplete: $.proxy(this._markTaskAsRead, this)});
+                this.$nextTaskPrompt.css("height", "auto");
             }
         }
     };
