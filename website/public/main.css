@@ -6472,6 +6472,12 @@ footer {
   display: block; }
   .item-composer.task > .form-group {
     width: auto; }
+    .item-composer.task > .form-group > label {
+      display: table-cell;
+      vertical-align: bottom;
+      height: 2.5em; }
+    .item-composer.task > .form-group > textarea {
+      margin-top: 0.25em; }
   .item-composer.task > a {
     margin-left: 1em;
     vertical-align: middle; }

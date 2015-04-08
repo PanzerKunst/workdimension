@@ -26,7 +26,7 @@ form {
     }
 
     > label {
-      line-height: 1.25em;
+      line-height: $form-label-line-height;
 
       &.mdnz-polyfill {
         display: none;

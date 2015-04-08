@@ -12,6 +12,16 @@
 
   > .form-group {
     width: auto;
+
+    > label {
+      display: table-cell;
+      vertical-align: bottom;
+      height: $form-label-line-height * 2;
+    }
+
+    > textarea {
+      margin-top: 0.25em;
+    }
   }
 
   > a {
