@@ -41,9 +41,14 @@ CS.Controllers.OverviewBlueprintAreaPanel = React.createClass({
     _initSortable: function () {
         // We don't do it on touch devices, because then it becomes really harder to scroll down the page
         if (!Modernizr.touch) {
-            Sortable.create(this.$itemNamesList[0], {onUpdate: function () {
-                CS.Controllers.WorkbookAreaCommon.handleWorkbookItemsReordered(this.$itemNamesList, this._getBlueprintArea().className);
-            }.bind(this)});
+            Sortable.create(this.$itemNamesList[0],
+                {
+                    animation: 150,
+                    onUpdate: function () {
+                        CS.Controllers.WorkbookAreaCommon.handleWorkbookItemsReordered(this.$itemNamesList, this._getBlueprintArea().className);
+                    }.bind(this)
+                }
+            );
         }
     },
 

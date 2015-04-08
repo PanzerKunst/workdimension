@@ -319,9 +319,14 @@ CS.Controllers.OverviewBlueprintAreaPanel = React.createClass({displayName: "Ove
     _initSortable: function () {
         // We don't do it on touch devices, because then it becomes really harder to scroll down the page
         if (!Modernizr.touch) {
-            Sortable.create(this.$itemNamesList[0], {onUpdate: function () {
-                CS.Controllers.WorkbookAreaCommon.handleWorkbookItemsReordered(this.$itemNamesList, this._getBlueprintArea().className);
-            }.bind(this)});
+            Sortable.create(this.$itemNamesList[0],
+                {
+                    animation: 150,
+                    onUpdate: function () {
+                        CS.Controllers.WorkbookAreaCommon.handleWorkbookItemsReordered(this.$itemNamesList, this._getBlueprintArea().className);
+                    }.bind(this)
+                }
+            );
         }
     },
 
@@ -751,7 +756,7 @@ CS.Controllers.WorkbookArea = P(function (c) {
             if (this.state.workbookArea) {
                 if (this.state.workbookItems.length < this.minItemCountForAddItemTasksComplete) {
                     taskReact = React.createElement(CS.Controllers.WorkbookAreaAddItemTask, {controller: this.state.controller, workbookArea: this.state.workbookArea});
-                } else if(this.state.workbookItems.length < CS.minItemCountToTriggerPrioritizationTask) {
+                } else if (this.state.workbookItems.length < CS.minItemCountToTriggerPrioritizationTask) {
                     taskReact = React.createElement(CS.Controllers.WorkbookAreaContinueAddingItemsTask, {controller: this.state.controller, workbookArea: this.state.workbookArea});
                 } else {
                     var isWorkbookAreaPrioritized = _.includes(CS.account.data.prioritizedWorkbookAreaIds, this.state.workbookArea.id);
@@ -808,9 +813,14 @@ CS.Controllers.WorkbookArea = P(function (c) {
         },
 
         _initSortable: function () {
-            Sortable.create(this.$list[0], {onUpdate: function() {
-                CS.Controllers.WorkbookAreaCommon.handleWorkbookItemsReordered(this.$list, this.state.workbookArea.className);
-            }.bind(this)});
+            Sortable.create(this.$list[0],
+                {
+                    animation: 150,
+                    onUpdate: function () {
+                        CS.Controllers.WorkbookAreaCommon.handleWorkbookItemsReordered(this.$list, this.state.workbookArea.className);
+                    }.bind(this)
+                }
+            );
         },
 
         _showComposer: function () {
