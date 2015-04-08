@@ -1899,6 +1899,39 @@ CS.Controllers.WorkbookAreaAddItemTaskForm = React.createClass({displayName: "Wo
     }
 });
 
+CS.Controllers.WorkbookAreaContinueAddingItemsTask = React.createClass({displayName: "WorkbookAreaContinueAddingItemsTask",
+    render: function () {
+        this._initCurrentTask();
+
+        if (!this.currentTask) {
+            return null;
+        }
+
+        return (
+            React.createElement("div", {className: "add-item-task"}, 
+                React.createElement("p", null, "Making inventory of ", this.props.workbookArea.className.toLowerCase(), " - Task complete!"), 
+                React.createElement("div", {className: "task-progress-bar", ref: "progressBar"}, 
+                    React.createElement("div", {style: {width: "100%"}})
+                ), 
+                React.createElement(CS.Controllers.WorkbookAreaAddItemTaskForm, {currentTask: this.currentTask, workbookArea: this.props.workbookArea, controller: this.props.controller})
+            )
+            );
+    },
+
+    componentDidMount: function () {
+        this._initElements();
+    },
+
+    _initElements: function () {
+        this.$progressBar = $(React.findDOMNode(this.refs.progressBar)).children();
+    },
+
+    _initCurrentTask: function () {
+        this.areaTasks = _.where(CS.AddItemToAreaTasks, {workbookAreaId: this.props.workbookArea.id});
+        this.currentTask = CS.Controllers.AddItemTaskCommon.getNextTask(this.areaTasks, this.props.workbookArea.className);
+    }
+});
+
 CS.Controllers.WorkbookArea = P(function (c) {
     c.$el = $(document.getElementById("content"));
 

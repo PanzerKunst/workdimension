@@ -15,8 +15,12 @@ CS.Controllers.WorkbookArea = P(function (c) {
         render: function () {
             var taskReact = null;
 
-            if (this.state.workbookArea && this.state.workbookItems.length < this.minItemCountForAddItemTasksComplete) {
-                taskReact = <CS.Controllers.WorkbookAreaAddItemTask controller={this.state.controller} workbookArea={this.state.workbookArea} />;
+            if (this.state.workbookArea) {
+                if (this.state.workbookItems.length < this.minItemCountForAddItemTasksComplete) {
+                    taskReact = <CS.Controllers.WorkbookAreaAddItemTask controller={this.state.controller} workbookArea={this.state.workbookArea} />;
+                } else if(this.state.workbookItems.length < this.minItemCountForAddItemTasksComplete + 3) {
+                    taskReact = <CS.Controllers.WorkbookAreaContinueAddingItemsTask controller={this.state.controller} workbookArea={this.state.workbookArea} />;
+                }
             }
 
             return (
