@@ -276,6 +276,7 @@ CS.nextTaskController = null;
 CS.overviewController = null;
 CS.workbookAreaController = null;
 CS.blueprintAreasSelector = null;
+CS.minItemCountToTriggerPrioritizationTask = 6;
 
 // Global functions
 CS.saveAccountData = function (callback) {
@@ -1192,6 +1193,31 @@ CS.Controllers.MainMenuLinkedInAuthenticator = P(CS.Controllers.Base, function (
                 }
             };
         }
+
+        var areasWhichHaveEnoughItemsForPrioritizationTask = [];
+        CS.blueprintAreasModel.getActive().forEach(function(workbookArea) {
+            if (!_.includes(CS.account.data.prioritizedWorkbookAreaIds, workbookArea.id) &&
+                CS.account.data[workbookArea.className] &&
+                CS.account.data[workbookArea.className].length >= CS.minItemCountToTriggerPrioritizationTask ) {
+                areasWhichHaveEnoughItemsForPrioritizationTask.push({
+                    workbookAreaClassName: workbookArea.className,
+                    workbookItems: CS.account.data[workbookArea.className]
+                });
+            }
+        });
+
+        var areaToPrioritize = _.first(_.sortBy(areasWhichHaveEnoughItemsForPrioritizationTask, function(area) {
+            return -area.workbookItems.length;
+        }));
+
+        if (areaToPrioritize) {
+            return {
+                text: "Prioritizing " + areaToPrioritize.workbookAreaClassName.toLowerCase(),
+                action: function() {
+                    location.href = "/workbook-areas/" + areaToPrioritize.workbookAreaClassName;
+                }
+            };
+        }
     };
 
     c._markTaskAsRead = function () {
@@ -1987,7 +2013,7 @@ CS.Controllers.WorkbookArea = P(function (c) {
             if (this.state.workbookArea) {
                 if (this.state.workbookItems.length < this.minItemCountForAddItemTasksComplete) {
                     taskReact = React.createElement(CS.Controllers.WorkbookAreaAddItemTask, {controller: this.state.controller, workbookArea: this.state.workbookArea});
-                } else if(this.state.workbookItems.length < this.minItemCountForAddItemTasksComplete + 3) {
+                } else if(this.state.workbookItems.length < CS.minItemCountToTriggerPrioritizationTask) {
                     taskReact = React.createElement(CS.Controllers.WorkbookAreaContinueAddingItemsTask, {controller: this.state.controller, workbookArea: this.state.workbookArea});
                 } else {
                     var isWorkbookAreaPrioritized = _.includes(CS.account.data.prioritizedWorkbookAreaIds, this.state.workbookArea.id);

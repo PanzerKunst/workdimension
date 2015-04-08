@@ -20,6 +20,7 @@ CS.nextTaskController = null;
 CS.overviewController = null;
 CS.workbookAreaController = null;
 CS.blueprintAreasSelector = null;
+CS.minItemCountToTriggerPrioritizationTask = 6;
 
 // Global functions
 CS.saveAccountData = function (callback) {

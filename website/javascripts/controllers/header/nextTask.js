@@ -79,6 +79,31 @@ CS.Controllers.NextTask = P(function (c) {
                 }
             };
         }
+
+        var areasWhichHaveEnoughItemsForPrioritizationTask = [];
+        CS.blueprintAreasModel.getActive().forEach(function(workbookArea) {
+            if (!_.includes(CS.account.data.prioritizedWorkbookAreaIds, workbookArea.id) &&
+                CS.account.data[workbookArea.className] &&
+                CS.account.data[workbookArea.className].length >= CS.minItemCountToTriggerPrioritizationTask ) {
+                areasWhichHaveEnoughItemsForPrioritizationTask.push({
+                    workbookAreaClassName: workbookArea.className,
+                    workbookItems: CS.account.data[workbookArea.className]
+                });
+            }
+        });
+
+        var areaToPrioritize = _.first(_.sortBy(areasWhichHaveEnoughItemsForPrioritizationTask, function(area) {
+            return -area.workbookItems.length;
+        }));
+
+        if (areaToPrioritize) {
+            return {
+                text: "Prioritizing " + areaToPrioritize.workbookAreaClassName.toLowerCase(),
+                action: function() {
+                    location.href = "/workbook-areas/" + areaToPrioritize.workbookAreaClassName;
+                }
+            };
+        }
     };
 
     c._markTaskAsRead = function () {

@@ -751,7 +751,7 @@ CS.Controllers.WorkbookArea = P(function (c) {
             if (this.state.workbookArea) {
                 if (this.state.workbookItems.length < this.minItemCountForAddItemTasksComplete) {
                     taskReact = React.createElement(CS.Controllers.WorkbookAreaAddItemTask, {controller: this.state.controller, workbookArea: this.state.workbookArea});
-                } else if(this.state.workbookItems.length < this.minItemCountForAddItemTasksComplete + 3) {
+                } else if(this.state.workbookItems.length < CS.minItemCountToTriggerPrioritizationTask) {
                     taskReact = React.createElement(CS.Controllers.WorkbookAreaContinueAddingItemsTask, {controller: this.state.controller, workbookArea: this.state.workbookArea});
                 } else {
                     var isWorkbookAreaPrioritized = _.includes(CS.account.data.prioritizedWorkbookAreaIds, this.state.workbookArea.id);
