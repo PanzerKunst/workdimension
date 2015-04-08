@@ -994,12 +994,7 @@ CS.Controllers.MainMenuLinkedInAuthenticator = P(CS.Controllers.Base, function (
     c._initEvents = function () {
         this.$signInWithLinkedInLink.click($.proxy(this._signInWithLinkedIn, this));
         this.$signOutLink.click($.proxy(this._signOut, this));
-
-        IN.Event.on(IN, "auth", function () {
-            IN.API.Profile("me").result(function (profiles) {
-                this._signIn(profiles.values[0], true);
-            }.bind(this));
-        }.bind(this));
+        IN.Event.on(IN, "auth", $.proxy(this._signIn, this));
     };
 
     c._signInWithLinkedIn = function () {
@@ -1007,9 +1002,6 @@ CS.Controllers.MainMenuLinkedInAuthenticator = P(CS.Controllers.Base, function (
     };
 
     c._saveProfileData = function () {
-        // TODO: remove
-        console.log("_saveProfileData");
-
         IN.API.Raw("/people/~:(id,first-name,last-name,maiden-name,formatted-name,phonetic-first-name,phonetic-last-name,formatted-phonetic-name,headline,location,industry,current-share,num-connections,num-connections-capped,summary,specialties,positions,picture-url,picture-urls::(original),site-standard-profile-request,api-standard-profile-request,public-profile-url,email-address)")
             .result(function (data) {
                 this._checkIfAccountExists(data);
@@ -1037,33 +1029,29 @@ CS.Controllers.MainMenuLinkedInAuthenticator = P(CS.Controllers.Base, function (
         });
     };
 
-    c._signIn = function (linkedInAccountData) {
+    c._signIn = function () {
+        if (this.isTemporaryAccount()) {
+            IN.API.Profile("me").result(function (profiles) {
+                var type = "POST";
+                var url = "/api/auth?linkedinAccountId=" + profiles.values[0].id;
 
-        // TODO: remove
-        console.log("_signIn");
-
-        var type = "POST";
-        var url = "/api/auth?linkedinAccountId=" + linkedInAccountData.id;
-
-        $.ajax({
-            url: url,
-            type: type,
-            success: function (data, textStatus, jqXHR) {
-                if (jqXHR.status === this.httpStatusCode.ok) {
-                    this._loadAccountData(data);
-                }
-            }.bind(this),
-            error: function () {
-                alert("AJAX failure doing a " + type + " request to \"" + url + "\"");
-            }
-        });
+                $.ajax({
+                    url: url,
+                    type: type,
+                    success: function (data, textStatus, jqXHR) {
+                        if (jqXHR.status === this.httpStatusCode.ok) {
+                            this._loadAccountData(data);
+                        }
+                    }.bind(this),
+                    error: function () {
+                        alert("AJAX failure doing a " + type + " request to \"" + url + "\"");
+                    }
+                });
+            }.bind(this));
+        }
     };
 
     c._createAccount = function (linkedInAccountData) {
-
-        // TODO: remove
-        console.log("_createAccount");
-
         var data = {
             emailAddress: linkedInAccountData.emailAddress.trim(),
             linkedInAccountId: linkedInAccountData.id.trim()
@@ -1093,10 +1081,6 @@ CS.Controllers.MainMenuLinkedInAuthenticator = P(CS.Controllers.Base, function (
     };
 
     c._loadAccountData = function (data) {
-
-        // TODO: remove
-        console.log("_loadAccountData");
-
         CS.account.id = data.accountId;
         CS.account.data = data.accountData;
 

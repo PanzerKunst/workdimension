@@ -2,12 +2,12 @@ CS.PrioritizeItemsTasks = [
     {
         id: 1,
         workbookAreaId: 1,
-        text: "What's most important to you? Prioritize your drivers by drag-and-dropping the items"
+        text: "Which ones of these do you feel best describe your strengths? Prioritize by drag-and-dropping the items in this area"
     },
     {
         id: 2,
         workbookAreaId: 2,
-        text: "Which ones of these do you feel best describe your strengths? Prioritize by drag-and-dropping the items in this area"
+        text: "What's most important to you? Prioritize your drivers by drag-and-dropping the items"
     },
     {
         id: 3,
