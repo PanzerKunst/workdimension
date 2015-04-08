@@ -5,7 +5,9 @@ CS.Controllers.OverviewBlueprintAreaPanel = React.createClass({
         return (
             <li className="blueprint-area-panel" ref="li">
                 <div className="well">
-                    <h2><a href={workbookAreaTitleHref}>{this._getBlueprintArea().title}</a></h2>
+                    <h2>
+                        <a href={workbookAreaTitleHref}>{this._getBlueprintArea().title}</a>
+                    </h2>
                     <button className="styleless fa fa-eye-slash" onClick={this._hideBlueprintAreaPanel}></button>
 
                     <ul className="styleless item-names-list">
@@ -27,19 +29,22 @@ CS.Controllers.OverviewBlueprintAreaPanel = React.createClass({
         this._initSortable();
     },
 
-    _getBlueprintArea: function() {
+    _getBlueprintArea: function () {
         return this.props.blueprintAreaWithData.blueprintArea;
     },
 
-    _initElements: function() {
+    _initElements: function () {
         this.$listItem = $(React.findDOMNode(this.refs.li));
         this.$itemNamesList = this.$listItem.find(".item-names-list");
     },
 
     _initSortable: function () {
-        Sortable.create(this.$itemNamesList[0], {onUpdate: function() {
-            CS.Controllers.WorkbookAreaCommon.handleWorkbookItemsReordered(this.$itemNamesList, this._getBlueprintArea().className);
-        }.bind(this)});
+        // We don't do it on touch devices, because then it becomes really harder to scroll down the page
+        if (!Modernizr.touch) {
+            Sortable.create(this.$itemNamesList[0], {onUpdate: function () {
+                CS.Controllers.WorkbookAreaCommon.handleWorkbookItemsReordered(this.$itemNamesList, this._getBlueprintArea().className);
+            }.bind(this)});
+        }
     },
 
     _hideBlueprintAreaPanel: function () {

@@ -1208,6 +1208,32 @@ CS.Controllers.MainMenuLinkedInAuthenticator = P(CS.Controllers.Base, function (
         return _.indexOf(CS.account.data.readTaskTexts, this.nextTask.text) > -1;
     };
 });
+;CS.Controllers.AddItemTaskCommon = {
+    getNextTask: function (areaTasks, workbookAreaClassName) {
+        var firstNotSkipped = _.find(areaTasks, function (task) {
+            return !_.includes(CS.Services.Browser.getFromLocalStorage(this.getLocalStorageKeyForSkippedTaskIds(workbookAreaClassName)), task.id);
+        }.bind(this));
+
+        if (firstNotSkipped) {
+            return firstNotSkipped;
+        }
+
+        // All have been skipped, we need to unskip them all
+        this._unskipAll(workbookAreaClassName);
+
+        return _.find(areaTasks, function (task) {
+            return !_.includes(CS.Services.Browser.getFromLocalStorage(this.getLocalStorageKeyForSkippedTaskIds(workbookAreaClassName)), task.id);
+        }.bind(this));
+    },
+
+    getLocalStorageKeyForSkippedTaskIds: function (workbookAreaClassName) {
+        return "skippedTaskIds-" + workbookAreaClassName;
+    },
+
+    _unskipAll: function (workbookAreaClassName) {
+        CS.Services.Browser.removeFromLocalStorage(this.getLocalStorageKeyForSkippedTaskIds(workbookAreaClassName));
+    }
+};
 ;CS.Controllers.BlueprintAreasSelector = P(function (c) {
     c.reactClass = React.createClass({displayName: "reactClass",
         getInitialState: function () {
@@ -1493,7 +1519,9 @@ CS.Controllers.OverviewBlueprintAreaPanel = React.createClass({displayName: "Ove
         return (
             React.createElement("li", {className: "blueprint-area-panel", ref: "li"}, 
                 React.createElement("div", {className: "well"}, 
-                    React.createElement("h2", null, React.createElement("a", {href: workbookAreaTitleHref}, this._getBlueprintArea().title)), 
+                    React.createElement("h2", null, 
+                        React.createElement("a", {href: workbookAreaTitleHref}, this._getBlueprintArea().title)
+                    ), 
                     React.createElement("button", {className: "styleless fa fa-eye-slash", onClick: this._hideBlueprintAreaPanel}), 
 
                     React.createElement("ul", {className: "styleless item-names-list"}, 
@@ -1515,19 +1543,22 @@ CS.Controllers.OverviewBlueprintAreaPanel = React.createClass({displayName: "Ove
         this._initSortable();
     },
 
-    _getBlueprintArea: function() {
+    _getBlueprintArea: function () {
         return this.props.blueprintAreaWithData.blueprintArea;
     },
 
-    _initElements: function() {
+    _initElements: function () {
         this.$listItem = $(React.findDOMNode(this.refs.li));
         this.$itemNamesList = this.$listItem.find(".item-names-list");
     },
 
     _initSortable: function () {
-        Sortable.create(this.$itemNamesList[0], {onUpdate: function() {
-            CS.Controllers.WorkbookAreaCommon.handleWorkbookItemsReordered(this.$itemNamesList, this._getBlueprintArea().className);
-        }.bind(this)});
+        // We don't do it on touch devices, because then it becomes really harder to scroll down the page
+        if (!Modernizr.touch) {
+            Sortable.create(this.$itemNamesList[0], {onUpdate: function () {
+                CS.Controllers.WorkbookAreaCommon.handleWorkbookItemsReordered(this.$itemNamesList, this._getBlueprintArea().className);
+            }.bind(this)});
+        }
     },
 
     _hideBlueprintAreaPanel: function () {
@@ -1724,8 +1755,6 @@ CS.Controllers.Overview = P(function (c) {
 });
 
 CS.Controllers.WorkbookAreaAddItemTask = React.createClass({displayName: "WorkbookAreaAddItemTask",
-    itemCountForTaskComplete: 3,
-
     render: function () {
         this._initCurrentTask();
 
@@ -1733,22 +1762,13 @@ CS.Controllers.WorkbookAreaAddItemTask = React.createClass({displayName: "Workbo
             return null;
         }
 
-        var textareaId = "task-" + this.currentTask.id;
-
         return (
-            React.createElement("div", {className: "add-item-task", ref: "wrapper"}, 
+            React.createElement("div", {className: "add-item-task"}, 
                 React.createElement("p", null, "Working on: making inventory of ", this.props.workbookArea.className.toLowerCase()), 
-                React.createElement("div", {className: "task-progress-bar"}, 
+                React.createElement("div", {className: "task-progress-bar", ref: "progressBar"}, 
                     React.createElement("div", null)
                 ), 
-                React.createElement("form", {role: "form", className: "item-composer task", onSubmit: this._handleFormSubmit}, 
-                    React.createElement("div", {className: "form-group"}, 
-                        React.createElement("label", {htmlFor: textareaId}, this.currentTask.text), 
-                        React.createElement("textarea", {className: "form-control", id: textareaId, onKeyUp: this._handleTextareaKeyUp})
-                    ), 
-                    React.createElement("button", {className: "btn btn-primary"}, "Add item"), 
-                    React.createElement("a", {onClick: this._setCurrentTaskAsSkippedAndReRender}, "Try another one")
-                )
+                React.createElement(CS.Controllers.WorkbookAreaAddItemTaskForm, {currentTask: this.currentTask, workbookArea: this.props.workbookArea, controller: this.props.controller})
             )
             );
     },
@@ -1756,28 +1776,19 @@ CS.Controllers.WorkbookAreaAddItemTask = React.createClass({displayName: "Workbo
     componentDidMount: function () {
         this._initElements();
         this._initProgressBar();
-        this._initTextareaValue();
     },
 
     componentDidUpdate: function() {
         this._initProgressBar();
-        this._initTextareaValue();
     },
 
     _initElements: function () {
-        this.$el = $(React.findDOMNode(this.refs.wrapper));
-        this.$form = this.$el.children("form");
-        this.$textarea = this.$form.find("textarea");
-        this.$progressBar = this.$el.children(".task-progress-bar").children();
-    },
-
-    _getLocalStorageKeyForSkippedTaskIds: function () {
-        return "skippedTaskIds-" + this.props.workbookArea.className;
+        this.$progressBar = $(React.findDOMNode(this.refs.progressBar)).children();
     },
 
     _initCurrentTask: function () {
         this.areaTasks = _.where(CS.AddItemToAreaTasks, {workbookAreaId: this.props.workbookArea.id});
-        this.currentTask = this._getNextTask();
+        this.currentTask = CS.Controllers.AddItemTaskCommon.getNextTask(this.areaTasks, this.props.workbookArea.className);
     },
 
     _initProgressBar: function() {
@@ -1787,32 +1798,50 @@ CS.Controllers.WorkbookAreaAddItemTask = React.createClass({displayName: "Workbo
             itemCount = CS.account.data[this.props.workbookArea.className].length;
         }
 
-        var itemPercent = itemCount / this.itemCountForTaskComplete * 100;
+        var itemPercent = itemCount / this.props.controller.reactInstance.minItemCountForAddItemTasksComplete * 100;
 
         this.$progressBar.css("width", itemPercent + "%");
+    }
+});
+
+CS.Controllers.WorkbookAreaAddItemTaskForm = React.createClass({displayName: "WorkbookAreaAddItemTaskForm",
+    render: function () {
+        var textareaId = "task-" + this.props.currentTask.id;
+
+        return (
+            React.createElement("form", {role: "form", ref: "form", className: "item-composer task", onSubmit: this._handleFormSubmit}, 
+                React.createElement("div", {className: "form-group"}, 
+                    React.createElement("label", {htmlFor: textareaId}, this.props.currentTask.text), 
+                    React.createElement("textarea", {className: "form-control", id: textareaId, onKeyUp: this._handleTextareaKeyUp})
+                ), 
+                React.createElement("button", {className: "btn btn-primary"}, "Add item"), 
+                React.createElement("a", {onClick: this._setCurrentTaskAsSkippedAndReRender}, "Try another one")
+            )
+            );
+    },
+
+    componentDidMount: function () {
+        this._initElements();
+        this._initTextareaValue();
+    },
+
+    componentDidUpdate: function() {
+        this._initTextareaValue();
+    },
+
+    _initElements: function () {
+        this.$form = $(React.findDOMNode(this.refs.form));
+        this.$textarea = this.$form.find("textarea");
     },
 
     _initTextareaValue: function () {
-        if (this.currentTask && this.currentTask.sentenceStart) {
-            this.$textarea.val(this.currentTask.sentenceStart);
+        if (this.props.currentTask && this.props.currentTask.sentenceStart) {
+            this.$textarea.val(this.props.currentTask.sentenceStart);
         }
     },
 
-    _getNextTask: function () {
-        var firstNotSkipped = _.find(this.areaTasks, function (task) {
-            return !_.includes(CS.Services.Browser.getFromLocalStorage(this._getLocalStorageKeyForSkippedTaskIds()), task.id);
-        }.bind(this));
-
-        if (firstNotSkipped) {
-            return firstNotSkipped;
-        }
-
-        // All have been skipped, we need to unskip them all
-        this._unskipAll();
-
-        return _.find(this.areaTasks, function (task) {
-            return !_.includes(CS.Services.Browser.getFromLocalStorage(this._getLocalStorageKeyForSkippedTaskIds()), task.id);
-        }.bind(this));
+    _getLocalStorageKeyForSkippedTaskIds: function () {
+        return CS.Controllers.AddItemTaskCommon.getLocalStorageKeyForSkippedTaskIds(this.props.workbookArea.className);
     },
 
     _handleFormSubmit: function (e) {
@@ -1840,28 +1869,16 @@ CS.Controllers.WorkbookAreaAddItemTask = React.createClass({displayName: "Workbo
             return false;
         }
 
-        if (!this.currentTask.sentenceStart) {
+        if (!this.props.currentTask.sentenceStart) {
             return true;
         }
 
-        return this.currentTask.sentenceStart.trim() !== trimmedItemName;
-    },
-
-    _handleTextareaKeyUp: function (e) {
-        if (this.currentTask.sentenceStart && !_.startsWith(this.$textarea.val(), this.currentTask.sentenceStart)) {
-            this.$textarea.val(this.currentTask.sentenceStart);
-        }
-
-        CS.Controllers.WorkbookAreaCommon.handleTextareaKeyUp(e, $.proxy(this._handleFormSubmit, this));
-    },
-
-    _resetForm: function () {
-        this.$textarea.val(null);
+        return this.props.currentTask.sentenceStart.trim() !== trimmedItemName;
     },
 
     _setCurrentTaskAsSkippedAndReRender: function () {
         var skippedTaskIds = CS.Services.Browser.getFromLocalStorage(this._getLocalStorageKeyForSkippedTaskIds()) || [];
-        skippedTaskIds.push(this.currentTask.id);
+        skippedTaskIds.push(this.props.currentTask.id);
 
         CS.Services.Browser.saveInLocalStorage(this._getLocalStorageKeyForSkippedTaskIds(), skippedTaskIds);
 
@@ -1869,8 +1886,16 @@ CS.Controllers.WorkbookAreaAddItemTask = React.createClass({displayName: "Workbo
         this.props.controller.reRender();
     },
 
-    _unskipAll: function () {
-        CS.Services.Browser.removeFromLocalStorage(this._getLocalStorageKeyForSkippedTaskIds());
+    _resetForm: function () {
+        this.$textarea.val(null);
+    },
+
+    _handleTextareaKeyUp: function (e) {
+        if (this.props.currentTask.sentenceStart && !_.startsWith(this.$textarea.val(), this.props.currentTask.sentenceStart)) {
+            this.$textarea.val(this.props.currentTask.sentenceStart);
+        }
+
+        CS.Controllers.WorkbookAreaCommon.handleTextareaKeyUp(e, $.proxy(this._handleFormSubmit, this));
     }
 });
 
@@ -1891,8 +1916,12 @@ CS.Controllers.WorkbookArea = P(function (c) {
         render: function () {
             var taskReact = null;
 
-            if (this.state.workbookArea && this.state.workbookItems.length < this.minItemCountForAddItemTasksComplete) {
-                taskReact = React.createElement(CS.Controllers.WorkbookAreaAddItemTask, {controller: this.state.controller, workbookArea: this.state.workbookArea});
+            if (this.state.workbookArea) {
+                if (this.state.workbookItems.length < this.minItemCountForAddItemTasksComplete) {
+                    taskReact = React.createElement(CS.Controllers.WorkbookAreaAddItemTask, {controller: this.state.controller, workbookArea: this.state.workbookArea});
+                } else if(this.state.workbookItems.length < this.minItemCountForAddItemTasksComplete + 3) {
+                    taskReact = React.createElement(CS.Controllers.WorkbookAreaContinueAddingItemsTask, {controller: this.state.controller, workbookArea: this.state.workbookArea});
+                }
             }
 
             return (
