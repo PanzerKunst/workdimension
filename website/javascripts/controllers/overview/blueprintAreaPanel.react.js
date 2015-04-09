@@ -14,7 +14,7 @@ CS.Controllers.OverviewBlueprintAreaPanel = React.createClass({
                         {this.props.blueprintAreaWithData.items.map(function (item, index) {
                             var reactItemId = this._getBlueprintArea().className + "-blueprint-item-" + item.name;
 
-                            return <CS.Controllers.OverviewBlueprintItem key={reactItemId} blueprintAreaWithData={this.props.blueprintAreaWithData} blueprintItemIndex={index} />;
+                            return <CS.Controllers.OverviewBlueprintItem key={reactItemId} blueprintAreaWithData={this.props.blueprintAreaWithData} blueprintItemIndex={index} controller={this} />;
                         }.bind(this))}
                     </ul>
 
@@ -41,7 +41,7 @@ CS.Controllers.OverviewBlueprintAreaPanel = React.createClass({
     _initSortable: function () {
         // We don't do it on touch devices, because then it becomes really harder to scroll down the page
         if (!Modernizr.touch) {
-            Sortable.create(this.$itemNamesList[0],
+            this.sortable = new Sortable(this.$itemNamesList[0],
                 {
                     animation: 150,
                     onUpdate: function () {

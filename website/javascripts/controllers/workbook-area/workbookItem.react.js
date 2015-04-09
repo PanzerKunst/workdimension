@@ -38,6 +38,8 @@ CS.Controllers.WorkbookAreaWorkbookItem = React.createClass({
 
         this.$listItem.addClass(this.listItemEditModeClass);
 
+        CS.Controllers.WorkbookAreaCommon.disableSortable(this.props.controller);
+
         this.$itemNameParagraph.hide();
         this.$editBtn.hide();
         this.$addItemLink.hide();
@@ -93,5 +95,7 @@ CS.Controllers.WorkbookAreaWorkbookItem = React.createClass({
         this.$itemNameParagraph.show();
         this.$editBtn.show();
         this.$addItemLink.show();
+
+        CS.Controllers.WorkbookAreaCommon.enableSortable(this.props.controller);
     }
 });

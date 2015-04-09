@@ -45,6 +45,8 @@ CS.Controllers.OverviewBlueprintItem = React.createClass({
 
         this.$listItem.addClass(this.listItemEditModeClass);
 
+        CS.Controllers.WorkbookAreaCommon.disableSortable(this.props.controller);
+
         this.$itemNameParagraph.hide();
         this.$editBtn.hide();
         this.$addItemLink.hide();
@@ -105,5 +107,6 @@ CS.Controllers.OverviewBlueprintItem = React.createClass({
         this.$addItemLink.show();
 
         CS.overviewController.rePackerise();
+        CS.Controllers.WorkbookAreaCommon.enableSortable(this.props.controller);
     }
 });

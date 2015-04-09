@@ -46,7 +46,7 @@ CS.Controllers.WorkbookArea = P(function (c) {
                         {this.state.workbookItems.map(function (item, index) {
                             var reactItemId = "blueprint-item-" + item.name;
 
-                            return <CS.Controllers.WorkbookAreaWorkbookItem key={reactItemId} workbookAreaClassName={this.state.workbookArea.className} workbookItem={item} workbookItemIndex={index} />;
+                            return <CS.Controllers.WorkbookAreaWorkbookItem key={reactItemId} workbookAreaClassName={this.state.workbookArea.className} workbookItem={item} workbookItemIndex={index} controller={this} />;
                         }.bind(this))}
                     </ul>
 
@@ -63,6 +63,9 @@ CS.Controllers.WorkbookArea = P(function (c) {
 
         componentDidMount: function () {
             this._initElements();
+        },
+
+        componentDidUpdate: function() {
             this._initSortable();
         },
 
@@ -75,14 +78,16 @@ CS.Controllers.WorkbookArea = P(function (c) {
         },
 
         _initSortable: function () {
-            Sortable.create(this.$list[0],
-                {
-                    animation: 150,
-                    onUpdate: function () {
-                        CS.Controllers.WorkbookAreaCommon.handleWorkbookItemsReordered(this.$list, this.state.workbookArea.className);
-                    }.bind(this)
-                }
-            );
+            if (!this.sortable) {
+                this.sortable = new Sortable(this.$list[0],
+                    {
+                        animation: 150,
+                        onUpdate: function () {
+                            CS.Controllers.WorkbookAreaCommon.handleWorkbookItemsReordered(this.$list, this.state.workbookArea.className);
+                        }.bind(this)
+                    }
+                );
+            }
         },
 
         _showComposer: function () {

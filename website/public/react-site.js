@@ -292,7 +292,7 @@ CS.Controllers.OverviewBlueprintAreaPanel = React.createClass({displayName: "Ove
                         this.props.blueprintAreaWithData.items.map(function (item, index) {
                             var reactItemId = this._getBlueprintArea().className + "-blueprint-item-" + item.name;
 
-                            return React.createElement(CS.Controllers.OverviewBlueprintItem, {key: reactItemId, blueprintAreaWithData: this.props.blueprintAreaWithData, blueprintItemIndex: index});
+                            return React.createElement(CS.Controllers.OverviewBlueprintItem, {key: reactItemId, blueprintAreaWithData: this.props.blueprintAreaWithData, blueprintItemIndex: index, controller: this});
                         }.bind(this))
                     ), 
 
@@ -319,7 +319,7 @@ CS.Controllers.OverviewBlueprintAreaPanel = React.createClass({displayName: "Ove
     _initSortable: function () {
         // We don't do it on touch devices, because then it becomes really harder to scroll down the page
         if (!Modernizr.touch) {
-            Sortable.create(this.$itemNamesList[0],
+            this.sortable = new Sortable(this.$itemNamesList[0],
                 {
                     animation: 150,
                     onUpdate: function () {
@@ -383,6 +383,8 @@ CS.Controllers.OverviewBlueprintItem = React.createClass({displayName: "Overview
 
         this.$listItem.addClass(this.listItemEditModeClass);
 
+        CS.Controllers.WorkbookAreaCommon.disableSortable(this.props.controller);
+
         this.$itemNameParagraph.hide();
         this.$editBtn.hide();
         this.$addItemLink.hide();
@@ -443,6 +445,7 @@ CS.Controllers.OverviewBlueprintItem = React.createClass({displayName: "Overview
         this.$addItemLink.show();
 
         CS.overviewController.rePackerise();
+        CS.Controllers.WorkbookAreaCommon.enableSortable(this.props.controller);
     }
 });
 
@@ -452,7 +455,6 @@ CS.Controllers.Overview = P(function (c) {
     c.reactClass = React.createClass({displayName: "reactClass",
         getInitialState: function () {
             return {
-                controller: null,
                 blueprintAreasWithData: []
             };
         },
@@ -463,8 +465,8 @@ CS.Controllers.Overview = P(function (c) {
                     this.state.blueprintAreasWithData.map(function (blueprintAreaWithData) {
                         var id = blueprintAreaWithData.blueprintArea.className + "-blueprint-area-panel";
 
-                        return React.createElement(CS.Controllers.OverviewBlueprintAreaPanel, {key: id, controller: this.state.controller, blueprintAreaWithData: blueprintAreaWithData});
-                    }.bind(this))
+                        return React.createElement(CS.Controllers.OverviewBlueprintAreaPanel, {key: id, blueprintAreaWithData: blueprintAreaWithData});
+                    })
                 )
                 );
         },
@@ -506,7 +508,6 @@ CS.Controllers.Overview = P(function (c) {
         });
 
         this.reactInstance.replaceState({
-            controller: this,
             blueprintAreasWithData: _.sortBy(blueprintAreasWithData, function(blueprintAreaWithData) {
                 return blueprintAreaWithData.blueprintArea.title;
             })
@@ -784,7 +785,7 @@ CS.Controllers.WorkbookArea = P(function (c) {
                         this.state.workbookItems.map(function (item, index) {
                             var reactItemId = "blueprint-item-" + item.name;
 
-                            return React.createElement(CS.Controllers.WorkbookAreaWorkbookItem, {key: reactItemId, workbookAreaClassName: this.state.workbookArea.className, workbookItem: item, workbookItemIndex: index});
+                            return React.createElement(CS.Controllers.WorkbookAreaWorkbookItem, {key: reactItemId, workbookAreaClassName: this.state.workbookArea.className, workbookItem: item, workbookItemIndex: index, controller: this});
                         }.bind(this))
                     ), 
 
@@ -801,6 +802,9 @@ CS.Controllers.WorkbookArea = P(function (c) {
 
         componentDidMount: function () {
             this._initElements();
+        },
+
+        componentDidUpdate: function() {
             this._initSortable();
         },
 
@@ -813,14 +817,16 @@ CS.Controllers.WorkbookArea = P(function (c) {
         },
 
         _initSortable: function () {
-            Sortable.create(this.$list[0],
-                {
-                    animation: 150,
-                    onUpdate: function () {
-                        CS.Controllers.WorkbookAreaCommon.handleWorkbookItemsReordered(this.$list, this.state.workbookArea.className);
-                    }.bind(this)
-                }
-            );
+            if (!this.sortable) {
+                this.sortable = new Sortable(this.$list[0],
+                    {
+                        animation: 150,
+                        onUpdate: function () {
+                            CS.Controllers.WorkbookAreaCommon.handleWorkbookItemsReordered(this.$list, this.state.workbookArea.className);
+                        }.bind(this)
+                    }
+                );
+            }
         },
 
         _showComposer: function () {
@@ -926,6 +932,8 @@ CS.Controllers.WorkbookAreaWorkbookItem = React.createClass({displayName: "Workb
 
         this.$listItem.addClass(this.listItemEditModeClass);
 
+        CS.Controllers.WorkbookAreaCommon.disableSortable(this.props.controller);
+
         this.$itemNameParagraph.hide();
         this.$editBtn.hide();
         this.$addItemLink.hide();
@@ -981,5 +989,7 @@ CS.Controllers.WorkbookAreaWorkbookItem = React.createClass({displayName: "Workb
         this.$itemNameParagraph.show();
         this.$editBtn.show();
         this.$addItemLink.show();
+
+        CS.Controllers.WorkbookAreaCommon.enableSortable(this.props.controller);
     }
 });

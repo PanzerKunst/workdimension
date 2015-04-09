@@ -4,7 +4,6 @@ CS.Controllers.Overview = P(function (c) {
     c.reactClass = React.createClass({
         getInitialState: function () {
             return {
-                controller: null,
                 blueprintAreasWithData: []
             };
         },
@@ -15,8 +14,8 @@ CS.Controllers.Overview = P(function (c) {
                     {this.state.blueprintAreasWithData.map(function (blueprintAreaWithData) {
                         var id = blueprintAreaWithData.blueprintArea.className + "-blueprint-area-panel";
 
-                        return <CS.Controllers.OverviewBlueprintAreaPanel key={id} controller={this.state.controller} blueprintAreaWithData={blueprintAreaWithData} />;
-                    }.bind(this))}
+                        return <CS.Controllers.OverviewBlueprintAreaPanel key={id} blueprintAreaWithData={blueprintAreaWithData} />;
+                    })}
                 </ul>
                 );
         },
@@ -58,7 +57,6 @@ CS.Controllers.Overview = P(function (c) {
         });
 
         this.reactInstance.replaceState({
-            controller: this,
             blueprintAreasWithData: _.sortBy(blueprintAreasWithData, function(blueprintAreaWithData) {
                 return blueprintAreaWithData.blueprintArea.title;
             })

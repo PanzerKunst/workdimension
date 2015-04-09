@@ -44,7 +44,7 @@ a.fa {
   position: relative; // Because of absolutely-positioned edit button
 
   &:hover {
-    cursor: pointer;
+    cursor: move;
   }
 
   &.editing {

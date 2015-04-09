@@ -63,6 +63,14 @@ CS.Controllers.WorkbookAreaCommon = {
         CS.saveAccountData();
     },
 
+    disableSortable: function(controller) {
+        controller.sortable.option("disabled", true);
+    },
+
+    enableSortable: function(controller) {
+        controller.sortable.option("disabled", false);
+    },
+
     _getTextAreaDefaultHeight: function($textarea) {
         var fontSizeStr = $textarea.css("font-size");
         var fontSizePx = parseInt(fontSizeStr.substring(0, fontSizeStr.indexOf("px")), 10);
