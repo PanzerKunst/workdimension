@@ -2,8 +2,6 @@ CS.Controllers.WorkbookArea = P(function (c) {
     c.$el = $(document.getElementById("content"));
 
     c.reactClass = React.createClass({
-        minItemCountForAddItemTasksComplete: 3,
-
         getInitialState: function () {
             return {
                 controller: null,
@@ -16,7 +14,7 @@ CS.Controllers.WorkbookArea = P(function (c) {
             var taskReact = null;
 
             if (this.state.workbookArea) {
-                if (this.state.workbookItems.length < this.minItemCountForAddItemTasksComplete) {
+                if (this.state.workbookItems.length < CS.minItemCountForAddItemTasksComplete) {
                     taskReact = <CS.Controllers.WorkbookAreaAddItemTask controller={this.state.controller} workbookArea={this.state.workbookArea} />;
                 } else if (this.state.workbookItems.length < CS.minItemCountToTriggerPrioritizationTask) {
                     taskReact = <CS.Controllers.WorkbookAreaContinueAddingItemsTask controller={this.state.controller} workbookArea={this.state.workbookArea} />;

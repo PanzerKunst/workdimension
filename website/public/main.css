@@ -6394,12 +6394,37 @@ footer {
     padding: 0 0.5em 0.5em 0.5em;
     margin-bottom: 14px;
     position: relative; }
+    #index #content .well.add-item-composer-open.collapsed-list > .fa-chevron-down, #index #content .well.add-item-composer-open.expanded-list > .fa-chevron-up {
+      display: none; }
+    #index #content .well.add-item-composer-open > section > .item-composer {
+      display: block; }
+    #index #content .well.add-item-composer-open > section > .add-item-link {
+      display: none; }
     #index #content .well > button {
       position: absolute;
-      top: -0.45em;
-      right: -0.45em;
       padding: .93em .93em;
       color: #999999; }
+      #index #content .well > button.fa-eye-slash {
+        right: -0.45em;
+        top: -0.45em; }
+      #index #content .well > button.fa-chevron-down, #index #content .well > button.fa-chevron-up {
+        right: 9.4em;
+        bottom: 1.5em;
+        display: none; }
+    #index #content .well.collapsed-list > .fa-chevron-down {
+      display: inline-block; }
+    #index #content .well.collapsed-list > .fa-chevron-up {
+      display: none; }
+    #index #content .well.collapsed-list li:nth-of-type(1n+4) {
+      display: none; }
+    #index #content .well.expanded-list > .fa-chevron-up {
+      display: inline-block; }
+    #index #content .well.expanded-list > .fa-chevron-down {
+      display: none; }
+    #index #content .well.expanded-list li:nth-of-type(1n+4) {
+      display: list-item; }
+    #index #content .well > section {
+      margin-top: 1.4em; }
   #index #content h2 {
     font-size: 16.8px;
     font-weight: bold;

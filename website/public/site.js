@@ -270,12 +270,15 @@ CS.account = {
 };
 CS.router = new Grapnel();
 CS.defaultAnimationDuration = 0.5;
+
 CS.blueprintAreasModel = null;
 CS.mainMenuController = null;
 CS.nextTaskController = null;
 CS.overviewController = null;
 CS.workbookAreaController = null;
 CS.blueprintAreasSelector = null;
+
+CS.minItemCountForAddItemTasksComplete = 3;
 CS.minItemCountToTriggerPrioritizationTask = 6;
 
 // Global functions
@@ -1456,9 +1459,11 @@ CS.Controllers.MainMenu = P(CS.Controllers.Base, function (c) {
 });
 
 CS.Controllers.OverviewBlueprintAreaComposer = React.createClass({displayName: "OverviewBlueprintAreaComposer",
+    addItemComposerOpenCssClass: "add-item-composer-open",
+
     render: function () {
         return (
-            React.createElement("div", null, 
+            React.createElement("section", {ref: "wrapper"}, 
                 React.createElement("form", {role: "form", className: "item-composer", ref: "form", onSubmit: this._handleComposerFormSubmit}, 
                     React.createElement("textarea", {className: "form-control", onKeyUp: this._handleTextareaKeyUp}), 
                     React.createElement("button", {className: "btn btn-primary"}, "Add"), 
@@ -1475,28 +1480,24 @@ CS.Controllers.OverviewBlueprintAreaComposer = React.createClass({displayName: "
     },
 
     _initElements: function () {
-        this.$form = $(React.findDOMNode(this.refs.form));
-        this.$addItemLink = this.$form.siblings(".add-item-link");
+        this.$wrapper = $(React.findDOMNode(this.refs.wrapper));
+        this.$well = this.$wrapper.parent();
+        this.$form = this.$wrapper.children(".item-composer");
+        this.$addItemLink = this.$wrapper.children(".add-item-link");
         this.$textarea = this.$form.children("textarea");
     },
 
     _showComposer: function () {
         this._hideOtherOpenComposers();
 
-        this.$form.show();
+        this.$well.addClass(this.addItemComposerOpenCssClass);
         this.$textarea.focus();
-
-        this.$addItemLink.hide();
 
         CS.overviewController.rePackerise();
     },
 
     _hideOtherOpenComposers: function () {
-        var $composerForms = CS.overviewController.$el.find(".item-composer");
-        var $addItemLinks = $composerForms.siblings(".add-item-link");
-
-        $composerForms.hide();
-        $addItemLinks.show();
+        CS.overviewController.$el.find(".well").removeClass(this.addItemComposerOpenCssClass);
     },
 
     _handleComposerFormSubmit: function (e) {
@@ -1524,8 +1525,7 @@ CS.Controllers.OverviewBlueprintAreaComposer = React.createClass({displayName: "
     },
 
     _hideForm: function () {
-        this.$form.hide();
-        this.$addItemLink.show();
+        this.$well.removeClass(this.addItemComposerOpenCssClass);
 
         CS.overviewController.rePackerise();
     }
@@ -1535,9 +1535,14 @@ CS.Controllers.OverviewBlueprintAreaPanel = React.createClass({displayName: "Ove
     render: function () {
         var workbookAreaTitleHref = "/workbook-areas/" + this._getBlueprintArea().className;
 
+        var wellClasses = classNames("well",
+            {
+                "collapsed-list": this.props.blueprintAreaWithData.items.length > CS.minItemCountForAddItemTasksComplete
+            });
+
         return (
             React.createElement("li", {className: "blueprint-area-panel", ref: "li"}, 
-                React.createElement("div", {className: "well"}, 
+                React.createElement("div", {className: wellClasses}, 
                     React.createElement("h2", null, 
                         React.createElement("a", {href: workbookAreaTitleHref}, this._getBlueprintArea().title)
                     ), 
@@ -1550,6 +1555,9 @@ CS.Controllers.OverviewBlueprintAreaPanel = React.createClass({displayName: "Ove
                             return React.createElement(CS.Controllers.OverviewBlueprintItem, {key: reactItemId, blueprintAreaWithData: this.props.blueprintAreaWithData, blueprintItemIndex: index, controller: this});
                         }.bind(this))
                     ), 
+
+                    React.createElement("button", {className: "styleless fa fa-chevron-down", onClick: this._toggleCollapsedList}), 
+                    React.createElement("button", {className: "styleless fa fa-chevron-up", onClick: this._toggleCollapsedList}), 
 
                     React.createElement(CS.Controllers.OverviewBlueprintAreaComposer, {blueprintAreaClassName: this._getBlueprintArea().className})
                 )
@@ -1568,6 +1576,7 @@ CS.Controllers.OverviewBlueprintAreaPanel = React.createClass({displayName: "Ove
 
     _initElements: function () {
         this.$listItem = $(React.findDOMNode(this.refs.li));
+        this.$well = this.$listItem.children();
         this.$itemNamesList = this.$listItem.find(".item-names-list");
     },
 
@@ -1588,6 +1597,13 @@ CS.Controllers.OverviewBlueprintAreaPanel = React.createClass({displayName: "Ove
     _hideBlueprintAreaPanel: function () {
         this._getBlueprintArea().deactivate();
         CS.overviewController.reRender();
+    },
+
+    _toggleCollapsedList: function () {
+        this.$well.toggleClass("collapsed-list");
+        this.$well.toggleClass("expanded-list");
+
+        CS.overviewController.rePackerise();
     }
 });
 
@@ -1996,8 +2012,6 @@ CS.Controllers.WorkbookArea = P(function (c) {
     c.$el = $(document.getElementById("content"));
 
     c.reactClass = React.createClass({displayName: "reactClass",
-        minItemCountForAddItemTasksComplete: 3,
-
         getInitialState: function () {
             return {
                 controller: null,
@@ -2010,7 +2024,7 @@ CS.Controllers.WorkbookArea = P(function (c) {
             var taskReact = null;
 
             if (this.state.workbookArea) {
-                if (this.state.workbookItems.length < this.minItemCountForAddItemTasksComplete) {
+                if (this.state.workbookItems.length < CS.minItemCountForAddItemTasksComplete) {
                     taskReact = React.createElement(CS.Controllers.WorkbookAreaAddItemTask, {controller: this.state.controller, workbookArea: this.state.workbookArea});
                 } else if (this.state.workbookItems.length < CS.minItemCountToTriggerPrioritizationTask) {
                     taskReact = React.createElement(CS.Controllers.WorkbookAreaContinueAddingItemsTask, {controller: this.state.controller, workbookArea: this.state.workbookArea});

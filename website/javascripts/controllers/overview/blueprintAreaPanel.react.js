@@ -2,9 +2,14 @@ CS.Controllers.OverviewBlueprintAreaPanel = React.createClass({
     render: function () {
         var workbookAreaTitleHref = "/workbook-areas/" + this._getBlueprintArea().className;
 
+        var wellClasses = classNames("well",
+            {
+                "collapsed-list": this.props.blueprintAreaWithData.items.length > CS.minItemCountForAddItemTasksComplete
+            });
+
         return (
             <li className="blueprint-area-panel" ref="li">
-                <div className="well">
+                <div className={wellClasses}>
                     <h2>
                         <a href={workbookAreaTitleHref}>{this._getBlueprintArea().title}</a>
                     </h2>
@@ -17,6 +22,9 @@ CS.Controllers.OverviewBlueprintAreaPanel = React.createClass({
                             return <CS.Controllers.OverviewBlueprintItem key={reactItemId} blueprintAreaWithData={this.props.blueprintAreaWithData} blueprintItemIndex={index} controller={this} />;
                         }.bind(this))}
                     </ul>
+
+                    <button className="styleless fa fa-chevron-down" onClick={this._toggleCollapsedList}></button>
+                    <button className="styleless fa fa-chevron-up" onClick={this._toggleCollapsedList}></button>
 
                     <CS.Controllers.OverviewBlueprintAreaComposer blueprintAreaClassName={this._getBlueprintArea().className} />
                 </div>
@@ -35,6 +43,7 @@ CS.Controllers.OverviewBlueprintAreaPanel = React.createClass({
 
     _initElements: function () {
         this.$listItem = $(React.findDOMNode(this.refs.li));
+        this.$well = this.$listItem.children();
         this.$itemNamesList = this.$listItem.find(".item-names-list");
     },
 
@@ -55,5 +64,12 @@ CS.Controllers.OverviewBlueprintAreaPanel = React.createClass({
     _hideBlueprintAreaPanel: function () {
         this._getBlueprintArea().deactivate();
         CS.overviewController.reRender();
+    },
+
+    _toggleCollapsedList: function () {
+        this.$well.toggleClass("collapsed-list");
+        this.$well.toggleClass("expanded-list");
+
+        CS.overviewController.rePackerise();
     }
 });

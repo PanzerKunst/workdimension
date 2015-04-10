@@ -34,16 +34,75 @@
       padding: 0 0.5em 0.5em 0.5em;
       margin-bottom: $spacer-unit-size;
 
-      position: relative; // Because of absolutely-positioned menu button
+      position: relative; // Because of absolutely-positioned hide and expand buttons
+
+      &.add-item-composer-open {
+        &.collapsed-list > .fa-chevron-down,
+        &.expanded-list > .fa-chevron-up {
+          display: none;
+        }
+
+        > section {
+          > .item-composer {
+            display: block;
+          }
+
+          > .add-item-link {
+            display: none;
+          }
+        }
+      }
 
       > button {
         position: absolute;
-        top: -0.45em;
-        right: -0.45em;
 
         padding: .93em .93em;
 
         color: lighten($gray-base, 60%);
+
+        &.fa-eye-slash {
+          right: -0.45em;
+          top: -0.45em;
+        }
+        &.fa-chevron-down,
+        &.fa-chevron-up {
+          right: 9.4em;
+          bottom: 1.5em;
+
+          display: none;
+        }
+      }
+
+      &.collapsed-list {
+        > .fa-chevron-down {
+          display: inline-block;
+        }
+
+        > .fa-chevron-up {
+          display: none;
+        }
+
+        li:nth-of-type(1n+4) {
+          display: none;
+        }
+      }
+
+      &.expanded-list {
+        > .fa-chevron-up {
+          display: inline-block;
+        }
+
+        > .fa-chevron-down {
+          display: none;
+        }
+
+        li:nth-of-type(1n+4) {
+          display: list-item;
+        }
+      }
+
+      > section {
+        margin-top: 1.4em;
       }
     }
 
@@ -55,22 +114,24 @@
       padding-right: 1em;
     }
 
-    .item-names-list > li {
-      background-color: $gray-light;
+    .item-names-list {
+      > li {
+        background-color: $gray-light;
 
-      margin-bottom: 0.25em;
+        margin-bottom: 0.25em;
 
-      &.editing {
-        background-color: $well-bg;
-      }
+        &.editing {
+          background-color: $well-bg;
+        }
 
-      > p,
-      > .fa-pencil {
-        color: white;
-      }
+        > p,
+        > .fa-pencil {
+          color: white;
+        }
 
-      > p {
-        margin-bottom: 0;
+        > p {
+          margin-bottom: 0;
+        }
       }
     }
   }

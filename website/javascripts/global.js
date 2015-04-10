@@ -14,12 +14,15 @@ CS.account = {
 };
 CS.router = new Grapnel();
 CS.defaultAnimationDuration = 0.5;
+
 CS.blueprintAreasModel = null;
 CS.mainMenuController = null;
 CS.nextTaskController = null;
 CS.overviewController = null;
 CS.workbookAreaController = null;
 CS.blueprintAreasSelector = null;
+
+CS.minItemCountForAddItemTasksComplete = 3;
 CS.minItemCountToTriggerPrioritizationTask = 6;
 
 // Global functions

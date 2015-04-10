@@ -1,7 +1,9 @@
 CS.Controllers.OverviewBlueprintAreaComposer = React.createClass({
+    addItemComposerOpenCssClass: "add-item-composer-open",
+
     render: function () {
         return (
-            <div>
+            <section ref="wrapper">
                 <form role="form" className="item-composer" ref="form" onSubmit={this._handleComposerFormSubmit}>
                     <textarea className="form-control" onKeyUp={this._handleTextareaKeyUp} />
                     <button className="btn btn-primary">Add</button>
@@ -9,7 +11,7 @@ CS.Controllers.OverviewBlueprintAreaComposer = React.createClass({
                 </form>
 
                 <a className="add-item-link" onClick={this._showComposer}>+ Add item</a>
-            </div>
+            </section>
             );
     },
 
@@ -18,28 +20,24 @@ CS.Controllers.OverviewBlueprintAreaComposer = React.createClass({
     },
 
     _initElements: function () {
-        this.$form = $(React.findDOMNode(this.refs.form));
-        this.$addItemLink = this.$form.siblings(".add-item-link");
+        this.$wrapper = $(React.findDOMNode(this.refs.wrapper));
+        this.$well = this.$wrapper.parent();
+        this.$form = this.$wrapper.children(".item-composer");
+        this.$addItemLink = this.$wrapper.children(".add-item-link");
         this.$textarea = this.$form.children("textarea");
     },
 
     _showComposer: function () {
         this._hideOtherOpenComposers();
 
-        this.$form.show();
+        this.$well.addClass(this.addItemComposerOpenCssClass);
         this.$textarea.focus();
-
-        this.$addItemLink.hide();
 
         CS.overviewController.rePackerise();
     },
 
     _hideOtherOpenComposers: function () {
-        var $composerForms = CS.overviewController.$el.find(".item-composer");
-        var $addItemLinks = $composerForms.siblings(".add-item-link");
-
-        $composerForms.hide();
-        $addItemLinks.show();
+        CS.overviewController.$el.find(".well").removeClass(this.addItemComposerOpenCssClass);
     },
 
     _handleComposerFormSubmit: function (e) {
@@ -67,8 +65,7 @@ CS.Controllers.OverviewBlueprintAreaComposer = React.createClass({
     },
 
     _hideForm: function () {
-        this.$form.hide();
-        this.$addItemLink.show();
+        this.$well.removeClass(this.addItemComposerOpenCssClass);
 
         CS.overviewController.rePackerise();
     }
