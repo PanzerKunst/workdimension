@@ -86,13 +86,15 @@ header {
 }
 
 #content-overlay-when-menu-open {
-  position: absolute;
+  position: fixed;
+  top: $header-height;
+  bottom: 0;
+  left: 0;
   width: 100%;
-  height: 100%;
+  z-index: $z-index-content-overlay-when-menu-open;
 
+  display: none;
   background-color: rgba(0, 0, 0, 0.2);
-
-  z-index: -1;
 }
 
 #next-task-prompt {

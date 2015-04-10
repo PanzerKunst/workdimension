@@ -18,7 +18,7 @@ body {
     overflow-y: hidden;
 
     #content-overlay-when-menu-open {
-      z-index: $z-index-content-overlay-when-menu-open;
+      display: block;
     }
     #main-menu {
       visibility: visible;

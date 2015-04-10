@@ -6203,7 +6203,7 @@ body {
     max-height: 100%;
     overflow-y: hidden; }
     #container.menu-open #content-overlay-when-menu-open {
-      z-index: 9; }
+      display: block; }
     #container.menu-open #main-menu {
       visibility: visible; }
 
@@ -6298,11 +6298,14 @@ header {
     display: block; }
 
 #content-overlay-when-menu-open {
-  position: absolute;
+  position: fixed;
+  top: 40px;
+  bottom: 0;
+  left: 0;
   width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.2);
-  z-index: -1; }
+  z-index: 9;
+  display: none;
+  background-color: rgba(0, 0, 0, 0.2); }
 
 #next-task-prompt {
   padding-top: 40px;
