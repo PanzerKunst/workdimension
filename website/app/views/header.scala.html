@@ -9,9 +9,14 @@
 <div id="content-overlay-when-menu-open"></div>
 
 <nav role="navigation" id="main-menu">
+    @if(pageId != "index") {
+    <a href="/">Home</a>
+    }
     <section>
     </section>
+    @if(pageId == "index") {
     <a id="select-areas">Add an area</a>
+    }
     <a id="sign-in-with-linkedin">Sign in with LinkedIn</a>
     <a id="sign-out">Sign out</a>
 </nav>

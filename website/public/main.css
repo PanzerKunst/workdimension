@@ -6288,6 +6288,12 @@ header {
   background-color: white;
   padding: 1em;
   visibility: hidden; }
+  #main-menu > a,
+  #main-menu > section {
+    margin-bottom: 0.5em; }
+    #main-menu > a:last-child,
+    #main-menu > section:last-child {
+      margin-bottom: 0; }
   #main-menu > a {
     display: block; }
   #main-menu > #sign-out {
@@ -6296,6 +6302,8 @@ header {
     display: none; }
   #main-menu.signed-in > #sign-out {
     display: block; }
+  #main-menu ul {
+    margin-bottom: 0; }
 
 #content-overlay-when-menu-open {
   position: fixed;
