@@ -1839,7 +1839,7 @@ CS.Controllers.WorkbookAreaAddItemTask = React.createClass({displayName: "Workbo
             itemCount = CS.account.data[this.props.workbookArea.className].length;
         }
 
-        var itemPercent = itemCount / this.props.controller.reactInstance.minItemCountForAddItemTasksComplete * 100;
+        var itemPercent = itemCount / CS.minItemCountForAddItemTasksComplete * 100;
 
         this.$progressBar.css("width", itemPercent + "%");
     }
