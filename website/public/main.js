@@ -1866,9 +1866,9 @@ CS.Controllers.Overview = P(function (c) {
 CS.Controllers.WorkbookAreaAddItemLvl2Task = React.createClass({displayName: "WorkbookAreaAddItemLvl2Task",
     render: function () {
         var comingUpNextParagraph = null;
-        if (this.props.nextTaskComingUpNextText) {
+        if (this.props.comingUpNextText) {
             comingUpNextParagraph = (
-                React.createElement("p", {className: "coming-up-next"}, "Coming up next: ", this.props.nextTaskComingUpNextText)
+                React.createElement("p", {className: "coming-up-next"}, "Coming up next: ", this.props.comingUpNextText)
                 );
         }
 
@@ -1913,9 +1913,9 @@ CS.Controllers.WorkbookAreaAddItemLvl2Task = React.createClass({displayName: "Wo
 CS.Controllers.WorkbookAreaAddItemTask = React.createClass({displayName: "WorkbookAreaAddItemTask",
     render: function () {
         var comingUpNextParagraph = null;
-        if (this.props.nextTaskComingUpNextText) {
+        if (this.props.comingUpNextText) {
             comingUpNextParagraph = (
-                React.createElement("p", {className: "coming-up-next"}, "Coming up next: ", this.props.nextTaskComingUpNextText)
+                React.createElement("p", {className: "coming-up-next"}, "Coming up next: ", this.props.comingUpNextText)
                 );
         }
 
@@ -2056,9 +2056,9 @@ CS.Controllers.WorkbookAreaAddItemTaskForm = React.createClass({displayName: "Wo
 CS.Controllers.WorkbookAreaPrioritizeItemsTask = React.createClass({displayName: "WorkbookAreaPrioritizeItemsTask",
     render: function () {
         var comingUpNextParagraph = null;
-        if (this.props.nextTaskComingUpNextText) {
+        if (this.props.comingUpNextText) {
             comingUpNextParagraph = (
-                React.createElement("p", {className: "coming-up-next"}, "Coming up next: ", this.props.nextTaskComingUpNextText)
+                React.createElement("p", {className: "coming-up-next"}, "Coming up next: ", this.props.comingUpNextText)
                 );
         }
 
@@ -2135,9 +2135,9 @@ CS.Controllers.WorkbookArea = P(function (c) {
                             return task.previousTaskId === activeTask.id;
                         });
 
-                        var nextTaskComingUpNextText = nextTask ? nextTask.comingUpNextText : null;
+                        var comingUpNextText = nextTask ? nextTask.comingUpText : null;
 
-                        taskReact = React.createElement(CS.Controllers[activeTask.templateClassName], {task: activeTask, workbookArea: this.state.workbookArea, nextTaskComingUpNextText: nextTaskComingUpNextText, controller: this.state.controller});
+                        taskReact = React.createElement(CS.Controllers[activeTask.templateClassName], {task: activeTask, workbookArea: this.state.workbookArea, comingUpNextText: comingUpNextText, controller: this.state.controller});
                     }
                 }
             }
@@ -2667,7 +2667,7 @@ CS.Controllers.WorkbookAreaWorkbookItem = React.createClass({displayName: "Workb
         ],
         stepCount: CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl2TaskComplete - CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl1TaskComplete,
         templateClassName: "WorkbookAreaAddItemLvl2Task",
-        comingUpNextText: "making inventory lvl 2"
+        comingUpText: "making inventory lvl 2"
     },
     {
         id: 11,
@@ -2700,7 +2700,7 @@ CS.Controllers.WorkbookAreaWorkbookItem = React.createClass({displayName: "Workb
         ],
         stepCount: CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl2TaskComplete - CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl1TaskComplete,
         templateClassName: "WorkbookAreaAddItemLvl2Task",
-        comingUpNextText: "making inventory lvl 2"
+        comingUpText: "making inventory lvl 2"
     },
     {
         id: 12,
@@ -2737,7 +2737,7 @@ CS.Controllers.WorkbookAreaWorkbookItem = React.createClass({displayName: "Workb
         ],
         stepCount: CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl2TaskComplete - CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl1TaskComplete,
         templateClassName: "WorkbookAreaAddItemLvl2Task",
-        comingUpNextText: "making inventory lvl 2"
+        comingUpText: "making inventory lvl 2"
     },
     {
         id: 13,
@@ -2775,7 +2775,7 @@ CS.Controllers.WorkbookAreaWorkbookItem = React.createClass({displayName: "Workb
         ],
         stepCount: CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl2TaskComplete - CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl1TaskComplete,
         templateClassName: "WorkbookAreaAddItemLvl2Task",
-        comingUpNextText: "making inventory lvl 2"
+        comingUpText: "making inventory lvl 2"
     },
     {
         id: 14,
@@ -2805,7 +2805,7 @@ CS.Controllers.WorkbookAreaWorkbookItem = React.createClass({displayName: "Workb
         ],
         stepCount: CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl2TaskComplete - CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl1TaskComplete,
         templateClassName: "WorkbookAreaAddItemLvl2Task",
-        comingUpNextText: "making inventory lvl 2"
+        comingUpText: "making inventory lvl 2"
     },
     {
         id: 15,
@@ -2838,7 +2838,7 @@ CS.Controllers.WorkbookAreaWorkbookItem = React.createClass({displayName: "Workb
         ],
         stepCount: CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl2TaskComplete - CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl1TaskComplete,
         templateClassName: "WorkbookAreaAddItemLvl2Task",
-        comingUpNextText: "making inventory lvl 2"
+        comingUpText: "making inventory lvl 2"
     },
     {
         id: 16,
@@ -2871,7 +2871,7 @@ CS.Controllers.WorkbookAreaWorkbookItem = React.createClass({displayName: "Workb
         ],
         stepCount: CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl2TaskComplete - CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl1TaskComplete,
         templateClassName: "WorkbookAreaAddItemLvl2Task",
-        comingUpNextText: "making inventory lvl 2"
+        comingUpText: "making inventory lvl 2"
     },
     {
         id: 17,
@@ -2898,7 +2898,7 @@ CS.Controllers.WorkbookAreaWorkbookItem = React.createClass({displayName: "Workb
         ],
         stepCount: CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl2TaskComplete - CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl1TaskComplete,
         templateClassName: "WorkbookAreaAddItemLvl2Task",
-        comingUpNextText: "making inventory lvl 2"
+        comingUpText: "making inventory lvl 2"
     },
     {
         id: 18,
@@ -2939,7 +2939,7 @@ CS.Controllers.WorkbookAreaWorkbookItem = React.createClass({displayName: "Workb
         ],
         stepCount: CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl2TaskComplete - CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl1TaskComplete,
         templateClassName: "WorkbookAreaAddItemLvl2Task",
-        comingUpNextText: "making inventory lvl 2"
+        comingUpText: "making inventory lvl 2"
     },
     {   // Level 3
         id: 19,
@@ -2964,7 +2964,7 @@ CS.Controllers.WorkbookAreaWorkbookItem = React.createClass({displayName: "Workb
         ],
         stepCount: 1,
         templateClassName: "WorkbookAreaPrioritizeItemsTask",
-        comingUpNextText: "prioritizing"
+        comingUpText: "prioritizing"
     },
     {
         id: 20,
@@ -2989,7 +2989,7 @@ CS.Controllers.WorkbookAreaWorkbookItem = React.createClass({displayName: "Workb
         ],
         stepCount: 1,
         templateClassName: "WorkbookAreaPrioritizeItemsTask",
-        comingUpNextText: "prioritizing"
+        comingUpText: "prioritizing"
     },
     {
         id: 21,
@@ -3014,7 +3014,7 @@ CS.Controllers.WorkbookAreaWorkbookItem = React.createClass({displayName: "Workb
         ],
         stepCount: 1,
         templateClassName: "WorkbookAreaPrioritizeItemsTask",
-        comingUpNextText: "prioritizing"
+        comingUpText: "prioritizing"
     },
     {
         id: 22,
@@ -3039,7 +3039,7 @@ CS.Controllers.WorkbookAreaWorkbookItem = React.createClass({displayName: "Workb
         ],
         stepCount: 1,
         templateClassName: "WorkbookAreaPrioritizeItemsTask",
-        comingUpNextText: "prioritizing"
+        comingUpText: "prioritizing"
     },
     {
         id: 23,
@@ -3064,7 +3064,7 @@ CS.Controllers.WorkbookAreaWorkbookItem = React.createClass({displayName: "Workb
         ],
         stepCount: 1,
         templateClassName: "WorkbookAreaPrioritizeItemsTask",
-        comingUpNextText: "prioritizing"
+        comingUpText: "prioritizing"
     },
     {
         id: 24,
@@ -3089,7 +3089,7 @@ CS.Controllers.WorkbookAreaWorkbookItem = React.createClass({displayName: "Workb
         ],
         stepCount: 1,
         templateClassName: "WorkbookAreaPrioritizeItemsTask",
-        comingUpNextText: "prioritizing"
+        comingUpText: "prioritizing"
     },
     {
         id: 25,
@@ -3114,6 +3114,6 @@ CS.Controllers.WorkbookAreaWorkbookItem = React.createClass({displayName: "Workb
         ],
         stepCount: 1,
         templateClassName: "WorkbookAreaPrioritizeItemsTask",
-        comingUpNextText: "prioritizing"
+        comingUpText: "prioritizing"
     }
 ];

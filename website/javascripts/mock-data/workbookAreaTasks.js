@@ -307,7 +307,7 @@ CS.WorkbookAreaTasks = [
         ],
         stepCount: CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl2TaskComplete - CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl1TaskComplete,
         templateClassName: "WorkbookAreaAddItemLvl2Task",
-        comingUpNextText: "making inventory lvl 2"
+        comingUpText: "making inventory lvl 2"
     },
     {
         id: 11,
@@ -340,7 +340,7 @@ CS.WorkbookAreaTasks = [
         ],
         stepCount: CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl2TaskComplete - CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl1TaskComplete,
         templateClassName: "WorkbookAreaAddItemLvl2Task",
-        comingUpNextText: "making inventory lvl 2"
+        comingUpText: "making inventory lvl 2"
     },
     {
         id: 12,
@@ -377,7 +377,7 @@ CS.WorkbookAreaTasks = [
         ],
         stepCount: CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl2TaskComplete - CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl1TaskComplete,
         templateClassName: "WorkbookAreaAddItemLvl2Task",
-        comingUpNextText: "making inventory lvl 2"
+        comingUpText: "making inventory lvl 2"
     },
     {
         id: 13,
@@ -415,7 +415,7 @@ CS.WorkbookAreaTasks = [
         ],
         stepCount: CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl2TaskComplete - CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl1TaskComplete,
         templateClassName: "WorkbookAreaAddItemLvl2Task",
-        comingUpNextText: "making inventory lvl 2"
+        comingUpText: "making inventory lvl 2"
     },
     {
         id: 14,
@@ -445,7 +445,7 @@ CS.WorkbookAreaTasks = [
         ],
         stepCount: CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl2TaskComplete - CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl1TaskComplete,
         templateClassName: "WorkbookAreaAddItemLvl2Task",
-        comingUpNextText: "making inventory lvl 2"
+        comingUpText: "making inventory lvl 2"
     },
     {
         id: 15,
@@ -478,7 +478,7 @@ CS.WorkbookAreaTasks = [
         ],
         stepCount: CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl2TaskComplete - CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl1TaskComplete,
         templateClassName: "WorkbookAreaAddItemLvl2Task",
-        comingUpNextText: "making inventory lvl 2"
+        comingUpText: "making inventory lvl 2"
     },
     {
         id: 16,
@@ -511,7 +511,7 @@ CS.WorkbookAreaTasks = [
         ],
         stepCount: CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl2TaskComplete - CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl1TaskComplete,
         templateClassName: "WorkbookAreaAddItemLvl2Task",
-        comingUpNextText: "making inventory lvl 2"
+        comingUpText: "making inventory lvl 2"
     },
     {
         id: 17,
@@ -538,7 +538,7 @@ CS.WorkbookAreaTasks = [
         ],
         stepCount: CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl2TaskComplete - CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl1TaskComplete,
         templateClassName: "WorkbookAreaAddItemLvl2Task",
-        comingUpNextText: "making inventory lvl 2"
+        comingUpText: "making inventory lvl 2"
     },
     {
         id: 18,
@@ -579,7 +579,7 @@ CS.WorkbookAreaTasks = [
         ],
         stepCount: CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl2TaskComplete - CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl1TaskComplete,
         templateClassName: "WorkbookAreaAddItemLvl2Task",
-        comingUpNextText: "making inventory lvl 2"
+        comingUpText: "making inventory lvl 2"
     },
     {   // Level 3
         id: 19,
@@ -604,7 +604,7 @@ CS.WorkbookAreaTasks = [
         ],
         stepCount: 1,
         templateClassName: "WorkbookAreaPrioritizeItemsTask",
-        comingUpNextText: "prioritizing"
+        comingUpText: "prioritizing"
     },
     {
         id: 20,
@@ -629,7 +629,7 @@ CS.WorkbookAreaTasks = [
         ],
         stepCount: 1,
         templateClassName: "WorkbookAreaPrioritizeItemsTask",
-        comingUpNextText: "prioritizing"
+        comingUpText: "prioritizing"
     },
     {
         id: 21,
@@ -654,7 +654,7 @@ CS.WorkbookAreaTasks = [
         ],
         stepCount: 1,
         templateClassName: "WorkbookAreaPrioritizeItemsTask",
-        comingUpNextText: "prioritizing"
+        comingUpText: "prioritizing"
     },
     {
         id: 22,
@@ -679,7 +679,7 @@ CS.WorkbookAreaTasks = [
         ],
         stepCount: 1,
         templateClassName: "WorkbookAreaPrioritizeItemsTask",
-        comingUpNextText: "prioritizing"
+        comingUpText: "prioritizing"
     },
     {
         id: 23,
@@ -704,7 +704,7 @@ CS.WorkbookAreaTasks = [
         ],
         stepCount: 1,
         templateClassName: "WorkbookAreaPrioritizeItemsTask",
-        comingUpNextText: "prioritizing"
+        comingUpText: "prioritizing"
     },
     {
         id: 24,
@@ -729,7 +729,7 @@ CS.WorkbookAreaTasks = [
         ],
         stepCount: 1,
         templateClassName: "WorkbookAreaPrioritizeItemsTask",
-        comingUpNextText: "prioritizing"
+        comingUpText: "prioritizing"
     },
     {
         id: 25,
@@ -754,6 +754,6 @@ CS.WorkbookAreaTasks = [
         ],
         stepCount: 1,
         templateClassName: "WorkbookAreaPrioritizeItemsTask",
-        comingUpNextText: "prioritizing"
+        comingUpText: "prioritizing"
     }
 ];

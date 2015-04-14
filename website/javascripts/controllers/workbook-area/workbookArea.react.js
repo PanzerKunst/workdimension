@@ -45,9 +45,9 @@ CS.Controllers.WorkbookArea = P(function (c) {
                             return task.previousTaskId === activeTask.id;
                         });
 
-                        var nextTaskComingUpNextText = nextTask ? nextTask.comingUpNextText : null;
+                        var comingUpNextText = nextTask ? nextTask.comingUpText : null;
 
-                        taskReact = React.createElement(CS.Controllers[activeTask.templateClassName], {task: activeTask, workbookArea: this.state.workbookArea, nextTaskComingUpNextText: nextTaskComingUpNextText, controller: this.state.controller});
+                        taskReact = React.createElement(CS.Controllers[activeTask.templateClassName], {task: activeTask, workbookArea: this.state.workbookArea, comingUpNextText: comingUpNextText, controller: this.state.controller});
                     }
                 }
             }

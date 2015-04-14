@@ -540,9 +540,9 @@ CS.Controllers.Overview = P(function (c) {
 CS.Controllers.WorkbookAreaAddItemLvl2Task = React.createClass({displayName: "WorkbookAreaAddItemLvl2Task",
     render: function () {
         var comingUpNextParagraph = null;
-        if (this.props.nextTaskComingUpNextText) {
+        if (this.props.comingUpNextText) {
             comingUpNextParagraph = (
-                React.createElement("p", {className: "coming-up-next"}, "Coming up next: ", this.props.nextTaskComingUpNextText)
+                React.createElement("p", {className: "coming-up-next"}, "Coming up next: ", this.props.comingUpNextText)
                 );
         }
 
@@ -587,9 +587,9 @@ CS.Controllers.WorkbookAreaAddItemLvl2Task = React.createClass({displayName: "Wo
 CS.Controllers.WorkbookAreaAddItemTask = React.createClass({displayName: "WorkbookAreaAddItemTask",
     render: function () {
         var comingUpNextParagraph = null;
-        if (this.props.nextTaskComingUpNextText) {
+        if (this.props.comingUpNextText) {
             comingUpNextParagraph = (
-                React.createElement("p", {className: "coming-up-next"}, "Coming up next: ", this.props.nextTaskComingUpNextText)
+                React.createElement("p", {className: "coming-up-next"}, "Coming up next: ", this.props.comingUpNextText)
                 );
         }
 
@@ -730,9 +730,9 @@ CS.Controllers.WorkbookAreaAddItemTaskForm = React.createClass({displayName: "Wo
 CS.Controllers.WorkbookAreaPrioritizeItemsTask = React.createClass({displayName: "WorkbookAreaPrioritizeItemsTask",
     render: function () {
         var comingUpNextParagraph = null;
-        if (this.props.nextTaskComingUpNextText) {
+        if (this.props.comingUpNextText) {
             comingUpNextParagraph = (
-                React.createElement("p", {className: "coming-up-next"}, "Coming up next: ", this.props.nextTaskComingUpNextText)
+                React.createElement("p", {className: "coming-up-next"}, "Coming up next: ", this.props.comingUpNextText)
                 );
         }
 
@@ -809,9 +809,9 @@ CS.Controllers.WorkbookArea = P(function (c) {
                             return task.previousTaskId === activeTask.id;
                         });
 
-                        var nextTaskComingUpNextText = nextTask ? nextTask.comingUpNextText : null;
+                        var comingUpNextText = nextTask ? nextTask.comingUpText : null;
 
-                        taskReact = React.createElement(CS.Controllers[activeTask.templateClassName], {task: activeTask, workbookArea: this.state.workbookArea, nextTaskComingUpNextText: nextTaskComingUpNextText, controller: this.state.controller});
+                        taskReact = React.createElement(CS.Controllers[activeTask.templateClassName], {task: activeTask, workbookArea: this.state.workbookArea, comingUpNextText: comingUpNextText, controller: this.state.controller});
                     }
                 }
             }

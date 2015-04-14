@@ -1,9 +1,9 @@
 CS.Controllers.WorkbookAreaAddItemLvl2Task = React.createClass({
     render: function () {
         var comingUpNextParagraph = null;
-        if (this.props.nextTaskComingUpNextText) {
+        if (this.props.comingUpNextText) {
             comingUpNextParagraph = (
-                <p className="coming-up-next">Coming up next: {this.props.nextTaskComingUpNextText}</p>
+                <p className="coming-up-next">Coming up next: {this.props.comingUpNextText}</p>
                 );
         }
 
