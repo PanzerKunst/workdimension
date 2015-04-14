@@ -51,6 +51,8 @@ module.exports = function (grunt) {
                     // Models
                     "javascripts/models/blueprintArea.js",
                     "javascripts/models/blueprintAreas.js",
+                    "javascripts/models/workbookAreaTask.js",
+                    "javascripts/models/workbookAreaTaskCommon.js",
 
                     // Controllers
                     "javascripts/controllers/base.js",
@@ -70,8 +72,7 @@ module.exports = function (grunt) {
                     separator:";"
                 },
                 src: [
-                    "javascripts/mock-data/addItemToAreaTasks.js",
-                    "javascripts/mock-data/prioritizeItemsTasks.js"
+                    "javascripts/mock-data/workbookAreaTasks.js"
                 ],
                 dest: "public/mock-data.js"
             },

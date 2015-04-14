@@ -5,6 +5,15 @@
   > p {
     margin-bottom: 0;
   }
+
+  > .coming-up-next {
+    text-align: right;
+    font-size: 0.75em;
+  }
+
+  label {
+    margin-top: 1em;
+  }
 }
 
 .item-composer.task {
@@ -32,8 +41,6 @@
 
 .task-progress-bar {
   background-color: $gray-light;
-
-  margin-bottom: 1em;
 
   > div {
     height: 0.4em;

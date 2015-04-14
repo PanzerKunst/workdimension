@@ -1,4 +1,4 @@
-CS.Controllers.WorkbookAreaAddItemTask = React.createClass({
+CS.Controllers.WorkbookAreaAddItemLvl2Task = React.createClass({
     render: function () {
         var comingUpNextParagraph = null;
         if (this.props.nextTaskComingUpNextText) {
@@ -9,7 +9,7 @@ CS.Controllers.WorkbookAreaAddItemTask = React.createClass({
 
         return (
             <div className="workbook-area-task">
-                <p>Working on: making inventory of {this.props.workbookArea.className.toLowerCase()}</p>
+                <p>Working on: making inventory level 2 of {this.props.workbookArea.className.toLowerCase()}</p>
                 <div className="task-progress-bar" ref="progressBar">
                     <div></div>
                 </div>
@@ -39,7 +39,7 @@ CS.Controllers.WorkbookAreaAddItemTask = React.createClass({
             itemCount = CS.account.data[this.props.workbookArea.className].length;
         }
 
-        var itemPercent = itemCount / this.props.task.stepCount * 100;
+        var itemPercent = (itemCount - CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl1TaskComplete) / this.props.task.stepCount * 100;
 
         this.$progressBar.css("width", itemPercent + "%");
     }

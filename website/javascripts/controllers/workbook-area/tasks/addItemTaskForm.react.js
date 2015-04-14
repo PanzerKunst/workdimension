@@ -1,11 +1,12 @@
 CS.Controllers.WorkbookAreaAddItemTaskForm = React.createClass({
     render: function () {
-        var textareaId = "task-" + this.props.currentTask.id;
+        var textareaId = "task-" + this.props.task.id;
+        this.currentWording = CS.Models.WorkbookAreaTaskCommon.getNextWording(this.props.task);
 
         return (
             <form role="form" ref="form" className="item-composer task" onSubmit={this._handleFormSubmit}>
                 <div className="form-group">
-                    <label htmlFor={textareaId}>{this.props.currentTask.text}</label>
+                    <label htmlFor={textareaId}>{this.currentWording.prompt}</label>
                     <textarea className="form-control" id={textareaId} onKeyUp={this._handleTextareaKeyUp} />
                 </div>
                 <button className="btn btn-primary">Add item</button>
@@ -29,13 +30,13 @@ CS.Controllers.WorkbookAreaAddItemTaskForm = React.createClass({
     },
 
     _initTextareaValue: function () {
-        if (this.props.currentTask && this.props.currentTask.sentenceStart) {
-            this.$textarea.val(this.props.currentTask.sentenceStart);
+        if (this.currentWording.sentenceStart) {
+            this.$textarea.val(this.currentWording.sentenceStart);
         }
     },
 
-    _getLocalStorageKeyForSkippedTaskIds: function () {
-        return CS.Controllers.AddItemTaskCommon.getLocalStorageKeyForSkippedTaskIds(this.props.workbookArea.className);
+    getLocalStorageKeyForSkippedTaskPrompts: function () {
+        return CS.Models.WorkbookAreaTaskCommon.getLocalStorageKeyForSkippedTaskPrompts(this.props.workbookArea.id);
     },
 
     _handleFormSubmit: function (e) {
@@ -63,18 +64,18 @@ CS.Controllers.WorkbookAreaAddItemTaskForm = React.createClass({
             return false;
         }
 
-        if (!this.props.currentTask.sentenceStart) {
+        if (!this.currentWording.sentenceStart) {
             return true;
         }
 
-        return this.props.currentTask.sentenceStart.trim() !== trimmedItemName;
+        return this.currentWording.sentenceStart.trim() !== trimmedItemName;
     },
 
     _setCurrentTaskAsSkippedAndReRender: function () {
-        var skippedTaskIds = CS.Services.Browser.getFromLocalStorage(this._getLocalStorageKeyForSkippedTaskIds()) || [];
-        skippedTaskIds.push(this.props.currentTask.id);
+        var skippedTaskPrompts = CS.Services.Browser.getFromLocalStorage(this.getLocalStorageKeyForSkippedTaskPrompts()) || [];
+        skippedTaskPrompts.push(this.currentWording.prompt);
 
-        CS.Services.Browser.saveInLocalStorage(this._getLocalStorageKeyForSkippedTaskIds(), skippedTaskIds);
+        CS.Services.Browser.saveInLocalStorage(this.getLocalStorageKeyForSkippedTaskPrompts(), skippedTaskPrompts);
 
         this._resetForm();
         this.props.controller.reRender();
@@ -85,8 +86,8 @@ CS.Controllers.WorkbookAreaAddItemTaskForm = React.createClass({
     },
 
     _handleTextareaKeyUp: function (e) {
-        if (this.props.currentTask.sentenceStart && !_.startsWith(this.$textarea.val(), this.props.currentTask.sentenceStart)) {
-            this.$textarea.val(this.props.currentTask.sentenceStart);
+        if (this.currentWording.sentenceStart && !_.startsWith(this.$textarea.val(), this.currentWording.sentenceStart)) {
+            this.$textarea.val(this.currentWording.sentenceStart);
         }
 
         CS.Controllers.WorkbookAreaCommon.handleTextareaKeyUp(e, $.proxy(this._handleFormSubmit, this));

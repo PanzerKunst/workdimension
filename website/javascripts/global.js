@@ -22,9 +22,6 @@ CS.overviewController = null;
 CS.workbookAreaController = null;
 CS.blueprintAreasSelector = null;
 
-CS.minItemCountForAddItemTasksComplete = 3;
-CS.minItemCountToTriggerPrioritizationTask = 6;
-
 // Global functions
 CS.saveAccountData = function (callback) {
     var type = "POST";

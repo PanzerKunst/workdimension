@@ -6503,6 +6503,11 @@ footer {
   background-color: #f5f5f5; }
   .workbook-area-task > p {
     margin-bottom: 0; }
+  .workbook-area-task > .coming-up-next {
+    text-align: right;
+    font-size: 0.75em; }
+  .workbook-area-task label {
+    margin-top: 1em; }
 
 .item-composer.task {
   display: block; }
@@ -6519,8 +6524,7 @@ footer {
     vertical-align: middle; }
 
 .task-progress-bar {
-  background-color: #777777;
-  margin-bottom: 1em; }
+  background-color: #777777; }
   .task-progress-bar > div {
     height: 0.4em;
     background-color: #5cb85c;

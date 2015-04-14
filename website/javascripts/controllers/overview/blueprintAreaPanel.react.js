@@ -4,7 +4,7 @@ CS.Controllers.OverviewBlueprintAreaPanel = React.createClass({
 
         var wellClasses = classNames("well",
             {
-                "collapsed-list": this.props.blueprintAreaWithData.items.length > CS.minItemCountForAddItemTasksComplete
+                "collapsed-list": this.props.blueprintAreaWithData.items.length > CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl1TaskComplete
             });
 
         return (

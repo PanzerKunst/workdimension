@@ -81,11 +81,36 @@ CS.Controllers.NextTask = P(function (c) {
             };
         }
 
+        var activeWorkbookAreaToInventorizeLvl2 = _.find(CS.blueprintAreasModel.getActive(), function (workbookArea) {
+            return CS.account.data[workbookArea.className] && CS.account.data[workbookArea.className].length === 5;
+        });
+
+        if (!activeWorkbookAreaToInventorizeLvl2) {
+            activeWorkbookAreaToInventorizeLvl2 = _.find(CS.blueprintAreasModel.getActive(), function (workbookArea) {
+                return CS.account.data[workbookArea.className] && CS.account.data[workbookArea.className].length === 4;
+            });
+        }
+
+        if (!activeWorkbookAreaToInventorizeLvl2) {
+            activeWorkbookAreaToInventorizeLvl2 = _.find(CS.blueprintAreasModel.getActive(), function (workbookArea) {
+                return !CS.account.data[workbookArea.className] || CS.account.data[workbookArea.className].length === 3;
+            });
+        }
+
+        if (activeWorkbookAreaToInventorizeLvl2) {
+            return {
+                text: "Making inventory level 2 of " + activeWorkbookAreaToInventorize.className.toLowerCase(),
+                action: function () {
+                    location.href = "/workbook-areas/" + activeWorkbookAreaToInventorize.className;
+                }
+            };
+        }
+
         var areasWhichHaveEnoughItemsForPrioritizationTask = [];
         CS.blueprintAreasModel.getActive().forEach(function(workbookArea) {
             if (!_.includes(CS.account.data.prioritizedWorkbookAreaIds, workbookArea.id) &&
                 CS.account.data[workbookArea.className] &&
-                CS.account.data[workbookArea.className].length >= CS.minItemCountToTriggerPrioritizationTask ) {
+                CS.account.data[workbookArea.className].length >= CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl2TaskComplete ) {
                 areasWhichHaveEnoughItemsForPrioritizationTask.push({
                     workbookAreaClassName: workbookArea.className,
                     workbookItems: CS.account.data[workbookArea.className]

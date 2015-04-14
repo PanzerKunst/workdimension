@@ -14,24 +14,40 @@ CS.Controllers.WorkbookArea = P(function (c) {
             var taskReact = null;
 
             if (this.state.workbookArea) {
-                if (this.state.workbookItems.length < CS.minItemCountForAddItemTasksComplete) {
-                    taskReact = <CS.Controllers.WorkbookAreaAddItemTask controller={this.state.controller} workbookArea={this.state.workbookArea} />;
-                } else if (this.state.workbookItems.length < CS.minItemCountToTriggerPrioritizationTask) {
-                    taskReact = <CS.Controllers.WorkbookAreaContinueAddingItemsTask controller={this.state.controller} workbookArea={this.state.workbookArea} />;
-                } else {
-                    var isWorkbookAreaPrioritized = _.includes(CS.account.data.prioritizedWorkbookAreaIds, this.state.workbookArea.id);
+                var activeTask = _.find(CS.WorkbookAreaTasks, function(task) {  // Level 3
+                    return task.workbookAreaId === this.state.workbookArea.id && task.level === 3 && task.isActive();
+                }.bind(this)) ||
+                    _.find(CS.WorkbookAreaTasks, function(task) {   // Level 2
+                        return task.workbookAreaId === this.state.workbookArea.id && task.level === 2 && task.isActive();
+                    }.bind(this)) ||
+                    _.find(CS.WorkbookAreaTasks, function(task) {   // Level 1
+                        return task.workbookAreaId === this.state.workbookArea.id && task.level === 1 && task.isActive();
+                    }.bind(this));
 
-                    if (!isWorkbookAreaPrioritized) {
-                        taskReact = <CS.Controllers.WorkbookAreaPrioritizeItemsTask controller={this.state.controller} workbookArea={this.state.workbookArea} />;
-                    } else {
-                        taskReact = (
-                            <div className="workbook-area-task">
-                                <p>Prioritizing {this.state.workbookArea.className.toLowerCase()} - Task complete!</p>
-                                <div className="task-progress-bar">
-                                    <div style={{width: "100%"}}></div>
+                if (activeTask) {
+                    if (activeTask.templateClassName === "WorkbookAreaPrioritizeItemsTask") {
+                        var isWorkbookAreaPrioritized = _.includes(CS.account.data.prioritizedWorkbookAreaIds, this.state.workbookArea.id);
+                        if (isWorkbookAreaPrioritized) {
+                            taskReact = (
+                                <div className="workbook-area-task">
+                                    <p>Prioritizing {this.state.workbookArea.className.toLowerCase()} - Task complete!</p>
+                                    <div className="task-progress-bar">
+                                        <div style={{width: "100%"}}></div>
+                                    </div>
                                 </div>
-                            </div>
-                            );
+                                );
+
+                        }
+                    }
+
+                    if (!taskReact) {
+                        var nextTask = _.find(CS.WorkbookAreaTasks, function(task) {
+                            return task.previousTaskId === activeTask.id;
+                        });
+
+                        var nextTaskComingUpNextText = nextTask ? nextTask.comingUpNextText : null;
+
+                        taskReact = React.createElement(CS.Controllers[activeTask.templateClassName], {task: activeTask, workbookArea: this.state.workbookArea, nextTaskComingUpNextText: nextTaskComingUpNextText, controller: this.state.controller});
                     }
                 }
             }

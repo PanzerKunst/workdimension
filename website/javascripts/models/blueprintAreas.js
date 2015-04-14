@@ -26,6 +26,10 @@ CS.Models.BlueprintAreas = P(function (c) {
         return this.blueprintAreas.inactive;
     };
 
+    c.getOfId = function(id) {
+        return _.find(this.blueprintAreaInstances, "id", id);
+    };
+
     c._updateStatus = function () {
         this.blueprintAreaInstances.forEach(function (instance) {
             if (instance.isActive()) {

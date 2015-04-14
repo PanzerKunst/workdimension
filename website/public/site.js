@@ -278,9 +278,6 @@ CS.overviewController = null;
 CS.workbookAreaController = null;
 CS.blueprintAreasSelector = null;
 
-CS.minItemCountForAddItemTasksComplete = 3;
-CS.minItemCountToTriggerPrioritizationTask = 6;
-
 // Global functions
 CS.saveAccountData = function (callback) {
     var type = "POST";
@@ -853,6 +850,10 @@ CS.saveAccountData = function (callback) {
         return this.blueprintAreas.inactive;
     };
 
+    c.getOfId = function(id) {
+        return _.find(this.blueprintAreaInstances, "id", id);
+    };
+
     c._updateStatus = function () {
         this.blueprintAreaInstances.forEach(function (instance) {
             if (instance.isActive()) {
@@ -883,6 +884,48 @@ CS.saveAccountData = function (callback) {
         this.isInitial = false;
     };
 });
+;CS.Models.WorkbookAreaTask = P(function (c) {
+    c.init = function (id, level, workbookAreaId, previousTaskId, isActiveFunction, wordings, stepCount, templateClassName, comingUpNextText) {
+        this.id = id;
+        this.level = level;
+        this.workbookAreaId = workbookAreaId;
+        this.previousTaskId = previousTaskId;
+        this.isActiveFunction = isActiveFunction;
+        this.wordings = wordings;
+        this.stepCount = stepCount;
+        this.templateClassName = templateClassName;
+        this.comingUpNextText = comingUpNextText;
+    };
+});
+;CS.Models.WorkbookAreaTaskCommon = {
+    minItemCountForAddItemsLvl1TaskComplete: 3,
+    minItemCountForAddItemsLvl2TaskComplete: 6,
+
+    getNextWording: function (areaTask) {
+        var firstNotSkipped = _.find(areaTask.wordings, function (wording) {
+            return !_.includes(CS.Services.Browser.getFromLocalStorage(this.getLocalStorageKeyForSkippedTaskPrompts(areaTask.workbookAreaId)), wording.prompt);
+        }.bind(this));
+
+        if (firstNotSkipped) {
+            return firstNotSkipped;
+        }
+
+        // All have been skipped, we need to unskip them all
+        this._unskipAll(areaTask.workbookAreaId);
+
+        return _.find(areaTask.wordings, function (wording) {
+            return !_.includes(CS.Services.Browser.getFromLocalStorage(this.getLocalStorageKeyForSkippedTaskPrompts(areaTask.workbookAreaId)), wording.prompt);
+        }.bind(this));
+    },
+
+    getLocalStorageKeyForSkippedTaskPrompts: function (workbookAreaId) {
+        return "skippedTaskPrompts-" + workbookAreaId;
+    },
+
+    _unskipAll: function (workbookAreaId) {
+        CS.Services.Browser.removeFromLocalStorage(this.getLocalStorageKeyForSkippedTaskPrompts(workbookAreaId));
+    }
+};
 ;CS.Controllers.Base = P(function(c) {
     c.httpStatusCode = {
         ok: 200,
@@ -1190,11 +1233,36 @@ CS.Controllers.MainMenuLinkedInAuthenticator = P(CS.Controllers.Base, function (
             };
         }
 
+        var activeWorkbookAreaToInventorizeLvl2 = _.find(CS.blueprintAreasModel.getActive(), function (workbookArea) {
+            return CS.account.data[workbookArea.className] && CS.account.data[workbookArea.className].length === 5;
+        });
+
+        if (!activeWorkbookAreaToInventorizeLvl2) {
+            activeWorkbookAreaToInventorizeLvl2 = _.find(CS.blueprintAreasModel.getActive(), function (workbookArea) {
+                return CS.account.data[workbookArea.className] && CS.account.data[workbookArea.className].length === 4;
+            });
+        }
+
+        if (!activeWorkbookAreaToInventorizeLvl2) {
+            activeWorkbookAreaToInventorizeLvl2 = _.find(CS.blueprintAreasModel.getActive(), function (workbookArea) {
+                return !CS.account.data[workbookArea.className] || CS.account.data[workbookArea.className].length === 3;
+            });
+        }
+
+        if (activeWorkbookAreaToInventorizeLvl2) {
+            return {
+                text: "Making inventory level 2 of " + activeWorkbookAreaToInventorize.className.toLowerCase(),
+                action: function () {
+                    location.href = "/workbook-areas/" + activeWorkbookAreaToInventorize.className;
+                }
+            };
+        }
+
         var areasWhichHaveEnoughItemsForPrioritizationTask = [];
         CS.blueprintAreasModel.getActive().forEach(function(workbookArea) {
             if (!_.includes(CS.account.data.prioritizedWorkbookAreaIds, workbookArea.id) &&
                 CS.account.data[workbookArea.className] &&
-                CS.account.data[workbookArea.className].length >= CS.minItemCountToTriggerPrioritizationTask ) {
+                CS.account.data[workbookArea.className].length >= CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl2TaskComplete ) {
                 areasWhichHaveEnoughItemsForPrioritizationTask.push({
                     workbookAreaClassName: workbookArea.className,
                     workbookItems: CS.account.data[workbookArea.className]
@@ -1537,7 +1605,7 @@ CS.Controllers.OverviewBlueprintAreaPanel = React.createClass({displayName: "Ove
 
         var wellClasses = classNames("well",
             {
-                "collapsed-list": this.props.blueprintAreaWithData.items.length > CS.minItemCountForAddItemTasksComplete
+                "collapsed-list": this.props.blueprintAreaWithData.items.length > CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl1TaskComplete
             });
 
         return (
@@ -1795,21 +1863,23 @@ CS.Controllers.Overview = P(function (c) {
     };
 });
 
-CS.Controllers.WorkbookAreaAddItemTask = React.createClass({displayName: "WorkbookAreaAddItemTask",
+CS.Controllers.WorkbookAreaAddItemLvl2Task = React.createClass({displayName: "WorkbookAreaAddItemLvl2Task",
     render: function () {
-        this._initCurrentTask();
-
-        if (!this.currentTask) {
-            return null;
+        var comingUpNextParagraph = null;
+        if (this.props.nextTaskComingUpNextText) {
+            comingUpNextParagraph = (
+                React.createElement("p", {className: "coming-up-next"}, "Coming up next: ", this.props.nextTaskComingUpNextText)
+                );
         }
 
         return (
             React.createElement("div", {className: "workbook-area-task"}, 
-                React.createElement("p", null, "Working on: making inventory of ", this.props.workbookArea.className.toLowerCase()), 
+                React.createElement("p", null, "Working on: making inventory level 2 of ", this.props.workbookArea.className.toLowerCase()), 
                 React.createElement("div", {className: "task-progress-bar", ref: "progressBar"}, 
                     React.createElement("div", null)
                 ), 
-                React.createElement(CS.Controllers.WorkbookAreaAddItemTaskForm, {currentTask: this.currentTask, workbookArea: this.props.workbookArea, controller: this.props.controller})
+                comingUpNextParagraph, 
+                React.createElement(CS.Controllers.WorkbookAreaAddItemTaskForm, {task: this.props.task, workbookArea: this.props.workbookArea, controller: this.props.controller})
             )
             );
     },
@@ -1827,9 +1897,51 @@ CS.Controllers.WorkbookAreaAddItemTask = React.createClass({displayName: "Workbo
         this.$progressBar = $(React.findDOMNode(this.refs.progressBar)).children();
     },
 
-    _initCurrentTask: function () {
-        this.areaTasks = _.where(CS.AddItemToAreaTasks, {workbookAreaId: this.props.workbookArea.id});
-        this.currentTask = CS.Controllers.AddItemTaskCommon.getNextTask(this.areaTasks, this.props.workbookArea.className);
+    _initProgressBar: function() {
+        var itemCount = 0;
+
+        if (CS.account.data && !_.isEmpty(CS.account.data[this.props.workbookArea.className])) {
+            itemCount = CS.account.data[this.props.workbookArea.className].length;
+        }
+
+        var itemPercent = (itemCount - CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl1TaskComplete) / this.props.task.stepCount * 100;
+
+        this.$progressBar.css("width", itemPercent + "%");
+    }
+});
+
+CS.Controllers.WorkbookAreaAddItemTask = React.createClass({displayName: "WorkbookAreaAddItemTask",
+    render: function () {
+        var comingUpNextParagraph = null;
+        if (this.props.nextTaskComingUpNextText) {
+            comingUpNextParagraph = (
+                React.createElement("p", {className: "coming-up-next"}, "Coming up next: ", this.props.nextTaskComingUpNextText)
+                );
+        }
+
+        return (
+            React.createElement("div", {className: "workbook-area-task"}, 
+                React.createElement("p", null, "Working on: making inventory of ", this.props.workbookArea.className.toLowerCase()), 
+                React.createElement("div", {className: "task-progress-bar", ref: "progressBar"}, 
+                    React.createElement("div", null)
+                ), 
+                comingUpNextParagraph, 
+                React.createElement(CS.Controllers.WorkbookAreaAddItemTaskForm, {task: this.props.task, workbookArea: this.props.workbookArea, controller: this.props.controller})
+            )
+            );
+    },
+
+    componentDidMount: function () {
+        this._initElements();
+        this._initProgressBar();
+    },
+
+    componentDidUpdate: function() {
+        this._initProgressBar();
+    },
+
+    _initElements: function () {
+        this.$progressBar = $(React.findDOMNode(this.refs.progressBar)).children();
     },
 
     _initProgressBar: function() {
@@ -1839,7 +1951,7 @@ CS.Controllers.WorkbookAreaAddItemTask = React.createClass({displayName: "Workbo
             itemCount = CS.account.data[this.props.workbookArea.className].length;
         }
 
-        var itemPercent = itemCount / CS.minItemCountForAddItemTasksComplete * 100;
+        var itemPercent = itemCount / this.props.task.stepCount * 100;
 
         this.$progressBar.css("width", itemPercent + "%");
     }
@@ -1847,12 +1959,13 @@ CS.Controllers.WorkbookAreaAddItemTask = React.createClass({displayName: "Workbo
 
 CS.Controllers.WorkbookAreaAddItemTaskForm = React.createClass({displayName: "WorkbookAreaAddItemTaskForm",
     render: function () {
-        var textareaId = "task-" + this.props.currentTask.id;
+        var textareaId = "task-" + this.props.task.id;
+        this.currentWording = CS.Models.WorkbookAreaTaskCommon.getNextWording(this.props.task);
 
         return (
             React.createElement("form", {role: "form", ref: "form", className: "item-composer task", onSubmit: this._handleFormSubmit}, 
                 React.createElement("div", {className: "form-group"}, 
-                    React.createElement("label", {htmlFor: textareaId}, this.props.currentTask.text), 
+                    React.createElement("label", {htmlFor: textareaId}, this.currentWording.prompt), 
                     React.createElement("textarea", {className: "form-control", id: textareaId, onKeyUp: this._handleTextareaKeyUp})
                 ), 
                 React.createElement("button", {className: "btn btn-primary"}, "Add item"), 
@@ -1876,13 +1989,13 @@ CS.Controllers.WorkbookAreaAddItemTaskForm = React.createClass({displayName: "Wo
     },
 
     _initTextareaValue: function () {
-        if (this.props.currentTask && this.props.currentTask.sentenceStart) {
-            this.$textarea.val(this.props.currentTask.sentenceStart);
+        if (this.currentWording.sentenceStart) {
+            this.$textarea.val(this.currentWording.sentenceStart);
         }
     },
 
-    _getLocalStorageKeyForSkippedTaskIds: function () {
-        return CS.Controllers.AddItemTaskCommon.getLocalStorageKeyForSkippedTaskIds(this.props.workbookArea.className);
+    getLocalStorageKeyForSkippedTaskPrompts: function () {
+        return CS.Models.WorkbookAreaTaskCommon.getLocalStorageKeyForSkippedTaskPrompts(this.props.workbookArea.id);
     },
 
     _handleFormSubmit: function (e) {
@@ -1910,18 +2023,18 @@ CS.Controllers.WorkbookAreaAddItemTaskForm = React.createClass({displayName: "Wo
             return false;
         }
 
-        if (!this.props.currentTask.sentenceStart) {
+        if (!this.currentWording.sentenceStart) {
             return true;
         }
 
-        return this.props.currentTask.sentenceStart.trim() !== trimmedItemName;
+        return this.currentWording.sentenceStart.trim() !== trimmedItemName;
     },
 
     _setCurrentTaskAsSkippedAndReRender: function () {
-        var skippedTaskIds = CS.Services.Browser.getFromLocalStorage(this._getLocalStorageKeyForSkippedTaskIds()) || [];
-        skippedTaskIds.push(this.props.currentTask.id);
+        var skippedTaskPrompts = CS.Services.Browser.getFromLocalStorage(this.getLocalStorageKeyForSkippedTaskPrompts()) || [];
+        skippedTaskPrompts.push(this.currentWording.prompt);
 
-        CS.Services.Browser.saveInLocalStorage(this._getLocalStorageKeyForSkippedTaskIds(), skippedTaskIds);
+        CS.Services.Browser.saveInLocalStorage(this.getLocalStorageKeyForSkippedTaskPrompts(), skippedTaskPrompts);
 
         this._resetForm();
         this.props.controller.reRender();
@@ -1932,46 +2045,24 @@ CS.Controllers.WorkbookAreaAddItemTaskForm = React.createClass({displayName: "Wo
     },
 
     _handleTextareaKeyUp: function (e) {
-        if (this.props.currentTask.sentenceStart && !_.startsWith(this.$textarea.val(), this.props.currentTask.sentenceStart)) {
-            this.$textarea.val(this.props.currentTask.sentenceStart);
+        if (this.currentWording.sentenceStart && !_.startsWith(this.$textarea.val(), this.currentWording.sentenceStart)) {
+            this.$textarea.val(this.currentWording.sentenceStart);
         }
 
         CS.Controllers.WorkbookAreaCommon.handleTextareaKeyUp(e, $.proxy(this._handleFormSubmit, this));
     }
 });
 
-CS.Controllers.WorkbookAreaContinueAddingItemsTask = React.createClass({displayName: "WorkbookAreaContinueAddingItemsTask",
-    render: function () {
-        this._initCurrentTask();
-
-        if (!this.currentTask) {
-            return null;
-        }
-
-        return (
-            React.createElement("div", {className: "workbook-area-task"}, 
-                React.createElement("p", null, "Making inventory of ", this.props.workbookArea.className.toLowerCase(), " - Task complete!"), 
-                React.createElement("div", {className: "task-progress-bar", ref: "progressBar"}, 
-                    React.createElement("div", {style: {width: "100%"}})
-                ), 
-                React.createElement(CS.Controllers.WorkbookAreaAddItemTaskForm, {currentTask: this.currentTask, workbookArea: this.props.workbookArea, controller: this.props.controller})
-            )
-            );
-    },
-
-    _initCurrentTask: function () {
-        this.areaTasks = _.where(CS.AddItemToAreaTasks, {workbookAreaId: this.props.workbookArea.id});
-        this.currentTask = CS.Controllers.AddItemTaskCommon.getNextTask(this.areaTasks, this.props.workbookArea.className);
-    }
-});
-
 CS.Controllers.WorkbookAreaPrioritizeItemsTask = React.createClass({displayName: "WorkbookAreaPrioritizeItemsTask",
     render: function () {
-        this._initCurrentTask();
-
-        if (!this.currentTask) {
-            return null;
+        var comingUpNextParagraph = null;
+        if (this.props.nextTaskComingUpNextText) {
+            comingUpNextParagraph = (
+                React.createElement("p", {className: "coming-up-next"}, "Coming up next: ", this.props.nextTaskComingUpNextText)
+                );
         }
+
+        var currentWording = CS.Models.WorkbookAreaTaskCommon.getNextWording(this.props.task);
 
         return (
             React.createElement("div", {className: "workbook-area-task"}, 
@@ -1979,22 +2070,11 @@ CS.Controllers.WorkbookAreaPrioritizeItemsTask = React.createClass({displayName:
                 React.createElement("div", {className: "task-progress-bar"}, 
                     React.createElement("div", null)
                 ), 
-                React.createElement("label", null, this.currentTask.text), 
+                comingUpNextParagraph, 
+                React.createElement("label", null, currentWording.prompt), 
                 React.createElement("button", {className: "btn btn-primary", onClick: this._setCurrentWorkbookAreaAsPrioritizedAndReRender}, "I'm done prioritizing")
             )
             );
-    },
-
-    _getLocalStorageKeyForPrioritizedWorkbookAreas: function() {
-        return this.props.controller.reactInstance.localStorageKeyForPrioritizedWorkbookAreas;
-    },
-
-    _initCurrentTask: function () {
-        this.currentTask = _.find(CS.PrioritizeItemsTasks, "workbookAreaId", this.props.workbookArea.id) || {
-            id: 0,
-            workbookAreaId: this.props.workbookArea.id,
-            text: "What's most important to you? Prioritize by drag-and-dropping the items"
-        };
     },
 
     _setCurrentWorkbookAreaAsPrioritizedAndReRender: function () {
@@ -2024,24 +2104,40 @@ CS.Controllers.WorkbookArea = P(function (c) {
             var taskReact = null;
 
             if (this.state.workbookArea) {
-                if (this.state.workbookItems.length < CS.minItemCountForAddItemTasksComplete) {
-                    taskReact = React.createElement(CS.Controllers.WorkbookAreaAddItemTask, {controller: this.state.controller, workbookArea: this.state.workbookArea});
-                } else if (this.state.workbookItems.length < CS.minItemCountToTriggerPrioritizationTask) {
-                    taskReact = React.createElement(CS.Controllers.WorkbookAreaContinueAddingItemsTask, {controller: this.state.controller, workbookArea: this.state.workbookArea});
-                } else {
-                    var isWorkbookAreaPrioritized = _.includes(CS.account.data.prioritizedWorkbookAreaIds, this.state.workbookArea.id);
+                var activeTask = _.find(CS.WorkbookAreaTasks, function(task) {  // Level 3
+                    return task.workbookAreaId === this.state.workbookArea.id && task.level === 3 && task.isActive();
+                }.bind(this)) ||
+                    _.find(CS.WorkbookAreaTasks, function(task) {   // Level 2
+                        return task.workbookAreaId === this.state.workbookArea.id && task.level === 2 && task.isActive();
+                    }.bind(this)) ||
+                    _.find(CS.WorkbookAreaTasks, function(task) {   // Level 1
+                        return task.workbookAreaId === this.state.workbookArea.id && task.level === 1 && task.isActive();
+                    }.bind(this));
 
-                    if (!isWorkbookAreaPrioritized) {
-                        taskReact = React.createElement(CS.Controllers.WorkbookAreaPrioritizeItemsTask, {controller: this.state.controller, workbookArea: this.state.workbookArea});
-                    } else {
-                        taskReact = (
-                            React.createElement("div", {className: "workbook-area-task"}, 
-                                React.createElement("p", null, "Prioritizing ", this.state.workbookArea.className.toLowerCase(), " - Task complete!"), 
-                                React.createElement("div", {className: "task-progress-bar"}, 
-                                    React.createElement("div", {style: {width: "100%"}})
+                if (activeTask) {
+                    if (activeTask.templateClassName === "WorkbookAreaPrioritizeItemsTask") {
+                        var isWorkbookAreaPrioritized = _.includes(CS.account.data.prioritizedWorkbookAreaIds, this.state.workbookArea.id);
+                        if (isWorkbookAreaPrioritized) {
+                            taskReact = (
+                                React.createElement("div", {className: "workbook-area-task"}, 
+                                    React.createElement("p", null, "Prioritizing ", this.state.workbookArea.className.toLowerCase(), " - Task complete!"), 
+                                    React.createElement("div", {className: "task-progress-bar"}, 
+                                        React.createElement("div", {style: {width: "100%"}})
+                                    )
                                 )
-                            )
-                            );
+                                );
+
+                        }
+                    }
+
+                    if (!taskReact) {
+                        var nextTask = _.find(CS.WorkbookAreaTasks, function(task) {
+                            return task.previousTaskId === activeTask.id;
+                        });
+
+                        var nextTaskComingUpNextText = nextTask ? nextTask.comingUpNextText : null;
+
+                        taskReact = React.createElement(CS.Controllers[activeTask.templateClassName], {task: activeTask, workbookArea: this.state.workbookArea, nextTaskComingUpNextText: nextTaskComingUpNextText, controller: this.state.controller});
                     }
                 }
             }
