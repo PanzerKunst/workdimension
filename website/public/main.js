@@ -1481,6 +1481,7 @@ CS.Controllers.TaskNotifications = P(function (c) {
     c._toggleNotifications = function() {
         CS.mainMenuController.hideMenu();
         this.$mainContainer.toggleClass("task-notifications-open");
+        this.$taskNotificationsBtn.removeClass("with-new-items");
     };
 });
 

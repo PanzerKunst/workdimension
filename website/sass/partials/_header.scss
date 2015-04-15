@@ -1,3 +1,5 @@
+$header-btn-color: white;
+
 header {
   background-color: $action-color;
 
@@ -10,7 +12,7 @@ header {
   > .fa {
     font-size: $font-size-menu-btn;
     padding: $padding-menu-btn;
-    color: white;
+    color: $header-btn-color;
     float: left;
   }
 
@@ -41,16 +43,16 @@ header {
   }
 }
 
-#task-notifications-btn.read {
-  color: darken($action-color, 50%);
+#menu-btn,
+#task-notification-btn {
+  position: relative; // Because of absolutely-positioned triangles at the bottom
 }
 
-#container {
-  .menu-open {
-    #menu-btn {
-      color: $action-color;
-      background-color: $background-body-color;
-    }
+#task-notifications-btn {
+  color: darken($action-color, 17%);
+
+  &.with-new-items {
+    color: $header-btn-color;
   }
 }
 
@@ -159,6 +161,47 @@ header {
   z-index: $z-index-content-overlay-when-menu-open;
 
   display: none;
+}
+
+@mixin open-menu-triangle {
+  @include icon-font($fa-var-caret-up);
+
+  position: absolute;
+  bottom: -6px;
+  left: 14px;
+  z-index: $z-index-menu + 1;
+
+  color: $background-body-color;
+}
+
+#container {
+  &.menu-open {
+    #content-overlay-when-menu-open {
+      display: block;
+    }
+
+    #main-menu {
+      visibility: visible;
+    }
+
+    #menu-btn:after {
+      @include open-menu-triangle;
+    }
+  }
+
+  &.task-notifications-open {
+    #content-overlay-when-menu-open {
+      display: block;
+    }
+
+    #task-notifications {
+      visibility: visible;
+    }
+
+    #task-notifications-btn:after {
+      @include open-menu-triangle;
+    }
+  }
 }
 
 #sign-in-with-linkedin {

@@ -17,26 +17,6 @@ body {
   padding-bottom: $footer-height;
 }
 
-#container {
-  &.menu-open {
-    #content-overlay-when-menu-open {
-      display: block;
-    }
-    #main-menu {
-      visibility: visible;
-    }
-  }
-
-  &.task-notifications-open {
-    #content-overlay-when-menu-open {
-      display: block;
-    }
-    #task-notifications {
-      visibility: visible;
-    }
-  }
-}
-
 #content {
   padding-top: $header-height;
 }
