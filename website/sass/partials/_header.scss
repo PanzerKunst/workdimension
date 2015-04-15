@@ -132,12 +132,19 @@ header {
 
     > li {
       height: 4.5em;
-
       padding: 0.5em;
+
+      @include display(flex);
+      @include align-items(center);
 
       border-bottom: 1px solid $gray-lighter;
       &:last-child {
         border-bottom: none;
+      }
+
+      background-color: lighten($action-color, 35%);
+      &.viewed {
+        background-color: $background-body-color;
       }
     }
   }

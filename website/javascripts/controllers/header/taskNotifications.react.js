@@ -14,10 +14,14 @@ CS.Controllers.TaskNotifications = P(function (c) {
 
                         var workbookArea = CS.blueprintAreasModel.getOfId(task.workbookAreaId);
 
-                        var href = "/workbook-areas/" + workbookArea.className;
+                        var href = "/workbook-areas/" + workbookArea.className + "?taskIdToMarkAsViewed=" + task.id;
+
+                        var liClasses = classNames({
+                            "viewed": _.includes(CS.account.data.viewedTaskIds, task.id)
+                        });
 
                         return (
-                            <li key={id}>
+                            <li key={id} className={liClasses}>
                                 <a href={href}>{task.notificationText}</a>
                             </li>
                             );

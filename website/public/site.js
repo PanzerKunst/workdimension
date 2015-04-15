@@ -1395,10 +1395,14 @@ CS.Controllers.TaskNotifications = P(function (c) {
 
                         var workbookArea = CS.blueprintAreasModel.getOfId(task.workbookAreaId);
 
-                        var href = "/workbook-areas/" + workbookArea.className;
+                        var href = "/workbook-areas/" + workbookArea.className + "?taskIdToMarkAsViewed=" + task.id;
+
+                        var liClasses = classNames({
+                            "viewed": _.includes(CS.account.data.viewedTaskIds, task.id)
+                        });
 
                         return (
-                            React.createElement("li", {key: id}, 
+                            React.createElement("li", {key: id, className: liClasses}, 
                                 React.createElement("a", {href: href}, task.notificationText)
                             )
                             );

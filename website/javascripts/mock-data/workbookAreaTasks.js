@@ -161,8 +161,8 @@ CS.WorkbookAreaTasks = [
         ],
         stepCount: CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl1TaskComplete,
         templateClassName: "WorkbookAreaAddItemTask",
-        workingOnText: "making inventory of Workplace",
-        notificationText: "Make inventory of Workplace"
+        workingOnText: "making inventory of Workplace preferences",
+        notificationText: "Make inventory of Workplace preferences"
     },
     {
         id: 6,
@@ -248,8 +248,8 @@ CS.WorkbookAreaTasks = [
         ],
         stepCount: CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl1TaskComplete,
         templateClassName: "WorkbookAreaAddItemTask",
-        workingOnText: "making inventory of Leadership",
-        notificationText: "Make inventory of Leadership"
+        workingOnText: "making inventory of Leadership preferences",
+        notificationText: "Make inventory of Leadership preferences"
     },
     {
         id: 9,
@@ -471,8 +471,8 @@ CS.WorkbookAreaTasks = [
         ],
         stepCount: CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl2TaskComplete - CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl1TaskComplete,
         templateClassName: "WorkbookAreaAddItemLvl2Task",
-        workingOnText: "making level 2 inventory of Workplace",
-        notificationText: "Make level 2 inventory of Workplace",
+        workingOnText: "making level 2 inventory of Workplace preferences",
+        notificationText: "Make level 2 inventory of Workplace preferences",
         comingUpText: "making inventory level 2"
     },
     {
@@ -570,8 +570,8 @@ CS.WorkbookAreaTasks = [
         ],
         stepCount: CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl2TaskComplete - CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl1TaskComplete,
         templateClassName: "WorkbookAreaAddItemLvl2Task",
-        workingOnText: "making level 2 inventory of Leadership",
-        notificationText: "Make level 2 inventory of Leadership",
+        workingOnText: "making level 2 inventory of Leadership preferences",
+        notificationText: "Make level 2 inventory of Leadership preferences",
         comingUpText: "making inventory level 2"
     },
     {

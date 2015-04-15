@@ -1395,10 +1395,14 @@ CS.Controllers.TaskNotifications = P(function (c) {
 
                         var workbookArea = CS.blueprintAreasModel.getOfId(task.workbookAreaId);
 
-                        var href = "/workbook-areas/" + workbookArea.className;
+                        var href = "/workbook-areas/" + workbookArea.className + "?taskIdToMarkAsViewed=" + task.id;
+
+                        var liClasses = classNames({
+                            "viewed": _.includes(CS.account.data.viewedTaskIds, task.id)
+                        });
 
                         return (
-                            React.createElement("li", {key: id}, 
+                            React.createElement("li", {key: id, className: liClasses}, 
                                 React.createElement("a", {href: href}, task.notificationText)
                             )
                             );
@@ -2474,8 +2478,8 @@ CS.Controllers.WorkbookAreaWorkbookItem = React.createClass({displayName: "Workb
         ],
         stepCount: CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl1TaskComplete,
         templateClassName: "WorkbookAreaAddItemTask",
-        workingOnText: "making inventory of Workplace",
-        notificationText: "Make inventory of Workplace"
+        workingOnText: "making inventory of Workplace preferences",
+        notificationText: "Make inventory of Workplace preferences"
     },
     {
         id: 6,
@@ -2561,8 +2565,8 @@ CS.Controllers.WorkbookAreaWorkbookItem = React.createClass({displayName: "Workb
         ],
         stepCount: CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl1TaskComplete,
         templateClassName: "WorkbookAreaAddItemTask",
-        workingOnText: "making inventory of Leadership",
-        notificationText: "Make inventory of Leadership"
+        workingOnText: "making inventory of Leadership preferences",
+        notificationText: "Make inventory of Leadership preferences"
     },
     {
         id: 9,
@@ -2784,8 +2788,8 @@ CS.Controllers.WorkbookAreaWorkbookItem = React.createClass({displayName: "Workb
         ],
         stepCount: CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl2TaskComplete - CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl1TaskComplete,
         templateClassName: "WorkbookAreaAddItemLvl2Task",
-        workingOnText: "making level 2 inventory of Workplace",
-        notificationText: "Make level 2 inventory of Workplace",
+        workingOnText: "making level 2 inventory of Workplace preferences",
+        notificationText: "Make level 2 inventory of Workplace preferences",
         comingUpText: "making inventory level 2"
     },
     {
@@ -2883,8 +2887,8 @@ CS.Controllers.WorkbookAreaWorkbookItem = React.createClass({displayName: "Workb
         ],
         stepCount: CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl2TaskComplete - CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl1TaskComplete,
         templateClassName: "WorkbookAreaAddItemLvl2Task",
-        workingOnText: "making level 2 inventory of Leadership",
-        notificationText: "Make level 2 inventory of Leadership",
+        workingOnText: "making level 2 inventory of Leadership preferences",
+        notificationText: "Make level 2 inventory of Leadership preferences",
         comingUpText: "making inventory level 2"
     },
     {
