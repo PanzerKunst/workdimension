@@ -6267,10 +6267,6 @@ header {
   header button.fa {
     float: right; }
 
-#menu-btn,
-#task-notification-btn {
-  position: relative; }
-
 #task-notifications-btn {
   color: #0c57d3; }
   #task-notifications-btn.with-new-items {
@@ -6377,8 +6373,8 @@ header {
   -moz-osx-font-smoothing: grayscale;
   content: "";
   position: absolute;
-  bottom: -6px;
-  left: 14px;
+  bottom: -7px;
+  right: 14px;
   z-index: 11;
   color: white; }
 #container.task-notifications-open #content-overlay-when-menu-open {
@@ -6396,8 +6392,8 @@ header {
   -moz-osx-font-smoothing: grayscale;
   content: "";
   position: absolute;
-  bottom: -6px;
-  left: 14px;
+  bottom: -7px;
+  right: 14px;
   z-index: 11;
   color: white; }
 
@@ -6632,5 +6628,10 @@ html[data-useragent*='Trident/7.0'] .input-group .input-group-btn > .btn {
     html[data-useragent*='Trident/7.0'] .input-group .form-control[type="text"],
     html[data-useragent*='Trident/7.0'] .input-group .input-group-btn > .btn {
       height: 46px; } }
+
+html[data-useragent*="iPhone"] #container.task-notifications-open #task-notifications-btn:after,
+html[data-useragent*="iPad"] #container.task-notifications-open #task-notifications-btn:after,
+html[data-useragent*="iPod"] #container.task-notifications-open #task-notifications-btn:after {
+  right: 56px; }
 
 /*# sourceMappingURL=main.css.map */

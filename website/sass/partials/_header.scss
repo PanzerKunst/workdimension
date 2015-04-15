@@ -43,11 +43,6 @@ header {
   }
 }
 
-#menu-btn,
-#task-notification-btn {
-  position: relative; // Because of absolutely-positioned triangles at the bottom
-}
-
 #task-notifications-btn {
   color: darken($action-color, 17%);
 
@@ -167,8 +162,8 @@ header {
   @include icon-font($fa-var-caret-up);
 
   position: absolute;
-  bottom: -6px;
-  left: 14px;
+  bottom: -7px;
+  right: 14px;
   z-index: $z-index-menu + 1;
 
   color: $background-body-color;
