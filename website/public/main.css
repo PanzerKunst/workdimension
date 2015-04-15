@@ -6121,13 +6121,13 @@ button.styleless {
 
 a,
 a:visited {
-  color: #ff8a38;
+  color: #4285f4;
   cursor: pointer;
   text-decoration: none; }
 
 a:hover,
 a:focus {
-  color: #ff8a38; }
+  color: #4285f4; }
 
 textarea {
   resize: vertical;
@@ -6237,7 +6237,7 @@ a.fa:hover, a.fa:focus {
     font-size: 1.25em; }
 
 header {
-  background-color: #ff8a38;
+  background-color: #4285f4;
   position: fixed;
   height: 40px;
   width: 100%;
@@ -6272,7 +6272,7 @@ header {
   position: relative; }
 
 #task-notifications-btn {
-  color: #e05c00; }
+  color: #0c57d3; }
   #task-notifications-btn.with-new-items {
     color: white; }
 
@@ -6347,7 +6347,7 @@ header {
       align-items: center;
       -ms-flex-align: center;
       border-bottom: 1px solid #eeeeee;
-      background-color: #fff3eb; }
+      background-color: #ebf2fe; }
       #task-notifications > ul > li:last-child {
         border-bottom: none; }
       #task-notifications > ul > li.viewed {
@@ -6438,7 +6438,7 @@ header {
 
 footer {
   height: 40px;
-  background-color: #ff8a38;
+  background-color: #4285f4;
   position: absolute;
   bottom: 0;
   width: 100%; }
