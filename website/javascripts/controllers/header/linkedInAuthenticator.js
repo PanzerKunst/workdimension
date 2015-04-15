@@ -108,7 +108,7 @@ CS.Controllers.MainMenuLinkedInAuthenticator = P(CS.Controllers.Base, function (
 
         CS.mainMenuController.hideMenu();
         CS.blueprintAreasModel.updateStatus();
-        CS.nextTaskController.initNextTask();
+        CS.taskNotificationsController.reRender();
     };
 
     c._signOut = function () {

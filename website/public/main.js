@@ -2953,8 +2953,8 @@ CS.Controllers.WorkbookAreaWorkbookItem = React.createClass({displayName: "Workb
         ],
         stepCount: 1,
         templateClassName: "WorkbookAreaPrioritizeItemsTask",
-        workingOnText: "prioritizing your Strengths",
-        notificationText: "Prioritize your Strengths",
+        workingOnText: "prioritizing my Strengths",
+        notificationText: "Prioritize my Strengths",
         comingUpText: "prioritizing"
     },
     {
@@ -2980,8 +2980,8 @@ CS.Controllers.WorkbookAreaWorkbookItem = React.createClass({displayName: "Workb
         ],
         stepCount: 1,
         templateClassName: "WorkbookAreaPrioritizeItemsTask",
-        workingOnText: "prioritizing your Drivers",
-        notificationText: "Prioritize your Drivers",
+        workingOnText: "prioritizing my Drivers",
+        notificationText: "Prioritize my Drivers",
         comingUpText: "prioritizing"
     },
     {
@@ -3007,8 +3007,8 @@ CS.Controllers.WorkbookAreaWorkbookItem = React.createClass({displayName: "Workb
         ],
         stepCount: 1,
         templateClassName: "WorkbookAreaPrioritizeItemsTask",
-        workingOnText: "prioritizing Workplace items",
-        notificationText: "Prioritize Workplace item",
+        workingOnText: "prioritizing Workplace preferences",
+        notificationText: "Prioritize Workplace preferences",
         comingUpText: "prioritizing"
     },
     {
@@ -3034,8 +3034,8 @@ CS.Controllers.WorkbookAreaWorkbookItem = React.createClass({displayName: "Workb
         ],
         stepCount: 1,
         templateClassName: "WorkbookAreaPrioritizeItemsTask",
-        workingOnText: "prioritizing your Achievements",
-        notificationText: "Prioritize your Achievements",
+        workingOnText: "prioritizing my Achievements",
+        notificationText: "Prioritize my Achievements",
         comingUpText: "prioritizing"
     },
     {
@@ -3061,8 +3061,8 @@ CS.Controllers.WorkbookAreaWorkbookItem = React.createClass({displayName: "Workb
         ],
         stepCount: 1,
         templateClassName: "WorkbookAreaPrioritizeItemsTask",
-        workingOnText: "prioritizing Leadership items",
-        notificationText: "Prioritize Leadership items",
+        workingOnText: "prioritizing Leadership preferences",
+        notificationText: "Prioritize Leadership preferences",
         comingUpText: "prioritizing"
     },
     {
@@ -3088,8 +3088,8 @@ CS.Controllers.WorkbookAreaWorkbookItem = React.createClass({displayName: "Workb
         ],
         stepCount: 1,
         templateClassName: "WorkbookAreaPrioritizeItemsTask",
-        workingOnText: "prioritizing what you want More",
-        notificationText: "Prioritize what you want More",
+        workingOnText: "prioritizing what I want More",
+        notificationText: "Prioritize what I want More",
         comingUpText: "prioritizing"
     },
     {
@@ -3115,8 +3115,8 @@ CS.Controllers.WorkbookAreaWorkbookItem = React.createClass({displayName: "Workb
         ],
         stepCount: 1,
         templateClassName: "WorkbookAreaPrioritizeItemsTask",
-        workingOnText: "prioritizing your Tracks",
-        notificationText: "Prioritize your Tracks",
+        workingOnText: "prioritizing my Tracks",
+        notificationText: "Prioritize my Tracks",
         comingUpText: "prioritizing"
     }
 ];
