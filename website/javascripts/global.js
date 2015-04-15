@@ -17,7 +17,7 @@ CS.defaultAnimationDuration = 0.5;
 
 CS.blueprintAreasModel = null;
 CS.mainMenuController = null;
-CS.nextTaskController = null;
+CS.taskNotificationsController = null;
 CS.overviewController = null;
 CS.workbookAreaController = null;
 CS.blueprintAreasSelector = null;
@@ -42,7 +42,7 @@ CS.saveAccountData = function (callback) {
         }
     });
 
-    if (CS.nextTaskController) {
-        CS.nextTaskController.initNextTask();
+    if (CS.taskNotificationsController) {
+        CS.taskNotificationsController.reRender();
     }
 };

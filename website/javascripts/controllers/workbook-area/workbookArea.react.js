@@ -36,7 +36,6 @@ CS.Controllers.WorkbookArea = P(function (c) {
                                     </div>
                                 </div>
                                 );
-
                         }
                     }
 

@@ -59,7 +59,6 @@ module.exports = function (grunt) {
                     "javascripts/controllers/onePageWebapp.js",
                     "javascripts/controllers/workbookAreaCommon.js",
                     "javascripts/controllers/header/linkedInAuthenticator.js",
-                    "javascripts/controllers/header/nextTask.js",
                     "javascripts/controllers/workbook-area/tasks/addItemTaskCommon.js",
 
                     // React

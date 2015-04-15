@@ -6199,16 +6199,21 @@ body {
 #container {
   min-height: 100%;
   position: relative; }
-  #container.menu-open {
-    max-height: 100%;
-    overflow-y: hidden; }
-    #container.menu-open #content-overlay-when-menu-open {
-      display: block; }
-    #container.menu-open #main-menu {
-      visibility: visible; }
 
 [role="main"] {
   padding-bottom: 40px; }
+
+#container.menu-open #content-overlay-when-menu-open {
+  display: block; }
+#container.menu-open #main-menu {
+  visibility: visible; }
+#container.task-notifications-open #content-overlay-when-menu-open {
+  display: block; }
+#container.task-notifications-open #task-notifications {
+  visibility: visible; }
+
+#content {
+  padding-top: 40px; }
 
 a.fa:hover, a.fa:focus {
   text-decoration: none; }
@@ -6271,23 +6276,35 @@ header {
   header button.fa {
     float: right; }
 
-#next-task-btn.read {
-  color: rgba(255, 255, 255, 0.5); }
+#task-notifications-btn.read {
+  color: #381700; }
 
-#container.menu-open #menu-btn {
+#container .menu-open #menu-btn {
   color: #ff8a38;
   background-color: white; }
 
-#main-menu {
+#main-menu,
+#task-notifications {
   position: fixed;
   top: 40px;
-  right: 0;
   bottom: 0;
   z-index: 10;
   overflow-y: scroll;
   background-color: white;
+  visibility: hidden;
+  box-shadow: 0 0.3em 0.6em rgba(0, 0, 0, 0.25); }
+
+#main-menu {
+  right: 0;
   padding: 1em;
-  visibility: hidden; }
+  min-width: 280px;
+  max-width: 280px; }
+  @media screen and (min-width: 640px) {
+    #main-menu {
+      max-width: 416px; } }
+  @media screen and (min-width: 960px) {
+    #main-menu {
+      max-width: 512px; } }
   #main-menu > a,
   #main-menu > section {
     margin-bottom: 0.5em; }
@@ -6305,6 +6322,25 @@ header {
   #main-menu ul {
     margin-bottom: 0; }
 
+#task-notifications {
+  right: 40px;
+  min-width: 280px;
+  max-width: 280px; }
+  @media screen and (min-width: 640px) {
+    #task-notifications {
+      max-width: 416px; } }
+  @media screen and (min-width: 960px) {
+    #task-notifications {
+      max-width: 512px; } }
+  #task-notifications > ul {
+    margin-bottom: 0; }
+    #task-notifications > ul > li {
+      height: 4.5em;
+      padding: 0.5em;
+      border-bottom: 1px solid #eeeeee; }
+      #task-notifications > ul > li:last-child {
+        border-bottom: none; }
+
 #content-overlay-when-menu-open {
   position: fixed;
   top: 40px;
@@ -6312,22 +6348,7 @@ header {
   left: 0;
   width: 100%;
   z-index: 9;
-  display: none;
-  background-color: rgba(0, 0, 0, 0.2); }
-
-#next-task-prompt {
-  padding-top: 40px;
-  text-align: center;
-  height: 0;
-  overflow: hidden;
-  background-color: rgba(255, 138, 56, 0.3); }
-  #next-task-prompt > span {
-    display: inline-block;
-    vertical-align: middle; }
-  #next-task-prompt > .btn {
-    font-size: 0.75em;
-    vertical-align: bottom;
-    margin: 0.2em 0 0.2em 1em; }
+  display: none; }
 
 #sign-in-with-linkedin {
   font: 0/0 a;
@@ -6506,7 +6527,8 @@ footer {
   .workbook-area-task > .coming-up-next {
     text-align: right;
     font-size: 0.75em; }
-  .workbook-area-task label {
+  .workbook-area-task > .item-composer,
+  .workbook-area-task > label {
     margin-top: 1em; }
 
 .item-composer.task {

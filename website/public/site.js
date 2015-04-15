@@ -273,7 +273,7 @@ CS.defaultAnimationDuration = 0.5;
 
 CS.blueprintAreasModel = null;
 CS.mainMenuController = null;
-CS.nextTaskController = null;
+CS.taskNotificationsController = null;
 CS.overviewController = null;
 CS.workbookAreaController = null;
 CS.blueprintAreasSelector = null;
@@ -298,8 +298,8 @@ CS.saveAccountData = function (callback) {
         }
     });
 
-    if (CS.nextTaskController) {
-        CS.nextTaskController.initNextTask();
+    if (CS.taskNotificationsController) {
+        CS.taskNotificationsController.reRender();
     }
 };
 ;CS.Services.Browser = {
@@ -1143,159 +1143,11 @@ CS.Controllers.MainMenuLinkedInAuthenticator = P(CS.Controllers.Base, function (
 
         CS.mainMenuController.hideMenu();
         CS.blueprintAreasModel.updateStatus();
-        CS.nextTaskController.initNextTask();
+        CS.taskNotificationsController.reRender();
     };
 
     c._signOut = function () {
         IN.User.logout(CS.mainMenuController.signOut, this);
-    };
-});
-;CS.Controllers.NextTask = P(function (c) {
-    c.init = function () {
-        this._initElements();
-        this._initEvents();
-
-        this.initNextTask();
-    };
-
-    c._initElements = function () {
-        this.$mainContainer = $("#container");
-        this.$nextTaskBtn = $("#next-task-btn");
-        this.$nextTaskPrompt = $("#next-task-prompt");
-
-        this.$nextTaskSpan = this.$nextTaskPrompt.children("span");
-        this.$nextTaskActionBtn = this.$nextTaskPrompt.children("button");
-    };
-
-    c._initEvents = function () {
-        this.$nextTaskBtn.click($.proxy(this._toggleNextTaskPrompt, this));
-    };
-
-    c.initNextTask = function () {
-        var nextTask = this._getNextTask();
-
-        if (!nextTask) {
-            this.$nextTaskBtn.hide();
-        } else {
-            this.$nextTaskBtn.show();
-
-            this.$nextTaskSpan.html(nextTask.text);
-            this.$nextTaskActionBtn.unbind();
-            this.$nextTaskActionBtn.click(nextTask.action);
-
-            this.nextTask = nextTask;
-
-            if (this._isTaskRead()) {
-                this.$nextTaskBtn.addClass("read");
-            } else {
-                this.$nextTaskBtn.removeClass("read");
-                TweenLite.set(this.$nextTaskBtn, {backgroundColor: "rgb(255, 255, 255)"});
-                TweenLite.to(this.$nextTaskBtn, CS.defaultAnimationDuration * 2, {backgroundColor: "rgb(255, 138, 56)", onComplete: $.proxy(this._markTaskAsRead, this)});
-                this.$nextTaskPrompt.css("height", "auto");
-            }
-        }
-    };
-
-    c._toggleNextTaskPrompt = function () {
-        var newHeight = "0px";
-
-        if (this.$nextTaskPrompt.height() === 0) {
-            newHeight = "auto";
-            this._markTaskAsRead();
-        }
-
-        this.$nextTaskPrompt.css("height", newHeight);
-    };
-
-    c._getNextTask = function () {
-        var activeWorkbookAreaToInventorize = _.find(CS.blueprintAreasModel.getActive(), function (workbookArea) {
-            return CS.account.data[workbookArea.className] && CS.account.data[workbookArea.className].length === 2;
-        });
-
-        if (!activeWorkbookAreaToInventorize) {
-            activeWorkbookAreaToInventorize = _.find(CS.blueprintAreasModel.getActive(), function (workbookArea) {
-                return CS.account.data[workbookArea.className] && CS.account.data[workbookArea.className].length === 1;
-            });
-        }
-
-        if (!activeWorkbookAreaToInventorize) {
-            activeWorkbookAreaToInventorize = _.find(CS.blueprintAreasModel.getActive(), function (workbookArea) {
-                return !CS.account.data[workbookArea.className] || CS.account.data[workbookArea.className].length === 0;
-            });
-        }
-
-        if (activeWorkbookAreaToInventorize) {
-            return {
-                text: "Making inventory of " + activeWorkbookAreaToInventorize.className.toLowerCase(),
-                action: function () {
-                    location.href = "/workbook-areas/" + activeWorkbookAreaToInventorize.className;
-                }
-            };
-        }
-
-        var activeWorkbookAreaToInventorizeLvl2 = _.find(CS.blueprintAreasModel.getActive(), function (workbookArea) {
-            return CS.account.data[workbookArea.className] && CS.account.data[workbookArea.className].length === 5;
-        });
-
-        if (!activeWorkbookAreaToInventorizeLvl2) {
-            activeWorkbookAreaToInventorizeLvl2 = _.find(CS.blueprintAreasModel.getActive(), function (workbookArea) {
-                return CS.account.data[workbookArea.className] && CS.account.data[workbookArea.className].length === 4;
-            });
-        }
-
-        if (!activeWorkbookAreaToInventorizeLvl2) {
-            activeWorkbookAreaToInventorizeLvl2 = _.find(CS.blueprintAreasModel.getActive(), function (workbookArea) {
-                return !CS.account.data[workbookArea.className] || CS.account.data[workbookArea.className].length === 3;
-            });
-        }
-
-        if (activeWorkbookAreaToInventorizeLvl2) {
-            return {
-                text: "Making inventory level 2 of " + activeWorkbookAreaToInventorize.className.toLowerCase(),
-                action: function () {
-                    location.href = "/workbook-areas/" + activeWorkbookAreaToInventorize.className;
-                }
-            };
-        }
-
-        var areasWhichHaveEnoughItemsForPrioritizationTask = [];
-        CS.blueprintAreasModel.getActive().forEach(function(workbookArea) {
-            if (!_.includes(CS.account.data.prioritizedWorkbookAreaIds, workbookArea.id) &&
-                CS.account.data[workbookArea.className] &&
-                CS.account.data[workbookArea.className].length >= CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl2TaskComplete ) {
-                areasWhichHaveEnoughItemsForPrioritizationTask.push({
-                    workbookAreaClassName: workbookArea.className,
-                    workbookItems: CS.account.data[workbookArea.className]
-                });
-            }
-        });
-
-        var areaToPrioritize = _.first(_.sortBy(areasWhichHaveEnoughItemsForPrioritizationTask, function(area) {
-            return -area.workbookItems.length;
-        }));
-
-        if (areaToPrioritize) {
-            return {
-                text: "Prioritizing " + areaToPrioritize.workbookAreaClassName.toLowerCase(),
-                action: function() {
-                    location.href = "/workbook-areas/" + areaToPrioritize.workbookAreaClassName;
-                }
-            };
-        }
-    };
-
-    c._markTaskAsRead = function () {
-        this.$nextTaskBtn.addClass("read");
-
-        if (!this._isTaskRead()) {
-            CS.account.data.readTaskTexts = CS.account.data.readTaskTexts || [];
-            CS.account.data.readTaskTexts.push(this.nextTask.text);
-            CS.saveAccountData();
-        }
-    };
-
-    c._isTaskRead = function () {
-        return _.indexOf(CS.account.data.readTaskTexts, this.nextTask.text) > -1;
     };
 });
 ;CS.Controllers.AddItemTaskCommon = {
@@ -1439,27 +1291,27 @@ CS.Controllers.MainMenu = P(CS.Controllers.Base, function (c) {
         CS.blueprintAreasModel.updateStatus();
 
         this._initElements();
-        this._addLinksToActiveWorkbookAreas();
+        this._render();
         this._initEvents();
     };
 
     c._initElements = function () {
         this.$mainContainer = $("#container");
 
-        this.$menuBtn = $("#menu-btn");
-        this.$menu = $("#main-menu");
-        this.$contentOverlayWhenMenuOpen = $("#content-overlay-when-menu-open");
-        this.$selectAreasModal = $("#select-areas-modal");
+        this.$menuBtn = this.$mainContainer.find("#menu-btn");
+        this.$menu = this.$mainContainer.find("#main-menu");
+        this.$contentOverlayWhenMenuOpen = this.$mainContainer.find("#content-overlay-when-menu-open");
+        this.$selectAreasModal = this.$mainContainer.find("#select-areas-modal");
 
         this.$activeAreasSection = this.$menu.children("section");
         this.$selectAreasLink = this.$menu.children("#select-areas");
-        this.$signInWithLinkedInLink = $("#sign-in-with-linkedin");
+        this.$signInWithLinkedInLink = this.$mainContainer.find("#sign-in-with-linkedin");
         this.$signOutLink = this.$menu.children("#sign-out");
     };
 
     c._initEvents = function () {
-        this.$menuBtn.click($.proxy(this.toggleMenu, this));
-        this.$contentOverlayWhenMenuOpen.click($.proxy(this.toggleMenu, this));
+        this.$menuBtn.click($.proxy(this._toggleMenu, this));
+        this.$contentOverlayWhenMenuOpen.click($.proxy(this.hideMenu, this));
 
         this.$selectAreasLink.click($.proxy(this._showModal, this));
     };
@@ -1468,12 +1320,6 @@ CS.Controllers.MainMenu = P(CS.Controllers.Base, function (c) {
         this.reactInstance.replaceState({
             activeWorkbookAreas: _.sortByAll(CS.blueprintAreasModel.getActive(), "title")
         });
-    };
-
-    c.toggleMenu = function () {
-        this._initSignInLinks();
-
-        this.$mainContainer.toggleClass("menu-open");
     };
 
     c.hideMenu = function () {
@@ -1500,13 +1346,20 @@ CS.Controllers.MainMenu = P(CS.Controllers.Base, function (c) {
         });
     };
 
-    c._addLinksToActiveWorkbookAreas = function() {
+    c._render = function() {
         this.reactInstance = React.render(
             React.createElement(this.reactClass),
             this.$activeAreasSection[0]
         );
 
         this.reRender();
+    };
+
+    c._toggleMenu = function () {
+        this._initSignInLinks();
+
+        CS.taskNotificationsController.hide();
+        this.$mainContainer.toggleClass("menu-open");
     };
 
     c._initSignInLinks = function() {
@@ -1522,7 +1375,108 @@ CS.Controllers.MainMenu = P(CS.Controllers.Base, function (c) {
     c._showModal = function() {
         CS.blueprintAreasSelector.reRender();
         this.$selectAreasModal.modal();
-        this.toggleMenu();
+        this.hideMenu();
+    };
+});
+
+CS.Controllers.TaskNotifications = P(function (c) {
+    c.reactClass = React.createClass({displayName: "reactClass",
+        getInitialState: function () {
+            return {
+                tasks: []
+            };
+        },
+
+        render: function () {
+            return (
+                React.createElement("ul", {className: "styleless"}, 
+                    this.state.tasks.map(function (task) {
+                        var id = "notification-for-task-" + task.id;
+
+                        var workbookArea = CS.blueprintAreasModel.getOfId(task.workbookAreaId);
+
+                        var href = "/workbook-areas/" + workbookArea.className;
+
+                        return (
+                            React.createElement("li", {key: id}, 
+                                React.createElement("a", {href: href}, task.notificationText)
+                            )
+                            );
+                    })
+                )
+                );
+        }
+    });
+
+    c.init = function () {
+        this._initElements();
+        this._render();
+        this._initEvents();
+    };
+
+    c._initElements = function() {
+        this.$mainContainer = $("#container");
+        this.$taskNotificationsBtn = this.$mainContainer.find("#task-notifications-btn");
+        this.$contentOverlayWhenMenuOpen = this.$mainContainer.find("#content-overlay-when-menu-open");
+    };
+
+    c._initEvents = function() {
+        this.$taskNotificationsBtn.click($.proxy(this._toggleNotifications, this));
+        this.$contentOverlayWhenMenuOpen.click($.proxy(this.hide, this));
+    };
+
+    c.reRender = function () {
+        this.reactInstance.replaceState({
+            tasks: this._getTasks()
+        });
+    };
+
+    c.hide = function() {
+        this.$mainContainer.removeClass("task-notifications-open");
+    };
+
+    c._render = function() {
+        this.reactInstance = React.render(
+            React.createElement(this.reactClass),
+            document.getElementById("task-notifications")
+        );
+
+        this.reRender();
+    };
+
+    c._getTasks = function() {
+        var activeTasks = _.filter(CS.WorkbookAreaTasks, function(task) {
+            return task.isActive();
+        });
+
+        var activeLvl1Tasks = _.filter(activeTasks, function(task) {
+            return task.level === 1;
+        });
+
+        var prioritizedLvl1Tasks = _.sortBy(activeLvl1Tasks, function(task) {
+            var workbookArea = CS.blueprintAreasModel.getOfId(task.workbookAreaId);
+            return CS.account.data[workbookArea.className] ? -CS.account.data[workbookArea.className].length : 0;
+        });
+
+        var activeLvl2Tasks = _.filter(activeTasks, function(task) {
+            return task.level === 2;
+        });
+
+        var prioritizedLvl2Tasks = _.sortBy(activeLvl2Tasks, function(task) {
+            var workbookArea = CS.blueprintAreasModel.getOfId(task.workbookAreaId);
+            return CS.account.data[workbookArea.className] ? -CS.account.data[workbookArea.className].length : 0;
+        });
+
+        var activeLvl3Tasks = _.filter(activeTasks, function(task) {
+            return task.level === 3;
+        });
+
+        return _.union(prioritizedLvl1Tasks, prioritizedLvl2Tasks, activeLvl3Tasks);
+    };
+
+    c._toggleNotifications = function() {
+        CS.mainMenuController.hideMenu();
+        this.$mainContainer.toggleClass("task-notifications-open");
     };
 });
 
@@ -1874,7 +1828,7 @@ CS.Controllers.WorkbookAreaAddItemLvl2Task = React.createClass({displayName: "Wo
 
         return (
             React.createElement("div", {className: "workbook-area-task"}, 
-                React.createElement("p", null, "Working on: making inventory level 2 of ", this.props.workbookArea.className.toLowerCase()), 
+                React.createElement("p", null, "Working on: ", this.props.task.workingOnText), 
                 React.createElement("div", {className: "task-progress-bar", ref: "progressBar"}, 
                     React.createElement("div", null)
                 ), 
@@ -1921,7 +1875,7 @@ CS.Controllers.WorkbookAreaAddItemTask = React.createClass({displayName: "Workbo
 
         return (
             React.createElement("div", {className: "workbook-area-task"}, 
-                React.createElement("p", null, "Working on: making inventory of ", this.props.workbookArea.className.toLowerCase()), 
+                React.createElement("p", null, "Working on: ", this.props.task.workingOnText), 
                 React.createElement("div", {className: "task-progress-bar", ref: "progressBar"}, 
                     React.createElement("div", null)
                 ), 
@@ -2066,7 +2020,7 @@ CS.Controllers.WorkbookAreaPrioritizeItemsTask = React.createClass({displayName:
 
         return (
             React.createElement("div", {className: "workbook-area-task"}, 
-                React.createElement("p", null, "Working on: prioritizing ", this.props.workbookArea.className.toLowerCase()), 
+                React.createElement("p", null, "Working on: ", this.props.task.workingOnText), 
                 React.createElement("div", {className: "task-progress-bar"}, 
                     React.createElement("div", null)
                 ), 
@@ -2126,7 +2080,6 @@ CS.Controllers.WorkbookArea = P(function (c) {
                                     )
                                 )
                                 );
-
                         }
                     }
 

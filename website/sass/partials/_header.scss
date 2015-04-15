@@ -41,30 +41,47 @@ header {
   }
 }
 
-#next-task-btn.read {
-  color: transparentize(white, 0.5);
+#task-notifications-btn.read {
+  color: darken($action-color, 50%);
 }
 
-#container.menu-open {
-  #menu-btn {
-    color: $action-color;
-    background-color: $background-body-color;
+#container {
+  .menu-open {
+    #menu-btn {
+      color: $action-color;
+      background-color: $background-body-color;
+    }
   }
 }
 
-#main-menu {
+#main-menu,
+#task-notifications {
   position: fixed;
   top: $header-height;
-  right: 0;
-  bottom: 0;
+  bottom: 0;  // For the menu/notifications to be scrollable
   z-index: $z-index-menu;
 
   overflow-y: scroll;
 
   background-color: $background-body-color;
-  padding: 1em;
 
   visibility: hidden; // Hidden by default
+
+  box-shadow: 0 0.3em 0.6em rgba(0, 0, 0, 0.25);
+}
+
+#main-menu {
+  right: 0;
+  padding: 1em;
+
+  min-width: $small-content-width - $default-btn-size;
+  max-width: $small-content-width - $default-btn-size;
+  @include medium-screen {
+    max-width: $small-content-width * $medium-screen-ratio-m;
+  }
+  @include large-screen {
+    max-width: $small-content-width * $large-screen-ratio-m;
+  }
 
   > a,
   > section {
@@ -98,6 +115,34 @@ header {
   }
 }
 
+#task-notifications {
+  right: $default-btn-size;
+
+  min-width: $small-content-width - $default-btn-size;
+  max-width: $small-content-width - $default-btn-size;
+  @include medium-screen {
+    max-width: $small-content-width * $medium-screen-ratio-m;
+  }
+  @include large-screen {
+    max-width: $small-content-width * $large-screen-ratio-m;
+  }
+
+  > ul {
+    margin-bottom: 0;
+
+    > li {
+      height: 4.5em;
+
+      padding: 0.5em;
+
+      border-bottom: 1px solid $gray-lighter;
+      &:last-child {
+        border-bottom: none;
+      }
+    }
+  }
+}
+
 #content-overlay-when-menu-open {
   position: fixed;
   top: $header-height;
@@ -107,28 +152,6 @@ header {
   z-index: $z-index-content-overlay-when-menu-open;
 
   display: none;
-  background-color: rgba(0, 0, 0, 0.2);
-}
-
-#next-task-prompt {
-  padding-top: $header-height; // Margin fucks up the absolute-positioning as it is declared now
-  text-align: center;
-
-  height: 0;
-  overflow: hidden;
-
-  background-color: transparentize($action-color, 0.7);
-
-  > span {
-    display: inline-block;
-    vertical-align: middle;
-  }
-
-  > .btn {
-    font-size: 0.75em;
-    vertical-align: bottom;
-    margin: 0.2em 0 0.2em 1em;
-  }
 }
 
 #sign-in-with-linkedin {

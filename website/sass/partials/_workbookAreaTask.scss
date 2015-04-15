@@ -11,7 +11,8 @@
     font-size: 0.75em;
   }
 
-  label {
+  > .item-composer,
+  > label {
     margin-top: 1em;
   }
 }

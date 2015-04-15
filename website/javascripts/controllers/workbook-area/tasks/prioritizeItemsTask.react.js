@@ -11,7 +11,7 @@ CS.Controllers.WorkbookAreaPrioritizeItemsTask = React.createClass({
 
         return (
             <div className="workbook-area-task">
-                <p>Working on: prioritizing {this.props.workbookArea.className.toLowerCase()}</p>
+                <p>Working on: {this.props.task.workingOnText}</p>
                 <div className="task-progress-bar">
                     <div></div>
                 </div>

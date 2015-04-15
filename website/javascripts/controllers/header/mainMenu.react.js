@@ -30,27 +30,27 @@ CS.Controllers.MainMenu = P(CS.Controllers.Base, function (c) {
         CS.blueprintAreasModel.updateStatus();
 
         this._initElements();
-        this._addLinksToActiveWorkbookAreas();
+        this._render();
         this._initEvents();
     };
 
     c._initElements = function () {
         this.$mainContainer = $("#container");
 
-        this.$menuBtn = $("#menu-btn");
-        this.$menu = $("#main-menu");
-        this.$contentOverlayWhenMenuOpen = $("#content-overlay-when-menu-open");
-        this.$selectAreasModal = $("#select-areas-modal");
+        this.$menuBtn = this.$mainContainer.find("#menu-btn");
+        this.$menu = this.$mainContainer.find("#main-menu");
+        this.$contentOverlayWhenMenuOpen = this.$mainContainer.find("#content-overlay-when-menu-open");
+        this.$selectAreasModal = this.$mainContainer.find("#select-areas-modal");
 
         this.$activeAreasSection = this.$menu.children("section");
         this.$selectAreasLink = this.$menu.children("#select-areas");
-        this.$signInWithLinkedInLink = $("#sign-in-with-linkedin");
+        this.$signInWithLinkedInLink = this.$mainContainer.find("#sign-in-with-linkedin");
         this.$signOutLink = this.$menu.children("#sign-out");
     };
 
     c._initEvents = function () {
-        this.$menuBtn.click($.proxy(this.toggleMenu, this));
-        this.$contentOverlayWhenMenuOpen.click($.proxy(this.toggleMenu, this));
+        this.$menuBtn.click($.proxy(this._toggleMenu, this));
+        this.$contentOverlayWhenMenuOpen.click($.proxy(this.hideMenu, this));
 
         this.$selectAreasLink.click($.proxy(this._showModal, this));
     };
@@ -59,12 +59,6 @@ CS.Controllers.MainMenu = P(CS.Controllers.Base, function (c) {
         this.reactInstance.replaceState({
             activeWorkbookAreas: _.sortByAll(CS.blueprintAreasModel.getActive(), "title")
         });
-    };
-
-    c.toggleMenu = function () {
-        this._initSignInLinks();
-
-        this.$mainContainer.toggleClass("menu-open");
     };
 
     c.hideMenu = function () {
@@ -91,13 +85,20 @@ CS.Controllers.MainMenu = P(CS.Controllers.Base, function (c) {
         });
     };
 
-    c._addLinksToActiveWorkbookAreas = function() {
+    c._render = function() {
         this.reactInstance = React.render(
             React.createElement(this.reactClass),
             this.$activeAreasSection[0]
         );
 
         this.reRender();
+    };
+
+    c._toggleMenu = function () {
+        this._initSignInLinks();
+
+        CS.taskNotificationsController.hide();
+        this.$mainContainer.toggleClass("menu-open");
     };
 
     c._initSignInLinks = function() {
@@ -113,6 +114,6 @@ CS.Controllers.MainMenu = P(CS.Controllers.Base, function (c) {
     c._showModal = function() {
         CS.blueprintAreasSelector.reRender();
         this.$selectAreasModal.modal();
-        this.toggleMenu();
+        this.hideMenu();
     };
 });
