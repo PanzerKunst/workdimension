@@ -6269,8 +6269,17 @@ header {
 
 #task-notifications-btn {
   color: #0c57d3; }
+  #task-notifications-btn > span {
+    display: none;
+    font-size: 0.7em; }
   #task-notifications-btn.with-new-items {
-    color: white; }
+    color: white;
+    position: relative; }
+    #task-notifications-btn.with-new-items > span {
+      position: absolute;
+      top: 0;
+      right: 0.2em;
+      display: inline-block; }
 
 #main-menu,
 #task-notifications {
@@ -6342,12 +6351,14 @@ header {
       -o-align-items: center;
       align-items: center;
       -ms-flex-align: center;
-      border-bottom: 1px solid #eeeeee;
+      border-bottom: 1px solid #d9d9d9;
       background-color: #ebf2fe; }
       #task-notifications > ul > li:last-child {
         border-bottom: none; }
-      #task-notifications > ul > li.viewed {
+      #task-notifications > ul > li.clicked {
         background-color: white; }
+      #task-notifications > ul > li.done {
+        background-color: #eaf6ea; }
 
 #content-overlay-when-menu-open {
   position: fixed;
@@ -6629,9 +6640,7 @@ html[data-useragent*='Trident/7.0'] .input-group .input-group-btn > .btn {
     html[data-useragent*='Trident/7.0'] .input-group .input-group-btn > .btn {
       height: 46px; } }
 
-html[data-useragent*="iPhone"] #container.task-notifications-open #task-notifications-btn:after,
-html[data-useragent*="iPad"] #container.task-notifications-open #task-notifications-btn:after,
-html[data-useragent*="iPod"] #container.task-notifications-open #task-notifications-btn:after {
+html[data-useragent*="Safari"] #container.task-notifications-open #task-notifications-btn:after {
   right: 56px; }
 
 /*# sourceMappingURL=main.css.map */

@@ -8,7 +8,7 @@ import scala.util.Random
 
 object Application extends Controller {
   val doNotCachePage = Array(CACHE_CONTROL -> "no-cache, no-store")
-  val accountDataJsonKeyForViewedTaskIds = "viewedTaskIds"
+  val accountDataJsonKeyForClickedTaskIds = "clickedTaskIds"
 
   def index = Action { request =>
     val accountId = getAccountId(request.session) match {
@@ -82,15 +82,15 @@ object Application extends Controller {
   private def addTaskMarkedAsViewedToAccountData(accountData: Option[JsObject], taskId: Long): JsObject = {
     accountData match {
       case None => JsObject(Seq(
-        accountDataJsonKeyForViewedTaskIds -> JsArray(Seq(JsNumber(taskId)))
+        accountDataJsonKeyForClickedTaskIds -> JsArray(Seq(JsNumber(taskId)))
       ))
 
       case Some(data) =>
-        val jsonTransformer = (data \ accountDataJsonKeyForViewedTaskIds).asOpt[List[Long]] match {
-          case None => __.json.update((__ \ accountDataJsonKeyForViewedTaskIds).json.put(JsArray(Seq(JsNumber(taskId)))))
+        val jsonTransformer = (data \ accountDataJsonKeyForClickedTaskIds).asOpt[List[Long]] match {
+          case None => __.json.update((__ \ accountDataJsonKeyForClickedTaskIds).json.put(JsArray(Seq(JsNumber(taskId)))))
 
-          case Some(viewedTaskIds) => (__ \ accountDataJsonKeyForViewedTaskIds).json.update(
-            __.read[JsArray].map { viewedTaskIds => viewedTaskIds :+ JsNumber(taskId)}
+          case Some(clickedTaskIds) => (__ \ accountDataJsonKeyForClickedTaskIds).json.update(
+            __.read[JsArray].map { clickedTaskIds => clickedTaskIds :+ JsNumber(taskId)}
           )
         }
 

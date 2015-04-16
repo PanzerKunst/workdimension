@@ -1,6 +1,4 @@
-html[data-useragent*="iPhone"],
-html[data-useragent*="iPad"],
-html[data-useragent*="iPod"] {
+html[data-useragent*="Safari"] {
   #container.task-notifications-open {
     #task-notifications-btn:after {
       right: 56px;
