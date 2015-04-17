@@ -11,17 +11,21 @@ object Application extends Controller {
   val accountDataJsonKeyForClickedTaskIds = "clickedTaskIds"
 
   def index = Action { request =>
-    val accountId = getAccountId(request.session) match {
-      case None => generateTempAccountIdAndInitialiseTables(request.session)
+    val accountId = if (request.queryString.contains("email")) {  // TODO: remove
+      AccountDto.getOfEmailAddress(request.queryString.get("email").get.head).get.id.get
+    } else {
+      getAccountId(request.session) match {
+        case None => generateTempAccountIdAndInitialiseTables(request.session)
 
-      case Some(id) =>
-        AccountDto.getOfId(id) match {
-          case Some(account) => id
+        case Some(id) =>
+          AccountDto.getOfId(id) match {
+            case Some(account) => id
 
-          case None =>
-            AccountDto.createTemporary(id)
-            id
-        }
+            case None =>
+              AccountDto.createTemporary(id)
+              id
+          }
+      }
     }
 
     Ok(views.html.index(WorkbookAreaDto.getAll, accountId, AccountDataDto.getOfAccountId(accountId))).withSession(request.session
