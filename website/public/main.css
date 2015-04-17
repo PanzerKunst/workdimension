@@ -6247,6 +6247,8 @@ header {
     padding: 10px 11px;
     color: white;
     float: left; }
+    header > .fa:focus {
+      outline: none; }
   header > h1 {
     margin: 0;
     padding-left: 14px;
@@ -6642,5 +6644,7 @@ html[data-useragent*='Trident/7.0'] .input-group .input-group-btn > .btn {
 
 html[data-useragent*="Safari"] #container.task-notifications-open #task-notifications-btn:after {
   right: 56px; }
+html[data-useragent*="Safari"][data-useragent*="Chrome"] #container.task-notifications-open #task-notifications-btn:after {
+  right: 14px; }
 
 /*# sourceMappingURL=main.css.map */

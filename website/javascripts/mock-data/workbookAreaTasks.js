@@ -82,17 +82,17 @@ CS.WorkbookAreaTasks = [
         },
         wordings: [
             {
-                prompt: "What things are you good at?"
-            },
-            {
-                prompt: "What qualities were important in the last role you had"
+                prompt: "When are you the happiest with your work?",
+                sentenceStart: "When I "
             },
             {
                 prompt: "What are you the most confident at in your work?"
             },
             {
-                prompt: "When are you the happiest with your work?",
-                sentenceStart: "When I "
+                prompt: "What qualities were important in the last role you had?"
+            },
+            {
+                prompt: "What things are you good at?"
             }
         ],
         stepCount: CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl1TaskComplete,

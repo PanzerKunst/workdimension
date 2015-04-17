@@ -14,6 +14,10 @@ header {
     padding: $padding-menu-btn;
     color: $header-btn-color;
     float: left;
+
+    &:focus {
+      outline: none;
+    }
   }
 
   > h1 {

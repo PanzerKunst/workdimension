@@ -4,4 +4,13 @@ html[data-useragent*="Safari"] {
       right: 56px;
     }
   }
+
+  // TODO: ugly
+  &[data-useragent*="Chrome"] {
+    #container.task-notifications-open {
+      #task-notifications-btn:after {
+        right: 14px;
+      }
+    }
+  }
 }
