@@ -49,7 +49,10 @@ CS.Controllers.OverviewBlueprintAreaComposer = React.createClass({
 
         if (itemNameToAdd && !CS.Controllers.WorkbookAreaCommon.doesItemAlreadyExist(itemNameToAdd, this.props.blueprintAreaClassName)) {
             var updatedBlueprintAreaData = CS.account.data && !_.isEmpty(CS.account.data[this.props.blueprintAreaClassName]) ? _.clone(CS.account.data[this.props.blueprintAreaClassName], true) : [];
-            updatedBlueprintAreaData.push({name: itemNameToAdd});
+            updatedBlueprintAreaData.push({
+                name: itemNameToAdd,
+                notes: []
+            });
 
             CS.account.data = CS.account.data || {};
             CS.account.data[this.props.blueprintAreaClassName] = updatedBlueprintAreaData;

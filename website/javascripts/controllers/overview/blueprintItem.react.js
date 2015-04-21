@@ -1,8 +1,10 @@
 CS.Controllers.OverviewBlueprintItem = React.createClass({
     render: function () {
+        var href = "/workbook-items/" + this._getBlueprintAreaClassName() + "/" + this.props.blueprintItemIndex;
+
         return (
             <li ref="li">
-                <p>{this._getBlueprintItemName()}</p>
+                <p><a href={href}>{this._getBlueprintItemName()}</a></p>
                 <button className="styleless fa fa-pencil" onClick={this._showEditor}></button>
                 <form role="form" className="item-composer" onSubmit={this._handleComposerFormSubmit}>
                     <textarea className="form-control" onKeyUp={this._handleTextareaKeyUp} />
@@ -80,7 +82,7 @@ CS.Controllers.OverviewBlueprintItem = React.createClass({
         var updatedBlueprintAreaData = CS.account.data && !_.isEmpty(CS.account.data[this._getBlueprintAreaClassName()]) ? _.clone(CS.account.data[this._getBlueprintAreaClassName()], true) : [];
 
         if (newItemName) {
-            updatedBlueprintAreaData[this.props.blueprintItemIndex] = {name: newItemName};
+            updatedBlueprintAreaData[this.props.blueprintItemIndex].name = newItemName;
         } else {
             updatedBlueprintAreaData.splice(this.props.blueprintItemIndex, 1);
 

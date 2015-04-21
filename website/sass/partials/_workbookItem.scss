@@ -1,0 +1,49 @@
+#workbook-item {
+  #content > div {
+    margin: 0 auto;
+
+    @include medium-screen {
+      width: ($small-content-width + $medium-content-width) / 2;
+    }
+    @include large-screen {
+      width: $medium-content-width;
+    }
+
+    > .item-composer,
+    > .add-item-link {
+      margin: 0 $spacer-unit-size;
+
+      @include medium-screen {
+        margin: 0;
+      }
+    }
+  }
+
+  #add-note-task {
+    height: $noteTextareaHeight;
+  }
+
+  .item-notes-list {
+    margin: $default-spacer-size $spacer-unit-size 0 $spacer-unit-size;
+    @include medium-screen {
+      margin-left: 0;
+      margin-right: 0;
+    }
+    @include large-screen {
+      margin-top: $default-spacer-size-large-screen;
+    }
+  }
+
+  li > p {
+    background-color: $well-bg;
+  }
+
+  .fa-times {
+    @include medium-screen {
+      font-size: 1.1em;
+    }
+    @include large-screen {
+      font-size: 1em;
+    }
+  }
+}

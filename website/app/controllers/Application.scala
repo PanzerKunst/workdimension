@@ -1,6 +1,7 @@
 package controllers
 
 import db._
+import models.frontend.WorkbookItem
 import play.api.libs.json._
 import play.api.mvc._
 
@@ -56,6 +57,32 @@ object Application extends Controller {
                 }
 
                 Ok(views.html.workbookArea(WorkbookAreaDto.getAll, workbookArea, accountId, accountData))
+            }
+        }
+    }
+  }
+
+  def workbookItem(areaClassName: String, index: Int) = Action { request =>
+    getAccountId(request.session) match {
+      case None => Redirect("/")
+
+      case Some(accountId) =>
+        AccountDto.getOfId(accountId) match {
+          case None => Redirect("/")
+
+          case Some(account) =>
+            WorkbookAreaDto.getOfClassName(areaClassName) match {
+              case None => BadRequest("No workbook area found for class name " + areaClassName)
+
+              case Some(workbookArea) =>
+                AccountDataDto.getOfAccountId(accountId) match {
+                  case None => BadRequest("No account data found")
+
+                  case Some(accountData) =>
+                    val workbookItems = (accountData \ workbookArea.className).as[List[WorkbookItem]]
+
+                    Ok(views.html.workbookItem(WorkbookAreaDto.getAll, workbookArea, workbookItems.apply(index), accountId, accountData))
+                }
             }
         }
     }

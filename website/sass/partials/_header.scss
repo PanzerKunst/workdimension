@@ -45,6 +45,10 @@ header {
   button.fa {
     float: right;
   }
+
+  > h1 {
+    @include link-color($background-body-color);
+  }
 }
 
 #task-notifications-btn {

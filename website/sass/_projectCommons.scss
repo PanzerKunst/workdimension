@@ -28,31 +28,34 @@ a.fa {
   }
 }
 
-.item-names-list > li {
-  background-color: $well-bg;
+.item-names-list,
+.item-notes-list {
+  > li {
+    background-color: $well-bg;
 
-  margin-bottom: 0.25em;
+    margin-bottom: 0.25em;
 
-  position: relative; // Because of absolutely-positioned edit button
+    position: relative; // Because of absolutely-positioned edit button
 
-  &:hover {
-    cursor: move;
-  }
+    &:hover {
+      cursor: move;
+    }
 
-  &.editing {
-    background-color: $background-body-color;
-  }
+    &.editing {
+      background-color: $background-body-color;
+    }
 
-  > p {
-    padding: 0 1.5em 0 0.5em;
-  }
+    > p {
+      padding: 0 1.5em 0 0.5em;
+    }
 
-  > button {
-    position: absolute;
-    top: -0.55em;
-    right: -0.55em;
+    > button {
+      position: absolute;
+      top: -0.55em;
+      right: -0.55em;
 
-    padding: 0.92em 1em;
+      padding: 0.92em 1em;
+    }
   }
 }
 
@@ -62,6 +65,12 @@ a.fa {
   textarea {
     height: 2.9em;
     margin-bottom: 0.5em;
+  }
+
+  &.note {
+    textarea {
+      height: $noteTextareaHeight;
+    }
   }
 
   > .fa-times {

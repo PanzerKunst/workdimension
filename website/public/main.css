@@ -6209,17 +6209,22 @@ body {
 a.fa:hover, a.fa:focus {
   text-decoration: none; }
 
-.item-names-list > li {
+.item-names-list > li,
+.item-notes-list > li {
   background-color: #f5f5f5;
   margin-bottom: 0.25em;
   position: relative; }
-  .item-names-list > li:hover {
+  .item-names-list > li:hover,
+  .item-notes-list > li:hover {
     cursor: move; }
-  .item-names-list > li.editing {
+  .item-names-list > li.editing,
+  .item-notes-list > li.editing {
     background-color: white; }
-  .item-names-list > li > p {
+  .item-names-list > li > p,
+  .item-notes-list > li > p {
     padding: 0 1.5em 0 0.5em; }
-  .item-names-list > li > button {
+  .item-names-list > li > button,
+  .item-notes-list > li > button {
     position: absolute;
     top: -0.55em;
     right: -0.55em;
@@ -6230,6 +6235,8 @@ a.fa:hover, a.fa:focus {
   .item-composer textarea {
     height: 2.9em;
     margin-bottom: 0.5em; }
+  .item-composer.note textarea {
+    height: 5em; }
   .item-composer > .fa-times {
     padding: 0.47em 0.62em 0.53em 0.62em;
     margin-left: 0.2em;
@@ -6268,6 +6275,11 @@ header {
         padding-top: 1px; } }
   header button.fa {
     float: right; }
+  header > h1 a,
+  header > h1 a:visited,
+  header > h1 a:hover,
+  header > h1 a:focus {
+    color: white; }
 
 #task-notifications-btn {
   color: #0c57d3; }
@@ -6485,6 +6497,11 @@ footer {
       position: absolute;
       padding: .93em .93em;
       color: #999999; }
+      #index #content .well > button.fa-info-circle {
+        right: 2.5em;
+        top: -0.45em; }
+        #index #content .well > button.fa-info-circle:focus {
+          outline: none; }
       #index #content .well > button.fa-eye-slash {
         right: -0.45em;
         top: -0.45em; }
@@ -6521,6 +6538,11 @@ footer {
       color: white; }
     #index #content .item-names-list > li > p {
       margin-bottom: 0; }
+  #index #content .item-names-list a,
+  #index #content .item-names-list a:visited,
+  #index #content .item-names-list a:hover,
+  #index #content .item-names-list a:focus {
+    color: white; }
 
 #select-areas-modal .modal-title {
   font-size: 1.2em;
@@ -6545,6 +6567,37 @@ footer {
   @media screen and (min-width: 960px) {
     #select-areas-modal ul a {
       font-size: 0.8125em; } }
+
+.workbook-task {
+  padding: 1em;
+  background-color: #f5f5f5; }
+  .workbook-task > p {
+    margin-bottom: 0; }
+  .workbook-task > .coming-up-next {
+    text-align: right;
+    font-size: 0.75em; }
+  .workbook-task > .item-composer,
+  .workbook-task > label {
+    margin-top: 1em; }
+  .workbook-task .progress {
+    background-color: #777777;
+    margin-bottom: 0; }
+    .workbook-task .progress > .progress-bar {
+      min-width: 2em; }
+
+.item-composer.task {
+  display: block; }
+  .item-composer.task > .form-group {
+    width: auto; }
+    .item-composer.task > .form-group > label {
+      display: table-cell;
+      vertical-align: bottom;
+      height: 2.5em; }
+    .item-composer.task > .form-group > textarea {
+      margin-top: 0.25em; }
+  .item-composer.task > a {
+    margin-left: 1em;
+    vertical-align: middle; }
 
 #workbook-area #content > div {
   margin: 0 auto; }
@@ -6579,38 +6632,40 @@ footer {
   #workbook-area .fa-times {
     font-size: 1em; } }
 
-.workbook-area-task {
-  padding: 1em;
+#workbook-item #content > div {
+  margin: 0 auto; }
+  @media screen and (min-width: 640px) {
+    #workbook-item #content > div {
+      width: 480px; } }
+  @media screen and (min-width: 960px) {
+    #workbook-item #content > div {
+      width: 640px; } }
+  #workbook-item #content > div > .item-composer,
+  #workbook-item #content > div > .add-item-link {
+    margin: 0 14px; }
+    @media screen and (min-width: 640px) {
+      #workbook-item #content > div > .item-composer,
+      #workbook-item #content > div > .add-item-link {
+        margin: 0; } }
+#workbook-item #add-note-task {
+  height: 5em; }
+#workbook-item .item-notes-list {
+  margin: 10vw 14px 0 14px; }
+  @media screen and (min-width: 640px) {
+    #workbook-item .item-notes-list {
+      margin-left: 0;
+      margin-right: 0; } }
+  @media screen and (min-width: 960px) {
+    #workbook-item .item-notes-list {
+      margin-top: 98px; } }
+#workbook-item li > p {
   background-color: #f5f5f5; }
-  .workbook-area-task > p {
-    margin-bottom: 0; }
-  .workbook-area-task > .coming-up-next {
-    text-align: right;
-    font-size: 0.75em; }
-  .workbook-area-task > .item-composer,
-  .workbook-area-task > label {
-    margin-top: 1em; }
-
-.item-composer.task {
-  display: block; }
-  .item-composer.task > .form-group {
-    width: auto; }
-    .item-composer.task > .form-group > label {
-      display: table-cell;
-      vertical-align: bottom;
-      height: 2.5em; }
-    .item-composer.task > .form-group > textarea {
-      margin-top: 0.25em; }
-  .item-composer.task > a {
-    margin-left: 1em;
-    vertical-align: middle; }
-
-.task-progress-bar {
-  background-color: #777777; }
-  .task-progress-bar > div {
-    height: 0.4em;
-    background-color: #5cb85c;
-    width: 0; }
+@media screen and (min-width: 640px) {
+  #workbook-item .fa-times {
+    font-size: 1.1em; } }
+@media screen and (min-width: 960px) {
+  #workbook-item .fa-times {
+    font-size: 1em; } }
 
 html[data-useragent*='MSIE 9'] .input-group .form-control[type="text"],
 html[data-useragent*='MSIE 9'] .input-group .input-group-btn > .btn,
@@ -6642,9 +6697,7 @@ html[data-useragent*='Trident/7.0'] .input-group .input-group-btn > .btn {
     html[data-useragent*='Trident/7.0'] .input-group .input-group-btn > .btn {
       height: 46px; } }
 
-html[data-useragent*="Safari"] #container.task-notifications-open #task-notifications-btn:after {
+html[data-useragent*="Safari"]:not([data-useragent*="Chrome"]) #container.task-notifications-open #task-notifications-btn:after {
   right: 56px; }
-html[data-useragent*="Safari"][data-useragent*="Chrome"] #container.task-notifications-open #task-notifications-btn:after {
-  right: 14px; }
 
 /*# sourceMappingURL=main.css.map */

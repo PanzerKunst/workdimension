@@ -10,10 +10,10 @@ CS.Controllers.WorkbookAreaPrioritizeItemsTask = React.createClass({
         var currentWording = CS.Models.WorkbookAreaTaskCommon.getNextWording(this.props.task);
 
         return (
-            <div className="workbook-area-task">
+            <div className="workbook-task">
                 <p>Working on: {this.props.task.workingOnText}</p>
-                <div className="task-progress-bar">
-                    <div></div>
+                <div className="progress">
+                    <div ref="progressBar" className="progress-bar progress-bar-success" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">0%</div>
                 </div>
                 {comingUpNextParagraph}
                 <label>{currentWording.prompt}</label>

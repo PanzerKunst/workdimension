@@ -60,6 +60,14 @@
 
         color: lighten($gray-base, 60%);
 
+        &.fa-info-circle {
+          right: 2.5em;
+          top: -0.45em;
+
+          &:focus {
+            outline: none;
+          }
+        }
         &.fa-eye-slash {
           right: -0.45em;
           top: -0.45em;
@@ -133,6 +141,8 @@
           margin-bottom: 0;
         }
       }
+
+      @include link-color($background-body-color);
     }
   }
 }

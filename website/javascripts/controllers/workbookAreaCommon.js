@@ -2,13 +2,11 @@ CS.Controllers.WorkbookAreaCommon = {
     textareaDefaultHeightPx: 41,
     mediumScreenTextareaDefaultHeightPx: 53,
     largeScreenTextareaDefaultHeightPx: 65,
-    fontSizeLargeScreen: 22.3,
-    fontSizeMediumScreen: 18.1,
 
     handleTextareaKeyUp: function (e, formSubmitFunction, formCancelFunction) {
-        if (e.keyCode === CS.Services.Keyboard.keyCode.enter) {
+        if (e.keyCode === CS.Services.Keyboard.keyCode.enter && formSubmitFunction) {
             formSubmitFunction();
-        } else if (e.keyCode === CS.Services.Keyboard.keyCode.escape) {
+        } else if (e.keyCode === CS.Services.Keyboard.keyCode.escape && formCancelFunction) {
             formCancelFunction();
         } else {
             var $textarea = $(e.currentTarget);
@@ -22,7 +20,7 @@ CS.Controllers.WorkbookAreaCommon = {
         var lineCount = Math.floor(($textarea.prop("scrollHeight") - padding) / lineHeight);
 
         var currentTextAreaHeightPx = parseFloat($textarea.css("height"));
-        var newTextAreaHeightPx = this._getTextAreaDefaultHeight($textarea) - lineHeight + lineCount * lineHeight;
+        var newTextAreaHeightPx = this._getTextareaDefaultHeight($textarea) - lineHeight + lineCount * lineHeight;
 
         if (newTextAreaHeightPx !== currentTextAreaHeightPx) {
             $textarea.css("height", newTextAreaHeightPx);
@@ -34,12 +32,7 @@ CS.Controllers.WorkbookAreaCommon = {
     },
 
     resetAndHideForm: function ($textarea, callback) {
-        $textarea.val(null);
-        $textarea.css("height", this.textareaDefaultHeightPx);
-
-        if (callback) {
-            callback();
-        }
+        CS.Controllers.WorkbookCommon.resetAndHideForm($textarea, callback, this.textareaDefaultHeightPx);
     },
 
     doesItemAlreadyExist: function(itemName, workbookAreaClassName) {
@@ -71,16 +64,7 @@ CS.Controllers.WorkbookAreaCommon = {
         controller.sortable.option("disabled", false);
     },
 
-    _getTextAreaDefaultHeight: function($textarea) {
-        var fontSizeStr = $textarea.css("font-size");
-        var fontSizePx = parseInt(fontSizeStr.substring(0, fontSizeStr.indexOf("px")), 10);
-
-        if (fontSizePx > this.fontSizeLargeScreen) {
-            return this.largeScreenTextareaDefaultHeightPx;
-        }
-        if (fontSizePx > this.fontSizeMediumScreen) {
-            return this.mediumScreenTextareaDefaultHeightPx;
-        }
-        return this.textareaDefaultHeightPx;
+    _getTextareaDefaultHeight: function($textarea) {
+        return CS.Controllers.WorkbookCommon.getTextareaDefaultHeight($textarea, this.textareaDefaultHeightPx, this.mediumScreenTextareaDefaultHeightPx, this.largeScreenTextareaDefaultHeightPx);
     }
 };

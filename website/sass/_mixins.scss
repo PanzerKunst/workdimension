@@ -48,3 +48,12 @@
 
   content: $content;
 }
+
+@mixin link-color($color) {
+  a,
+  a:visited,
+  a:hover,
+  a:focus {
+    color: $color;
+  }
+}

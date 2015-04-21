@@ -53,11 +53,14 @@ module.exports = function (grunt) {
                     "javascripts/models/blueprintAreas.js",
                     "javascripts/models/workbookAreaTask.js",
                     "javascripts/models/workbookAreaTaskCommon.js",
+                    "javascripts/models/workbookItemTaskCommon.js",
 
                     // Controllers
                     "javascripts/controllers/base.js",
                     "javascripts/controllers/onePageWebapp.js",
+                    "javascripts/controllers/workbookCommon.js",
                     "javascripts/controllers/workbookAreaCommon.js",
+                    "javascripts/controllers/workbookItemCommon.js",
                     "javascripts/controllers/header/linkedInAuthenticator.js",
                     "javascripts/controllers/workbook-area/tasks/addItemTaskCommon.js",
 
@@ -71,7 +74,8 @@ module.exports = function (grunt) {
                     separator:";"
                 },
                 src: [
-                    "javascripts/mock-data/workbookAreaTasks.js"
+                    "javascripts/mock-data/workbookAreaTasks.js",
+                    "javascripts/mock-data/workbookItemTasks.js"
                 ],
                 dest: "public/mock-data.js"
             },

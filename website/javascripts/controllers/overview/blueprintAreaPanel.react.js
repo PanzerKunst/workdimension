@@ -34,6 +34,7 @@ CS.Controllers.OverviewBlueprintAreaPanel = React.createClass({
 
     componentDidMount: function () {
         this._initElements();
+        this._initPopovers();   // TODO
         this._initSortable();
     },
 
@@ -44,7 +45,12 @@ CS.Controllers.OverviewBlueprintAreaPanel = React.createClass({
     _initElements: function () {
         this.$listItem = $(React.findDOMNode(this.refs.li));
         this.$well = this.$listItem.children();
-        this.$itemNamesList = this.$listItem.find(".item-names-list");
+        this.$popovers = this.$well.children("[data-toggle='popover']");
+        this.$itemNamesList = this.$well.children(".item-names-list");
+    },
+
+    _initPopovers: function() {
+        this.$popovers.popover();
     },
 
     _initSortable: function () {

@@ -10,7 +10,7 @@ CS.Controllers.WorkbookAreaAddItemTaskForm = React.createClass({
                     <textarea className="form-control" id={textareaId} onKeyUp={this._handleTextareaKeyUp} />
                 </div>
                 <button className="btn btn-primary">Add item</button>
-                <a onClick={this._setCurrentTaskAsSkippedAndReRender}>Try another one</a>
+                <a onClick={this._setCurrentTaskAsSkippedAndReRender}>Try another</a>
             </form>
             );
     },
@@ -48,7 +48,10 @@ CS.Controllers.WorkbookAreaAddItemTaskForm = React.createClass({
 
         if (this._isValid(itemNameToAdd) && !CS.Controllers.WorkbookAreaCommon.doesItemAlreadyExist(itemNameToAdd, this.props.workbookArea.className)) {
             var updatedBlueprintAreaData = CS.account.data && !_.isEmpty(CS.account.data[this.props.workbookArea.className]) ? _.clone(CS.account.data[this.props.workbookArea.className], true) : [];
-            updatedBlueprintAreaData.push({name: itemNameToAdd});
+            updatedBlueprintAreaData.push({
+                name: itemNameToAdd,
+                notes: []
+            });
 
             CS.account.data = CS.account.data || {};
             CS.account.data[this.props.workbookArea.className] = updatedBlueprintAreaData;

@@ -926,6 +926,34 @@ CS.saveAccountData = function (callback) {
         CS.Services.Browser.removeFromLocalStorage(this.getLocalStorageKeyForSkippedTaskPrompts(workbookAreaId));
     }
 };
+;CS.Models.WorkbookItemTaskCommon = {
+    minItemCountForAddItemsTaskComplete: 3,
+
+    getNextWording: function (itemTask, itemIndex) {
+        var firstNotSkipped = _.find(itemTask.wordings, function (wording) {
+            return !_.includes(CS.Services.Browser.getFromLocalStorage(this.getLocalStorageKeyForSkippedTaskPrompts(itemTask.workbookAreaId, itemIndex)), wording.prompt);
+        }.bind(this));
+
+        if (firstNotSkipped) {
+            return firstNotSkipped;
+        }
+
+        // All have been skipped, we need to unskip them all
+        this._unskipAll(itemTask.workbookAreaId, itemIndex);
+
+        return _.find(itemTask.wordings, function (wording) {
+            return !_.includes(CS.Services.Browser.getFromLocalStorage(this.getLocalStorageKeyForSkippedTaskPrompts(itemTask.workbookAreaId, itemIndex)), wording.prompt);
+        }.bind(this));
+    },
+
+    getLocalStorageKeyForSkippedTaskPrompts: function (workbookAreaId, workbookItemIndex) {
+        return "skippedTaskPrompts-" + workbookAreaId + "-" + workbookItemIndex;
+    },
+
+    _unskipAll: function (workbookAreaId, workbookItemIndex) {
+        CS.Services.Browser.removeFromLocalStorage(this.getLocalStorageKeyForSkippedTaskPrompts(workbookAreaId, workbookItemIndex));
+    }
+};
 ;CS.Controllers.Base = P(function(c) {
     c.httpStatusCode = {
         ok: 200,
@@ -947,17 +975,49 @@ CS.saveAccountData = function (callback) {
         history.back();
     };
 });
+;CS.Controllers.WorkbookCommon = {
+    fontSizeLargeScreen: 22,
+    fontSizeMediumScreen: 18,
+
+    resetAndHideForm: function ($textarea, callback, textareaDefaultHeightPx) {
+        $textarea.val(null);
+        $textarea.css("height", textareaDefaultHeightPx);
+
+        if (callback) {
+            callback();
+        }
+    },
+
+    getTextareaDefaultHeight: function($textarea, textareaDefaultHeightPx, mediumScreenTextareaDefaultHeightPx, largeScreenTextareaDefaultHeightPx) {
+        var fontSizeStr = $textarea.css("font-size");
+        var fontSizePx = parseFloat(fontSizeStr.substring(0, fontSizeStr.indexOf("px")));
+
+        if (fontSizePx > this.fontSizeLargeScreen) {
+            return largeScreenTextareaDefaultHeightPx;
+        }
+        if (fontSizePx > this.fontSizeMediumScreen) {
+            return mediumScreenTextareaDefaultHeightPx;
+        }
+        return textareaDefaultHeightPx;
+    },
+
+    setProgressBarWidth: function($progressBar, itemCount, stepCount) {
+        var itemPercent = itemCount / stepCount * 100;
+
+        $progressBar.attr("aria-valuenow", itemPercent);
+        $progressBar.css("width", itemPercent + "%");
+        $progressBar.html(parseInt(itemPercent, 10) + "%");
+    }
+};
 ;CS.Controllers.WorkbookAreaCommon = {
     textareaDefaultHeightPx: 41,
     mediumScreenTextareaDefaultHeightPx: 53,
     largeScreenTextareaDefaultHeightPx: 65,
-    fontSizeLargeScreen: 22.3,
-    fontSizeMediumScreen: 18.1,
 
     handleTextareaKeyUp: function (e, formSubmitFunction, formCancelFunction) {
-        if (e.keyCode === CS.Services.Keyboard.keyCode.enter) {
+        if (e.keyCode === CS.Services.Keyboard.keyCode.enter && formSubmitFunction) {
             formSubmitFunction();
-        } else if (e.keyCode === CS.Services.Keyboard.keyCode.escape) {
+        } else if (e.keyCode === CS.Services.Keyboard.keyCode.escape && formCancelFunction) {
             formCancelFunction();
         } else {
             var $textarea = $(e.currentTarget);
@@ -971,7 +1031,7 @@ CS.saveAccountData = function (callback) {
         var lineCount = Math.floor(($textarea.prop("scrollHeight") - padding) / lineHeight);
 
         var currentTextAreaHeightPx = parseFloat($textarea.css("height"));
-        var newTextAreaHeightPx = this._getTextAreaDefaultHeight($textarea) - lineHeight + lineCount * lineHeight;
+        var newTextAreaHeightPx = this._getTextareaDefaultHeight($textarea) - lineHeight + lineCount * lineHeight;
 
         if (newTextAreaHeightPx !== currentTextAreaHeightPx) {
             $textarea.css("height", newTextAreaHeightPx);
@@ -983,12 +1043,7 @@ CS.saveAccountData = function (callback) {
     },
 
     resetAndHideForm: function ($textarea, callback) {
-        $textarea.val(null);
-        $textarea.css("height", this.textareaDefaultHeightPx);
-
-        if (callback) {
-            callback();
-        }
+        CS.Controllers.WorkbookCommon.resetAndHideForm($textarea, callback, this.textareaDefaultHeightPx);
     },
 
     doesItemAlreadyExist: function(itemName, workbookAreaClassName) {
@@ -1020,17 +1075,53 @@ CS.saveAccountData = function (callback) {
         controller.sortable.option("disabled", false);
     },
 
-    _getTextAreaDefaultHeight: function($textarea) {
-        var fontSizeStr = $textarea.css("font-size");
-        var fontSizePx = parseInt(fontSizeStr.substring(0, fontSizeStr.indexOf("px")), 10);
+    _getTextareaDefaultHeight: function($textarea) {
+        return CS.Controllers.WorkbookCommon.getTextareaDefaultHeight($textarea, this.textareaDefaultHeightPx, this.mediumScreenTextareaDefaultHeightPx, this.largeScreenTextareaDefaultHeightPx);
+    }
+};
+;CS.Controllers.WorkbookItemCommon = {
+    textareaDefaultHeightPx: 70,
+    mediumScreenTextareaDefaultHeightPx: 91,
+    largeScreenTextareaDefaultHeightPx: 112,
 
-        if (fontSizePx > this.fontSizeLargeScreen) {
-            return this.largeScreenTextareaDefaultHeightPx;
+    handleTextareaKeyUp: function (e, formCancelFunction) {
+        if (e.keyCode === CS.Services.Keyboard.keyCode.escape && formCancelFunction) {
+            formCancelFunction();
+        } else {
+            var $textarea = $(e.currentTarget);
+            CS.Controllers.WorkbookItemCommon.adaptTextareaHeight($textarea);
         }
-        if (fontSizePx > this.fontSizeMediumScreen) {
-            return this.mediumScreenTextareaDefaultHeightPx;
+    },
+
+    adaptTextareaHeight: function ($textarea) {
+        var lineHeight = parseInt($textarea.css("lineHeight"), 10);
+        var padding = parseInt($textarea.css("paddingTop"), 10) + parseInt($textarea.css("paddingBottom"), 10);
+        var scrollHeight = Math.floor(($textarea.prop("scrollHeight") - padding));
+        var currentTextAreaHeightPx = parseFloat($textarea.css("height"));
+
+        var difference = scrollHeight - currentTextAreaHeightPx;
+
+        if (difference > 0) {
+            var linesCount = Math.ceil(difference / lineHeight);
+            $textarea.css("height", currentTextAreaHeightPx + lineHeight * linesCount);
         }
-        return this.textareaDefaultHeightPx;
+    },
+
+    resetAndHideForm: function ($textarea, callback) {
+        CS.Controllers.WorkbookCommon.resetAndHideForm($textarea, callback, this.textareaDefaultHeightPx);
+    },
+
+    doesItemAlreadyExist: function(note, workbookAreaClassName, workbookItemIndex) {
+        if (_.isEmpty(CS.account.data[workbookAreaClassName][workbookItemIndex].notes)) {
+            return false;
+        }
+
+        var itemNotes = CS.account.data[workbookAreaClassName][workbookItemIndex].notes;
+        return _.indexOf(itemNotes, note) > -1;
+    },
+
+    _getTextareaDefaultHeight: function($textarea) {
+        return CS.Controllers.WorkbookCommon.getTextareaDefaultHeight($textarea, this.textareaDefaultHeightPx, this.mediumScreenTextareaDefaultHeightPx, this.largeScreenTextareaDefaultHeightPx);
     }
 };
 ;// This controller is seperate from the main menu because initialized by LinkedIn platform
@@ -1586,7 +1677,10 @@ CS.Controllers.OverviewBlueprintAreaComposer = React.createClass({displayName: "
 
         if (itemNameToAdd && !CS.Controllers.WorkbookAreaCommon.doesItemAlreadyExist(itemNameToAdd, this.props.blueprintAreaClassName)) {
             var updatedBlueprintAreaData = CS.account.data && !_.isEmpty(CS.account.data[this.props.blueprintAreaClassName]) ? _.clone(CS.account.data[this.props.blueprintAreaClassName], true) : [];
-            updatedBlueprintAreaData.push({name: itemNameToAdd});
+            updatedBlueprintAreaData.push({
+                name: itemNameToAdd,
+                notes: []
+            });
 
             CS.account.data = CS.account.data || {};
             CS.account.data[this.props.blueprintAreaClassName] = updatedBlueprintAreaData;
@@ -1644,6 +1738,7 @@ CS.Controllers.OverviewBlueprintAreaPanel = React.createClass({displayName: "Ove
 
     componentDidMount: function () {
         this._initElements();
+        this._initPopovers();   // TODO
         this._initSortable();
     },
 
@@ -1654,7 +1749,12 @@ CS.Controllers.OverviewBlueprintAreaPanel = React.createClass({displayName: "Ove
     _initElements: function () {
         this.$listItem = $(React.findDOMNode(this.refs.li));
         this.$well = this.$listItem.children();
-        this.$itemNamesList = this.$listItem.find(".item-names-list");
+        this.$popovers = this.$well.children("[data-toggle='popover']");
+        this.$itemNamesList = this.$well.children(".item-names-list");
+    },
+
+    _initPopovers: function() {
+        this.$popovers.popover();
     },
 
     _initSortable: function () {
@@ -1686,9 +1786,11 @@ CS.Controllers.OverviewBlueprintAreaPanel = React.createClass({displayName: "Ove
 
 CS.Controllers.OverviewBlueprintItem = React.createClass({displayName: "OverviewBlueprintItem",
     render: function () {
+        var href = "/workbook-items/" + this._getBlueprintAreaClassName() + "/" + this.props.blueprintItemIndex;
+
         return (
             React.createElement("li", {ref: "li"}, 
-                React.createElement("p", null, this._getBlueprintItemName()), 
+                React.createElement("p", null, React.createElement("a", {href: href}, this._getBlueprintItemName())), 
                 React.createElement("button", {className: "styleless fa fa-pencil", onClick: this._showEditor}), 
                 React.createElement("form", {role: "form", className: "item-composer", onSubmit: this._handleComposerFormSubmit}, 
                     React.createElement("textarea", {className: "form-control", onKeyUp: this._handleTextareaKeyUp}), 
@@ -1766,7 +1868,7 @@ CS.Controllers.OverviewBlueprintItem = React.createClass({displayName: "Overview
         var updatedBlueprintAreaData = CS.account.data && !_.isEmpty(CS.account.data[this._getBlueprintAreaClassName()]) ? _.clone(CS.account.data[this._getBlueprintAreaClassName()], true) : [];
 
         if (newItemName) {
-            updatedBlueprintAreaData[this.props.blueprintItemIndex] = {name: newItemName};
+            updatedBlueprintAreaData[this.props.blueprintItemIndex].name = newItemName;
         } else {
             updatedBlueprintAreaData.splice(this.props.blueprintItemIndex, 1);
 
@@ -1882,10 +1984,10 @@ CS.Controllers.WorkbookAreaAddItemLvl2Task = React.createClass({displayName: "Wo
         }
 
         return (
-            React.createElement("div", {className: "workbook-area-task"}, 
+            React.createElement("div", {className: "workbook-task"}, 
                 React.createElement("p", null, "Working on: ", this.props.task.workingOnText), 
-                React.createElement("div", {className: "task-progress-bar", ref: "progressBar"}, 
-                    React.createElement("div", null)
+                React.createElement("div", {className: "progress"}, 
+                    React.createElement("div", {ref: "progressBar", className: "progress-bar progress-bar-success", role: "progressbar", "aria-valuenow": "", "aria-valuemin": "0", "aria-valuemax": "100"})
                 ), 
                 comingUpNextParagraph, 
                 React.createElement(CS.Controllers.WorkbookAreaAddItemTaskForm, {task: this.props.task, workbookArea: this.props.workbookArea, controller: this.props.controller})
@@ -1903,19 +2005,17 @@ CS.Controllers.WorkbookAreaAddItemLvl2Task = React.createClass({displayName: "Wo
     },
 
     _initElements: function () {
-        this.$progressBar = $(React.findDOMNode(this.refs.progressBar)).children();
+        this.$progressBar = $(React.findDOMNode(this.refs.progressBar));
     },
 
     _initProgressBar: function() {
         var itemCount = 0;
 
         if (CS.account.data && !_.isEmpty(CS.account.data[this.props.workbookArea.className])) {
-            itemCount = CS.account.data[this.props.workbookArea.className].length;
+            itemCount = CS.account.data[this.props.workbookArea.className].length - CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl1TaskComplete;
         }
 
-        var itemPercent = (itemCount - CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl1TaskComplete) / this.props.task.stepCount * 100;
-
-        this.$progressBar.css("width", itemPercent + "%");
+        CS.Controllers.WorkbookCommon.setProgressBarWidth(this.$progressBar, itemCount, this.props.task.stepCount);
     }
 });
 
@@ -1929,10 +2029,10 @@ CS.Controllers.WorkbookAreaAddItemTask = React.createClass({displayName: "Workbo
         }
 
         return (
-            React.createElement("div", {className: "workbook-area-task"}, 
+            React.createElement("div", {className: "workbook-task"}, 
                 React.createElement("p", null, "Working on: ", this.props.task.workingOnText), 
-                React.createElement("div", {className: "task-progress-bar", ref: "progressBar"}, 
-                    React.createElement("div", null)
+                React.createElement("div", {className: "progress"}, 
+                    React.createElement("div", {ref: "progressBar", className: "progress-bar progress-bar-success", role: "progressbar", "aria-valuenow": "", "aria-valuemin": "0", "aria-valuemax": "100"})
                 ), 
                 comingUpNextParagraph, 
                 React.createElement(CS.Controllers.WorkbookAreaAddItemTaskForm, {task: this.props.task, workbookArea: this.props.workbookArea, controller: this.props.controller})
@@ -1950,7 +2050,7 @@ CS.Controllers.WorkbookAreaAddItemTask = React.createClass({displayName: "Workbo
     },
 
     _initElements: function () {
-        this.$progressBar = $(React.findDOMNode(this.refs.progressBar)).children();
+        this.$progressBar = $(React.findDOMNode(this.refs.progressBar));
     },
 
     _initProgressBar: function() {
@@ -1960,9 +2060,7 @@ CS.Controllers.WorkbookAreaAddItemTask = React.createClass({displayName: "Workbo
             itemCount = CS.account.data[this.props.workbookArea.className].length;
         }
 
-        var itemPercent = itemCount / this.props.task.stepCount * 100;
-
-        this.$progressBar.css("width", itemPercent + "%");
+        CS.Controllers.WorkbookCommon.setProgressBarWidth(this.$progressBar, itemCount, this.props.task.stepCount);
     }
 });
 
@@ -1978,7 +2076,7 @@ CS.Controllers.WorkbookAreaAddItemTaskForm = React.createClass({displayName: "Wo
                     React.createElement("textarea", {className: "form-control", id: textareaId, onKeyUp: this._handleTextareaKeyUp})
                 ), 
                 React.createElement("button", {className: "btn btn-primary"}, "Add item"), 
-                React.createElement("a", {onClick: this._setCurrentTaskAsSkippedAndReRender}, "Try another one")
+                React.createElement("a", {onClick: this._setCurrentTaskAsSkippedAndReRender}, "Try another")
             )
             );
     },
@@ -2016,7 +2114,10 @@ CS.Controllers.WorkbookAreaAddItemTaskForm = React.createClass({displayName: "Wo
 
         if (this._isValid(itemNameToAdd) && !CS.Controllers.WorkbookAreaCommon.doesItemAlreadyExist(itemNameToAdd, this.props.workbookArea.className)) {
             var updatedBlueprintAreaData = CS.account.data && !_.isEmpty(CS.account.data[this.props.workbookArea.className]) ? _.clone(CS.account.data[this.props.workbookArea.className], true) : [];
-            updatedBlueprintAreaData.push({name: itemNameToAdd});
+            updatedBlueprintAreaData.push({
+                name: itemNameToAdd,
+                notes: []
+            });
 
             CS.account.data = CS.account.data || {};
             CS.account.data[this.props.workbookArea.className] = updatedBlueprintAreaData;
@@ -2074,10 +2175,10 @@ CS.Controllers.WorkbookAreaPrioritizeItemsTask = React.createClass({displayName:
         var currentWording = CS.Models.WorkbookAreaTaskCommon.getNextWording(this.props.task);
 
         return (
-            React.createElement("div", {className: "workbook-area-task"}, 
+            React.createElement("div", {className: "workbook-task"}, 
                 React.createElement("p", null, "Working on: ", this.props.task.workingOnText), 
-                React.createElement("div", {className: "task-progress-bar"}, 
-                    React.createElement("div", null)
+                React.createElement("div", {className: "progress"}, 
+                    React.createElement("div", {ref: "progressBar", className: "progress-bar progress-bar-success", role: "progressbar", "aria-valuenow": "0", "aria-valuemin": "0", "aria-valuemax": "100"}, "0%")
                 ), 
                 comingUpNextParagraph, 
                 React.createElement("label", null, currentWording.prompt), 
@@ -2128,10 +2229,10 @@ CS.Controllers.WorkbookArea = P(function (c) {
                         var isWorkbookAreaPrioritized = _.includes(CS.account.data.prioritizedWorkbookAreaIds, this.state.workbookArea.id);
                         if (isWorkbookAreaPrioritized) {
                             taskReact = (
-                                React.createElement("div", {className: "workbook-area-task"}, 
+                                React.createElement("div", {className: "workbook-task"}, 
                                     React.createElement("p", null, "Prioritizing ", this.state.workbookArea.className.toLowerCase(), " - Task complete!"), 
-                                    React.createElement("div", {className: "task-progress-bar"}, 
-                                        React.createElement("div", {style: {width: "100%"}})
+                                    React.createElement("div", {className: "progress"}, 
+                                        React.createElement("div", {className: "progress-bar progress-bar-success", role: "progressbar", "aria-valuenow": "100", "aria-valuemin": "0", "aria-valuemax": "100"}, "100%")
                                     )
                                 )
                                 );
@@ -2218,7 +2319,10 @@ CS.Controllers.WorkbookArea = P(function (c) {
 
             if (itemNameToAdd && !CS.Controllers.WorkbookAreaCommon.doesItemAlreadyExist(itemNameToAdd, this.state.workbookArea.className)) {
                 var updatedBlueprintAreaData = CS.account.data && !_.isEmpty(CS.account.data[this.state.workbookArea.className]) ? _.clone(CS.account.data[this.state.workbookArea.className], true) : [];
-                updatedBlueprintAreaData.push({name: itemNameToAdd});
+                updatedBlueprintAreaData.push({
+                    name: itemNameToAdd,
+                    notes: []
+                });
 
                 CS.account.data = CS.account.data || {};
                 CS.account.data[this.state.workbookArea.className] = updatedBlueprintAreaData;
@@ -2267,9 +2371,11 @@ CS.Controllers.WorkbookArea = P(function (c) {
 
 CS.Controllers.WorkbookAreaWorkbookItem = React.createClass({displayName: "WorkbookAreaWorkbookItem",
     render: function () {
+        var href = "/workbook-items/" + this.props.workbookAreaClassName + "/" + this.props.workbookItemIndex;
+
         return (
             React.createElement("li", {ref: "li"}, 
-                React.createElement("p", null, this.props.workbookItem.name), 
+                React.createElement("p", null, React.createElement("a", {href: href}, this.props.workbookItem.name)), 
                 React.createElement("button", {className: "styleless fa fa-pencil", onClick: this._showEditor}), 
                 React.createElement("form", {role: "form", className: "item-composer", onSubmit: this._handleComposerFormSubmit}, 
                     React.createElement("textarea", {className: "form-control", onKeyUp: this._handleTextareaKeyUp}), 
@@ -2337,7 +2443,7 @@ CS.Controllers.WorkbookAreaWorkbookItem = React.createClass({displayName: "Workb
         var updatedBlueprintAreaData = CS.account.data && !_.isEmpty(CS.account.data[this.props.workbookAreaClassName]) ? _.clone(CS.account.data[this.props.workbookAreaClassName], true) : [];
 
         if (newItemName) {
-            updatedBlueprintAreaData[this.props.workbookItemIndex] = {name: newItemName};
+            updatedBlueprintAreaData[this.props.workbookItemIndex].name = newItemName;
         } else {
             updatedBlueprintAreaData.splice(this.props.workbookItemIndex, 1);
 
@@ -2364,5 +2470,345 @@ CS.Controllers.WorkbookAreaWorkbookItem = React.createClass({displayName: "Workb
         this.$addItemLink.show();
 
         CS.Controllers.WorkbookAreaCommon.enableSortable(this.props.controller);
+    }
+});
+
+CS.Controllers.WorkbookItemAddItemTask = React.createClass({displayName: "WorkbookItemAddItemTask",
+    render: function () {
+        var textareaId = "add-note-task";
+        this.currentWording = CS.Models.WorkbookItemTaskCommon.getNextWording(this.props.task, this.props.workbookItemIndex);
+        var currentWordingPrompt = CS.Services.String.template(this.currentWording.prompt, "itemName", this.props.workbookItemName);
+
+        return (
+            React.createElement("div", {className: "workbook-task", ref: "wrapper"}, 
+                React.createElement("p", null, "Working on: ", this.props.task.workingOnText), 
+                React.createElement("div", {className: "progress"}, 
+                    React.createElement("div", {className: "progress-bar progress-bar-success", role: "progressbar", "aria-valuenow": "", "aria-valuemin": "0", "aria-valuemax": "100"})
+                ), 
+                React.createElement("form", {role: "form", className: "item-composer task", onSubmit: this._handleFormSubmit}, 
+                    React.createElement("div", {className: "form-group"}, 
+                        React.createElement("label", {htmlFor: textareaId, dangerouslySetInnerHTML: {__html: currentWordingPrompt}}), 
+                        React.createElement("textarea", {className: "form-control", id: textareaId, onKeyUp: this._handleTextareaKeyUp})
+                    ), 
+                    React.createElement("button", {className: "btn btn-primary"}, "Add note"), 
+                    React.createElement("a", {onClick: this._setCurrentTaskAsSkippedAndReRender}, "Try another")
+                )
+            )
+            );
+    },
+
+    componentDidMount: function () {
+        this._initElements();
+        this._initProgressBar();
+        this._initTextareaValue();
+    },
+
+    componentDidUpdate: function() {
+        this._initProgressBar();
+        this._initTextareaValue();
+    },
+
+    _initElements: function () {
+        this.$wrapper = $(React.findDOMNode(this.refs.wrapper));
+        this.$progressBar = this.$wrapper.find(".progress-bar");
+        this.$form = this.$wrapper.children("form");
+        this.$textarea = this.$form.find("textarea");
+    },
+
+    _initProgressBar: function() {
+        var itemCount = CS.account.data[this.props.workbookArea.className][this.props.workbookItemIndex].notes.length;
+        CS.Controllers.WorkbookCommon.setProgressBarWidth(this.$progressBar, itemCount, this.props.task.stepCount);
+    },
+
+    _initTextareaValue: function () {
+        if (this.currentWording.sentenceStart) {
+            this.$textarea.val(this.currentWording.sentenceStart);
+        }
+    },
+
+    getLocalStorageKeyForSkippedTaskPrompts: function () {
+        return CS.Models.WorkbookItemTaskCommon.getLocalStorageKeyForSkippedTaskPrompts(this.props.workbookArea.id, this.props.workbookItemIndex);
+    },
+
+    _handleFormSubmit: function (e) {
+        if (e) {
+            e.preventDefault();
+        }
+
+        var itemNoteToAdd = this.$textarea.val().trim();
+
+        if (this._isValid(itemNoteToAdd) && !CS.Controllers.WorkbookItemCommon.doesItemAlreadyExist(itemNoteToAdd, this.props.workbookArea.className, this.props.workbookItemIndex)) {
+            var updatedWorkbookItemNotesData = CS.account.data[this.props.workbookArea.className][this.props.workbookItemIndex].notes || [];
+            updatedWorkbookItemNotesData.push(itemNoteToAdd);
+
+            CS.account.data[this.props.workbookArea.className][this.props.workbookItemIndex].notes = updatedWorkbookItemNotesData;
+
+            CS.saveAccountData();
+        }
+
+        this._setCurrentTaskAsSkippedAndReRender();
+    },
+
+    _isValid: function(trimmedItemNote) {
+        if (!trimmedItemNote) {
+            return false;
+        }
+
+        if (!this.currentWording.sentenceStart) {
+            return true;
+        }
+
+        return this.currentWording.sentenceStart.trim() !== trimmedItemNote;
+    },
+
+    _setCurrentTaskAsSkippedAndReRender: function () {
+        var skippedTaskPrompts = CS.Services.Browser.getFromLocalStorage(this.getLocalStorageKeyForSkippedTaskPrompts()) || [];
+        skippedTaskPrompts.push(this.currentWording.prompt);
+
+        CS.Services.Browser.saveInLocalStorage(this.getLocalStorageKeyForSkippedTaskPrompts(), skippedTaskPrompts);
+
+        this._resetForm();
+        this.props.controller.reRender();
+    },
+
+    _resetForm: function () {
+        this.$textarea.val(null);
+    },
+
+    _handleTextareaKeyUp: function (e) {
+        if (this.currentWording.sentenceStart && !_.startsWith(this.$textarea.val(), this.currentWording.sentenceStart)) {
+            this.$textarea.val(this.currentWording.sentenceStart);
+        }
+
+        CS.Controllers.WorkbookItemCommon.handleTextareaKeyUp(e);
+    }
+});
+
+CS.Controllers.WorkbookItem = P(function (c) {
+    c.$el = $(document.getElementById("content"));
+
+    c.reactClass = React.createClass({displayName: "reactClass",
+        getInitialState: function () {
+            return {
+                controller: null,
+                workbookArea: null,
+                workbookItem: null,
+                workbookItemIndex: null
+            };
+        },
+
+        render: function () {
+            var taskReact = null;
+
+            if (this.state.workbookArea) {
+                var activeTask = _.find(CS.WorkbookItemTasks, function (task) {
+                    return task.workbookAreaId === this.state.workbookArea.id && task.isActive(this.state.workbookItemIndex);
+                }.bind(this));
+
+                if (activeTask) {
+                    taskReact = React.createElement(CS.Controllers[activeTask.templateClassName], {task: activeTask, workbookArea: this.state.workbookArea, workbookItemName: this.state.workbookItem.name, workbookItemIndex: this.state.workbookItemIndex, controller: this.state.controller});
+                }
+            }
+
+            var listItems = null;
+            if (this.state.workbookItem && !_.isEmpty(this.state.workbookItem.notes)) {
+                listItems = this.state.workbookItem.notes.map(function (note, index) {
+                    var reactItemId = "workbook-item-note" + note;
+
+                    return React.createElement(CS.Controllers.WorkbookItemNote, {key: reactItemId, workbookAreaClassName: this.state.workbookArea.className, workbookItem: this.state.workbookItem, workbookItemIndex: this.state.workbookItemIndex, workbookItemNote: note, workbookItemNoteIndex: index});
+                }.bind(this));
+            }
+
+            return (
+                React.createElement("div", {ref: "wrapper"}, 
+                    taskReact, 
+
+                    React.createElement("ul", {className: "styleless item-notes-list"}, 
+                        listItems
+                    ), 
+
+                    React.createElement("form", {role: "form", className: "item-composer note", onSubmit: this._handleComposerFormSubmit}, 
+                        React.createElement("textarea", {className: "form-control", onKeyUp: this._handleTextareaKeyUp}), 
+                        React.createElement("button", {className: "btn btn-primary"}, "Add"), 
+                        React.createElement("button", {type: "button", className: "styleless fa fa-times", onClick: this._hideForm})
+                    ), 
+
+                    React.createElement("a", {className: "add-item-link", onClick: this._showComposer}, "+ Add note")
+                )
+                );
+        },
+
+        componentDidMount: function () {
+            this._initElements();
+        },
+
+        _initElements: function () {
+            this.$wrapper = $(React.findDOMNode(this.refs.wrapper));
+            this.$list = this.$wrapper.children("ul");
+            this.$form = this.$wrapper.children("form");
+            this.$addNoteLink = this.$form.siblings(".add-item-link");
+            this.$textarea = this.$form.children("textarea");
+        },
+
+        _showComposer: function () {
+            this.$form.show();
+            this.$textarea.focus();
+
+            this.$addNoteLink.hide();
+        },
+
+        _handleComposerFormSubmit: function (e) {
+            if (e) {
+                e.preventDefault();
+            }
+
+            var itemNoteToAdd = this.$textarea.val().trim();
+
+            if (itemNoteToAdd && !CS.Controllers.WorkbookItemCommon.doesItemAlreadyExist(itemNoteToAdd, this.state.workbookArea.className, this.state.workbookItemIndex)) {
+                var updatedWorkbookItemNotesData = CS.account.data[this.state.workbookArea.className][this.state.workbookItemIndex].notes || [];
+                updatedWorkbookItemNotesData.push(itemNoteToAdd);
+
+                CS.account.data[this.state.workbookArea.className][this.state.workbookItemIndex].notes = updatedWorkbookItemNotesData;
+
+                this.state.controller.reRender();
+                CS.saveAccountData();
+            }
+
+            CS.Controllers.WorkbookItemCommon.resetAndHideForm(this.$textarea, $.proxy(this._hideForm, this));
+        },
+
+        _handleTextareaKeyUp: function (e) {
+            CS.Controllers.WorkbookItemCommon.handleTextareaKeyUp(e, $.proxy(this._hideForm, this));
+        },
+
+        _hideForm: function () {
+            this.$form.hide();
+            this.$addNoteLink.show();
+        }
+    });
+
+    c.init = function (workbookArea, workbookItem) {
+        this.workbookArea = workbookArea;
+        this.workbookItem = workbookItem;
+
+        this.reactInstance = React.render(
+            React.createElement(this.reactClass),
+            this.$el[0]
+        );
+
+        this.reRender();
+    };
+
+    c.reRender = function () {
+        this.reactInstance.replaceState({
+            controller: this,
+            workbookArea: this.workbookArea,
+            workbookItem: _.find(CS.account.data[this.workbookArea.className], "name", this.workbookItem.name),
+            workbookItemIndex: _.findIndex(CS.account.data[this.workbookArea.className], "name", this.workbookItem.name)
+        });
+    };
+
+    c.saveAccountData = function () {
+        this.reRender();
+        CS.saveAccountData();
+    };
+});
+
+CS.Controllers.WorkbookItemNote = React.createClass({displayName: "WorkbookItemNote",
+    render: function () {
+        var noteText = CS.Services.String.textToHtml(this.props.workbookItemNote);
+
+        return (
+            React.createElement("li", {ref: "li"}, 
+                React.createElement("p", {dangerouslySetInnerHTML: {__html: noteText}}), 
+                React.createElement("button", {className: "styleless fa fa-pencil", onClick: this._showEditor}), 
+                React.createElement("form", {role: "form", className: "item-composer note", onSubmit: this._handleComposerFormSubmit}, 
+                    React.createElement("textarea", {className: "form-control", onKeyUp: this._handleTextareaKeyUp}), 
+                    React.createElement("button", {className: "btn btn-primary"}, "Save changes"), 
+                    React.createElement("button", {type: "button", className: "styleless fa fa-times", onClick: this._hideForm})
+                )
+            )
+            );
+    },
+
+    componentDidMount: function () {
+        this._initElements();
+
+        this.listItemEditModeClass = "editing";
+    },
+
+    _initElements: function() {
+        this.$listItem = $(React.findDOMNode(this.refs.li));
+        this.$list = this.$listItem.parent();
+
+        this.$itemNoteParagraph = this.$listItem.children("p");
+        this.$editBtn = this.$listItem.children("button");
+        this.$form = this.$listItem.children(".item-composer");
+        this.$textarea = this.$form.children("textarea");
+
+        this.$addNoteLink = this.$list.siblings(".add-item-link");
+    },
+
+    _showEditor: function () {
+        this._hideOtherOpenComposers();
+
+        this.$textarea.val(this.props.workbookItemNote);
+
+        this.$listItem.addClass(this.listItemEditModeClass);
+
+        this.$itemNoteParagraph.hide();
+        this.$editBtn.hide();
+        this.$addNoteLink.hide();
+        this.$form.show();
+        CS.Controllers.WorkbookItemCommon.adaptTextareaHeight(this.$textarea);
+        this.$textarea.focus();
+    },
+
+    _hideOtherOpenComposers: function() {
+        var $listItems = this.$list.children();
+        var $composerForms = $listItems.children(".item-composer");
+        var $itemNoteParagraphs = $listItems.children("p");
+        var $editBtns = $listItems.children("button");
+
+        $listItems.removeClass(this.listItemEditModeClass);
+        $composerForms.hide();
+        $itemNoteParagraphs.show();
+        $editBtns.show();
+        this.$addNoteLink.show();
+    },
+
+    _handleComposerFormSubmit: function (e) {
+        if (e) {
+            e.preventDefault();
+        }
+
+        var newItemNote = this.$textarea.val().trim();
+        var updatedWorkbookItemNotesData = CS.account.data[this.props.workbookAreaClassName][this.props.workbookItemIndex].notes || [];
+
+        if (newItemNote) {
+            updatedWorkbookItemNotesData[this.props.workbookItemNoteIndex] = newItemNote;
+        } else {
+            updatedWorkbookItemNotesData.splice(this.props.workbookItemNoteIndex, 1);
+
+            // We hide it from the UI to give faster feedback
+            this.$listItem.hide();
+        }
+
+        CS.account.data[this.props.workbookAreaClassName][this.props.workbookItemIndex].notes = updatedWorkbookItemNotesData;
+
+        CS.Controllers.WorkbookItemCommon.resetAndHideForm(this.$textarea, $.proxy(this._hideForm, this));
+        CS.workbookItemController.saveAccountData();
+    },
+
+    _handleTextareaKeyUp: function(e) {
+        CS.Controllers.WorkbookItemCommon.handleTextareaKeyUp(e, $.proxy(this._handleComposerFormSubmit, this), $.proxy(this._hideForm, this));
+    },
+
+    _hideForm: function() {
+        this.$listItem.removeClass(this.listItemEditModeClass);
+        this.$form.hide();
+        this.$itemNoteParagraph.show();
+        this.$editBtn.show();
+        this.$addNoteLink.show();
     }
 });

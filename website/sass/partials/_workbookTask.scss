@@ -1,4 +1,4 @@
-.workbook-area-task {
+.workbook-task {
   padding: 1em;
   background-color: $well-bg;
 
@@ -8,12 +8,21 @@
 
   > .coming-up-next {
     text-align: right;
-    font-size: 0.75em;
+    font-size: $font-size-small;
   }
 
   > .item-composer,
   > label {
     margin-top: 1em;
+  }
+
+  .progress {
+    background-color: $gray-light;
+    margin-bottom: 0;
+
+    > .progress-bar {
+      min-width: 2em;
+    }
   }
 }
 
@@ -37,15 +46,5 @@
   > a {
     margin-left: 1em;
     vertical-align: middle;
-  }
-}
-
-.task-progress-bar {
-  background-color: $gray-light;
-
-  > div {
-    height: 0.4em;
-    background-color: $brand-success;
-    width: 0;
   }
 }

@@ -15,6 +15,7 @@ $default-spacer-size-large-screen: $spacer-unit-size * 7;
 
 $font-size-base-px: 14;
 $font-size-base-em: 1em;
+$font-size-small: 0.75em;
 
 $medium-screen-ratio-s: 1.2;
 $large-screen-ratio-s: 1.4;
@@ -37,3 +38,5 @@ $default-btn-size: 40px;
 $padding-menu-btn: ceil(($header-height - $font-size-menu-btn)/2) 11px;
 
 $form-label-line-height: 1.25em;
+
+$noteTextareaHeight: 5em;

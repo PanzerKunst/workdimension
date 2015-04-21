@@ -1,0 +1,33 @@
+@(workbookAreas: List[WorkbookArea], workbookArea: WorkbookArea, workbookItem: frontend.WorkbookItem, accountId: Long, accountData: play.api.libs.json.JsObject)
+
+@headerText(workbookArea: WorkbookArea, workbookItem: frontend.WorkbookItem) = @{
+    "<a href=\"/workbook-areas/" + workbookArea.className + "\">" + workbookArea.className + "</a> > " + workbookItem.name
+}
+
+@main(workbookItem.name, "workbook-item") {
+<!--
+    Header
+-->
+@header("workbook-item", headerText(workbookArea, workbookItem))
+
+} {
+<!--
+    Content
+-->
+
+} {
+<!--
+    Javascript
+-->
+
+<script type="text/javascript">
+    document.addEventListener("DOMContentLoaded", function () {
+        CS.account.id = @accountId;
+        CS.account.data = @Html(play.api.libs.json.Json.toJson(accountData).toString);
+
+        CS.mainMenuController = CS.Controllers.MainMenu(@Html(play.api.libs.json.Json.toJson(workbookAreas).toString));
+        CS.taskNotificationsController = CS.Controllers.TaskNotifications();
+        CS.workbookItemController = CS.Controllers.WorkbookItem(@Html(play.api.libs.json.Json.toJson(workbookArea).toString), @Html(play.api.libs.json.Json.toJson(workbookItem).toString));
+    });
+</script>
+}

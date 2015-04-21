@@ -1,12 +1,12 @@
-CS.Controllers.WorkbookAreaWorkbookItem = React.createClass({
+CS.Controllers.WorkbookItemNote = React.createClass({
     render: function () {
-        var href = "/workbook-items/" + this.props.workbookAreaClassName + "/" + this.props.workbookItemIndex;
+        var noteText = CS.Services.String.textToHtml(this.props.workbookItemNote);
 
         return (
             <li ref="li">
-                <p><a href={href}>{this.props.workbookItem.name}</a></p>
+                <p dangerouslySetInnerHTML={{__html: noteText}} />
                 <button className="styleless fa fa-pencil" onClick={this._showEditor}></button>
-                <form role="form" className="item-composer" onSubmit={this._handleComposerFormSubmit}>
+                <form role="form" className="item-composer note" onSubmit={this._handleComposerFormSubmit}>
                     <textarea className="form-control" onKeyUp={this._handleTextareaKeyUp} />
                     <button className="btn btn-primary">Save changes</button>
                     <button type="button" className="styleless fa fa-times" onClick={this._hideForm}></button>
@@ -25,42 +25,40 @@ CS.Controllers.WorkbookAreaWorkbookItem = React.createClass({
         this.$listItem = $(React.findDOMNode(this.refs.li));
         this.$list = this.$listItem.parent();
 
-        this.$itemNameParagraph = this.$listItem.children("p");
+        this.$itemNoteParagraph = this.$listItem.children("p");
         this.$editBtn = this.$listItem.children("button");
         this.$form = this.$listItem.children(".item-composer");
         this.$textarea = this.$form.children("textarea");
 
-        this.$addItemLink = this.$list.siblings(".add-item-link");
+        this.$addNoteLink = this.$list.siblings(".add-item-link");
     },
 
     _showEditor: function () {
         this._hideOtherOpenComposers();
 
-        this.$textarea.val(this.props.workbookItem.name);
+        this.$textarea.val(this.props.workbookItemNote);
 
         this.$listItem.addClass(this.listItemEditModeClass);
 
-        CS.Controllers.WorkbookAreaCommon.disableSortable(this.props.controller);
-
-        this.$itemNameParagraph.hide();
+        this.$itemNoteParagraph.hide();
         this.$editBtn.hide();
-        this.$addItemLink.hide();
+        this.$addNoteLink.hide();
         this.$form.show();
-        CS.Controllers.WorkbookAreaCommon.adaptTextareaHeight(this.$textarea);
+        CS.Controllers.WorkbookItemCommon.adaptTextareaHeight(this.$textarea);
         this.$textarea.focus();
     },
 
     _hideOtherOpenComposers: function() {
         var $listItems = this.$list.children();
         var $composerForms = $listItems.children(".item-composer");
-        var $itemNameParagraphs = $listItems.children("p");
+        var $itemNoteParagraphs = $listItems.children("p");
         var $editBtns = $listItems.children("button");
 
         $listItems.removeClass(this.listItemEditModeClass);
         $composerForms.hide();
-        $itemNameParagraphs.show();
+        $itemNoteParagraphs.show();
         $editBtns.show();
-        this.$addItemLink.show();
+        this.$addNoteLink.show();
     },
 
     _handleComposerFormSubmit: function (e) {
@@ -68,36 +66,33 @@ CS.Controllers.WorkbookAreaWorkbookItem = React.createClass({
             e.preventDefault();
         }
 
-        var newItemName = this.$textarea.val().trim();
-        var updatedBlueprintAreaData = CS.account.data && !_.isEmpty(CS.account.data[this.props.workbookAreaClassName]) ? _.clone(CS.account.data[this.props.workbookAreaClassName], true) : [];
+        var newItemNote = this.$textarea.val().trim();
+        var updatedWorkbookItemNotesData = CS.account.data[this.props.workbookAreaClassName][this.props.workbookItemIndex].notes || [];
 
-        if (newItemName) {
-            updatedBlueprintAreaData[this.props.workbookItemIndex].name = newItemName;
+        if (newItemNote) {
+            updatedWorkbookItemNotesData[this.props.workbookItemNoteIndex] = newItemNote;
         } else {
-            updatedBlueprintAreaData.splice(this.props.workbookItemIndex, 1);
+            updatedWorkbookItemNotesData.splice(this.props.workbookItemNoteIndex, 1);
 
             // We hide it from the UI to give faster feedback
             this.$listItem.hide();
         }
 
-        CS.account.data = CS.account.data || {};
-        CS.account.data[this.props.workbookAreaClassName] = updatedBlueprintAreaData;
+        CS.account.data[this.props.workbookAreaClassName][this.props.workbookItemIndex].notes = updatedWorkbookItemNotesData;
 
-        CS.Controllers.WorkbookAreaCommon.resetAndHideForm(this.$textarea, $.proxy(this._hideForm, this));
-        CS.workbookAreaController.saveAccountData();
+        CS.Controllers.WorkbookItemCommon.resetAndHideForm(this.$textarea, $.proxy(this._hideForm, this));
+        CS.workbookItemController.saveAccountData();
     },
 
     _handleTextareaKeyUp: function(e) {
-        CS.Controllers.WorkbookAreaCommon.handleTextareaKeyUp(e, $.proxy(this._handleComposerFormSubmit, this), $.proxy(this._hideForm, this));
+        CS.Controllers.WorkbookItemCommon.handleTextareaKeyUp(e, $.proxy(this._handleComposerFormSubmit, this), $.proxy(this._hideForm, this));
     },
 
     _hideForm: function() {
         this.$listItem.removeClass(this.listItemEditModeClass);
         this.$form.hide();
-        this.$itemNameParagraph.show();
+        this.$itemNoteParagraph.show();
         this.$editBtn.show();
-        this.$addItemLink.show();
-
-        CS.Controllers.WorkbookAreaCommon.enableSortable(this.props.controller);
+        this.$addNoteLink.show();
     }
 });

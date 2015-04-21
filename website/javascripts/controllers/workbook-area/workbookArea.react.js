@@ -29,10 +29,10 @@ CS.Controllers.WorkbookArea = P(function (c) {
                         var isWorkbookAreaPrioritized = _.includes(CS.account.data.prioritizedWorkbookAreaIds, this.state.workbookArea.id);
                         if (isWorkbookAreaPrioritized) {
                             taskReact = (
-                                <div className="workbook-area-task">
+                                <div className="workbook-task">
                                     <p>Prioritizing {this.state.workbookArea.className.toLowerCase()} - Task complete!</p>
-                                    <div className="task-progress-bar">
-                                        <div style={{width: "100%"}}></div>
+                                    <div className="progress">
+                                        <div className="progress-bar progress-bar-success" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100">100%</div>
                                     </div>
                                 </div>
                                 );
@@ -119,7 +119,10 @@ CS.Controllers.WorkbookArea = P(function (c) {
 
             if (itemNameToAdd && !CS.Controllers.WorkbookAreaCommon.doesItemAlreadyExist(itemNameToAdd, this.state.workbookArea.className)) {
                 var updatedBlueprintAreaData = CS.account.data && !_.isEmpty(CS.account.data[this.state.workbookArea.className]) ? _.clone(CS.account.data[this.state.workbookArea.className], true) : [];
-                updatedBlueprintAreaData.push({name: itemNameToAdd});
+                updatedBlueprintAreaData.push({
+                    name: itemNameToAdd,
+                    notes: []
+                });
 
                 CS.account.data = CS.account.data || {};
                 CS.account.data[this.state.workbookArea.className] = updatedBlueprintAreaData;
