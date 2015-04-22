@@ -2229,11 +2229,10 @@ CS.Controllers.WorkbookArea = P(function (c) {
                         var isWorkbookAreaPrioritized = _.includes(CS.account.data.prioritizedWorkbookAreaIds, this.state.workbookArea.id);
                         if (isWorkbookAreaPrioritized) {
                             taskReact = (
-                                React.createElement("div", {className: "workbook-task"}, 
-                                    React.createElement("p", null, "Prioritizing ", this.state.workbookArea.className.toLowerCase(), " - Task complete!"), 
-                                    React.createElement("div", {className: "progress"}, 
-                                        React.createElement("div", {className: "progress-bar progress-bar-success", role: "progressbar", "aria-valuenow": "100", "aria-valuemin": "0", "aria-valuemax": "100"}, "100%")
-                                    )
+                                React.createElement("div", {className: "workbook-task complete"}, 
+                                    React.createElement("h2", null, React.createElement("i", {className: "fa fa-star"}), "Great work!", React.createElement("i", {className: "fa fa-star"})), 
+                                    React.createElement("p", null, "You have completed all tasks for ", this.state.workbookArea.className, ".", React.createElement("br", null), 
+                                    "We invite you to work on other areas.")
                                 )
                                 );
                         }
@@ -3029,7 +3028,7 @@ CS.Controllers.WorkbookItemNote = React.createClass({displayName: "WorkbookItemN
                 prompt: "What methods do you use to do your work?"
             },
             {
-                prompt: "What are the tools you consider indespensible to do your work?"
+                prompt: "What are the tools you consider essential to do your work?"
             },
             {
                 prompt: "If you could freely select the tools and methodologies to do your work, what would you chose?"
@@ -3739,8 +3738,8 @@ CS.Controllers.WorkbookItemNote = React.createClass({displayName: "WorkbookItemN
         ],
         stepCount: CS.Models.WorkbookItemTaskCommon.minItemCountForAddItemsTaskComplete,
         templateClassName: "WorkbookItemAddItemTask",
-        workingOnText: "describing Drivers",
-        notificationText: "Describe Drivers"
+        workingOnText: "describing Workplace preferences",
+        notificationText: "Describe Workplace preferences"
     },
     {
         id: 6,

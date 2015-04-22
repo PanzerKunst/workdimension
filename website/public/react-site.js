@@ -960,11 +960,10 @@ CS.Controllers.WorkbookArea = P(function (c) {
                         var isWorkbookAreaPrioritized = _.includes(CS.account.data.prioritizedWorkbookAreaIds, this.state.workbookArea.id);
                         if (isWorkbookAreaPrioritized) {
                             taskReact = (
-                                React.createElement("div", {className: "workbook-task"}, 
-                                    React.createElement("p", null, "Prioritizing ", this.state.workbookArea.className.toLowerCase(), " - Task complete!"), 
-                                    React.createElement("div", {className: "progress"}, 
-                                        React.createElement("div", {className: "progress-bar progress-bar-success", role: "progressbar", "aria-valuenow": "100", "aria-valuemin": "0", "aria-valuemax": "100"}, "100%")
-                                    )
+                                React.createElement("div", {className: "workbook-task complete"}, 
+                                    React.createElement("h2", null, React.createElement("i", {className: "fa fa-star"}), "Great work!", React.createElement("i", {className: "fa fa-star"})), 
+                                    React.createElement("p", null, "You have completed all tasks for ", this.state.workbookArea.className, ".", React.createElement("br", null), 
+                                    "We invite you to work on other areas.")
                                 )
                                 );
                         }

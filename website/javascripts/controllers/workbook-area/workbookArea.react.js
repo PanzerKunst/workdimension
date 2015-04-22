@@ -29,11 +29,10 @@ CS.Controllers.WorkbookArea = P(function (c) {
                         var isWorkbookAreaPrioritized = _.includes(CS.account.data.prioritizedWorkbookAreaIds, this.state.workbookArea.id);
                         if (isWorkbookAreaPrioritized) {
                             taskReact = (
-                                <div className="workbook-task">
-                                    <p>Prioritizing {this.state.workbookArea.className.toLowerCase()} - Task complete!</p>
-                                    <div className="progress">
-                                        <div className="progress-bar progress-bar-success" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100">100%</div>
-                                    </div>
+                                <div className="workbook-task complete">
+                                    <h2><i className="fa fa-star"></i>Great work!<i className="fa fa-star"></i></h2>
+                                    <p>You have completed all tasks for {this.state.workbookArea.className}.<br />
+                                    We invite you to work on other areas.</p>
                                 </div>
                                 );
                         }

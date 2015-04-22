@@ -116,8 +116,8 @@ CS.WorkbookItemTasks = [
         ],
         stepCount: CS.Models.WorkbookItemTaskCommon.minItemCountForAddItemsTaskComplete,
         templateClassName: "WorkbookItemAddItemTask",
-        workingOnText: "describing Drivers",
-        notificationText: "Describe Drivers"
+        workingOnText: "describing Workplace preferences",
+        notificationText: "Describe Workplace preferences"
     },
     {
         id: 6,

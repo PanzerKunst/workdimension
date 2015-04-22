@@ -215,7 +215,7 @@ CS.WorkbookAreaTasks = [
                 prompt: "What methods do you use to do your work?"
             },
             {
-                prompt: "What are the tools you consider indespensible to do your work?"
+                prompt: "What are the tools you consider essential to do your work?"
             },
             {
                 prompt: "If you could freely select the tools and methodologies to do your work, what would you chose?"
@@ -925,8 +925,8 @@ CS.WorkbookAreaTasks = [
         ],
         stepCount: CS.Models.WorkbookItemTaskCommon.minItemCountForAddItemsTaskComplete,
         templateClassName: "WorkbookItemAddItemTask",
-        workingOnText: "describing Drivers",
-        notificationText: "Describe Drivers"
+        workingOnText: "describing Workplace preferences",
+        notificationText: "Describe Workplace preferences"
     },
     {
         id: 6,

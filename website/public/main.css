@@ -6261,12 +6261,18 @@ header {
     padding-left: 14px;
     font-size: 1em;
     color: white;
+    text-align: left;
+    max-width: 60%;
     float: left;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    max-width: 60%;
     padding-top: 9px; }
+    header > h1 a,
+    header > h1 a:visited,
+    header > h1 a:hover,
+    header > h1 a:focus {
+      color: white; }
     @media screen and (min-width: 640px) {
       header > h1 {
         padding-top: 5px; } }
@@ -6275,11 +6281,9 @@ header {
         padding-top: 1px; } }
   header button.fa {
     float: right; }
-  header > h1 a,
-  header > h1 a:visited,
-  header > h1 a:hover,
-  header > h1 a:focus {
-    color: white; }
+  header .fa-angle-right {
+    font-size: 0.9em;
+    margin: 0 0.5em; }
 
 #task-notifications-btn {
   color: #0c57d3; }
@@ -6584,6 +6588,14 @@ footer {
     margin-bottom: 0; }
     .workbook-task .progress > .progress-bar {
       min-width: 2em; }
+  .workbook-task.complete > h2,
+  .workbook-task.complete > p {
+    text-align: center; }
+  .workbook-task.complete h2 {
+    font-size: 1.5em; }
+    .workbook-task.complete h2 .fa-star {
+      color: #FDC300;
+      margin: 0 1em; }
 
 .item-composer.task {
   display: block; }
@@ -6697,7 +6709,9 @@ html[data-useragent*='Trident/7.0'] .input-group .input-group-btn > .btn {
     html[data-useragent*='Trident/7.0'] .input-group .input-group-btn > .btn {
       height: 46px; } }
 
-html[data-useragent*="Safari"]:not([data-useragent*="Chrome"]) #container.task-notifications-open #task-notifications-btn:after {
+html[data-useragent*="Safari"] #container.task-notifications-open #task-notifications-btn:after {
   right: 56px; }
+html[data-useragent*="Safari"][data-useragent*="Chrome"] #container.task-notifications-open #task-notifications-btn:after {
+  right: 14px; }
 
 /*# sourceMappingURL=main.css.map */

@@ -24,6 +24,22 @@
       min-width: 2em;
     }
   }
+
+  &.complete {
+    > h2,
+    > p {
+      text-align: center;
+    }
+
+    h2 {
+      font-size: 1.5em;
+
+      .fa-star {
+        color: #FDC300;
+        margin: 0 1em;
+      }
+    }
+  }
 }
 
 .item-composer.task {

@@ -25,13 +25,15 @@ header {
     padding-left: $spacer-unit-size;
 
     font-size: 1em;
-    color: white;
+    color: $background-body-color;
+    text-align: left;
+
+    max-width: 60%;
 
     float: left;
 
     @include ellipsis;
-
-    max-width: 60%;
+    @include link-color($background-body-color);
 
     padding-top: 9px;
     @include medium-screen {
@@ -46,8 +48,9 @@ header {
     float: right;
   }
 
-  > h1 {
-    @include link-color($background-body-color);
+  .fa-angle-right {
+    font-size: 0.9em;
+    margin: 0 0.5em;
   }
 }
 
