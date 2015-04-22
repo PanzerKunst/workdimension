@@ -3774,6 +3774,7 @@ CS.Controllers.WorkbookItemNote = React.createClass({displayName: "WorkbookItemN
                 return false;
             }
 
+            // TODO, and likewise for each task below
             this.workbookNotesForThisItem = CS.account.data[workbookArea.className][itemIndex].notes;
 
             return true;
