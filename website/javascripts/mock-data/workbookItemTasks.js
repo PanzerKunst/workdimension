@@ -52,7 +52,7 @@ CS.WorkbookItemTasks = [
                 prompt: "Is there anything keeping you from <em>{itemName}</em>?"
             },
             {
-                prompt: "If you were not paid, would you still be interested in [Tracks]? <em>{itemName}</em> Why/why not? "
+                prompt: "If you were not paid, would you still be interested in <em>{itemName}</em>? Why/why not?"
             }
         ],
         stepCount: CS.Models.WorkbookItemTaskCommon.minItemCountForAddItemsTaskComplete,
@@ -76,7 +76,7 @@ CS.WorkbookItemTasks = [
         },
         wordings: [
             {
-                prompt: "You mentioned you are <em>{itemName}</em> How can people observe this in your work?"
+                prompt: "You mentioned you are <em>{itemName}</em>. How can people observe this in your work?"
             },
             {
                 prompt: "Please describe a situation where this was really important in achieving results at work: <em>{itemName}</em>"
@@ -85,7 +85,7 @@ CS.WorkbookItemTasks = [
                 prompt: "What happens if you don't get to do this in your work: <em>{itemName}</em>"
             },
             {
-                prompt: "What are the drawbacks of <em>{itemName}</em> ?"
+                prompt: "What are the drawbacks of <em>{itemName}</em>?"
             }
         ],
         stepCount: CS.Models.WorkbookItemTaskCommon.minItemCountForAddItemsTaskComplete,
