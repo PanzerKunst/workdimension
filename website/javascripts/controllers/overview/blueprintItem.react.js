@@ -4,6 +4,7 @@ CS.Controllers.OverviewBlueprintItem = React.createClass({
 
         return (
             <li ref="li">
+                <button className="styleless fa fa-bars"></button>
                 <p><a href={href}>{this._getBlueprintItemName()}</a></p>
                 <button className="styleless fa fa-pencil" onClick={this._showEditor}></button>
                 <form role="form" className="item-composer" onSubmit={this._handleComposerFormSubmit}>
@@ -32,12 +33,11 @@ CS.Controllers.OverviewBlueprintItem = React.createClass({
     _initElements: function() {
         this.$listItem = $(React.findDOMNode(this.refs.li));
         this.$itemNameParagraph = this.$listItem.children("p");
-        this.$editBtn = this.$listItem.children("button");
+        this.$editBtn = this.$listItem.children(".fa-pencil");
         this.$form = this.$listItem.children(".item-composer");
         this.$textarea = this.$form.children("textarea");
 
-        this.$blueprintAreaPanel = this.$listItem.parents(".blueprint-area-panel");
-        this.$addItemLink = this.$blueprintAreaPanel.find(".add-item-link");
+        this.$blueprintAreaWell = this.$listItem.parents(".blueprint-area-panel").children();
     },
 
     _showEditor: function () {
@@ -51,7 +51,7 @@ CS.Controllers.OverviewBlueprintItem = React.createClass({
 
         this.$itemNameParagraph.hide();
         this.$editBtn.hide();
-        this.$addItemLink.hide();
+        this.$blueprintAreaWell.addClass("editing");
         this.$form.show();
         CS.Controllers.WorkbookAreaCommon.adaptTextareaHeight(this.$textarea);
         this.$textarea.focus();
@@ -63,7 +63,7 @@ CS.Controllers.OverviewBlueprintItem = React.createClass({
         var $listItems = CS.overviewController.$el.find(".item-names-list").children();
         var $composerForms = $listItems.children(".item-composer");
         var $itemNameParagraphs = $listItems.children("p");
-        var $editBtns = $listItems.children("button");
+        var $editBtns = $listItems.children(".fa-pencil");
         var $addItemLinks = CS.overviewController.$el.find(".add-item-link");
 
         $listItems.removeClass(this.listItemEditModeClass);
@@ -106,7 +106,7 @@ CS.Controllers.OverviewBlueprintItem = React.createClass({
         this.$form.hide();
         this.$itemNameParagraph.show();
         this.$editBtn.show();
-        this.$addItemLink.show();
+        this.$blueprintAreaWell.removeClass("editing");
 
         CS.overviewController.rePackerise();
         CS.Controllers.WorkbookAreaCommon.enableSortable(this.props.controller);

@@ -1,16 +1,7 @@
-html[data-useragent*="Safari"] {
+html[data-useragent*="Safari"]:not([data-useragent*="Chrome"]) {
   #container.task-notifications-open {
     #task-notifications-btn:after {
       right: 56px;
-    }
-  }
-
-  // TODO: ugly
-  &[data-useragent*="Chrome"] {
-    #container.task-notifications-open {
-      #task-notifications-btn:after {
-        right: 14px;
-      }
     }
   }
 }

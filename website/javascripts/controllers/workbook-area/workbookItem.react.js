@@ -4,6 +4,7 @@ CS.Controllers.WorkbookAreaWorkbookItem = React.createClass({
 
         return (
             <li ref="li">
+                <button className="styleless fa fa-bars"></button>
                 <p><a href={href}>{this.props.workbookItem.name}</a></p>
                 <button className="styleless fa fa-pencil" onClick={this._showEditor}></button>
                 <form role="form" className="item-composer" onSubmit={this._handleComposerFormSubmit}>
@@ -30,7 +31,7 @@ CS.Controllers.WorkbookAreaWorkbookItem = React.createClass({
         this.$form = this.$listItem.children(".item-composer");
         this.$textarea = this.$form.children("textarea");
 
-        this.$addItemLink = this.$list.siblings(".add-item-link");
+        this.$contentWrapper = this.$listItem.parents("#content-wrapper");
     },
 
     _showEditor: function () {
@@ -44,7 +45,7 @@ CS.Controllers.WorkbookAreaWorkbookItem = React.createClass({
 
         this.$itemNameParagraph.hide();
         this.$editBtn.hide();
-        this.$addItemLink.hide();
+        this.$contentWrapper.addClass("editing");
         this.$form.show();
         CS.Controllers.WorkbookAreaCommon.adaptTextareaHeight(this.$textarea);
         this.$textarea.focus();
@@ -54,13 +55,12 @@ CS.Controllers.WorkbookAreaWorkbookItem = React.createClass({
         var $listItems = this.$list.children();
         var $composerForms = $listItems.children(".item-composer");
         var $itemNameParagraphs = $listItems.children("p");
-        var $editBtns = $listItems.children("button");
+        var $editBtns = $listItems.children(".fa-pencil");
 
         $listItems.removeClass(this.listItemEditModeClass);
         $composerForms.hide();
         $itemNameParagraphs.show();
         $editBtns.show();
-        this.$addItemLink.show();
     },
 
     _handleComposerFormSubmit: function (e) {
@@ -96,7 +96,7 @@ CS.Controllers.WorkbookAreaWorkbookItem = React.createClass({
         this.$form.hide();
         this.$itemNameParagraph.show();
         this.$editBtn.show();
-        this.$addItemLink.show();
+        this.$contentWrapper.removeClass("editing");
 
         CS.Controllers.WorkbookAreaCommon.enableSortable(this.props.controller);
     }

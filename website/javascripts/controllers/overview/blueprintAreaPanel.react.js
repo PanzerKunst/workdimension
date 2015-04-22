@@ -34,7 +34,6 @@ CS.Controllers.OverviewBlueprintAreaPanel = React.createClass({
 
     componentDidMount: function () {
         this._initElements();
-        this._initPopovers();   // TODO
         this._initSortable();
     },
 
@@ -45,26 +44,19 @@ CS.Controllers.OverviewBlueprintAreaPanel = React.createClass({
     _initElements: function () {
         this.$listItem = $(React.findDOMNode(this.refs.li));
         this.$well = this.$listItem.children();
-        this.$popovers = this.$well.children("[data-toggle='popover']");
         this.$itemNamesList = this.$well.children(".item-names-list");
     },
 
-    _initPopovers: function() {
-        this.$popovers.popover();
-    },
-
     _initSortable: function () {
-        // We don't do it on touch devices, because then it becomes really harder to scroll down the page
-        if (!Modernizr.touch) {
-            this.sortable = new Sortable(this.$itemNamesList[0],
-                {
-                    animation: 150,
-                    onUpdate: function () {
-                        CS.Controllers.WorkbookAreaCommon.handleWorkbookItemsReordered(this.$itemNamesList, this._getBlueprintArea().className);
-                    }.bind(this)
-                }
-            );
-        }
+        this.sortable = new Sortable(this.$itemNamesList[0],
+            {
+                animation: 150,
+                onUpdate: function () {
+                    CS.Controllers.WorkbookAreaCommon.handleWorkbookItemsReordered(this.$itemNamesList, this._getBlueprintArea().className);
+                }.bind(this),
+                handle: Modernizr.touch ? ".fa-bars" : null
+            }
+        );
     },
 
     _hideBlueprintAreaPanel: function () {

@@ -1735,7 +1735,6 @@ CS.Controllers.OverviewBlueprintAreaPanel = React.createClass({displayName: "Ove
 
     componentDidMount: function () {
         this._initElements();
-        this._initPopovers();   // TODO
         this._initSortable();
     },
 
@@ -1746,26 +1745,19 @@ CS.Controllers.OverviewBlueprintAreaPanel = React.createClass({displayName: "Ove
     _initElements: function () {
         this.$listItem = $(React.findDOMNode(this.refs.li));
         this.$well = this.$listItem.children();
-        this.$popovers = this.$well.children("[data-toggle='popover']");
         this.$itemNamesList = this.$well.children(".item-names-list");
     },
 
-    _initPopovers: function() {
-        this.$popovers.popover();
-    },
-
     _initSortable: function () {
-        // We don't do it on touch devices, because then it becomes really harder to scroll down the page
-        if (!Modernizr.touch) {
-            this.sortable = new Sortable(this.$itemNamesList[0],
-                {
-                    animation: 150,
-                    onUpdate: function () {
-                        CS.Controllers.WorkbookAreaCommon.handleWorkbookItemsReordered(this.$itemNamesList, this._getBlueprintArea().className);
-                    }.bind(this)
-                }
-            );
-        }
+        this.sortable = new Sortable(this.$itemNamesList[0],
+            {
+                animation: 150,
+                onUpdate: function () {
+                    CS.Controllers.WorkbookAreaCommon.handleWorkbookItemsReordered(this.$itemNamesList, this._getBlueprintArea().className);
+                }.bind(this),
+                handle: Modernizr.touch ? ".fa-bars" : null
+            }
+        );
     },
 
     _hideBlueprintAreaPanel: function () {
@@ -1787,6 +1779,7 @@ CS.Controllers.OverviewBlueprintItem = React.createClass({displayName: "Overview
 
         return (
             React.createElement("li", {ref: "li"}, 
+                React.createElement("button", {className: "styleless fa fa-bars"}), 
                 React.createElement("p", null, React.createElement("a", {href: href}, this._getBlueprintItemName())), 
                 React.createElement("button", {className: "styleless fa fa-pencil", onClick: this._showEditor}), 
                 React.createElement("form", {role: "form", className: "item-composer", onSubmit: this._handleComposerFormSubmit}, 
@@ -1815,12 +1808,11 @@ CS.Controllers.OverviewBlueprintItem = React.createClass({displayName: "Overview
     _initElements: function() {
         this.$listItem = $(React.findDOMNode(this.refs.li));
         this.$itemNameParagraph = this.$listItem.children("p");
-        this.$editBtn = this.$listItem.children("button");
+        this.$editBtn = this.$listItem.children(".fa-pencil");
         this.$form = this.$listItem.children(".item-composer");
         this.$textarea = this.$form.children("textarea");
 
-        this.$blueprintAreaPanel = this.$listItem.parents(".blueprint-area-panel");
-        this.$addItemLink = this.$blueprintAreaPanel.find(".add-item-link");
+        this.$blueprintAreaWell = this.$listItem.parents(".blueprint-area-panel").children();
     },
 
     _showEditor: function () {
@@ -1834,7 +1826,7 @@ CS.Controllers.OverviewBlueprintItem = React.createClass({displayName: "Overview
 
         this.$itemNameParagraph.hide();
         this.$editBtn.hide();
-        this.$addItemLink.hide();
+        this.$blueprintAreaWell.addClass("editing");
         this.$form.show();
         CS.Controllers.WorkbookAreaCommon.adaptTextareaHeight(this.$textarea);
         this.$textarea.focus();
@@ -1846,7 +1838,7 @@ CS.Controllers.OverviewBlueprintItem = React.createClass({displayName: "Overview
         var $listItems = CS.overviewController.$el.find(".item-names-list").children();
         var $composerForms = $listItems.children(".item-composer");
         var $itemNameParagraphs = $listItems.children("p");
-        var $editBtns = $listItems.children("button");
+        var $editBtns = $listItems.children(".fa-pencil");
         var $addItemLinks = CS.overviewController.$el.find(".add-item-link");
 
         $listItems.removeClass(this.listItemEditModeClass);
@@ -1889,7 +1881,7 @@ CS.Controllers.OverviewBlueprintItem = React.createClass({displayName: "Overview
         this.$form.hide();
         this.$itemNameParagraph.show();
         this.$editBtn.show();
-        this.$addItemLink.show();
+        this.$blueprintAreaWell.removeClass("editing");
 
         CS.overviewController.rePackerise();
         CS.Controllers.WorkbookAreaCommon.enableSortable(this.props.controller);
@@ -2247,7 +2239,7 @@ CS.Controllers.WorkbookArea = P(function (c) {
             }
 
             return (
-                React.createElement("div", {ref: "wrapper"}, 
+                React.createElement("div", {ref: "wrapper", id: "content-wrapper"}, 
                     taskReact, 
 
                     React.createElement("ul", {className: "styleless item-names-list"}, 
@@ -2292,7 +2284,8 @@ CS.Controllers.WorkbookArea = P(function (c) {
                         animation: 150,
                         onUpdate: function () {
                             CS.Controllers.WorkbookAreaCommon.handleWorkbookItemsReordered(this.$list, this.state.workbookArea.className);
-                        }.bind(this)
+                        }.bind(this),
+                        handle: Modernizr.touch ? ".fa-bars" : null
                     }
                 );
             }
@@ -2370,6 +2363,7 @@ CS.Controllers.WorkbookAreaWorkbookItem = React.createClass({displayName: "Workb
 
         return (
             React.createElement("li", {ref: "li"}, 
+                React.createElement("button", {className: "styleless fa fa-bars"}), 
                 React.createElement("p", null, React.createElement("a", {href: href}, this.props.workbookItem.name)), 
                 React.createElement("button", {className: "styleless fa fa-pencil", onClick: this._showEditor}), 
                 React.createElement("form", {role: "form", className: "item-composer", onSubmit: this._handleComposerFormSubmit}, 
@@ -2396,7 +2390,7 @@ CS.Controllers.WorkbookAreaWorkbookItem = React.createClass({displayName: "Workb
         this.$form = this.$listItem.children(".item-composer");
         this.$textarea = this.$form.children("textarea");
 
-        this.$addItemLink = this.$list.siblings(".add-item-link");
+        this.$contentWrapper = this.$listItem.parents("#content-wrapper");
     },
 
     _showEditor: function () {
@@ -2410,7 +2404,7 @@ CS.Controllers.WorkbookAreaWorkbookItem = React.createClass({displayName: "Workb
 
         this.$itemNameParagraph.hide();
         this.$editBtn.hide();
-        this.$addItemLink.hide();
+        this.$contentWrapper.addClass("editing");
         this.$form.show();
         CS.Controllers.WorkbookAreaCommon.adaptTextareaHeight(this.$textarea);
         this.$textarea.focus();
@@ -2420,13 +2414,12 @@ CS.Controllers.WorkbookAreaWorkbookItem = React.createClass({displayName: "Workb
         var $listItems = this.$list.children();
         var $composerForms = $listItems.children(".item-composer");
         var $itemNameParagraphs = $listItems.children("p");
-        var $editBtns = $listItems.children("button");
+        var $editBtns = $listItems.children(".fa-pencil");
 
         $listItems.removeClass(this.listItemEditModeClass);
         $composerForms.hide();
         $itemNameParagraphs.show();
         $editBtns.show();
-        this.$addItemLink.show();
     },
 
     _handleComposerFormSubmit: function (e) {
@@ -2462,7 +2455,7 @@ CS.Controllers.WorkbookAreaWorkbookItem = React.createClass({displayName: "Workb
         this.$form.hide();
         this.$itemNameParagraph.show();
         this.$editBtn.show();
-        this.$addItemLink.show();
+        this.$contentWrapper.removeClass("editing");
 
         CS.Controllers.WorkbookAreaCommon.enableSortable(this.props.controller);
     }

@@ -50,7 +50,7 @@ CS.Controllers.WorkbookArea = P(function (c) {
             }
 
             return (
-                <div ref="wrapper">
+                <div ref="wrapper" id="content-wrapper">
                     {taskReact}
 
                     <ul className="styleless item-names-list">
@@ -95,7 +95,8 @@ CS.Controllers.WorkbookArea = P(function (c) {
                         animation: 150,
                         onUpdate: function () {
                             CS.Controllers.WorkbookAreaCommon.handleWorkbookItemsReordered(this.$list, this.state.workbookArea.className);
-                        }.bind(this)
+                        }.bind(this),
+                        handle: Modernizr.touch ? ".fa-bars" : null
                     }
                 );
             }

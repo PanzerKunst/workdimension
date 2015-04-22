@@ -53,6 +53,15 @@
         }
       }
 
+      &.editing {
+        .fa-bars,
+        .fa-chevron-down,
+        .fa-chevron-up,
+        .add-item-link {
+          display: none !important;
+        }
+      }
+
       > button {
         position: absolute;
 
@@ -133,8 +142,9 @@
         }
 
         > p,
+        > .fa-bars,
         > .fa-pencil {
-          color: white;
+          color: $background-body-color;
         }
 
         > p {

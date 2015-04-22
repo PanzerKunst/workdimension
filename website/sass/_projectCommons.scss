@@ -9,10 +9,12 @@ html,
 body {
   height: 100%;
 }
+
 #container {
   min-height: 100%;
   position: relative; // Because of absolutely-positioning footer
 }
+
 [role="main"] {
   padding-bottom: $footer-height;
 }
@@ -45,16 +47,38 @@ a.fa {
       background-color: $background-body-color;
     }
 
-    > p {
-      padding: 0 1.5em 0 0.5em;
-    }
-
     > button {
       position: absolute;
       top: -0.55em;
-      right: -0.55em;
 
       padding: 0.92em 1em;
+
+      &.fa-bars {
+        left: -0.55em;
+      }
+
+      &.fa-pencil {
+        right: -0.55em;
+      }
+    }
+
+    > p {
+      padding: 0 1.5em 0 1.7em;
+    }
+  }
+}
+
+html.no-touch {
+  .item-names-list,
+  .item-notes-list {
+    > li {
+      > .fa-bars {
+        display: none;
+      }
+
+      > p {
+        padding-left: 0.5em;
+      }
     }
   }
 }

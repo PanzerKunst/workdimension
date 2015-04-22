@@ -6220,15 +6220,27 @@ a.fa:hover, a.fa:focus {
   .item-names-list > li.editing,
   .item-notes-list > li.editing {
     background-color: white; }
-  .item-names-list > li > p,
-  .item-notes-list > li > p {
-    padding: 0 1.5em 0 0.5em; }
   .item-names-list > li > button,
   .item-notes-list > li > button {
     position: absolute;
     top: -0.55em;
-    right: -0.55em;
     padding: 0.92em 1em; }
+    .item-names-list > li > button.fa-bars,
+    .item-notes-list > li > button.fa-bars {
+      left: -0.55em; }
+    .item-names-list > li > button.fa-pencil,
+    .item-notes-list > li > button.fa-pencil {
+      right: -0.55em; }
+  .item-names-list > li > p,
+  .item-notes-list > li > p {
+    padding: 0 1.5em 0 1.7em; }
+
+html.no-touch .item-names-list > li > .fa-bars,
+html.no-touch .item-notes-list > li > .fa-bars {
+  display: none; }
+html.no-touch .item-names-list > li > p,
+html.no-touch .item-notes-list > li > p {
+  padding-left: 0.5em; }
 
 .item-composer {
   display: none; }
@@ -6497,6 +6509,11 @@ footer {
       display: block; }
     #index #content .well.add-item-composer-open > section > .add-item-link {
       display: none; }
+    #index #content .well.editing .fa-bars,
+    #index #content .well.editing .fa-chevron-down,
+    #index #content .well.editing .fa-chevron-up,
+    #index #content .well.editing .add-item-link {
+      display: none !important; }
     #index #content .well > button {
       position: absolute;
       padding: .93em .93em;
@@ -6538,6 +6555,7 @@ footer {
     #index #content .item-names-list > li.editing {
       background-color: #f5f5f5; }
     #index #content .item-names-list > li > p,
+    #index #content .item-names-list > li > .fa-bars,
     #index #content .item-names-list > li > .fa-pencil {
       color: white; }
     #index #content .item-names-list > li > p {
@@ -6611,21 +6629,24 @@ footer {
     margin-left: 1em;
     vertical-align: middle; }
 
-#workbook-area #content > div {
+#workbook-area #content-wrapper {
   margin: 0 auto; }
   @media screen and (min-width: 640px) {
-    #workbook-area #content > div {
+    #workbook-area #content-wrapper {
       width: 480px; } }
   @media screen and (min-width: 960px) {
-    #workbook-area #content > div {
+    #workbook-area #content-wrapper {
       width: 640px; } }
-  #workbook-area #content > div > .item-composer,
-  #workbook-area #content > div > .add-item-link {
+  #workbook-area #content-wrapper > .item-composer,
+  #workbook-area #content-wrapper > .add-item-link {
     margin: 0 14px; }
     @media screen and (min-width: 640px) {
-      #workbook-area #content > div > .item-composer,
-      #workbook-area #content > div > .add-item-link {
+      #workbook-area #content-wrapper > .item-composer,
+      #workbook-area #content-wrapper > .add-item-link {
         margin: 0; } }
+  #workbook-area #content-wrapper.editing .fa-bars,
+  #workbook-area #content-wrapper.editing .add-item-link {
+    display: none !important; }
 #workbook-area .item-names-list {
   margin: 10vw 14px 0 14px; }
   @media screen and (min-width: 640px) {
@@ -6709,9 +6730,7 @@ html[data-useragent*='Trident/7.0'] .input-group .input-group-btn > .btn {
     html[data-useragent*='Trident/7.0'] .input-group .input-group-btn > .btn {
       height: 46px; } }
 
-html[data-useragent*="Safari"] #container.task-notifications-open #task-notifications-btn:after {
+html[data-useragent*="Safari"]:not([data-useragent*="Chrome"]) #container.task-notifications-open #task-notifications-btn:after {
   right: 56px; }
-html[data-useragent*="Safari"][data-useragent*="Chrome"] #container.task-notifications-open #task-notifications-btn:after {
-  right: 14px; }
 
 /*# sourceMappingURL=main.css.map */
