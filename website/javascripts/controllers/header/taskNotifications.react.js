@@ -62,15 +62,12 @@ CS.Controllers.TaskNotifications = P(function (c) {
 
     c.reRender = function () {
         this.activeTasks = this._getActiveTasks();
-        var viewedTasks = _.filter(CS.WorkbookAreaTasks, function (task) {
-            return _.includes(CS.account.data.viewedTaskIds, task.id);
-        });
         var newTasks = this._getNewTasks();
 
         this.reactInstance.replaceState({
             activeTasks: this._getPrioritizedActiveTasks(newTasks),
-            doneTasks: _.reject(viewedTasks, function (task) {
-                return task.isActive();
+            doneTasks: _.filter(CS.WorkbookAreaTasks, function (task) {
+                return task.isDone();
             })
         });
 

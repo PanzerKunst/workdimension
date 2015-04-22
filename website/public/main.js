@@ -1117,7 +1117,7 @@ CS.saveAccountData = function (callback) {
         }
 
         var itemNotes = CS.account.data[workbookAreaClassName][workbookItemIndex].notes;
-        return _.indexOf(itemNotes, note) > -1;
+        return _.includes(itemNotes, note);
     },
 
     _getTextareaDefaultHeight: function($textarea) {
@@ -1534,15 +1534,12 @@ CS.Controllers.TaskNotifications = P(function (c) {
 
     c.reRender = function () {
         this.activeTasks = this._getActiveTasks();
-        var viewedTasks = _.filter(CS.WorkbookAreaTasks, function (task) {
-            return _.includes(CS.account.data.viewedTaskIds, task.id);
-        });
         var newTasks = this._getNewTasks();
 
         this.reactInstance.replaceState({
             activeTasks: this._getPrioritizedActiveTasks(newTasks),
-            doneTasks: _.reject(viewedTasks, function (task) {
-                return task.isActive();
+            doneTasks: _.filter(CS.WorkbookAreaTasks, function (task) {
+                return task.isDone();
             })
         });
 
@@ -2225,27 +2222,26 @@ CS.Controllers.WorkbookArea = P(function (c) {
                     }.bind(this));
 
                 if (activeTask) {
-                    if (activeTask.templateClassName === "WorkbookAreaPrioritizeItemsTask") {
-                        var isWorkbookAreaPrioritized = _.includes(CS.account.data.prioritizedWorkbookAreaIds, this.state.workbookArea.id);
-                        if (isWorkbookAreaPrioritized) {
-                            taskReact = (
-                                React.createElement("div", {className: "workbook-task complete"}, 
-                                    React.createElement("h2", null, React.createElement("i", {className: "fa fa-star"}), "Great work!", React.createElement("i", {className: "fa fa-star"})), 
-                                    React.createElement("p", null, "You have completed all tasks for ", this.state.workbookArea.className, ".", React.createElement("br", null), 
-                                    "We invite you to work on other areas.")
-                                )
-                                );
-                        }
-                    }
+                    var nextTask = _.find(CS.WorkbookAreaTasks, function(task) {
+                        return task.previousTaskId === activeTask.id;
+                    });
 
-                    if (!taskReact) {
-                        var nextTask = _.find(CS.WorkbookAreaTasks, function(task) {
-                            return task.previousTaskId === activeTask.id;
-                        });
+                    var comingUpNextText = nextTask ? nextTask.comingUpText : null;
 
-                        var comingUpNextText = nextTask ? nextTask.comingUpText : null;
+                    taskReact = React.createElement(CS.Controllers[activeTask.templateClassName], {task: activeTask, workbookArea: this.state.workbookArea, comingUpNextText: comingUpNextText, controller: this.state.controller});
+                } else {
+                    var doneTask = _.find(CS.WorkbookAreaTasks, function(task) {  // Level 3
+                        return task.workbookAreaId === this.state.workbookArea.id && task.level === 3 && task.isDone();
+                    }.bind(this));
 
-                        taskReact = React.createElement(CS.Controllers[activeTask.templateClassName], {task: activeTask, workbookArea: this.state.workbookArea, comingUpNextText: comingUpNextText, controller: this.state.controller});
+                    if (doneTask) {
+                        taskReact = (
+                            React.createElement("div", {className: "workbook-task complete"}, 
+                                React.createElement("h2", null, React.createElement("i", {className: "fa fa-star"}), "Great work!", React.createElement("i", {className: "fa fa-star"})), 
+                                React.createElement("p", null, "You have completed all tasks for ", this.state.workbookArea.className, ".", React.createElement("br", null), 
+                                "We invite you to work on other areas.")
+                            )
+                            );
                     }
                 }
             }
@@ -2827,6 +2823,12 @@ CS.Controllers.WorkbookItemNote = React.createClass({displayName: "WorkbookItemN
 
             return _.isEmpty(workbookItemsForThisArea) || workbookItemsForThisArea.length < CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl1TaskComplete;
         },
+        isDone: function() {
+            var workbookArea = CS.blueprintAreasModel.getOfId(5);
+            var workbookItemsForThisArea = CS.account.data[workbookArea.className];
+
+            return !_.isEmpty(workbookItemsForThisArea) && workbookItemsForThisArea.length >= CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl1TaskComplete;
+        },
         wordings: [
             {
                 prompt: "Describe a situation where you've solved a problem in a very good or unexpected way"
@@ -2862,6 +2864,12 @@ CS.Controllers.WorkbookItemNote = React.createClass({displayName: "WorkbookItemN
 
             return _.isEmpty(workbookItemsForThisArea) || workbookItemsForThisArea.length < CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl1TaskComplete;
         },
+        isDone: function() {
+            var workbookArea = CS.blueprintAreasModel.getOfId(18);
+            var workbookItemsForThisArea = CS.account.data[workbookArea.className];
+
+            return !_.isEmpty(workbookItemsForThisArea) && workbookItemsForThisArea.length >= CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl1TaskComplete;
+        },
         wordings: [
             {
                 prompt: "What tracks would you like to pursue at some point?"
@@ -2892,6 +2900,12 @@ CS.Controllers.WorkbookItemNote = React.createClass({displayName: "WorkbookItemN
             var workbookItemsForThisArea = CS.account.data[workbookArea.className];
 
             return _.isEmpty(workbookItemsForThisArea) || workbookItemsForThisArea.length < CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl1TaskComplete;
+        },
+        isDone: function() {
+            var workbookArea = CS.blueprintAreasModel.getOfId(1);
+            var workbookItemsForThisArea = CS.account.data[workbookArea.className];
+
+            return !_.isEmpty(workbookItemsForThisArea) && workbookItemsForThisArea.length >= CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl1TaskComplete;
         },
         wordings: [
             {
@@ -2927,6 +2941,12 @@ CS.Controllers.WorkbookItemNote = React.createClass({displayName: "WorkbookItemN
             var workbookItemsForThisArea = CS.account.data[workbookArea.className];
 
             return _.isEmpty(workbookItemsForThisArea) || workbookItemsForThisArea.length < CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl1TaskComplete;
+        },
+        isDone: function() {
+            var workbookArea = CS.blueprintAreasModel.getOfId(2);
+            var workbookItemsForThisArea = CS.account.data[workbookArea.className];
+
+            return !_.isEmpty(workbookItemsForThisArea) && workbookItemsForThisArea.length >= CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl1TaskComplete;
         },
         wordings: [
             {
@@ -2964,6 +2984,12 @@ CS.Controllers.WorkbookItemNote = React.createClass({displayName: "WorkbookItemN
 
             return _.isEmpty(workbookItemsForThisArea) || workbookItemsForThisArea.length < CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl1TaskComplete;
         },
+        isDone: function() {
+            var workbookArea = CS.blueprintAreasModel.getOfId(4);
+            var workbookItemsForThisArea = CS.account.data[workbookArea.className];
+
+            return !_.isEmpty(workbookItemsForThisArea) && workbookItemsForThisArea.length >= CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl1TaskComplete;
+        },
         wordings: [
             {
                 prompt: "What kind of environment are you the most creative in?"
@@ -2991,6 +3017,12 @@ CS.Controllers.WorkbookItemNote = React.createClass({displayName: "WorkbookItemN
             var workbookItemsForThisArea = CS.account.data[workbookArea.className];
 
             return _.isEmpty(workbookItemsForThisArea) || workbookItemsForThisArea.length < CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl1TaskComplete;
+        },
+        isDone: function() {
+            var workbookArea = CS.blueprintAreasModel.getOfId(12);
+            var workbookItemsForThisArea = CS.account.data[workbookArea.className];
+
+            return !_.isEmpty(workbookItemsForThisArea) && workbookItemsForThisArea.length >= CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl1TaskComplete;
         },
         wordings: [
             {
@@ -3023,6 +3055,12 @@ CS.Controllers.WorkbookItemNote = React.createClass({displayName: "WorkbookItemN
 
             return _.isEmpty(workbookItemsForThisArea) || workbookItemsForThisArea.length < CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl1TaskComplete;
         },
+        isDone: function() {
+            var workbookArea = CS.blueprintAreasModel.getOfId(17);
+            var workbookItemsForThisArea = CS.account.data[workbookArea.className];
+
+            return !_.isEmpty(workbookItemsForThisArea) && workbookItemsForThisArea.length >= CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl1TaskComplete;
+        },
         wordings: [
             {
                 prompt: "What methods do you use to do your work?"
@@ -3054,6 +3092,12 @@ CS.Controllers.WorkbookItemNote = React.createClass({displayName: "WorkbookItemN
 
             return _.isEmpty(workbookItemsForThisArea) || workbookItemsForThisArea.length < CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl1TaskComplete;
         },
+        isDone: function() {
+            var workbookArea = CS.blueprintAreasModel.getOfId(9);
+            var workbookItemsForThisArea = CS.account.data[workbookArea.className];
+
+            return !_.isEmpty(workbookItemsForThisArea) && workbookItemsForThisArea.length >= CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl1TaskComplete;
+        },
         wordings: [
             {
                 prompt: "This is something my boss should keep in mind to make me stay..."
@@ -3078,6 +3122,12 @@ CS.Controllers.WorkbookItemNote = React.createClass({displayName: "WorkbookItemN
             var workbookItemsForThisArea = CS.account.data[workbookArea.className];
 
             return _.isEmpty(workbookItemsForThisArea) || workbookItemsForThisArea.length < CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl1TaskComplete;
+        },
+        isDone: function() {
+            var workbookArea = CS.blueprintAreasModel.getOfId(3);
+            var workbookItemsForThisArea = CS.account.data[workbookArea.className];
+
+            return !_.isEmpty(workbookItemsForThisArea) && workbookItemsForThisArea.length >= CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl1TaskComplete;
         },
         wordings: [
             {
@@ -3121,6 +3171,12 @@ CS.Controllers.WorkbookItemNote = React.createClass({displayName: "WorkbookItemN
                 workbookItemsForThisArea.length >= CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl1TaskComplete &&
                 workbookItemsForThisArea.length < CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl2TaskComplete;
         },
+        isDone: function() {
+            var workbookArea = CS.blueprintAreasModel.getOfId(5);
+            var workbookItemsForThisArea = CS.account.data[workbookArea.className];
+
+            return !_.isEmpty(workbookItemsForThisArea) && workbookItemsForThisArea.length >= CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl2TaskComplete;
+        },
         wordings: [
             {
                 prompt: "Describe a situation where you've solved a problem in a very good or unexpected way"
@@ -3160,6 +3216,12 @@ CS.Controllers.WorkbookItemNote = React.createClass({displayName: "WorkbookItemN
                 workbookItemsForThisArea.length >= CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl1TaskComplete &&
                 workbookItemsForThisArea.length < CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl2TaskComplete;
         },
+        isDone: function() {
+            var workbookArea = CS.blueprintAreasModel.getOfId(18);
+            var workbookItemsForThisArea = CS.account.data[workbookArea.className];
+
+            return !_.isEmpty(workbookItemsForThisArea) && workbookItemsForThisArea.length >= CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl2TaskComplete;
+        },
         wordings: [
             {
                 prompt: "What tracks would you like to pursue at some point?"
@@ -3194,6 +3256,12 @@ CS.Controllers.WorkbookItemNote = React.createClass({displayName: "WorkbookItemN
             return !_.isEmpty(workbookItemsForThisArea) &&
                 workbookItemsForThisArea.length >= CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl1TaskComplete &&
                 workbookItemsForThisArea.length < CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl2TaskComplete;
+        },
+        isDone: function() {
+            var workbookArea = CS.blueprintAreasModel.getOfId(1);
+            var workbookItemsForThisArea = CS.account.data[workbookArea.className];
+
+            return !_.isEmpty(workbookItemsForThisArea) && workbookItemsForThisArea.length >= CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl2TaskComplete;
         },
         wordings: [
             {
@@ -3233,6 +3301,12 @@ CS.Controllers.WorkbookItemNote = React.createClass({displayName: "WorkbookItemN
             return !_.isEmpty(workbookItemsForThisArea) &&
                 workbookItemsForThisArea.length >= CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl1TaskComplete &&
                 workbookItemsForThisArea.length < CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl2TaskComplete;
+        },
+        isDone: function() {
+            var workbookArea = CS.blueprintAreasModel.getOfId(2);
+            var workbookItemsForThisArea = CS.account.data[workbookArea.className];
+
+            return !_.isEmpty(workbookItemsForThisArea) && workbookItemsForThisArea.length >= CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl2TaskComplete;
         },
         wordings: [
             {
@@ -3274,6 +3348,12 @@ CS.Controllers.WorkbookItemNote = React.createClass({displayName: "WorkbookItemN
                 workbookItemsForThisArea.length >= CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl1TaskComplete &&
                 workbookItemsForThisArea.length < CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl2TaskComplete;
         },
+        isDone: function() {
+            var workbookArea = CS.blueprintAreasModel.getOfId(4);
+            var workbookItemsForThisArea = CS.account.data[workbookArea.className];
+
+            return !_.isEmpty(workbookItemsForThisArea) && workbookItemsForThisArea.length >= CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl2TaskComplete;
+        },
         wordings: [
             {
                 prompt: "What kind of environment are you the most creative in?"
@@ -3305,6 +3385,12 @@ CS.Controllers.WorkbookItemNote = React.createClass({displayName: "WorkbookItemN
             return !_.isEmpty(workbookItemsForThisArea) &&
                 workbookItemsForThisArea.length >= CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl1TaskComplete &&
                 workbookItemsForThisArea.length < CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl2TaskComplete;
+        },
+        isDone: function() {
+            var workbookArea = CS.blueprintAreasModel.getOfId(12);
+            var workbookItemsForThisArea = CS.account.data[workbookArea.className];
+
+            return !_.isEmpty(workbookItemsForThisArea) && workbookItemsForThisArea.length >= CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl2TaskComplete;
         },
         wordings: [
             {
@@ -3341,6 +3427,12 @@ CS.Controllers.WorkbookItemNote = React.createClass({displayName: "WorkbookItemN
                 workbookItemsForThisArea.length >= CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl1TaskComplete &&
                 workbookItemsForThisArea.length < CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl2TaskComplete;
         },
+        isDone: function() {
+            var workbookArea = CS.blueprintAreasModel.getOfId(17);
+            var workbookItemsForThisArea = CS.account.data[workbookArea.className];
+
+            return !_.isEmpty(workbookItemsForThisArea) && workbookItemsForThisArea.length >= CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl2TaskComplete;
+        },
         wordings: [
             {
                 prompt: "What methods do you use to do your work?"
@@ -3376,6 +3468,12 @@ CS.Controllers.WorkbookItemNote = React.createClass({displayName: "WorkbookItemN
                 workbookItemsForThisArea.length >= CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl1TaskComplete &&
                 workbookItemsForThisArea.length < CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl2TaskComplete;
         },
+        isDone: function() {
+            var workbookArea = CS.blueprintAreasModel.getOfId(9);
+            var workbookItemsForThisArea = CS.account.data[workbookArea.className];
+
+            return !_.isEmpty(workbookItemsForThisArea) && workbookItemsForThisArea.length >= CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl2TaskComplete;
+        },
         wordings: [
             {
                 prompt: "This is something my boss should keep in mind to make me stay..."
@@ -3404,6 +3502,12 @@ CS.Controllers.WorkbookItemNote = React.createClass({displayName: "WorkbookItemN
             return !_.isEmpty(workbookItemsForThisArea) &&
                 workbookItemsForThisArea.length >= CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl1TaskComplete &&
                 workbookItemsForThisArea.length < CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl2TaskComplete;
+        },
+        isDone: function() {
+            var workbookArea = CS.blueprintAreasModel.getOfId(3);
+            var workbookItemsForThisArea = CS.account.data[workbookArea.className];
+
+            return !_.isEmpty(workbookItemsForThisArea) && workbookItemsForThisArea.length >= CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl2TaskComplete;
         },
         wordings: [
             {
@@ -3444,7 +3548,13 @@ CS.Controllers.WorkbookItemNote = React.createClass({displayName: "WorkbookItemN
 
             var workbookItemsForThisArea = CS.account.data[workbookArea.className];
 
-            return !_.isEmpty(workbookItemsForThisArea) && workbookItemsForThisArea.length >= CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl2TaskComplete;
+            return !this.isDone() &&
+                !_.isEmpty(workbookItemsForThisArea) &&
+                workbookItemsForThisArea.length >= CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl2TaskComplete;
+        },
+        isDone: function() {
+            var workbookArea = CS.blueprintAreasModel.getOfId(1);
+            return _.includes(CS.account.data.prioritizedWorkbookAreaIds, workbookArea.id);
         },
         wordings: [
             {
@@ -3471,7 +3581,13 @@ CS.Controllers.WorkbookItemNote = React.createClass({displayName: "WorkbookItemN
 
             var workbookItemsForThisArea = CS.account.data[workbookArea.className];
 
-            return !_.isEmpty(workbookItemsForThisArea) && workbookItemsForThisArea.length >= CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl2TaskComplete;
+            return !this.isDone() &&
+                !_.isEmpty(workbookItemsForThisArea) &&
+                workbookItemsForThisArea.length >= CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl2TaskComplete;
+        },
+        isDone: function() {
+            var workbookArea = CS.blueprintAreasModel.getOfId(2);
+            return _.includes(CS.account.data.prioritizedWorkbookAreaIds, workbookArea.id);
         },
         wordings: [
             {
@@ -3498,7 +3614,13 @@ CS.Controllers.WorkbookItemNote = React.createClass({displayName: "WorkbookItemN
 
             var workbookItemsForThisArea = CS.account.data[workbookArea.className];
 
-            return !_.isEmpty(workbookItemsForThisArea) && workbookItemsForThisArea.length >= CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl2TaskComplete;
+            return !this.isDone() &&
+                !_.isEmpty(workbookItemsForThisArea) &&
+                workbookItemsForThisArea.length >= CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl2TaskComplete;
+        },
+        isDone: function() {
+            var workbookArea = CS.blueprintAreasModel.getOfId(4);
+            return _.includes(CS.account.data.prioritizedWorkbookAreaIds, workbookArea.id);
         },
         wordings: [
             {
@@ -3525,7 +3647,13 @@ CS.Controllers.WorkbookItemNote = React.createClass({displayName: "WorkbookItemN
 
             var workbookItemsForThisArea = CS.account.data[workbookArea.className];
 
-            return !_.isEmpty(workbookItemsForThisArea) && workbookItemsForThisArea.length >= CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl2TaskComplete;
+            return !this.isDone() &&
+                !_.isEmpty(workbookItemsForThisArea) &&
+                workbookItemsForThisArea.length >= CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl2TaskComplete;
+        },
+        isDone: function() {
+            var workbookArea = CS.blueprintAreasModel.getOfId(5);
+            return _.includes(CS.account.data.prioritizedWorkbookAreaIds, workbookArea.id);
         },
         wordings: [
             {
@@ -3552,7 +3680,13 @@ CS.Controllers.WorkbookItemNote = React.createClass({displayName: "WorkbookItemN
 
             var workbookItemsForThisArea = CS.account.data[workbookArea.className];
 
-            return !_.isEmpty(workbookItemsForThisArea) && workbookItemsForThisArea.length >= CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl2TaskComplete;
+            return !this.isDone() &&
+                !_.isEmpty(workbookItemsForThisArea) &&
+                workbookItemsForThisArea.length >= CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl2TaskComplete;
+        },
+        isDone: function() {
+            var workbookArea = CS.blueprintAreasModel.getOfId(9);
+            return _.includes(CS.account.data.prioritizedWorkbookAreaIds, workbookArea.id);
         },
         wordings: [
             {
@@ -3579,7 +3713,13 @@ CS.Controllers.WorkbookItemNote = React.createClass({displayName: "WorkbookItemN
 
             var workbookItemsForThisArea = CS.account.data[workbookArea.className];
 
-            return !_.isEmpty(workbookItemsForThisArea) && workbookItemsForThisArea.length >= CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl2TaskComplete;
+            return !this.isDone() &&
+                !_.isEmpty(workbookItemsForThisArea) &&
+                workbookItemsForThisArea.length >= CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl2TaskComplete;
+        },
+        isDone: function() {
+            var workbookArea = CS.blueprintAreasModel.getOfId(12);
+            return _.includes(CS.account.data.prioritizedWorkbookAreaIds, workbookArea.id);
         },
         wordings: [
             {
@@ -3606,7 +3746,13 @@ CS.Controllers.WorkbookItemNote = React.createClass({displayName: "WorkbookItemN
 
             var workbookItemsForThisArea = CS.account.data[workbookArea.className];
 
-            return !_.isEmpty(workbookItemsForThisArea) && workbookItemsForThisArea.length >= CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl2TaskComplete;
+            return !this.isDone() &&
+                !_.isEmpty(workbookItemsForThisArea) &&
+                workbookItemsForThisArea.length >= CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl2TaskComplete;
+        },
+        isDone: function() {
+            var workbookArea = CS.blueprintAreasModel.getOfId(18);
+            return _.includes(CS.account.data.prioritizedWorkbookAreaIds, workbookArea.id);
         },
         wordings: [
             {

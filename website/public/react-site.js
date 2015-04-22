@@ -265,15 +265,12 @@ CS.Controllers.TaskNotifications = P(function (c) {
 
     c.reRender = function () {
         this.activeTasks = this._getActiveTasks();
-        var viewedTasks = _.filter(CS.WorkbookAreaTasks, function (task) {
-            return _.includes(CS.account.data.viewedTaskIds, task.id);
-        });
         var newTasks = this._getNewTasks();
 
         this.reactInstance.replaceState({
             activeTasks: this._getPrioritizedActiveTasks(newTasks),
-            doneTasks: _.reject(viewedTasks, function (task) {
-                return task.isActive();
+            doneTasks: _.filter(CS.WorkbookAreaTasks, function (task) {
+                return task.isDone();
             })
         });
 
@@ -956,27 +953,26 @@ CS.Controllers.WorkbookArea = P(function (c) {
                     }.bind(this));
 
                 if (activeTask) {
-                    if (activeTask.templateClassName === "WorkbookAreaPrioritizeItemsTask") {
-                        var isWorkbookAreaPrioritized = _.includes(CS.account.data.prioritizedWorkbookAreaIds, this.state.workbookArea.id);
-                        if (isWorkbookAreaPrioritized) {
-                            taskReact = (
-                                React.createElement("div", {className: "workbook-task complete"}, 
-                                    React.createElement("h2", null, React.createElement("i", {className: "fa fa-star"}), "Great work!", React.createElement("i", {className: "fa fa-star"})), 
-                                    React.createElement("p", null, "You have completed all tasks for ", this.state.workbookArea.className, ".", React.createElement("br", null), 
-                                    "We invite you to work on other areas.")
-                                )
-                                );
-                        }
-                    }
+                    var nextTask = _.find(CS.WorkbookAreaTasks, function(task) {
+                        return task.previousTaskId === activeTask.id;
+                    });
 
-                    if (!taskReact) {
-                        var nextTask = _.find(CS.WorkbookAreaTasks, function(task) {
-                            return task.previousTaskId === activeTask.id;
-                        });
+                    var comingUpNextText = nextTask ? nextTask.comingUpText : null;
 
-                        var comingUpNextText = nextTask ? nextTask.comingUpText : null;
+                    taskReact = React.createElement(CS.Controllers[activeTask.templateClassName], {task: activeTask, workbookArea: this.state.workbookArea, comingUpNextText: comingUpNextText, controller: this.state.controller});
+                } else {
+                    var doneTask = _.find(CS.WorkbookAreaTasks, function(task) {  // Level 3
+                        return task.workbookAreaId === this.state.workbookArea.id && task.level === 3 && task.isDone();
+                    }.bind(this));
 
-                        taskReact = React.createElement(CS.Controllers[activeTask.templateClassName], {task: activeTask, workbookArea: this.state.workbookArea, comingUpNextText: comingUpNextText, controller: this.state.controller});
+                    if (doneTask) {
+                        taskReact = (
+                            React.createElement("div", {className: "workbook-task complete"}, 
+                                React.createElement("h2", null, React.createElement("i", {className: "fa fa-star"}), "Great work!", React.createElement("i", {className: "fa fa-star"})), 
+                                React.createElement("p", null, "You have completed all tasks for ", this.state.workbookArea.className, ".", React.createElement("br", null), 
+                                "We invite you to work on other areas.")
+                            )
+                            );
                     }
                 }
             }

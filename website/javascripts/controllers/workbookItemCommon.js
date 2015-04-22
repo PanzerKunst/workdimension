@@ -36,7 +36,7 @@ CS.Controllers.WorkbookItemCommon = {
         }
 
         var itemNotes = CS.account.data[workbookAreaClassName][workbookItemIndex].notes;
-        return _.indexOf(itemNotes, note) > -1;
+        return _.includes(itemNotes, note);
     },
 
     _getTextareaDefaultHeight: function($textarea) {
