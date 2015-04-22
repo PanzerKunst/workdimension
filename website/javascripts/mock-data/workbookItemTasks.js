@@ -15,7 +15,7 @@ CS.WorkbookItemTasks = [
         },
         wordings: [
             {
-                prompt: "Can you give en example of <em>{itemName}</em>?"
+                prompt: "You mentioned that you <em>{itemName}</em>. How did you achieve this?"
             }
         ],
         stepCount: CS.Models.WorkbookItemTaskCommon.minItemCountForAddItemsTaskComplete,
