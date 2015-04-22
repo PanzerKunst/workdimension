@@ -17,6 +17,12 @@ CS.WorkbookItemTasks = [
         wordings: [
             {
                 prompt: "You mentioned that you <em>{itemName}</em>. How did you achieve this?"
+            },
+            {
+                prompt: "What made you succeed with <em>{itemName}</em>?"
+            },
+            {
+                prompt: "What circumstances were important for you to achieve this: <em>{itemName}</em>?"
             }
         ],
         stepCount: CS.Models.WorkbookItemTaskCommon.minItemCountForAddItemsTaskComplete,
@@ -40,7 +46,13 @@ CS.WorkbookItemTasks = [
         },
         wordings: [
             {
-                prompt: "Why do you want to pursue <em>{itemName}</em>?"
+                prompt: "What makes you interested in <em>{itemName}</em>?"
+            },
+            {
+                prompt: "Is there anything keeping you from <em>{itemName}</em>?"
+            },
+            {
+                prompt: "If you were not paid, would you still be interested in [Tracks]? <em>{itemName}</em> Why/why not? "
             }
         ],
         stepCount: CS.Models.WorkbookItemTaskCommon.minItemCountForAddItemsTaskComplete,
@@ -64,7 +76,16 @@ CS.WorkbookItemTasks = [
         },
         wordings: [
             {
-                prompt: "Can you describe how you've used <em>{itemName}</em> successfully in your work?"
+                prompt: "You mentioned you are <em>{itemName}</em> How can people observe this in your work?"
+            },
+            {
+                prompt: "Please describe a situation where this was really important in achieving results at work: <em>{itemName}</em>"
+            },
+            {
+                prompt: "What happens if you don't get to do this in your work: <em>{itemName}</em>"
+            },
+            {
+                prompt: "What are the drawbacks of <em>{itemName}</em> ?"
             }
         ],
         stepCount: CS.Models.WorkbookItemTaskCommon.minItemCountForAddItemsTaskComplete,
