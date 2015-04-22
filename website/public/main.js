@@ -1004,6 +1004,10 @@ CS.saveAccountData = function (callback) {
     setProgressBarWidth: function($progressBar, itemCount, stepCount) {
         var itemPercent = itemCount / stepCount * 100;
 
+        if (itemPercent > 100) {
+            itemPercent = 100;
+        }
+
         $progressBar.attr("aria-valuenow", itemPercent);
         $progressBar.css("width", itemPercent + "%");
         $progressBar.html(parseInt(itemPercent, 10) + "%");
@@ -3776,7 +3780,7 @@ CS.Controllers.WorkbookItemNote = React.createClass({displayName: "WorkbookItemN
         },
         wordings: [
             {
-                prompt: "Can you give en example of <em>{itemName}</em>?"
+                prompt: "You mentioned that you <em>{itemName}</em>. How did you achieve this?"
             }
         ],
         stepCount: CS.Models.WorkbookItemTaskCommon.minItemCountForAddItemsTaskComplete,

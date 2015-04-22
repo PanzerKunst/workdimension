@@ -27,6 +27,10 @@ CS.Controllers.WorkbookCommon = {
     setProgressBarWidth: function($progressBar, itemCount, stepCount) {
         var itemPercent = itemCount / stepCount * 100;
 
+        if (itemPercent > 100) {
+            itemPercent = 100;
+        }
+
         $progressBar.attr("aria-valuenow", itemPercent);
         $progressBar.css("width", itemPercent + "%");
         $progressBar.html(parseInt(itemPercent, 10) + "%");
