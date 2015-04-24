@@ -17,8 +17,6 @@ CS.Controllers.WorkbookItemNote = React.createClass({
 
     componentDidMount: function () {
         this._initElements();
-
-        this.listItemEditModeClass = "editing";
     },
 
     _initElements: function() {
@@ -38,7 +36,7 @@ CS.Controllers.WorkbookItemNote = React.createClass({
 
         this.$textarea.val(this.props.workbookItemNote);
 
-        this.$listItem.addClass(this.listItemEditModeClass);
+        this.$listItem.addClass(CS.Controllers.WorkbookCommon.listItemEditModeClass);
 
         this.$itemNoteParagraph.hide();
         this.$editBtn.hide();
@@ -54,7 +52,7 @@ CS.Controllers.WorkbookItemNote = React.createClass({
         var $itemNoteParagraphs = $listItems.children("p");
         var $editBtns = $listItems.children("button");
 
-        $listItems.removeClass(this.listItemEditModeClass);
+        $listItems.removeClass(CS.Controllers.WorkbookCommon.listItemEditModeClass);
         $composerForms.hide();
         $itemNoteParagraphs.show();
         $editBtns.show();
@@ -89,7 +87,7 @@ CS.Controllers.WorkbookItemNote = React.createClass({
     },
 
     _hideForm: function() {
-        this.$listItem.removeClass(this.listItemEditModeClass);
+        this.$listItem.removeClass(CS.Controllers.WorkbookCommon.listItemEditModeClass);
         this.$form.hide();
         this.$itemNoteParagraph.show();
         this.$editBtn.show();

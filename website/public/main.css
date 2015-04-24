@@ -6214,9 +6214,6 @@ a.fa:hover, a.fa:focus {
   background-color: #f5f5f5;
   margin-bottom: 0.25em;
   position: relative; }
-  .item-names-list > li:hover,
-  .item-notes-list > li:hover {
-    cursor: move; }
   .item-names-list > li.editing,
   .item-notes-list > li.editing {
     background-color: white; }
@@ -6228,6 +6225,9 @@ a.fa:hover, a.fa:focus {
     .item-names-list > li > button.fa-bars,
     .item-notes-list > li > button.fa-bars {
       left: -0.55em; }
+      .item-names-list > li > button.fa-bars:hover,
+      .item-notes-list > li > button.fa-bars:hover {
+        cursor: move; }
     .item-names-list > li > button.fa-pencil,
     .item-notes-list > li > button.fa-pencil {
       right: -0.55em; }
@@ -6235,12 +6235,10 @@ a.fa:hover, a.fa:focus {
   .item-notes-list > li > p {
     padding: 0 1.5em 0 1.7em; }
 
-html.no-touch .item-names-list > li > .fa-bars,
-html.no-touch .item-notes-list > li > .fa-bars {
-  display: none; }
-html.no-touch .item-names-list > li > p,
-html.no-touch .item-notes-list > li > p {
-  padding-left: 0.5em; }
+.item-names-list .notes-indicator {
+  position: absolute;
+  height: 0.15em;
+  background-color: #ff007f; }
 
 .item-composer {
   display: none; }
@@ -6268,6 +6266,8 @@ header {
     float: left; }
     header > .fa:focus {
       outline: none; }
+    header > .fa.fa-cubes {
+      padding: 10px 6.5px; }
   header > h1 {
     margin: 0;
     padding-left: 14px;

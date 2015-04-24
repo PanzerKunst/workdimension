@@ -1,6 +1,7 @@
 CS.Controllers.WorkbookCommon = {
     fontSizeLargeScreen: 22,
     fontSizeMediumScreen: 18,
+    listItemEditModeClass: "editing",
 
     resetAndHideForm: function ($textarea, callback, textareaDefaultHeightPx) {
         $textarea.val(null);

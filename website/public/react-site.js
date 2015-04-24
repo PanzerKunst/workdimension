@@ -486,7 +486,7 @@ CS.Controllers.OverviewBlueprintAreaPanel = React.createClass({displayName: "Ove
                 onUpdate: function () {
                     CS.Controllers.WorkbookAreaCommon.handleWorkbookItemsReordered(this.$itemNamesList, this._getBlueprintArea().className);
                 }.bind(this),
-                handle: Modernizr.touch ? ".fa-bars" : null
+                handle: ".fa-bars"
             }
         );
     },
@@ -510,6 +510,7 @@ CS.Controllers.OverviewBlueprintItem = React.createClass({displayName: "Overview
 
         return (
             React.createElement("li", {ref: "li"}, 
+                React.createElement("div", {className: "notes-indicator"}), 
                 React.createElement("button", {className: "styleless fa fa-bars"}), 
                 React.createElement("p", null, React.createElement("a", {href: href}, this._getBlueprintItemName())), 
                 React.createElement("button", {className: "styleless fa fa-pencil", onClick: this._showEditor}), 
@@ -524,8 +525,7 @@ CS.Controllers.OverviewBlueprintItem = React.createClass({displayName: "Overview
 
     componentDidMount: function () {
         this._initElements();
-
-        this.listItemEditModeClass = "editing";
+        CS.Controllers.WorkbookAreaCommon.initNotesIndicator(this.$notesIndicator, CS.account.data[this._getBlueprintAreaClassName()][this.props.blueprintItemIndex].notes.length);
     },
 
     _getBlueprintAreaClassName: function() {
@@ -538,6 +538,7 @@ CS.Controllers.OverviewBlueprintItem = React.createClass({displayName: "Overview
 
     _initElements: function() {
         this.$listItem = $(React.findDOMNode(this.refs.li));
+        this.$notesIndicator = this.$listItem.children(".notes-indicator");
         this.$itemNameParagraph = this.$listItem.children("p");
         this.$editBtn = this.$listItem.children(".fa-pencil");
         this.$form = this.$listItem.children(".item-composer");
@@ -551,7 +552,7 @@ CS.Controllers.OverviewBlueprintItem = React.createClass({displayName: "Overview
 
         this.$textarea.val(this._getBlueprintItemName());
 
-        this.$listItem.addClass(this.listItemEditModeClass);
+        this.$listItem.addClass(CS.Controllers.WorkbookCommon.listItemEditModeClass);
 
         CS.Controllers.WorkbookAreaCommon.disableSortable(this.props.controller);
 
@@ -572,7 +573,7 @@ CS.Controllers.OverviewBlueprintItem = React.createClass({displayName: "Overview
         var $editBtns = $listItems.children(".fa-pencil");
         var $addItemLinks = CS.overviewController.$el.find(".add-item-link");
 
-        $listItems.removeClass(this.listItemEditModeClass);
+        $listItems.removeClass(CS.Controllers.WorkbookCommon.listItemEditModeClass);
         $composerForms.hide();
         $itemNameParagraphs.show();
         $editBtns.show();
@@ -608,7 +609,7 @@ CS.Controllers.OverviewBlueprintItem = React.createClass({displayName: "Overview
     },
 
     _hideForm: function() {
-        this.$listItem.removeClass(this.listItemEditModeClass);
+        this.$listItem.removeClass(CS.Controllers.WorkbookCommon.listItemEditModeClass);
         this.$form.hide();
         this.$itemNameParagraph.show();
         this.$editBtn.show();
@@ -1016,7 +1017,7 @@ CS.Controllers.WorkbookArea = P(function (c) {
                         onUpdate: function () {
                             CS.Controllers.WorkbookAreaCommon.handleWorkbookItemsReordered(this.$list, this.state.workbookArea.className);
                         }.bind(this),
-                        handle: Modernizr.touch ? ".fa-bars" : null
+                        handle: ".fa-bars"
                     }
                 );
             }
@@ -1094,6 +1095,7 @@ CS.Controllers.WorkbookAreaWorkbookItem = React.createClass({displayName: "Workb
 
         return (
             React.createElement("li", {ref: "li"}, 
+                React.createElement("div", {className: "notes-indicator"}), 
                 React.createElement("button", {className: "styleless fa fa-bars"}), 
                 React.createElement("p", null, React.createElement("a", {href: href}, this.props.workbookItem.name)), 
                 React.createElement("button", {className: "styleless fa fa-pencil", onClick: this._showEditor}), 
@@ -1108,14 +1110,14 @@ CS.Controllers.WorkbookAreaWorkbookItem = React.createClass({displayName: "Workb
 
     componentDidMount: function () {
         this._initElements();
-
-        this.listItemEditModeClass = "editing";
+        CS.Controllers.WorkbookAreaCommon.initNotesIndicator(this.$notesIndicator, CS.account.data[this.props.workbookAreaClassName][this.props.workbookItemIndex].notes.length);
     },
 
     _initElements: function() {
         this.$listItem = $(React.findDOMNode(this.refs.li));
         this.$list = this.$listItem.parent();
 
+        this.$notesIndicator = this.$listItem.children(".notes-indicator");
         this.$itemNameParagraph = this.$listItem.children("p");
         this.$editBtn = this.$listItem.children("button");
         this.$form = this.$listItem.children(".item-composer");
@@ -1129,7 +1131,7 @@ CS.Controllers.WorkbookAreaWorkbookItem = React.createClass({displayName: "Workb
 
         this.$textarea.val(this.props.workbookItem.name);
 
-        this.$listItem.addClass(this.listItemEditModeClass);
+        this.$listItem.addClass(CS.Controllers.WorkbookCommon.listItemEditModeClass);
 
         CS.Controllers.WorkbookAreaCommon.disableSortable(this.props.controller);
 
@@ -1147,7 +1149,7 @@ CS.Controllers.WorkbookAreaWorkbookItem = React.createClass({displayName: "Workb
         var $itemNameParagraphs = $listItems.children("p");
         var $editBtns = $listItems.children(".fa-pencil");
 
-        $listItems.removeClass(this.listItemEditModeClass);
+        $listItems.removeClass(CS.Controllers.WorkbookCommon.listItemEditModeClass);
         $composerForms.hide();
         $itemNameParagraphs.show();
         $editBtns.show();
@@ -1182,7 +1184,7 @@ CS.Controllers.WorkbookAreaWorkbookItem = React.createClass({displayName: "Workb
     },
 
     _hideForm: function() {
-        this.$listItem.removeClass(this.listItemEditModeClass);
+        this.$listItem.removeClass(CS.Controllers.WorkbookCommon.listItemEditModeClass);
         this.$form.hide();
         this.$itemNameParagraph.show();
         this.$editBtn.show();
@@ -1452,8 +1454,6 @@ CS.Controllers.WorkbookItemNote = React.createClass({displayName: "WorkbookItemN
 
     componentDidMount: function () {
         this._initElements();
-
-        this.listItemEditModeClass = "editing";
     },
 
     _initElements: function() {
@@ -1473,7 +1473,7 @@ CS.Controllers.WorkbookItemNote = React.createClass({displayName: "WorkbookItemN
 
         this.$textarea.val(this.props.workbookItemNote);
 
-        this.$listItem.addClass(this.listItemEditModeClass);
+        this.$listItem.addClass(CS.Controllers.WorkbookCommon.listItemEditModeClass);
 
         this.$itemNoteParagraph.hide();
         this.$editBtn.hide();
@@ -1489,7 +1489,7 @@ CS.Controllers.WorkbookItemNote = React.createClass({displayName: "WorkbookItemN
         var $itemNoteParagraphs = $listItems.children("p");
         var $editBtns = $listItems.children("button");
 
-        $listItems.removeClass(this.listItemEditModeClass);
+        $listItems.removeClass(CS.Controllers.WorkbookCommon.listItemEditModeClass);
         $composerForms.hide();
         $itemNoteParagraphs.show();
         $editBtns.show();
@@ -1524,7 +1524,7 @@ CS.Controllers.WorkbookItemNote = React.createClass({displayName: "WorkbookItemN
     },
 
     _hideForm: function() {
-        this.$listItem.removeClass(this.listItemEditModeClass);
+        this.$listItem.removeClass(CS.Controllers.WorkbookCommon.listItemEditModeClass);
         this.$form.hide();
         this.$itemNoteParagraph.show();
         this.$editBtn.show();

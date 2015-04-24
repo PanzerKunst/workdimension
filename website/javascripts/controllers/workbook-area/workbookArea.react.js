@@ -96,7 +96,7 @@ CS.Controllers.WorkbookArea = P(function (c) {
                         onUpdate: function () {
                             CS.Controllers.WorkbookAreaCommon.handleWorkbookItemsReordered(this.$list, this.state.workbookArea.className);
                         }.bind(this),
-                        handle: Modernizr.touch ? ".fa-bars" : null
+                        handle: ".fa-bars"
                     }
                 );
             }

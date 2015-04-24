@@ -4,6 +4,7 @@ CS.Controllers.WorkbookAreaWorkbookItem = React.createClass({
 
         return (
             <li ref="li">
+                <div className="notes-indicator"></div>
                 <button className="styleless fa fa-bars"></button>
                 <p><a href={href}>{this.props.workbookItem.name}</a></p>
                 <button className="styleless fa fa-pencil" onClick={this._showEditor}></button>
@@ -18,14 +19,14 @@ CS.Controllers.WorkbookAreaWorkbookItem = React.createClass({
 
     componentDidMount: function () {
         this._initElements();
-
-        this.listItemEditModeClass = "editing";
+        CS.Controllers.WorkbookAreaCommon.initNotesIndicator(this.$notesIndicator, CS.account.data[this.props.workbookAreaClassName][this.props.workbookItemIndex].notes.length);
     },
 
     _initElements: function() {
         this.$listItem = $(React.findDOMNode(this.refs.li));
         this.$list = this.$listItem.parent();
 
+        this.$notesIndicator = this.$listItem.children(".notes-indicator");
         this.$itemNameParagraph = this.$listItem.children("p");
         this.$editBtn = this.$listItem.children("button");
         this.$form = this.$listItem.children(".item-composer");
@@ -39,7 +40,7 @@ CS.Controllers.WorkbookAreaWorkbookItem = React.createClass({
 
         this.$textarea.val(this.props.workbookItem.name);
 
-        this.$listItem.addClass(this.listItemEditModeClass);
+        this.$listItem.addClass(CS.Controllers.WorkbookCommon.listItemEditModeClass);
 
         CS.Controllers.WorkbookAreaCommon.disableSortable(this.props.controller);
 
@@ -57,7 +58,7 @@ CS.Controllers.WorkbookAreaWorkbookItem = React.createClass({
         var $itemNameParagraphs = $listItems.children("p");
         var $editBtns = $listItems.children(".fa-pencil");
 
-        $listItems.removeClass(this.listItemEditModeClass);
+        $listItems.removeClass(CS.Controllers.WorkbookCommon.listItemEditModeClass);
         $composerForms.hide();
         $itemNameParagraphs.show();
         $editBtns.show();
@@ -92,7 +93,7 @@ CS.Controllers.WorkbookAreaWorkbookItem = React.createClass({
     },
 
     _hideForm: function() {
-        this.$listItem.removeClass(this.listItemEditModeClass);
+        this.$listItem.removeClass(CS.Controllers.WorkbookCommon.listItemEditModeClass);
         this.$form.hide();
         this.$itemNameParagraph.show();
         this.$editBtn.show();

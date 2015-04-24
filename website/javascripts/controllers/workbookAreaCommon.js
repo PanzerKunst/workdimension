@@ -2,6 +2,7 @@ CS.Controllers.WorkbookAreaCommon = {
     textareaDefaultHeightPx: 41,
     mediumScreenTextareaDefaultHeightPx: 53,
     largeScreenTextareaDefaultHeightPx: 65,
+    noteIndicatorUnitLengthEm: 2.5,
 
     handleTextareaKeyUp: function (e, formSubmitFunction, formCancelFunction) {
         if (e.keyCode === CS.Services.Keyboard.keyCode.enter && formSubmitFunction) {
@@ -62,6 +63,10 @@ CS.Controllers.WorkbookAreaCommon = {
 
     enableSortable: function(controller) {
         controller.sortable.option("disabled", false);
+    },
+
+    initNotesIndicator: function($notesIndicator, noteCount) {
+        $notesIndicator.css("width", (noteCount * CS.Controllers.WorkbookAreaCommon.noteIndicatorUnitLengthEm) + "em");
     },
 
     _getTextareaDefaultHeight: function($textarea) {

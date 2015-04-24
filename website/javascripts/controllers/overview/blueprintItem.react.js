@@ -4,6 +4,7 @@ CS.Controllers.OverviewBlueprintItem = React.createClass({
 
         return (
             <li ref="li">
+                <div className="notes-indicator"></div>
                 <button className="styleless fa fa-bars"></button>
                 <p><a href={href}>{this._getBlueprintItemName()}</a></p>
                 <button className="styleless fa fa-pencil" onClick={this._showEditor}></button>
@@ -18,8 +19,7 @@ CS.Controllers.OverviewBlueprintItem = React.createClass({
 
     componentDidMount: function () {
         this._initElements();
-
-        this.listItemEditModeClass = "editing";
+        CS.Controllers.WorkbookAreaCommon.initNotesIndicator(this.$notesIndicator, CS.account.data[this._getBlueprintAreaClassName()][this.props.blueprintItemIndex].notes.length);
     },
 
     _getBlueprintAreaClassName: function() {
@@ -32,6 +32,7 @@ CS.Controllers.OverviewBlueprintItem = React.createClass({
 
     _initElements: function() {
         this.$listItem = $(React.findDOMNode(this.refs.li));
+        this.$notesIndicator = this.$listItem.children(".notes-indicator");
         this.$itemNameParagraph = this.$listItem.children("p");
         this.$editBtn = this.$listItem.children(".fa-pencil");
         this.$form = this.$listItem.children(".item-composer");
@@ -45,7 +46,7 @@ CS.Controllers.OverviewBlueprintItem = React.createClass({
 
         this.$textarea.val(this._getBlueprintItemName());
 
-        this.$listItem.addClass(this.listItemEditModeClass);
+        this.$listItem.addClass(CS.Controllers.WorkbookCommon.listItemEditModeClass);
 
         CS.Controllers.WorkbookAreaCommon.disableSortable(this.props.controller);
 
@@ -66,7 +67,7 @@ CS.Controllers.OverviewBlueprintItem = React.createClass({
         var $editBtns = $listItems.children(".fa-pencil");
         var $addItemLinks = CS.overviewController.$el.find(".add-item-link");
 
-        $listItems.removeClass(this.listItemEditModeClass);
+        $listItems.removeClass(CS.Controllers.WorkbookCommon.listItemEditModeClass);
         $composerForms.hide();
         $itemNameParagraphs.show();
         $editBtns.show();
@@ -102,7 +103,7 @@ CS.Controllers.OverviewBlueprintItem = React.createClass({
     },
 
     _hideForm: function() {
-        this.$listItem.removeClass(this.listItemEditModeClass);
+        this.$listItem.removeClass(CS.Controllers.WorkbookCommon.listItemEditModeClass);
         this.$form.hide();
         this.$itemNameParagraph.show();
         this.$editBtn.show();

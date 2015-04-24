@@ -54,7 +54,7 @@ CS.Controllers.OverviewBlueprintAreaPanel = React.createClass({
                 onUpdate: function () {
                     CS.Controllers.WorkbookAreaCommon.handleWorkbookItemsReordered(this.$itemNamesList, this._getBlueprintArea().className);
                 }.bind(this),
-                handle: Modernizr.touch ? ".fa-bars" : null
+                handle: ".fa-bars"
             }
         );
     },

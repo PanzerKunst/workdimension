@@ -18,6 +18,10 @@ header {
     &:focus {
       outline: none;
     }
+
+    &.fa-cubes {
+      padding: 10px 6.5px;
+    }
   }
 
   > h1 {

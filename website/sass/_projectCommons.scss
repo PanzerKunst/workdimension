@@ -37,11 +37,7 @@ a.fa {
 
     margin-bottom: 0.25em;
 
-    position: relative; // Because of absolutely-positioned edit button
-
-    &:hover {
-      cursor: move;
-    }
+    position: relative; // Because of absolutely-positioned edit button and .notes-indicator
 
     &.editing {
       background-color: $background-body-color;
@@ -55,6 +51,10 @@ a.fa {
 
       &.fa-bars {
         left: -0.55em;
+
+        &:hover {
+          cursor: move;
+        }
       }
 
       &.fa-pencil {
@@ -68,18 +68,11 @@ a.fa {
   }
 }
 
-html.no-touch {
-  .item-names-list,
-  .item-notes-list {
-    > li {
-      > .fa-bars {
-        display: none;
-      }
-
-      > p {
-        padding-left: 0.5em;
-      }
-    }
+.item-names-list {
+  .notes-indicator {
+    position: absolute;
+    height: 0.15em;
+    background-color: rgb(255, 0, 127);
   }
 }
 
