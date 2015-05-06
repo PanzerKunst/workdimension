@@ -61,15 +61,7 @@ CS.Controllers.WorkbookItemAddItemTask = React.createClass({
         }
 
         var itemNoteToAdd = this.$textarea.val().trim();
-
-        if (this._isValid(itemNoteToAdd) && !CS.Controllers.WorkbookItemCommon.doesItemAlreadyExist(itemNoteToAdd, this.props.workbookArea.className, this.props.workbookItemIndex)) {
-            var updatedWorkbookItemNotesData = CS.account.data[this.props.workbookArea.className][this.props.workbookItemIndex].notes || [];
-            updatedWorkbookItemNotesData.push(itemNoteToAdd);
-
-            this._fetchLatestAccountDataAndUpdateIt(updatedWorkbookItemNotesData);
-        }
-
-        this._setCurrentTaskAsSkippedAndReRender();
+        this._fetchLatestAccountDataAndUpdateIt(itemNoteToAdd);
     },
 
     _isValid: function(trimmedItemNote) {
@@ -106,7 +98,7 @@ CS.Controllers.WorkbookItemAddItemTask = React.createClass({
         CS.Controllers.WorkbookItemCommon.handleTextareaKeyUp(e);
     },
 
-    _fetchLatestAccountDataAndUpdateIt: function(updatedWorkbookItemNotesData) {
+    _fetchLatestAccountDataAndUpdateIt: function(itemNoteToAdd) {
         var type = "GET";
         var url = "/api/account-data";
 
@@ -116,8 +108,15 @@ CS.Controllers.WorkbookItemAddItemTask = React.createClass({
             success: function (data) {
                 CS.account.data = data;
 
-                CS.account.data[this.props.workbookArea.className][this.props.workbookItemIndex].notes = updatedWorkbookItemNotesData;
-                CS.saveAccountData();
+                if (this._isValid(itemNoteToAdd) && !CS.Controllers.WorkbookItemCommon.doesItemAlreadyExist(itemNoteToAdd, this.props.workbookArea.className, this.props.workbookItemIndex)) {
+                    var updatedWorkbookItemNotesData = CS.account.data[this.props.workbookArea.className][this.props.workbookItemIndex].notes || [];
+                    updatedWorkbookItemNotesData.push(itemNoteToAdd);
+
+                    CS.account.data[this.props.workbookArea.className][this.props.workbookItemIndex].notes = updatedWorkbookItemNotesData;
+                    CS.saveAccountData();
+                }
+
+                this._setCurrentTaskAsSkippedAndReRender();
             }.bind(this),
             error: function () {
                 alert("AJAX failure doing a " + type + " request to \"" + url + "\"");

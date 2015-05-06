@@ -65,18 +65,7 @@ CS.Controllers.WorkbookItemNote = React.createClass({
         }
 
         var newItemNote = this.$textarea.val().trim();
-        var updatedWorkbookItemNotesData = CS.account.data[this.props.workbookAreaClassName][this.props.workbookItemIndex].notes || [];
-
-        if (newItemNote) {
-            updatedWorkbookItemNotesData[this.props.workbookItemNoteIndex] = newItemNote;
-        } else {
-            updatedWorkbookItemNotesData.splice(this.props.workbookItemNoteIndex, 1);
-
-            // We hide it from the UI to give faster feedback
-            this.$listItem.hide();
-        }
-
-        this._fetchLatestAccountDataAndUpdateIt(updatedWorkbookItemNotesData);
+        this._fetchLatestAccountDataAndUpdateIt(newItemNote);
     },
 
     _handleTextareaKeyUp: function(e) {
@@ -91,7 +80,7 @@ CS.Controllers.WorkbookItemNote = React.createClass({
         this.$addNoteLink.show();
     },
 
-    _fetchLatestAccountDataAndUpdateIt: function(updatedWorkbookItemNotesData) {
+    _fetchLatestAccountDataAndUpdateIt: function(newItemNote) {
         var type = "GET";
         var url = "/api/account-data";
 
@@ -100,6 +89,17 @@ CS.Controllers.WorkbookItemNote = React.createClass({
             type: type,
             success: function (data) {
                 CS.account.data = data;
+
+                var updatedWorkbookItemNotesData = CS.account.data[this.props.workbookAreaClassName][this.props.workbookItemIndex].notes || [];
+
+                if (newItemNote) {
+                    updatedWorkbookItemNotesData[this.props.workbookItemNoteIndex] = newItemNote;
+                } else {
+                    updatedWorkbookItemNotesData.splice(this.props.workbookItemNoteIndex, 1);
+
+                    // We hide it from the UI to give faster feedback
+                    this.$listItem.hide();
+                }
 
                 CS.account.data[this.props.workbookAreaClassName][this.props.workbookItemIndex].notes = updatedWorkbookItemNotesData;
                 CS.workbookItemController.saveAccountData();

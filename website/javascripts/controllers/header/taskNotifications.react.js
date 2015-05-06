@@ -137,19 +137,10 @@ CS.Controllers.TaskNotifications = P(function (c) {
         this.$mainContainer.toggleClass("task-notifications-open");
         this.$taskNotificationsBtn.removeClass("with-new-items");
 
-        // The reason why we store the taskIds and not the tasks themselves is because the isActive() function isn't serialized
-        var viewedTaskIds = _.union(this.activeTasks.map(function (task) {
-                return task.id;
-            }),
-            CS.account.data.viewedTaskIds
-        );
-
-        if (!_.isEmpty(_.difference(viewedTaskIds, CS.account.data.viewedTaskIds))) {
-            this._fetchLatestAccountDataAndUpdateIt(viewedTaskIds);
-        }
+        this._fetchLatestAccountDataAndUpdateIt();
     };
 
-    c._fetchLatestAccountDataAndUpdateIt = function(viewedTaskIds) {
+    c._fetchLatestAccountDataAndUpdateIt = function() {
         var type = "GET";
         var url = "/api/account-data";
 
@@ -159,8 +150,17 @@ CS.Controllers.TaskNotifications = P(function (c) {
             success: function (data) {
                 CS.account.data = data;
 
-                CS.account.data.viewedTaskIds = viewedTaskIds;
-                CS.saveAccountData();
+                // The reason why we store the taskIds and not the tasks themselves is because the isActive() function isn't serialized
+                var viewedTaskIds = _.union(this.activeTasks.map(function (task) {
+                        return task.id;
+                    }),
+                    CS.account.data.viewedTaskIds
+                );
+
+                if (!_.isEmpty(_.difference(viewedTaskIds, CS.account.data.viewedTaskIds))) {
+                    CS.account.data.viewedTaskIds = viewedTaskIds;
+                    CS.saveAccountData();
+                }
             },
             error: function () {
                 alert("AJAX failure doing a " + type + " request to \"" + url + "\"");

@@ -340,19 +340,10 @@ CS.Controllers.TaskNotifications = P(function (c) {
         this.$mainContainer.toggleClass("task-notifications-open");
         this.$taskNotificationsBtn.removeClass("with-new-items");
 
-        // The reason why we store the taskIds and not the tasks themselves is because the isActive() function isn't serialized
-        var viewedTaskIds = _.union(this.activeTasks.map(function (task) {
-                return task.id;
-            }),
-            CS.account.data.viewedTaskIds
-        );
-
-        if (!_.isEmpty(_.difference(viewedTaskIds, CS.account.data.viewedTaskIds))) {
-            this._fetchLatestAccountDataAndUpdateIt(viewedTaskIds);
-        }
+        this._fetchLatestAccountDataAndUpdateIt();
     };
 
-    c._fetchLatestAccountDataAndUpdateIt = function(viewedTaskIds) {
+    c._fetchLatestAccountDataAndUpdateIt = function() {
         var type = "GET";
         var url = "/api/account-data";
 
@@ -362,8 +353,17 @@ CS.Controllers.TaskNotifications = P(function (c) {
             success: function (data) {
                 CS.account.data = data;
 
-                CS.account.data.viewedTaskIds = viewedTaskIds;
-                CS.saveAccountData();
+                // The reason why we store the taskIds and not the tasks themselves is because the isActive() function isn't serialized
+                var viewedTaskIds = _.union(this.activeTasks.map(function (task) {
+                        return task.id;
+                    }),
+                    CS.account.data.viewedTaskIds
+                );
+
+                if (!_.isEmpty(_.difference(viewedTaskIds, CS.account.data.viewedTaskIds))) {
+                    CS.account.data.viewedTaskIds = viewedTaskIds;
+                    CS.saveAccountData();
+                }
             },
             error: function () {
                 alert("AJAX failure doing a " + type + " request to \"" + url + "\"");
@@ -422,13 +422,7 @@ CS.Controllers.OverviewBlueprintAreaComposer = React.createClass({displayName: "
         var itemNameToAdd = this.$textarea.val().trim();
 
         if (itemNameToAdd && !CS.Controllers.WorkbookAreaCommon.doesItemAlreadyExist(itemNameToAdd, this.props.blueprintAreaClassName)) {
-            var updatedBlueprintAreaData = CS.account.data && !_.isEmpty(CS.account.data[this.props.blueprintAreaClassName]) ? _.clone(CS.account.data[this.props.blueprintAreaClassName], true) : [];
-            updatedBlueprintAreaData.push({
-                name: itemNameToAdd,
-                notes: []
-            });
-
-            this._fetchLatestAccountDataAndUpdateIt(updatedBlueprintAreaData);
+            this._fetchLatestAccountDataAndUpdateIt(itemNameToAdd);
         }
 
         CS.Controllers.WorkbookAreaCommon.resetAndHideForm(this.$textarea, $.proxy(this._hideForm, this));
@@ -444,7 +438,7 @@ CS.Controllers.OverviewBlueprintAreaComposer = React.createClass({displayName: "
         CS.overviewController.rePackerise();
     },
 
-    _fetchLatestAccountDataAndUpdateIt: function(updatedBlueprintAreaData) {
+    _fetchLatestAccountDataAndUpdateIt: function(itemNameToAdd) {
         var type = "GET";
         var url = "/api/account-data";
 
@@ -453,6 +447,12 @@ CS.Controllers.OverviewBlueprintAreaComposer = React.createClass({displayName: "
             type: type,
             success: function (data) {
                 CS.account.data = data || {};
+
+                var updatedBlueprintAreaData = CS.account.data && !_.isEmpty(CS.account.data[this.props.blueprintAreaClassName]) ? _.clone(CS.account.data[this.props.blueprintAreaClassName], true) : [];
+                updatedBlueprintAreaData.push({
+                    name: itemNameToAdd,
+                    notes: []
+                });
 
                 CS.account.data[this.props.blueprintAreaClassName] = updatedBlueprintAreaData;
                 CS.overviewController.saveAccountData();
@@ -621,19 +621,7 @@ CS.Controllers.OverviewBlueprintItem = React.createClass({displayName: "Overview
         }
 
         var newItemName = this.$textarea.val().trim();
-        var updatedBlueprintAreaData = CS.account.data && !_.isEmpty(CS.account.data[this._getBlueprintAreaClassName()]) ? _.clone(CS.account.data[this._getBlueprintAreaClassName()], true) : [];
-
-        if (newItemName) {
-            updatedBlueprintAreaData[this.props.blueprintItemIndex].name = newItemName;
-        } else {
-            updatedBlueprintAreaData.splice(this.props.blueprintItemIndex, 1);
-
-            // We hide it from the UI to give faster feedback
-            this.$listItem.hide();
-        }
-
-        CS.Controllers.WorkbookAreaCommon.resetAndHideForm(this.$textarea, $.proxy(this._hideForm, this));
-        this._fetchLatestAccountDataAndUpdateIt(updatedBlueprintAreaData);
+        this._fetchLatestAccountDataAndUpdateIt(newItemName);
     },
 
     _handleTextareaKeyUp: function(e) {
@@ -651,7 +639,7 @@ CS.Controllers.OverviewBlueprintItem = React.createClass({displayName: "Overview
         CS.Controllers.WorkbookAreaCommon.enableSortable(this.props.controller);
     },
 
-    _fetchLatestAccountDataAndUpdateIt: function(updatedBlueprintAreaData) {
+    _fetchLatestAccountDataAndUpdateIt: function(newItemName) {
         var type = "GET";
         var url = "/api/account-data";
 
@@ -660,6 +648,19 @@ CS.Controllers.OverviewBlueprintItem = React.createClass({displayName: "Overview
             type: type,
             success: function (data) {
                 CS.account.data = data || {};
+
+                var updatedBlueprintAreaData = CS.account.data && !_.isEmpty(CS.account.data[this._getBlueprintAreaClassName()]) ? _.clone(CS.account.data[this._getBlueprintAreaClassName()], true) : [];
+
+                if (newItemName) {
+                    updatedBlueprintAreaData[this.props.blueprintItemIndex].name = newItemName;
+                } else {
+                    updatedBlueprintAreaData.splice(this.props.blueprintItemIndex, 1);
+
+                    // We hide it from the UI to give faster feedback
+                    this.$listItem.hide();
+                }
+
+                CS.Controllers.WorkbookAreaCommon.resetAndHideForm(this.$textarea, $.proxy(this._hideForm, this));
 
                 CS.account.data[this._getBlueprintAreaClassName()] = updatedBlueprintAreaData;
                 CS.overviewController.saveAccountData();
@@ -883,18 +884,7 @@ CS.Controllers.WorkbookAreaAddItemTaskForm = React.createClass({displayName: "Wo
         }
 
         var itemNameToAdd = this.$textarea.val().trim();
-
-        if (this._isValid(itemNameToAdd) && !CS.Controllers.WorkbookAreaCommon.doesItemAlreadyExist(itemNameToAdd, this.props.workbookArea.className)) {
-            var updatedBlueprintAreaData = CS.account.data && !_.isEmpty(CS.account.data[this.props.workbookArea.className]) ? _.clone(CS.account.data[this.props.workbookArea.className], true) : [];
-            updatedBlueprintAreaData.push({
-                name: itemNameToAdd,
-                notes: []
-            });
-
-            this._fetchLatestAccountDataAndUpdateIt(updatedBlueprintAreaData);
-        }
-
-        this._setCurrentTaskAsSkippedAndReRender();
+        this._fetchLatestAccountDataAndUpdateIt(itemNameToAdd);
     },
 
     _isValid: function(trimmedItemName) {
@@ -931,7 +921,7 @@ CS.Controllers.WorkbookAreaAddItemTaskForm = React.createClass({displayName: "Wo
         CS.Controllers.WorkbookAreaCommon.handleTextareaKeyUp(e, $.proxy(this._handleFormSubmit, this));
     },
 
-    _fetchLatestAccountDataAndUpdateIt: function(updatedBlueprintAreaData) {
+    _fetchLatestAccountDataAndUpdateIt: function(itemNameToAdd) {
         var type = "GET";
         var url = "/api/account-data";
 
@@ -941,8 +931,18 @@ CS.Controllers.WorkbookAreaAddItemTaskForm = React.createClass({displayName: "Wo
             success: function (data) {
                 CS.account.data = data || {};
 
-                CS.account.data[this.props.workbookArea.className] = updatedBlueprintAreaData;
-                CS.saveAccountData();
+                if (this._isValid(itemNameToAdd) && !CS.Controllers.WorkbookAreaCommon.doesItemAlreadyExist(itemNameToAdd, this.props.workbookArea.className)) {
+                    var updatedBlueprintAreaData = CS.account.data && !_.isEmpty(CS.account.data[this.props.workbookArea.className]) ? _.clone(CS.account.data[this.props.workbookArea.className], true) : [];
+                    updatedBlueprintAreaData.push({
+                        name: itemNameToAdd,
+                        notes: []
+                    });
+
+                    CS.account.data[this.props.workbookArea.className] = updatedBlueprintAreaData;
+                    CS.saveAccountData();
+                }
+
+                this._setCurrentTaskAsSkippedAndReRender();
             }.bind(this),
             error: function () {
                 alert("AJAX failure doing a " + type + " request to \"" + url + "\"");
@@ -976,13 +976,6 @@ CS.Controllers.WorkbookAreaPrioritizeItemsTask = React.createClass({displayName:
     },
 
     _setCurrentWorkbookAreaAsPrioritizedAndReRender: function () {
-        var prioritizedWorkbookAreaIds = CS.account.data.prioritizedWorkbookAreaIds || [];
-        prioritizedWorkbookAreaIds.push(this.props.workbookArea.id);
-
-        this._fetchLatestAccountDataAndUpdateIt(prioritizedWorkbookAreaIds);
-    },
-
-    _fetchLatestAccountDataAndUpdateIt: function(prioritizedWorkbookAreaIds) {
         var type = "GET";
         var url = "/api/account-data";
 
@@ -991,6 +984,9 @@ CS.Controllers.WorkbookAreaPrioritizeItemsTask = React.createClass({displayName:
             type: type,
             success: function (data) {
                 CS.account.data = data;
+
+                var prioritizedWorkbookAreaIds = CS.account.data.prioritizedWorkbookAreaIds || [];
+                prioritizedWorkbookAreaIds.push(this.props.workbookArea.id);
 
                 CS.account.data.prioritizedWorkbookAreaIds = prioritizedWorkbookAreaIds;
                 CS.saveAccountData();
@@ -1121,15 +1117,8 @@ CS.Controllers.WorkbookArea = P(function (c) {
             }
 
             var itemNameToAdd = this.$textarea.val().trim();
-
             if (itemNameToAdd && !CS.Controllers.WorkbookAreaCommon.doesItemAlreadyExist(itemNameToAdd, this.state.workbookArea.className)) {
-                var updatedBlueprintAreaData = CS.account.data && !_.isEmpty(CS.account.data[this.state.workbookArea.className]) ? _.clone(CS.account.data[this.state.workbookArea.className], true) : [];
-                updatedBlueprintAreaData.push({
-                    name: itemNameToAdd,
-                    notes: []
-                });
-
-                this._fetchLatestAccountDataAndUpdateIt(updatedBlueprintAreaData);
+                this._fetchLatestAccountDataAndUpdateIt(itemNameToAdd);
             }
 
             CS.Controllers.WorkbookAreaCommon.resetAndHideForm(this.$textarea, $.proxy(this._hideForm, this));
@@ -1144,7 +1133,7 @@ CS.Controllers.WorkbookArea = P(function (c) {
             this.$addItemLink.show();
         },
 
-        _fetchLatestAccountDataAndUpdateIt: function(updatedBlueprintAreaData) {
+        _fetchLatestAccountDataAndUpdateIt: function(itemNameToAdd) {
             var type = "GET";
             var url = "/api/account-data";
 
@@ -1153,6 +1142,12 @@ CS.Controllers.WorkbookArea = P(function (c) {
                 type: type,
                 success: function (data) {
                     CS.account.data = data || {};
+
+                    var updatedBlueprintAreaData = CS.account.data && !_.isEmpty(CS.account.data[this.state.workbookArea.className]) ? _.clone(CS.account.data[this.state.workbookArea.className], true) : [];
+                    updatedBlueprintAreaData.push({
+                        name: itemNameToAdd,
+                        notes: []
+                    });
 
                     CS.account.data[this.state.workbookArea.className] = updatedBlueprintAreaData;
                     this.state.controller.saveAccountData();
@@ -1261,19 +1256,7 @@ CS.Controllers.WorkbookAreaWorkbookItem = React.createClass({displayName: "Workb
         }
 
         var newItemName = this.$textarea.val().trim();
-        var updatedBlueprintAreaData = CS.account.data && !_.isEmpty(CS.account.data[this.props.workbookAreaClassName]) ? _.clone(CS.account.data[this.props.workbookAreaClassName], true) : [];
-
-        if (newItemName) {
-            updatedBlueprintAreaData[this.props.workbookItemIndex].name = newItemName;
-        } else {
-            updatedBlueprintAreaData.splice(this.props.workbookItemIndex, 1);
-
-            // We hide it from the UI to give faster feedback
-            this.$listItem.hide();
-        }
-
-        CS.Controllers.WorkbookAreaCommon.resetAndHideForm(this.$textarea, $.proxy(this._hideForm, this));
-        this._fetchLatestAccountDataAndUpdateIt(updatedBlueprintAreaData);
+        this._fetchLatestAccountDataAndUpdateIt(newItemName);
     },
 
     _handleTextareaKeyUp: function(e) {
@@ -1290,7 +1273,7 @@ CS.Controllers.WorkbookAreaWorkbookItem = React.createClass({displayName: "Workb
         CS.Controllers.WorkbookAreaCommon.enableSortable(this.props.controller);
     },
 
-    _fetchLatestAccountDataAndUpdateIt: function(updatedBlueprintAreaData) {
+    _fetchLatestAccountDataAndUpdateIt: function(newItemName) {
         var type = "GET";
         var url = "/api/account-data";
 
@@ -1299,6 +1282,19 @@ CS.Controllers.WorkbookAreaWorkbookItem = React.createClass({displayName: "Workb
             type: type,
             success: function (data) {
                 CS.account.data = data || {};
+
+                var updatedBlueprintAreaData = CS.account.data && !_.isEmpty(CS.account.data[this.props.workbookAreaClassName]) ? _.clone(CS.account.data[this.props.workbookAreaClassName], true) : [];
+
+                if (newItemName) {
+                    updatedBlueprintAreaData[this.props.workbookItemIndex].name = newItemName;
+                } else {
+                    updatedBlueprintAreaData.splice(this.props.workbookItemIndex, 1);
+
+                    // We hide it from the UI to give faster feedback
+                    this.$listItem.hide();
+                }
+
+                CS.Controllers.WorkbookAreaCommon.resetAndHideForm(this.$textarea, $.proxy(this._hideForm, this));
 
                 CS.account.data[this.props.workbookAreaClassName] = updatedBlueprintAreaData;
                 CS.workbookAreaController.saveAccountData();
@@ -1373,15 +1369,7 @@ CS.Controllers.WorkbookItemAddItemTask = React.createClass({displayName: "Workbo
         }
 
         var itemNoteToAdd = this.$textarea.val().trim();
-
-        if (this._isValid(itemNoteToAdd) && !CS.Controllers.WorkbookItemCommon.doesItemAlreadyExist(itemNoteToAdd, this.props.workbookArea.className, this.props.workbookItemIndex)) {
-            var updatedWorkbookItemNotesData = CS.account.data[this.props.workbookArea.className][this.props.workbookItemIndex].notes || [];
-            updatedWorkbookItemNotesData.push(itemNoteToAdd);
-
-            this._fetchLatestAccountDataAndUpdateIt(updatedWorkbookItemNotesData);
-        }
-
-        this._setCurrentTaskAsSkippedAndReRender();
+        this._fetchLatestAccountDataAndUpdateIt(itemNoteToAdd);
     },
 
     _isValid: function(trimmedItemNote) {
@@ -1418,7 +1406,7 @@ CS.Controllers.WorkbookItemAddItemTask = React.createClass({displayName: "Workbo
         CS.Controllers.WorkbookItemCommon.handleTextareaKeyUp(e);
     },
 
-    _fetchLatestAccountDataAndUpdateIt: function(updatedWorkbookItemNotesData) {
+    _fetchLatestAccountDataAndUpdateIt: function(itemNoteToAdd) {
         var type = "GET";
         var url = "/api/account-data";
 
@@ -1428,8 +1416,15 @@ CS.Controllers.WorkbookItemAddItemTask = React.createClass({displayName: "Workbo
             success: function (data) {
                 CS.account.data = data;
 
-                CS.account.data[this.props.workbookArea.className][this.props.workbookItemIndex].notes = updatedWorkbookItemNotesData;
-                CS.saveAccountData();
+                if (this._isValid(itemNoteToAdd) && !CS.Controllers.WorkbookItemCommon.doesItemAlreadyExist(itemNoteToAdd, this.props.workbookArea.className, this.props.workbookItemIndex)) {
+                    var updatedWorkbookItemNotesData = CS.account.data[this.props.workbookArea.className][this.props.workbookItemIndex].notes || [];
+                    updatedWorkbookItemNotesData.push(itemNoteToAdd);
+
+                    CS.account.data[this.props.workbookArea.className][this.props.workbookItemIndex].notes = updatedWorkbookItemNotesData;
+                    CS.saveAccountData();
+                }
+
+                this._setCurrentTaskAsSkippedAndReRender();
             }.bind(this),
             error: function () {
                 alert("AJAX failure doing a " + type + " request to \"" + url + "\"");
@@ -1517,12 +1512,8 @@ CS.Controllers.WorkbookItem = P(function (c) {
             }
 
             var itemNoteToAdd = this.$textarea.val().trim();
-
             if (itemNoteToAdd && !CS.Controllers.WorkbookItemCommon.doesItemAlreadyExist(itemNoteToAdd, this.state.workbookArea.className, this.state.workbookItemIndex)) {
-                var updatedWorkbookItemNotesData = CS.account.data[this.state.workbookArea.className][this.state.workbookItemIndex].notes || [];
-                updatedWorkbookItemNotesData.push(itemNoteToAdd);
-
-                this._fetchLatestAccountDataAndUpdateIt(updatedWorkbookItemNotesData);
+                this._fetchLatestAccountDataAndUpdateIt(itemNoteToAdd);
             }
 
             CS.Controllers.WorkbookItemCommon.resetAndHideForm(this.$textarea, $.proxy(this._hideForm, this));
@@ -1537,7 +1528,7 @@ CS.Controllers.WorkbookItem = P(function (c) {
             this.$addNoteLink.show();
         },
 
-        _fetchLatestAccountDataAndUpdateIt: function(updatedWorkbookItemNotesData) {
+        _fetchLatestAccountDataAndUpdateIt: function(itemNoteToAdd) {
             var type = "GET";
             var url = "/api/account-data";
 
@@ -1546,6 +1537,9 @@ CS.Controllers.WorkbookItem = P(function (c) {
                 type: type,
                 success: function (data) {
                     CS.account.data = data;
+
+                    var updatedWorkbookItemNotesData = CS.account.data[this.state.workbookArea.className][this.state.workbookItemIndex].notes || [];
+                    updatedWorkbookItemNotesData.push(itemNoteToAdd);
 
                     CS.account.data[this.state.workbookArea.className][this.state.workbookItemIndex].notes = updatedWorkbookItemNotesData;
                     this.state.controller.saveAccountData();
@@ -1651,18 +1645,7 @@ CS.Controllers.WorkbookItemNote = React.createClass({displayName: "WorkbookItemN
         }
 
         var newItemNote = this.$textarea.val().trim();
-        var updatedWorkbookItemNotesData = CS.account.data[this.props.workbookAreaClassName][this.props.workbookItemIndex].notes || [];
-
-        if (newItemNote) {
-            updatedWorkbookItemNotesData[this.props.workbookItemNoteIndex] = newItemNote;
-        } else {
-            updatedWorkbookItemNotesData.splice(this.props.workbookItemNoteIndex, 1);
-
-            // We hide it from the UI to give faster feedback
-            this.$listItem.hide();
-        }
-
-        this._fetchLatestAccountDataAndUpdateIt(updatedWorkbookItemNotesData);
+        this._fetchLatestAccountDataAndUpdateIt(newItemNote);
     },
 
     _handleTextareaKeyUp: function(e) {
@@ -1677,7 +1660,7 @@ CS.Controllers.WorkbookItemNote = React.createClass({displayName: "WorkbookItemN
         this.$addNoteLink.show();
     },
 
-    _fetchLatestAccountDataAndUpdateIt: function(updatedWorkbookItemNotesData) {
+    _fetchLatestAccountDataAndUpdateIt: function(newItemNote) {
         var type = "GET";
         var url = "/api/account-data";
 
@@ -1686,6 +1669,17 @@ CS.Controllers.WorkbookItemNote = React.createClass({displayName: "WorkbookItemN
             type: type,
             success: function (data) {
                 CS.account.data = data;
+
+                var updatedWorkbookItemNotesData = CS.account.data[this.props.workbookAreaClassName][this.props.workbookItemIndex].notes || [];
+
+                if (newItemNote) {
+                    updatedWorkbookItemNotesData[this.props.workbookItemNoteIndex] = newItemNote;
+                } else {
+                    updatedWorkbookItemNotesData.splice(this.props.workbookItemNoteIndex, 1);
+
+                    // We hide it from the UI to give faster feedback
+                    this.$listItem.hide();
+                }
 
                 CS.account.data[this.props.workbookAreaClassName][this.props.workbookItemIndex].notes = updatedWorkbookItemNotesData;
                 CS.workbookItemController.saveAccountData();

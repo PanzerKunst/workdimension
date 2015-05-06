@@ -116,15 +116,8 @@ CS.Controllers.WorkbookArea = P(function (c) {
             }
 
             var itemNameToAdd = this.$textarea.val().trim();
-
             if (itemNameToAdd && !CS.Controllers.WorkbookAreaCommon.doesItemAlreadyExist(itemNameToAdd, this.state.workbookArea.className)) {
-                var updatedBlueprintAreaData = CS.account.data && !_.isEmpty(CS.account.data[this.state.workbookArea.className]) ? _.clone(CS.account.data[this.state.workbookArea.className], true) : [];
-                updatedBlueprintAreaData.push({
-                    name: itemNameToAdd,
-                    notes: []
-                });
-
-                this._fetchLatestAccountDataAndUpdateIt(updatedBlueprintAreaData);
+                this._fetchLatestAccountDataAndUpdateIt(itemNameToAdd);
             }
 
             CS.Controllers.WorkbookAreaCommon.resetAndHideForm(this.$textarea, $.proxy(this._hideForm, this));
@@ -139,7 +132,7 @@ CS.Controllers.WorkbookArea = P(function (c) {
             this.$addItemLink.show();
         },
 
-        _fetchLatestAccountDataAndUpdateIt: function(updatedBlueprintAreaData) {
+        _fetchLatestAccountDataAndUpdateIt: function(itemNameToAdd) {
             var type = "GET";
             var url = "/api/account-data";
 
@@ -148,6 +141,12 @@ CS.Controllers.WorkbookArea = P(function (c) {
                 type: type,
                 success: function (data) {
                     CS.account.data = data || {};
+
+                    var updatedBlueprintAreaData = CS.account.data && !_.isEmpty(CS.account.data[this.state.workbookArea.className]) ? _.clone(CS.account.data[this.state.workbookArea.className], true) : [];
+                    updatedBlueprintAreaData.push({
+                        name: itemNameToAdd,
+                        notes: []
+                    });
 
                     CS.account.data[this.state.workbookArea.className] = updatedBlueprintAreaData;
                     this.state.controller.saveAccountData();

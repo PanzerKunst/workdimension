@@ -70,19 +70,7 @@ CS.Controllers.WorkbookAreaWorkbookItem = React.createClass({
         }
 
         var newItemName = this.$textarea.val().trim();
-        var updatedBlueprintAreaData = CS.account.data && !_.isEmpty(CS.account.data[this.props.workbookAreaClassName]) ? _.clone(CS.account.data[this.props.workbookAreaClassName], true) : [];
-
-        if (newItemName) {
-            updatedBlueprintAreaData[this.props.workbookItemIndex].name = newItemName;
-        } else {
-            updatedBlueprintAreaData.splice(this.props.workbookItemIndex, 1);
-
-            // We hide it from the UI to give faster feedback
-            this.$listItem.hide();
-        }
-
-        CS.Controllers.WorkbookAreaCommon.resetAndHideForm(this.$textarea, $.proxy(this._hideForm, this));
-        this._fetchLatestAccountDataAndUpdateIt(updatedBlueprintAreaData);
+        this._fetchLatestAccountDataAndUpdateIt(newItemName);
     },
 
     _handleTextareaKeyUp: function(e) {
@@ -99,7 +87,7 @@ CS.Controllers.WorkbookAreaWorkbookItem = React.createClass({
         CS.Controllers.WorkbookAreaCommon.enableSortable(this.props.controller);
     },
 
-    _fetchLatestAccountDataAndUpdateIt: function(updatedBlueprintAreaData) {
+    _fetchLatestAccountDataAndUpdateIt: function(newItemName) {
         var type = "GET";
         var url = "/api/account-data";
 
@@ -108,6 +96,19 @@ CS.Controllers.WorkbookAreaWorkbookItem = React.createClass({
             type: type,
             success: function (data) {
                 CS.account.data = data || {};
+
+                var updatedBlueprintAreaData = CS.account.data && !_.isEmpty(CS.account.data[this.props.workbookAreaClassName]) ? _.clone(CS.account.data[this.props.workbookAreaClassName], true) : [];
+
+                if (newItemName) {
+                    updatedBlueprintAreaData[this.props.workbookItemIndex].name = newItemName;
+                } else {
+                    updatedBlueprintAreaData.splice(this.props.workbookItemIndex, 1);
+
+                    // We hide it from the UI to give faster feedback
+                    this.$listItem.hide();
+                }
+
+                CS.Controllers.WorkbookAreaCommon.resetAndHideForm(this.$textarea, $.proxy(this._hideForm, this));
 
                 CS.account.data[this.props.workbookAreaClassName] = updatedBlueprintAreaData;
                 CS.workbookAreaController.saveAccountData();

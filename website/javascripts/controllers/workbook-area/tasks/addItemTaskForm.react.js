@@ -45,18 +45,7 @@ CS.Controllers.WorkbookAreaAddItemTaskForm = React.createClass({
         }
 
         var itemNameToAdd = this.$textarea.val().trim();
-
-        if (this._isValid(itemNameToAdd) && !CS.Controllers.WorkbookAreaCommon.doesItemAlreadyExist(itemNameToAdd, this.props.workbookArea.className)) {
-            var updatedBlueprintAreaData = CS.account.data && !_.isEmpty(CS.account.data[this.props.workbookArea.className]) ? _.clone(CS.account.data[this.props.workbookArea.className], true) : [];
-            updatedBlueprintAreaData.push({
-                name: itemNameToAdd,
-                notes: []
-            });
-
-            this._fetchLatestAccountDataAndUpdateIt(updatedBlueprintAreaData);
-        }
-
-        this._setCurrentTaskAsSkippedAndReRender();
+        this._fetchLatestAccountDataAndUpdateIt(itemNameToAdd);
     },
 
     _isValid: function(trimmedItemName) {
@@ -93,7 +82,7 @@ CS.Controllers.WorkbookAreaAddItemTaskForm = React.createClass({
         CS.Controllers.WorkbookAreaCommon.handleTextareaKeyUp(e, $.proxy(this._handleFormSubmit, this));
     },
 
-    _fetchLatestAccountDataAndUpdateIt: function(updatedBlueprintAreaData) {
+    _fetchLatestAccountDataAndUpdateIt: function(itemNameToAdd) {
         var type = "GET";
         var url = "/api/account-data";
 
@@ -103,8 +92,18 @@ CS.Controllers.WorkbookAreaAddItemTaskForm = React.createClass({
             success: function (data) {
                 CS.account.data = data || {};
 
-                CS.account.data[this.props.workbookArea.className] = updatedBlueprintAreaData;
-                CS.saveAccountData();
+                if (this._isValid(itemNameToAdd) && !CS.Controllers.WorkbookAreaCommon.doesItemAlreadyExist(itemNameToAdd, this.props.workbookArea.className)) {
+                    var updatedBlueprintAreaData = CS.account.data && !_.isEmpty(CS.account.data[this.props.workbookArea.className]) ? _.clone(CS.account.data[this.props.workbookArea.className], true) : [];
+                    updatedBlueprintAreaData.push({
+                        name: itemNameToAdd,
+                        notes: []
+                    });
+
+                    CS.account.data[this.props.workbookArea.className] = updatedBlueprintAreaData;
+                    CS.saveAccountData();
+                }
+
+                this._setCurrentTaskAsSkippedAndReRender();
             }.bind(this),
             error: function () {
                 alert("AJAX failure doing a " + type + " request to \"" + url + "\"");

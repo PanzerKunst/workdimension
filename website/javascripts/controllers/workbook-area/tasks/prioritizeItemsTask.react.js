@@ -23,13 +23,6 @@ CS.Controllers.WorkbookAreaPrioritizeItemsTask = React.createClass({
     },
 
     _setCurrentWorkbookAreaAsPrioritizedAndReRender: function () {
-        var prioritizedWorkbookAreaIds = CS.account.data.prioritizedWorkbookAreaIds || [];
-        prioritizedWorkbookAreaIds.push(this.props.workbookArea.id);
-
-        this._fetchLatestAccountDataAndUpdateIt(prioritizedWorkbookAreaIds);
-    },
-
-    _fetchLatestAccountDataAndUpdateIt: function(prioritizedWorkbookAreaIds) {
         var type = "GET";
         var url = "/api/account-data";
 
@@ -38,6 +31,9 @@ CS.Controllers.WorkbookAreaPrioritizeItemsTask = React.createClass({
             type: type,
             success: function (data) {
                 CS.account.data = data;
+
+                var prioritizedWorkbookAreaIds = CS.account.data.prioritizedWorkbookAreaIds || [];
+                prioritizedWorkbookAreaIds.push(this.props.workbookArea.id);
 
                 CS.account.data.prioritizedWorkbookAreaIds = prioritizedWorkbookAreaIds;
                 CS.saveAccountData();

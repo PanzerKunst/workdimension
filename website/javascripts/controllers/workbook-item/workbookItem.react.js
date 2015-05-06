@@ -77,12 +77,8 @@ CS.Controllers.WorkbookItem = P(function (c) {
             }
 
             var itemNoteToAdd = this.$textarea.val().trim();
-
             if (itemNoteToAdd && !CS.Controllers.WorkbookItemCommon.doesItemAlreadyExist(itemNoteToAdd, this.state.workbookArea.className, this.state.workbookItemIndex)) {
-                var updatedWorkbookItemNotesData = CS.account.data[this.state.workbookArea.className][this.state.workbookItemIndex].notes || [];
-                updatedWorkbookItemNotesData.push(itemNoteToAdd);
-
-                this._fetchLatestAccountDataAndUpdateIt(updatedWorkbookItemNotesData);
+                this._fetchLatestAccountDataAndUpdateIt(itemNoteToAdd);
             }
 
             CS.Controllers.WorkbookItemCommon.resetAndHideForm(this.$textarea, $.proxy(this._hideForm, this));
@@ -97,7 +93,7 @@ CS.Controllers.WorkbookItem = P(function (c) {
             this.$addNoteLink.show();
         },
 
-        _fetchLatestAccountDataAndUpdateIt: function(updatedWorkbookItemNotesData) {
+        _fetchLatestAccountDataAndUpdateIt: function(itemNoteToAdd) {
             var type = "GET";
             var url = "/api/account-data";
 
@@ -106,6 +102,9 @@ CS.Controllers.WorkbookItem = P(function (c) {
                 type: type,
                 success: function (data) {
                     CS.account.data = data;
+
+                    var updatedWorkbookItemNotesData = CS.account.data[this.state.workbookArea.className][this.state.workbookItemIndex].notes || [];
+                    updatedWorkbookItemNotesData.push(itemNoteToAdd);
 
                     CS.account.data[this.state.workbookArea.className][this.state.workbookItemIndex].notes = updatedWorkbookItemNotesData;
                     this.state.controller.saveAccountData();

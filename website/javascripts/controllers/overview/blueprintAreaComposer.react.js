@@ -48,13 +48,7 @@ CS.Controllers.OverviewBlueprintAreaComposer = React.createClass({
         var itemNameToAdd = this.$textarea.val().trim();
 
         if (itemNameToAdd && !CS.Controllers.WorkbookAreaCommon.doesItemAlreadyExist(itemNameToAdd, this.props.blueprintAreaClassName)) {
-            var updatedBlueprintAreaData = CS.account.data && !_.isEmpty(CS.account.data[this.props.blueprintAreaClassName]) ? _.clone(CS.account.data[this.props.blueprintAreaClassName], true) : [];
-            updatedBlueprintAreaData.push({
-                name: itemNameToAdd,
-                notes: []
-            });
-
-            this._fetchLatestAccountDataAndUpdateIt(updatedBlueprintAreaData);
+            this._fetchLatestAccountDataAndUpdateIt(itemNameToAdd);
         }
 
         CS.Controllers.WorkbookAreaCommon.resetAndHideForm(this.$textarea, $.proxy(this._hideForm, this));
@@ -70,7 +64,7 @@ CS.Controllers.OverviewBlueprintAreaComposer = React.createClass({
         CS.overviewController.rePackerise();
     },
 
-    _fetchLatestAccountDataAndUpdateIt: function(updatedBlueprintAreaData) {
+    _fetchLatestAccountDataAndUpdateIt: function(itemNameToAdd) {
         var type = "GET";
         var url = "/api/account-data";
 
@@ -79,6 +73,12 @@ CS.Controllers.OverviewBlueprintAreaComposer = React.createClass({
             type: type,
             success: function (data) {
                 CS.account.data = data || {};
+
+                var updatedBlueprintAreaData = CS.account.data && !_.isEmpty(CS.account.data[this.props.blueprintAreaClassName]) ? _.clone(CS.account.data[this.props.blueprintAreaClassName], true) : [];
+                updatedBlueprintAreaData.push({
+                    name: itemNameToAdd,
+                    notes: []
+                });
 
                 CS.account.data[this.props.blueprintAreaClassName] = updatedBlueprintAreaData;
                 CS.overviewController.saveAccountData();
