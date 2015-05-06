@@ -47,7 +47,6 @@ CS.Models.BlueprintAreas = P(function (c) {
                 this.blueprintAreas.active.push(instanceToActivate);
                 this.blueprintAreas.inactive = _.without(this.blueprintAreas.inactive, instanceToActivate);
             }
-            CS.saveAccountData();
         }
 
         if (CS.overviewController) {

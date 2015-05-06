@@ -801,25 +801,49 @@ CS.saveAccountData = function (callback) {
     };
 
     c.activate = function (isInitial) {
-        CS.account.data = CS.account.data || {};
-        CS.account.data.activeBlueprintAreas = CS.account.data.activeBlueprintAreas || [];
-        CS.account.data.activeBlueprintAreas.push(this.className);
+        var type = "GET";
+        var url = "/api/account-data";
 
-        if (!isInitial) {
-            CS.saveAccountData();
-            CS.blueprintAreasModel.updateStatus();
-        }
+        $.ajax({
+            url: url,
+            type: type,
+            success: function (data) {
+                CS.account.data = data || {};
+                CS.account.data.activeBlueprintAreas = CS.account.data.activeBlueprintAreas || [];
+                CS.account.data.activeBlueprintAreas.push(this.className);
+
+                if (!isInitial) {
+                    CS.saveAccountData();
+                    CS.blueprintAreasModel.updateStatus();
+                }
+            }.bind(this),
+            error: function () {
+                alert("AJAX failure doing a " + type + " request to \"" + url + "\"");
+            }
+        });
     };
 
     c.deactivate = function () {
-        CS.account.data = CS.account.data || {};
-        CS.account.data.activeBlueprintAreas = CS.account.data.activeBlueprintAreas || [];
-        _.remove(CS.account.data.activeBlueprintAreas, function(className) {
-            return className === this.className;
-        }.bind(this));
+        var type = "GET";
+        var url = "/api/account-data";
 
-        CS.saveAccountData();
-        CS.blueprintAreasModel.updateStatus();
+        $.ajax({
+            url: url,
+            type: type,
+            success: function (data) {
+                CS.account.data = data || {};
+                CS.account.data.activeBlueprintAreas = CS.account.data.activeBlueprintAreas || [];
+                _.remove(CS.account.data.activeBlueprintAreas, function(className) {
+                    return className === this.className;
+                }.bind(this));
+
+                CS.saveAccountData();
+                CS.blueprintAreasModel.updateStatus();
+            }.bind(this),
+            error: function () {
+                alert("AJAX failure doing a " + type + " request to \"" + url + "\"");
+            }
+        });
     };
 });
 ;CS.Models.BlueprintAreas = P(function (c) {
@@ -871,7 +895,6 @@ CS.saveAccountData = function (callback) {
                 this.blueprintAreas.active.push(instanceToActivate);
                 this.blueprintAreas.inactive = _.without(this.blueprintAreas.inactive, instanceToActivate);
             }
-            CS.saveAccountData();
         }
 
         if (CS.overviewController) {
@@ -1069,8 +1092,7 @@ CS.saveAccountData = function (callback) {
             newlyOrderedItems.push(_.find(CS.account.data[workbookAreaClassName], "name", itemName));
         });
 
-        CS.account.data[workbookAreaClassName] = newlyOrderedItems;
-        CS.saveAccountData();
+        this._fetchLatestAccountDataAndUpdateIt(workbookAreaClassName, newlyOrderedItems);
     },
 
     disableSortable: function(controller) {
@@ -1087,6 +1109,25 @@ CS.saveAccountData = function (callback) {
 
     _getTextareaDefaultHeight: function($textarea) {
         return CS.Controllers.WorkbookCommon.getTextareaDefaultHeight($textarea, this.textareaDefaultHeightPx, this.mediumScreenTextareaDefaultHeightPx, this.largeScreenTextareaDefaultHeightPx);
+    },
+
+    _fetchLatestAccountDataAndUpdateIt: function(workbookAreaClassName, newlyOrderedItems) {
+        var type = "GET";
+        var url = "/api/account-data";
+
+        $.ajax({
+            url: url,
+            type: type,
+            success: function (data) {
+                CS.account.data = data;
+
+                CS.account.data[workbookAreaClassName] = newlyOrderedItems;
+                CS.saveAccountData();
+            },
+            error: function () {
+                alert("AJAX failure doing a " + type + " request to \"" + url + "\"");
+            }
+        });
     }
 };
 ;CS.Controllers.WorkbookItemCommon = {
@@ -1627,9 +1668,27 @@ CS.Controllers.TaskNotifications = P(function (c) {
         );
 
         if (!_.isEmpty(_.difference(viewedTaskIds, CS.account.data.viewedTaskIds))) {
-            CS.account.data.viewedTaskIds = viewedTaskIds;
-            CS.saveAccountData();
+            this._fetchLatestAccountDataAndUpdateIt(viewedTaskIds);
         }
+    };
+
+    c._fetchLatestAccountDataAndUpdateIt = function(viewedTaskIds) {
+        var type = "GET";
+        var url = "/api/account-data";
+
+        $.ajax({
+            url: url,
+            type: type,
+            success: function (data) {
+                CS.account.data = data;
+
+                CS.account.data.viewedTaskIds = viewedTaskIds;
+                CS.saveAccountData();
+            },
+            error: function () {
+                alert("AJAX failure doing a " + type + " request to \"" + url + "\"");
+            }
+        });
     };
 });
 
@@ -1689,10 +1748,7 @@ CS.Controllers.OverviewBlueprintAreaComposer = React.createClass({displayName: "
                 notes: []
             });
 
-            CS.account.data = CS.account.data || {};
-            CS.account.data[this.props.blueprintAreaClassName] = updatedBlueprintAreaData;
-
-            CS.overviewController.saveAccountData();
+            this._fetchLatestAccountDataAndUpdateIt(updatedBlueprintAreaData);
         }
 
         CS.Controllers.WorkbookAreaCommon.resetAndHideForm(this.$textarea, $.proxy(this._hideForm, this));
@@ -1706,6 +1762,25 @@ CS.Controllers.OverviewBlueprintAreaComposer = React.createClass({displayName: "
         this.$well.removeClass(this.addItemComposerOpenCssClass);
 
         CS.overviewController.rePackerise();
+    },
+
+    _fetchLatestAccountDataAndUpdateIt: function(updatedBlueprintAreaData) {
+        var type = "GET";
+        var url = "/api/account-data";
+
+        $.ajax({
+            url: url,
+            type: type,
+            success: function (data) {
+                CS.account.data = data || {};
+
+                CS.account.data[this.props.blueprintAreaClassName] = updatedBlueprintAreaData;
+                CS.overviewController.saveAccountData();
+            }.bind(this),
+            error: function () {
+                alert("AJAX failure doing a " + type + " request to \"" + url + "\"");
+            }
+        });
     }
 });
 
@@ -1728,7 +1803,7 @@ CS.Controllers.OverviewBlueprintAreaPanel = React.createClass({displayName: "Ove
 
                     React.createElement("ul", {className: "styleless item-names-list"}, 
                         this.props.blueprintAreaWithData.items.map(function (item, index) {
-                            var reactItemId = this._getBlueprintArea().className + "-blueprint-item-" + item.name;
+                            var reactItemId = this._getBlueprintArea().className + "-blueprint-item-" + index + "-" + item.name;
 
                             return React.createElement(CS.Controllers.OverviewBlueprintItem, {key: reactItemId, blueprintAreaWithData: this.props.blueprintAreaWithData, blueprintItemIndex: index, controller: this});
                         }.bind(this))
@@ -1764,6 +1839,7 @@ CS.Controllers.OverviewBlueprintAreaPanel = React.createClass({displayName: "Ove
                 animation: 150,
                 onUpdate: function () {
                     CS.Controllers.WorkbookAreaCommon.handleWorkbookItemsReordered(this.$itemNamesList, this._getBlueprintArea().className);
+                    CS.overviewController.reRender();
                 }.bind(this),
                 handle: ".fa-bars"
             }
@@ -1876,11 +1952,8 @@ CS.Controllers.OverviewBlueprintItem = React.createClass({displayName: "Overview
             this.$listItem.hide();
         }
 
-        CS.account.data = CS.account.data || {};
-        CS.account.data[this._getBlueprintAreaClassName()] = updatedBlueprintAreaData;
-
         CS.Controllers.WorkbookAreaCommon.resetAndHideForm(this.$textarea, $.proxy(this._hideForm, this));
-        CS.overviewController.saveAccountData();
+        this._fetchLatestAccountDataAndUpdateIt(updatedBlueprintAreaData);
     },
 
     _handleTextareaKeyUp: function(e) {
@@ -1896,6 +1969,25 @@ CS.Controllers.OverviewBlueprintItem = React.createClass({displayName: "Overview
 
         CS.overviewController.rePackerise();
         CS.Controllers.WorkbookAreaCommon.enableSortable(this.props.controller);
+    },
+
+    _fetchLatestAccountDataAndUpdateIt: function(updatedBlueprintAreaData) {
+        var type = "GET";
+        var url = "/api/account-data";
+
+        $.ajax({
+            url: url,
+            type: type,
+            success: function (data) {
+                CS.account.data = data || {};
+
+                CS.account.data[this._getBlueprintAreaClassName()] = updatedBlueprintAreaData;
+                CS.overviewController.saveAccountData();
+            }.bind(this),
+            error: function () {
+                alert("AJAX failure doing a " + type + " request to \"" + url + "\"");
+            }
+        });
     }
 });
 
@@ -2119,10 +2211,7 @@ CS.Controllers.WorkbookAreaAddItemTaskForm = React.createClass({displayName: "Wo
                 notes: []
             });
 
-            CS.account.data = CS.account.data || {};
-            CS.account.data[this.props.workbookArea.className] = updatedBlueprintAreaData;
-
-            CS.saveAccountData();
+            this._fetchLatestAccountDataAndUpdateIt(updatedBlueprintAreaData);
         }
 
         this._setCurrentTaskAsSkippedAndReRender();
@@ -2160,6 +2249,25 @@ CS.Controllers.WorkbookAreaAddItemTaskForm = React.createClass({displayName: "Wo
         }
 
         CS.Controllers.WorkbookAreaCommon.handleTextareaKeyUp(e, $.proxy(this._handleFormSubmit, this));
+    },
+
+    _fetchLatestAccountDataAndUpdateIt: function(updatedBlueprintAreaData) {
+        var type = "GET";
+        var url = "/api/account-data";
+
+        $.ajax({
+            url: url,
+            type: type,
+            success: function (data) {
+                CS.account.data = data || {};
+
+                CS.account.data[this.props.workbookArea.className] = updatedBlueprintAreaData;
+                CS.saveAccountData();
+            }.bind(this),
+            error: function () {
+                alert("AJAX failure doing a " + type + " request to \"" + url + "\"");
+            }
+        });
     }
 });
 
@@ -2191,10 +2299,27 @@ CS.Controllers.WorkbookAreaPrioritizeItemsTask = React.createClass({displayName:
         var prioritizedWorkbookAreaIds = CS.account.data.prioritizedWorkbookAreaIds || [];
         prioritizedWorkbookAreaIds.push(this.props.workbookArea.id);
 
-        CS.account.data.prioritizedWorkbookAreaIds = prioritizedWorkbookAreaIds;
+        this._fetchLatestAccountDataAndUpdateIt(prioritizedWorkbookAreaIds);
+    },
 
-        CS.saveAccountData();
-        this.props.controller.reRender();
+    _fetchLatestAccountDataAndUpdateIt: function(prioritizedWorkbookAreaIds) {
+        var type = "GET";
+        var url = "/api/account-data";
+
+        $.ajax({
+            url: url,
+            type: type,
+            success: function (data) {
+                CS.account.data = data;
+
+                CS.account.data.prioritizedWorkbookAreaIds = prioritizedWorkbookAreaIds;
+                CS.saveAccountData();
+                this.props.controller.reRender();
+            }.bind(this),
+            error: function () {
+                alert("AJAX failure doing a " + type + " request to \"" + url + "\"");
+            }
+        });
     }
 });
 
@@ -2255,7 +2380,7 @@ CS.Controllers.WorkbookArea = P(function (c) {
 
                     React.createElement("ul", {className: "styleless item-names-list"}, 
                         this.state.workbookItems.map(function (item, index) {
-                            var reactItemId = "blueprint-item-" + item.name;
+                            var reactItemId = "blueprint-item-" + index + "-" + item.name;
 
                             return React.createElement(CS.Controllers.WorkbookAreaWorkbookItem, {key: reactItemId, workbookAreaClassName: this.state.workbookArea.className, workbookItem: item, workbookItemIndex: index, controller: this});
                         }.bind(this))
@@ -2295,6 +2420,7 @@ CS.Controllers.WorkbookArea = P(function (c) {
                         animation: 150,
                         onUpdate: function () {
                             CS.Controllers.WorkbookAreaCommon.handleWorkbookItemsReordered(this.$list, this.state.workbookArea.className);
+                            this.state.controller.reRender();
                         }.bind(this),
                         handle: ".fa-bars"
                     }
@@ -2323,11 +2449,7 @@ CS.Controllers.WorkbookArea = P(function (c) {
                     notes: []
                 });
 
-                CS.account.data = CS.account.data || {};
-                CS.account.data[this.state.workbookArea.className] = updatedBlueprintAreaData;
-
-                this.state.controller.reRender();
-                CS.saveAccountData();
+                this._fetchLatestAccountDataAndUpdateIt(updatedBlueprintAreaData);
             }
 
             CS.Controllers.WorkbookAreaCommon.resetAndHideForm(this.$textarea, $.proxy(this._hideForm, this));
@@ -2340,6 +2462,25 @@ CS.Controllers.WorkbookArea = P(function (c) {
         _hideForm: function () {
             this.$form.hide();
             this.$addItemLink.show();
+        },
+
+        _fetchLatestAccountDataAndUpdateIt: function(updatedBlueprintAreaData) {
+            var type = "GET";
+            var url = "/api/account-data";
+
+            $.ajax({
+                url: url,
+                type: type,
+                success: function (data) {
+                    CS.account.data = data || {};
+
+                    CS.account.data[this.state.workbookArea.className] = updatedBlueprintAreaData;
+                    this.state.controller.saveAccountData();
+                }.bind(this),
+                error: function () {
+                    alert("AJAX failure doing a " + type + " request to \"" + url + "\"");
+                }
+            });
         }
     });
 
@@ -2451,11 +2592,8 @@ CS.Controllers.WorkbookAreaWorkbookItem = React.createClass({displayName: "Workb
             this.$listItem.hide();
         }
 
-        CS.account.data = CS.account.data || {};
-        CS.account.data[this.props.workbookAreaClassName] = updatedBlueprintAreaData;
-
         CS.Controllers.WorkbookAreaCommon.resetAndHideForm(this.$textarea, $.proxy(this._hideForm, this));
-        CS.workbookAreaController.saveAccountData();
+        this._fetchLatestAccountDataAndUpdateIt(updatedBlueprintAreaData);
     },
 
     _handleTextareaKeyUp: function(e) {
@@ -2470,6 +2608,25 @@ CS.Controllers.WorkbookAreaWorkbookItem = React.createClass({displayName: "Workb
         this.$contentWrapper.removeClass("editing");
 
         CS.Controllers.WorkbookAreaCommon.enableSortable(this.props.controller);
+    },
+
+    _fetchLatestAccountDataAndUpdateIt: function(updatedBlueprintAreaData) {
+        var type = "GET";
+        var url = "/api/account-data";
+
+        $.ajax({
+            url: url,
+            type: type,
+            success: function (data) {
+                CS.account.data = data || {};
+
+                CS.account.data[this.props.workbookAreaClassName] = updatedBlueprintAreaData;
+                CS.workbookAreaController.saveAccountData();
+            }.bind(this),
+            error: function () {
+                alert("AJAX failure doing a " + type + " request to \"" + url + "\"");
+            }
+        });
     }
 });
 
@@ -2541,9 +2698,7 @@ CS.Controllers.WorkbookItemAddItemTask = React.createClass({displayName: "Workbo
             var updatedWorkbookItemNotesData = CS.account.data[this.props.workbookArea.className][this.props.workbookItemIndex].notes || [];
             updatedWorkbookItemNotesData.push(itemNoteToAdd);
 
-            CS.account.data[this.props.workbookArea.className][this.props.workbookItemIndex].notes = updatedWorkbookItemNotesData;
-
-            CS.saveAccountData();
+            this._fetchLatestAccountDataAndUpdateIt(updatedWorkbookItemNotesData);
         }
 
         this._setCurrentTaskAsSkippedAndReRender();
@@ -2581,6 +2736,25 @@ CS.Controllers.WorkbookItemAddItemTask = React.createClass({displayName: "Workbo
         }
 
         CS.Controllers.WorkbookItemCommon.handleTextareaKeyUp(e);
+    },
+
+    _fetchLatestAccountDataAndUpdateIt: function(updatedWorkbookItemNotesData) {
+        var type = "GET";
+        var url = "/api/account-data";
+
+        $.ajax({
+            url: url,
+            type: type,
+            success: function (data) {
+                CS.account.data = data;
+
+                CS.account.data[this.props.workbookArea.className][this.props.workbookItemIndex].notes = updatedWorkbookItemNotesData;
+                CS.saveAccountData();
+            }.bind(this),
+            error: function () {
+                alert("AJAX failure doing a " + type + " request to \"" + url + "\"");
+            }
+        });
     }
 });
 
@@ -2668,10 +2842,7 @@ CS.Controllers.WorkbookItem = P(function (c) {
                 var updatedWorkbookItemNotesData = CS.account.data[this.state.workbookArea.className][this.state.workbookItemIndex].notes || [];
                 updatedWorkbookItemNotesData.push(itemNoteToAdd);
 
-                CS.account.data[this.state.workbookArea.className][this.state.workbookItemIndex].notes = updatedWorkbookItemNotesData;
-
-                this.state.controller.reRender();
-                CS.saveAccountData();
+                this._fetchLatestAccountDataAndUpdateIt(updatedWorkbookItemNotesData);
             }
 
             CS.Controllers.WorkbookItemCommon.resetAndHideForm(this.$textarea, $.proxy(this._hideForm, this));
@@ -2684,6 +2855,25 @@ CS.Controllers.WorkbookItem = P(function (c) {
         _hideForm: function () {
             this.$form.hide();
             this.$addNoteLink.show();
+        },
+
+        _fetchLatestAccountDataAndUpdateIt: function(updatedWorkbookItemNotesData) {
+            var type = "GET";
+            var url = "/api/account-data";
+
+            $.ajax({
+                url: url,
+                type: type,
+                success: function (data) {
+                    CS.account.data = data;
+
+                    CS.account.data[this.state.workbookArea.className][this.state.workbookItemIndex].notes = updatedWorkbookItemNotesData;
+                    this.state.controller.saveAccountData();
+                }.bind(this),
+                error: function () {
+                    alert("AJAX failure doing a " + type + " request to \"" + url + "\"");
+                }
+            });
         }
     });
 
@@ -2792,10 +2982,7 @@ CS.Controllers.WorkbookItemNote = React.createClass({displayName: "WorkbookItemN
             this.$listItem.hide();
         }
 
-        CS.account.data[this.props.workbookAreaClassName][this.props.workbookItemIndex].notes = updatedWorkbookItemNotesData;
-
-        CS.Controllers.WorkbookItemCommon.resetAndHideForm(this.$textarea, $.proxy(this._hideForm, this));
-        CS.workbookItemController.saveAccountData();
+        this._fetchLatestAccountDataAndUpdateIt(updatedWorkbookItemNotesData);
     },
 
     _handleTextareaKeyUp: function(e) {
@@ -2808,5 +2995,24 @@ CS.Controllers.WorkbookItemNote = React.createClass({displayName: "WorkbookItemN
         this.$itemNoteParagraph.show();
         this.$editBtn.show();
         this.$addNoteLink.show();
+    },
+
+    _fetchLatestAccountDataAndUpdateIt: function(updatedWorkbookItemNotesData) {
+        var type = "GET";
+        var url = "/api/account-data";
+
+        $.ajax({
+            url: url,
+            type: type,
+            success: function (data) {
+                CS.account.data = data;
+
+                CS.account.data[this.props.workbookAreaClassName][this.props.workbookItemIndex].notes = updatedWorkbookItemNotesData;
+                CS.workbookItemController.saveAccountData();
+            }.bind(this),
+            error: function () {
+                alert("AJAX failure doing a " + type + " request to \"" + url + "\"");
+            }
+        });
     }
 });

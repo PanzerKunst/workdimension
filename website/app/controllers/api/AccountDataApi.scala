@@ -7,6 +7,18 @@ import play.api.mvc.{Action, Controller}
 import services.EmailService
 
 object AccountDataApi extends Controller {
+  def getForCurrentUser = Action { request =>
+    Application.getAccountId(request.session) match {
+      case None => BadRequest("Account ID not found in session")
+
+      case Some(accountId) =>
+        AccountDto.getOfId(accountId) match {
+          case None => InternalServerError("The account ID found in session didn't have a corresponding database entry")
+          case Some(account) => Ok(AccountDataDto.getOfAccountId(accountId).getOrElse(JsNull))
+        }
+    }
+  }
+
   def add = Action(parse.json) { request =>
     Application.getAccountId(request.session) match {
       case None => BadRequest("Account ID not found in session")

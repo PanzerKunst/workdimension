@@ -145,8 +145,26 @@ CS.Controllers.TaskNotifications = P(function (c) {
         );
 
         if (!_.isEmpty(_.difference(viewedTaskIds, CS.account.data.viewedTaskIds))) {
-            CS.account.data.viewedTaskIds = viewedTaskIds;
-            CS.saveAccountData();
+            this._fetchLatestAccountDataAndUpdateIt(viewedTaskIds);
         }
+    };
+
+    c._fetchLatestAccountDataAndUpdateIt = function(viewedTaskIds) {
+        var type = "GET";
+        var url = "/api/account-data";
+
+        $.ajax({
+            url: url,
+            type: type,
+            success: function (data) {
+                CS.account.data = data;
+
+                CS.account.data.viewedTaskIds = viewedTaskIds;
+                CS.saveAccountData();
+            },
+            error: function () {
+                alert("AJAX failure doing a " + type + " request to \"" + url + "\"");
+            }
+        });
     };
 });

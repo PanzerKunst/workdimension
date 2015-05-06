@@ -91,11 +91,8 @@ CS.Controllers.OverviewBlueprintItem = React.createClass({
             this.$listItem.hide();
         }
 
-        CS.account.data = CS.account.data || {};
-        CS.account.data[this._getBlueprintAreaClassName()] = updatedBlueprintAreaData;
-
         CS.Controllers.WorkbookAreaCommon.resetAndHideForm(this.$textarea, $.proxy(this._hideForm, this));
-        CS.overviewController.saveAccountData();
+        this._fetchLatestAccountDataAndUpdateIt(updatedBlueprintAreaData);
     },
 
     _handleTextareaKeyUp: function(e) {
@@ -111,5 +108,24 @@ CS.Controllers.OverviewBlueprintItem = React.createClass({
 
         CS.overviewController.rePackerise();
         CS.Controllers.WorkbookAreaCommon.enableSortable(this.props.controller);
+    },
+
+    _fetchLatestAccountDataAndUpdateIt: function(updatedBlueprintAreaData) {
+        var type = "GET";
+        var url = "/api/account-data";
+
+        $.ajax({
+            url: url,
+            type: type,
+            success: function (data) {
+                CS.account.data = data || {};
+
+                CS.account.data[this._getBlueprintAreaClassName()] = updatedBlueprintAreaData;
+                CS.overviewController.saveAccountData();
+            }.bind(this),
+            error: function () {
+                alert("AJAX failure doing a " + type + " request to \"" + url + "\"");
+            }
+        });
     }
 });

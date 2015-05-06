@@ -55,7 +55,7 @@ CS.Controllers.WorkbookArea = P(function (c) {
 
                     <ul className="styleless item-names-list">
                         {this.state.workbookItems.map(function (item, index) {
-                            var reactItemId = "blueprint-item-" + item.name;
+                            var reactItemId = "blueprint-item-" + index + "-" + item.name;
 
                             return <CS.Controllers.WorkbookAreaWorkbookItem key={reactItemId} workbookAreaClassName={this.state.workbookArea.className} workbookItem={item} workbookItemIndex={index} controller={this} />;
                         }.bind(this))}
@@ -95,6 +95,7 @@ CS.Controllers.WorkbookArea = P(function (c) {
                         animation: 150,
                         onUpdate: function () {
                             CS.Controllers.WorkbookAreaCommon.handleWorkbookItemsReordered(this.$list, this.state.workbookArea.className);
+                            this.state.controller.reRender();
                         }.bind(this),
                         handle: ".fa-bars"
                     }
@@ -123,11 +124,7 @@ CS.Controllers.WorkbookArea = P(function (c) {
                     notes: []
                 });
 
-                CS.account.data = CS.account.data || {};
-                CS.account.data[this.state.workbookArea.className] = updatedBlueprintAreaData;
-
-                this.state.controller.reRender();
-                CS.saveAccountData();
+                this._fetchLatestAccountDataAndUpdateIt(updatedBlueprintAreaData);
             }
 
             CS.Controllers.WorkbookAreaCommon.resetAndHideForm(this.$textarea, $.proxy(this._hideForm, this));
@@ -140,6 +137,25 @@ CS.Controllers.WorkbookArea = P(function (c) {
         _hideForm: function () {
             this.$form.hide();
             this.$addItemLink.show();
+        },
+
+        _fetchLatestAccountDataAndUpdateIt: function(updatedBlueprintAreaData) {
+            var type = "GET";
+            var url = "/api/account-data";
+
+            $.ajax({
+                url: url,
+                type: type,
+                success: function (data) {
+                    CS.account.data = data || {};
+
+                    CS.account.data[this.state.workbookArea.className] = updatedBlueprintAreaData;
+                    this.state.controller.saveAccountData();
+                }.bind(this),
+                error: function () {
+                    alert("AJAX failure doing a " + type + " request to \"" + url + "\"");
+                }
+            });
         }
     });
 

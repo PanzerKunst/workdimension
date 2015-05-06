@@ -54,10 +54,7 @@ CS.Controllers.OverviewBlueprintAreaComposer = React.createClass({
                 notes: []
             });
 
-            CS.account.data = CS.account.data || {};
-            CS.account.data[this.props.blueprintAreaClassName] = updatedBlueprintAreaData;
-
-            CS.overviewController.saveAccountData();
+            this._fetchLatestAccountDataAndUpdateIt(updatedBlueprintAreaData);
         }
 
         CS.Controllers.WorkbookAreaCommon.resetAndHideForm(this.$textarea, $.proxy(this._hideForm, this));
@@ -71,5 +68,24 @@ CS.Controllers.OverviewBlueprintAreaComposer = React.createClass({
         this.$well.removeClass(this.addItemComposerOpenCssClass);
 
         CS.overviewController.rePackerise();
+    },
+
+    _fetchLatestAccountDataAndUpdateIt: function(updatedBlueprintAreaData) {
+        var type = "GET";
+        var url = "/api/account-data";
+
+        $.ajax({
+            url: url,
+            type: type,
+            success: function (data) {
+                CS.account.data = data || {};
+
+                CS.account.data[this.props.blueprintAreaClassName] = updatedBlueprintAreaData;
+                CS.overviewController.saveAccountData();
+            }.bind(this),
+            error: function () {
+                alert("AJAX failure doing a " + type + " request to \"" + url + "\"");
+            }
+        });
     }
 });

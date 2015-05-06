@@ -76,10 +76,7 @@ CS.Controllers.WorkbookItemNote = React.createClass({
             this.$listItem.hide();
         }
 
-        CS.account.data[this.props.workbookAreaClassName][this.props.workbookItemIndex].notes = updatedWorkbookItemNotesData;
-
-        CS.Controllers.WorkbookItemCommon.resetAndHideForm(this.$textarea, $.proxy(this._hideForm, this));
-        CS.workbookItemController.saveAccountData();
+        this._fetchLatestAccountDataAndUpdateIt(updatedWorkbookItemNotesData);
     },
 
     _handleTextareaKeyUp: function(e) {
@@ -92,5 +89,24 @@ CS.Controllers.WorkbookItemNote = React.createClass({
         this.$itemNoteParagraph.show();
         this.$editBtn.show();
         this.$addNoteLink.show();
+    },
+
+    _fetchLatestAccountDataAndUpdateIt: function(updatedWorkbookItemNotesData) {
+        var type = "GET";
+        var url = "/api/account-data";
+
+        $.ajax({
+            url: url,
+            type: type,
+            success: function (data) {
+                CS.account.data = data;
+
+                CS.account.data[this.props.workbookAreaClassName][this.props.workbookItemIndex].notes = updatedWorkbookItemNotesData;
+                CS.workbookItemController.saveAccountData();
+            }.bind(this),
+            error: function () {
+                alert("AJAX failure doing a " + type + " request to \"" + url + "\"");
+            }
+        });
     }
 });

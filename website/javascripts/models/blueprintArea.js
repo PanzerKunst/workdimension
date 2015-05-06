@@ -15,24 +15,48 @@ CS.Models.BlueprintArea = P(function (c) {
     };
 
     c.activate = function (isInitial) {
-        CS.account.data = CS.account.data || {};
-        CS.account.data.activeBlueprintAreas = CS.account.data.activeBlueprintAreas || [];
-        CS.account.data.activeBlueprintAreas.push(this.className);
+        var type = "GET";
+        var url = "/api/account-data";
 
-        if (!isInitial) {
-            CS.saveAccountData();
-            CS.blueprintAreasModel.updateStatus();
-        }
+        $.ajax({
+            url: url,
+            type: type,
+            success: function (data) {
+                CS.account.data = data || {};
+                CS.account.data.activeBlueprintAreas = CS.account.data.activeBlueprintAreas || [];
+                CS.account.data.activeBlueprintAreas.push(this.className);
+
+                if (!isInitial) {
+                    CS.saveAccountData();
+                    CS.blueprintAreasModel.updateStatus();
+                }
+            }.bind(this),
+            error: function () {
+                alert("AJAX failure doing a " + type + " request to \"" + url + "\"");
+            }
+        });
     };
 
     c.deactivate = function () {
-        CS.account.data = CS.account.data || {};
-        CS.account.data.activeBlueprintAreas = CS.account.data.activeBlueprintAreas || [];
-        _.remove(CS.account.data.activeBlueprintAreas, function(className) {
-            return className === this.className;
-        }.bind(this));
+        var type = "GET";
+        var url = "/api/account-data";
 
-        CS.saveAccountData();
-        CS.blueprintAreasModel.updateStatus();
+        $.ajax({
+            url: url,
+            type: type,
+            success: function (data) {
+                CS.account.data = data || {};
+                CS.account.data.activeBlueprintAreas = CS.account.data.activeBlueprintAreas || [];
+                _.remove(CS.account.data.activeBlueprintAreas, function(className) {
+                    return className === this.className;
+                }.bind(this));
+
+                CS.saveAccountData();
+                CS.blueprintAreasModel.updateStatus();
+            }.bind(this),
+            error: function () {
+                alert("AJAX failure doing a " + type + " request to \"" + url + "\"");
+            }
+        });
     };
 });

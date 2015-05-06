@@ -82,10 +82,7 @@ CS.Controllers.WorkbookItem = P(function (c) {
                 var updatedWorkbookItemNotesData = CS.account.data[this.state.workbookArea.className][this.state.workbookItemIndex].notes || [];
                 updatedWorkbookItemNotesData.push(itemNoteToAdd);
 
-                CS.account.data[this.state.workbookArea.className][this.state.workbookItemIndex].notes = updatedWorkbookItemNotesData;
-
-                this.state.controller.reRender();
-                CS.saveAccountData();
+                this._fetchLatestAccountDataAndUpdateIt(updatedWorkbookItemNotesData);
             }
 
             CS.Controllers.WorkbookItemCommon.resetAndHideForm(this.$textarea, $.proxy(this._hideForm, this));
@@ -98,6 +95,25 @@ CS.Controllers.WorkbookItem = P(function (c) {
         _hideForm: function () {
             this.$form.hide();
             this.$addNoteLink.show();
+        },
+
+        _fetchLatestAccountDataAndUpdateIt: function(updatedWorkbookItemNotesData) {
+            var type = "GET";
+            var url = "/api/account-data";
+
+            $.ajax({
+                url: url,
+                type: type,
+                success: function (data) {
+                    CS.account.data = data;
+
+                    CS.account.data[this.state.workbookArea.className][this.state.workbookItemIndex].notes = updatedWorkbookItemNotesData;
+                    this.state.controller.saveAccountData();
+                }.bind(this),
+                error: function () {
+                    alert("AJAX failure doing a " + type + " request to \"" + url + "\"");
+                }
+            });
         }
     });
 

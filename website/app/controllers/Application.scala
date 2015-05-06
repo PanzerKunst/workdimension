@@ -31,7 +31,7 @@ object Application extends Controller {
 
     Ok(views.html.index(WorkbookAreaDto.getAll, accountId, AccountDataDto.getOfAccountId(accountId))).withSession(request.session
       +("accountId", accountId.toString)
-    )
+    ).withHeaders(doNotCachePage: _*)
   }
 
   def workbookArea(className: String) = Action { request =>
@@ -57,6 +57,7 @@ object Application extends Controller {
                 }
 
                 Ok(views.html.workbookArea(WorkbookAreaDto.getAll, workbookArea, accountId, accountData))
+                  .withHeaders(doNotCachePage: _*)
             }
         }
     }
@@ -82,6 +83,7 @@ object Application extends Controller {
                     val workbookItems = (accountData \ workbookArea.className).as[List[WorkbookItem]]
 
                     Ok(views.html.workbookItem(WorkbookAreaDto.getAll, workbookArea, workbookItems.apply(index), accountId, accountData))
+                      .withHeaders(doNotCachePage: _*)
                 }
             }
         }

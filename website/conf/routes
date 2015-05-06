@@ -19,4 +19,5 @@ POST    /api/accounts                               controllers.api.AccountApi.c
 POST    /api/auth                                   controllers.api.AuthApi.signIn(linkedinAccountId: String)
 DELETE  /api/auth                                   controllers.api.AuthApi.signOut
 
+GET     /api/account-data                           controllers.api.AccountDataApi.getForCurrentUser
 POST    /api/account-data                           controllers.api.AccountDataApi.add

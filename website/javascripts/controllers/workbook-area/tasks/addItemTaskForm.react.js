@@ -53,10 +53,7 @@ CS.Controllers.WorkbookAreaAddItemTaskForm = React.createClass({
                 notes: []
             });
 
-            CS.account.data = CS.account.data || {};
-            CS.account.data[this.props.workbookArea.className] = updatedBlueprintAreaData;
-
-            CS.saveAccountData();
+            this._fetchLatestAccountDataAndUpdateIt(updatedBlueprintAreaData);
         }
 
         this._setCurrentTaskAsSkippedAndReRender();
@@ -94,5 +91,24 @@ CS.Controllers.WorkbookAreaAddItemTaskForm = React.createClass({
         }
 
         CS.Controllers.WorkbookAreaCommon.handleTextareaKeyUp(e, $.proxy(this._handleFormSubmit, this));
+    },
+
+    _fetchLatestAccountDataAndUpdateIt: function(updatedBlueprintAreaData) {
+        var type = "GET";
+        var url = "/api/account-data";
+
+        $.ajax({
+            url: url,
+            type: type,
+            success: function (data) {
+                CS.account.data = data || {};
+
+                CS.account.data[this.props.workbookArea.className] = updatedBlueprintAreaData;
+                CS.saveAccountData();
+            }.bind(this),
+            error: function () {
+                alert("AJAX failure doing a " + type + " request to \"" + url + "\"");
+            }
+        });
     }
 });

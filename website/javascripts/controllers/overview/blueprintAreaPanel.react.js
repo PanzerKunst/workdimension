@@ -17,7 +17,7 @@ CS.Controllers.OverviewBlueprintAreaPanel = React.createClass({
 
                     <ul className="styleless item-names-list">
                         {this.props.blueprintAreaWithData.items.map(function (item, index) {
-                            var reactItemId = this._getBlueprintArea().className + "-blueprint-item-" + item.name;
+                            var reactItemId = this._getBlueprintArea().className + "-blueprint-item-" + index + "-" + item.name;
 
                             return <CS.Controllers.OverviewBlueprintItem key={reactItemId} blueprintAreaWithData={this.props.blueprintAreaWithData} blueprintItemIndex={index} controller={this} />;
                         }.bind(this))}
@@ -53,6 +53,7 @@ CS.Controllers.OverviewBlueprintAreaPanel = React.createClass({
                 animation: 150,
                 onUpdate: function () {
                     CS.Controllers.WorkbookAreaCommon.handleWorkbookItemsReordered(this.$itemNamesList, this._getBlueprintArea().className);
+                    CS.overviewController.reRender();
                 }.bind(this),
                 handle: ".fa-bars"
             }

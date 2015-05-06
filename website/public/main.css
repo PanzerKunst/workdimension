@@ -6238,6 +6238,7 @@ a.fa:hover, a.fa:focus {
 .item-names-list .notes-indicator {
   position: absolute;
   height: 0.15em;
+  max-width: 20.7em;
   background-color: #ff007f; }
 
 .item-composer {

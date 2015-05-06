@@ -81,11 +81,8 @@ CS.Controllers.WorkbookAreaWorkbookItem = React.createClass({
             this.$listItem.hide();
         }
 
-        CS.account.data = CS.account.data || {};
-        CS.account.data[this.props.workbookAreaClassName] = updatedBlueprintAreaData;
-
         CS.Controllers.WorkbookAreaCommon.resetAndHideForm(this.$textarea, $.proxy(this._hideForm, this));
-        CS.workbookAreaController.saveAccountData();
+        this._fetchLatestAccountDataAndUpdateIt(updatedBlueprintAreaData);
     },
 
     _handleTextareaKeyUp: function(e) {
@@ -100,5 +97,24 @@ CS.Controllers.WorkbookAreaWorkbookItem = React.createClass({
         this.$contentWrapper.removeClass("editing");
 
         CS.Controllers.WorkbookAreaCommon.enableSortable(this.props.controller);
+    },
+
+    _fetchLatestAccountDataAndUpdateIt: function(updatedBlueprintAreaData) {
+        var type = "GET";
+        var url = "/api/account-data";
+
+        $.ajax({
+            url: url,
+            type: type,
+            success: function (data) {
+                CS.account.data = data || {};
+
+                CS.account.data[this.props.workbookAreaClassName] = updatedBlueprintAreaData;
+                CS.workbookAreaController.saveAccountData();
+            }.bind(this),
+            error: function () {
+                alert("AJAX failure doing a " + type + " request to \"" + url + "\"");
+            }
+        });
     }
 });

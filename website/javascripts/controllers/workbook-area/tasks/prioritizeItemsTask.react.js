@@ -26,9 +26,26 @@ CS.Controllers.WorkbookAreaPrioritizeItemsTask = React.createClass({
         var prioritizedWorkbookAreaIds = CS.account.data.prioritizedWorkbookAreaIds || [];
         prioritizedWorkbookAreaIds.push(this.props.workbookArea.id);
 
-        CS.account.data.prioritizedWorkbookAreaIds = prioritizedWorkbookAreaIds;
+        this._fetchLatestAccountDataAndUpdateIt(prioritizedWorkbookAreaIds);
+    },
 
-        CS.saveAccountData();
-        this.props.controller.reRender();
+    _fetchLatestAccountDataAndUpdateIt: function(prioritizedWorkbookAreaIds) {
+        var type = "GET";
+        var url = "/api/account-data";
+
+        $.ajax({
+            url: url,
+            type: type,
+            success: function (data) {
+                CS.account.data = data;
+
+                CS.account.data.prioritizedWorkbookAreaIds = prioritizedWorkbookAreaIds;
+                CS.saveAccountData();
+                this.props.controller.reRender();
+            }.bind(this),
+            error: function () {
+                alert("AJAX failure doing a " + type + " request to \"" + url + "\"");
+            }
+        });
     }
 });

@@ -66,9 +66,7 @@ CS.Controllers.WorkbookItemAddItemTask = React.createClass({
             var updatedWorkbookItemNotesData = CS.account.data[this.props.workbookArea.className][this.props.workbookItemIndex].notes || [];
             updatedWorkbookItemNotesData.push(itemNoteToAdd);
 
-            CS.account.data[this.props.workbookArea.className][this.props.workbookItemIndex].notes = updatedWorkbookItemNotesData;
-
-            CS.saveAccountData();
+            this._fetchLatestAccountDataAndUpdateIt(updatedWorkbookItemNotesData);
         }
 
         this._setCurrentTaskAsSkippedAndReRender();
@@ -106,5 +104,24 @@ CS.Controllers.WorkbookItemAddItemTask = React.createClass({
         }
 
         CS.Controllers.WorkbookItemCommon.handleTextareaKeyUp(e);
+    },
+
+    _fetchLatestAccountDataAndUpdateIt: function(updatedWorkbookItemNotesData) {
+        var type = "GET";
+        var url = "/api/account-data";
+
+        $.ajax({
+            url: url,
+            type: type,
+            success: function (data) {
+                CS.account.data = data;
+
+                CS.account.data[this.props.workbookArea.className][this.props.workbookItemIndex].notes = updatedWorkbookItemNotesData;
+                CS.saveAccountData();
+            }.bind(this),
+            error: function () {
+                alert("AJAX failure doing a " + type + " request to \"" + url + "\"");
+            }
+        });
     }
 });

@@ -147,7 +147,7 @@ module.exports = function (grunt) {
         }
     });
 
-    grunt.registerTask("default", ["buildjs", "buildcss", "copy"]);
+    grunt.registerTask("default", ["buildjs", "buildcss", "copy", "watch"]);
     grunt.registerTask("buildjs",  ["eslint", "react:site", "concat:site", "concat:mockData" /* TODO: remove */, "concat:all"]);
     grunt.registerTask("buildcss",  ["sass", "cssmin"]);
 };

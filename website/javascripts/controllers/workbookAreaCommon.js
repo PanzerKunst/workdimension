@@ -53,8 +53,7 @@ CS.Controllers.WorkbookAreaCommon = {
             newlyOrderedItems.push(_.find(CS.account.data[workbookAreaClassName], "name", itemName));
         });
 
-        CS.account.data[workbookAreaClassName] = newlyOrderedItems;
-        CS.saveAccountData();
+        this._fetchLatestAccountDataAndUpdateIt(workbookAreaClassName, newlyOrderedItems);
     },
 
     disableSortable: function(controller) {
@@ -71,5 +70,24 @@ CS.Controllers.WorkbookAreaCommon = {
 
     _getTextareaDefaultHeight: function($textarea) {
         return CS.Controllers.WorkbookCommon.getTextareaDefaultHeight($textarea, this.textareaDefaultHeightPx, this.mediumScreenTextareaDefaultHeightPx, this.largeScreenTextareaDefaultHeightPx);
+    },
+
+    _fetchLatestAccountDataAndUpdateIt: function(workbookAreaClassName, newlyOrderedItems) {
+        var type = "GET";
+        var url = "/api/account-data";
+
+        $.ajax({
+            url: url,
+            type: type,
+            success: function (data) {
+                CS.account.data = data;
+
+                CS.account.data[workbookAreaClassName] = newlyOrderedItems;
+                CS.saveAccountData();
+            },
+            error: function () {
+                alert("AJAX failure doing a " + type + " request to \"" + url + "\"");
+            }
+        });
     }
 };
