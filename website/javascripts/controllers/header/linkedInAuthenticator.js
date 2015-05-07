@@ -11,9 +11,9 @@ CS.Controllers.MainMenuLinkedInAuthenticator = P(CS.Controllers.Base, function (
     };
 
     c._initEvents = function () {
-        this.$signInWithLinkedInLink.click($.proxy(this._signInWithLinkedIn, this));
-        this.$signOutLink.click($.proxy(this._signOut, this));
-        IN.Event.on(IN, "auth", $.proxy(this._signIn, this));
+        this.$signInWithLinkedInLink.click(this._signInWithLinkedIn.bind(this));
+        this.$signOutLink.click(this._signOut.bind(this));
+        IN.Event.on(IN, "auth", this._signIn.bind(this));
     };
 
     c._signInWithLinkedIn = function () {

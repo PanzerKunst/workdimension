@@ -18,7 +18,7 @@
 <script type="text/javascript">
     document.addEventListener("DOMContentLoaded", function () {
         CS.account.id = @accountId;
-        CS.account.data = @Html(play.api.libs.json.Json.toJson(accountData).toString);
+        CS.account.data = @Html(play.api.libs.json.Json.toJson(accountData).toString) || {};
 
         CS.mainMenuController = CS.Controllers.MainMenu(@Html(play.api.libs.json.Json.toJson(workbookAreas).toString));
         CS.taskNotificationsController = CS.Controllers.TaskNotifications();

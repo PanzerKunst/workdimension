@@ -1084,7 +1084,7 @@ CS.saveAccountData = function (callback) {
         return !_.isEmpty(_.find(areaItems, "name", itemName));
     },
 
-    handleWorkbookItemsReordered: function($list, workbookAreaClassName) {
+    handleWorkbookItemsReordered: function($listItems, workbookAreaClassName, callback) {
         var type = "GET";
         var url = "/api/account-data";
 
@@ -1092,17 +1092,21 @@ CS.saveAccountData = function (callback) {
             url: url,
             type: type,
             success: function (data) {
-                CS.account.data = data;
+                CS.account.data = data || {};
 
                 var newlyOrderedItems = [];
 
-                $list.children().each(function () {
+                $listItems.each(function () {
                     var itemName = $(this).children("p").text();
                     newlyOrderedItems.push(_.find(CS.account.data[workbookAreaClassName], "name", itemName));
                 });
 
                 CS.account.data[workbookAreaClassName] = newlyOrderedItems;
                 CS.saveAccountData();
+
+                if (callback) {
+                    callback();
+                }
             },
             error: function () {
                 alert("AJAX failure doing a " + type + " request to \"" + url + "\"");
@@ -1184,9 +1188,9 @@ CS.Controllers.MainMenuLinkedInAuthenticator = P(CS.Controllers.Base, function (
     };
 
     c._initEvents = function () {
-        this.$signInWithLinkedInLink.click($.proxy(this._signInWithLinkedIn, this));
-        this.$signOutLink.click($.proxy(this._signOut, this));
-        IN.Event.on(IN, "auth", $.proxy(this._signIn, this));
+        this.$signInWithLinkedInLink.click(this._signInWithLinkedIn.bind(this));
+        this.$signOutLink.click(this._signOut.bind(this));
+        IN.Event.on(IN, "auth", this._signIn.bind(this));
     };
 
     c._signInWithLinkedIn = function () {
@@ -1448,10 +1452,10 @@ CS.Controllers.MainMenu = P(CS.Controllers.Base, function (c) {
     };
 
     c._initEvents = function () {
-        this.$menuBtn.click($.proxy(this._toggleMenu, this));
-        this.$contentOverlayWhenMenuOpen.click($.proxy(this.hideMenu, this));
+        this.$menuBtn.click(this._toggleMenu.bind(this));
+        this.$contentOverlayWhenMenuOpen.click(this.hideMenu.bind(this));
 
-        this.$selectAreasLink.click($.proxy(this._showModal, this));
+        this.$selectAreasLink.click(this._showModal.bind(this));
     };
 
     c.reRender = function() {
@@ -1575,8 +1579,8 @@ CS.Controllers.TaskNotifications = P(function (c) {
     };
 
     c._initEvents = function () {
-        this.$taskNotificationsBtn.click($.proxy(this._toggleNotifications, this));
-        this.$contentOverlayWhenMenuOpen.click($.proxy(this.hide, this));
+        this.$taskNotificationsBtn.click(this._toggleNotifications.bind(this));
+        this.$contentOverlayWhenMenuOpen.click(this.hide.bind(this));
     };
 
     c.reRender = function () {
@@ -1667,7 +1671,7 @@ CS.Controllers.TaskNotifications = P(function (c) {
             url: url,
             type: type,
             success: function (data) {
-                CS.account.data = data;
+                CS.account.data = data || {};
 
                 // The reason why we store the taskIds and not the tasks themselves is because the isActive() function isn't serialized
                 var viewedTaskIds = _.union(this.activeTasks.map(function (task) {
@@ -1741,11 +1745,11 @@ CS.Controllers.OverviewBlueprintAreaComposer = React.createClass({displayName: "
             this._fetchLatestAccountDataAndUpdateIt(itemNameToAdd);
         }
 
-        CS.Controllers.WorkbookAreaCommon.resetAndHideForm(this.$textarea, $.proxy(this._hideForm, this));
+        CS.Controllers.WorkbookAreaCommon.resetAndHideForm(this.$textarea, this._hideForm.bind(this));
     },
 
     _handleTextareaKeyUp: function (e) {
-        CS.Controllers.WorkbookAreaCommon.handleTextareaKeyUp(e, $.proxy(this._handleComposerFormSubmit, this), $.proxy(this._hideForm, this));
+        CS.Controllers.WorkbookAreaCommon.handleTextareaKeyUp(e, this._handleComposerFormSubmit.bind(this), this._hideForm.bind(this));
     },
 
     _hideForm: function () {
@@ -1834,8 +1838,7 @@ CS.Controllers.OverviewBlueprintAreaPanel = React.createClass({displayName: "Ove
             {
                 animation: 150,
                 onUpdate: function () {
-                    CS.Controllers.WorkbookAreaCommon.handleWorkbookItemsReordered(this.$itemNamesList, this._getBlueprintArea().className);
-                    CS.overviewController.reRender();
+                    CS.Controllers.WorkbookAreaCommon.handleWorkbookItemsReordered(this.$itemNamesList.children(), this._getBlueprintArea().className, CS.overviewController.reRender.bind(CS.overviewController));
                 }.bind(this),
                 handle: ".fa-bars"
             }
@@ -1941,7 +1944,7 @@ CS.Controllers.OverviewBlueprintItem = React.createClass({displayName: "Overview
     },
 
     _handleTextareaKeyUp: function(e) {
-        CS.Controllers.WorkbookAreaCommon.handleTextareaKeyUp(e, $.proxy(this._handleComposerFormSubmit, this), $.proxy(this._hideForm, this));
+        CS.Controllers.WorkbookAreaCommon.handleTextareaKeyUp(e, this._handleComposerFormSubmit.bind(this), this._hideForm.bind(this));
     },
 
     _hideForm: function() {
@@ -1976,7 +1979,7 @@ CS.Controllers.OverviewBlueprintItem = React.createClass({displayName: "Overview
                     this.$listItem.hide();
                 }
 
-                CS.Controllers.WorkbookAreaCommon.resetAndHideForm(this.$textarea, $.proxy(this._hideForm, this));
+                CS.Controllers.WorkbookAreaCommon.resetAndHideForm(this.$textarea, this._hideForm.bind(this));
 
                 CS.account.data[this._getBlueprintAreaClassName()] = updatedBlueprintAreaData;
                 CS.overviewController.saveAccountData();
@@ -2234,7 +2237,7 @@ CS.Controllers.WorkbookAreaAddItemTaskForm = React.createClass({displayName: "Wo
             this.$textarea.val(this.currentWording.sentenceStart);
         }
 
-        CS.Controllers.WorkbookAreaCommon.handleTextareaKeyUp(e, $.proxy(this._handleFormSubmit, this));
+        CS.Controllers.WorkbookAreaCommon.handleTextareaKeyUp(e, this._handleFormSubmit.bind(this));
     },
 
     _fetchLatestAccountDataAndUpdateIt: function(itemNameToAdd) {
@@ -2299,7 +2302,7 @@ CS.Controllers.WorkbookAreaPrioritizeItemsTask = React.createClass({displayName:
             url: url,
             type: type,
             success: function (data) {
-                CS.account.data = data;
+                CS.account.data = data || {};
 
                 var prioritizedWorkbookAreaIds = CS.account.data.prioritizedWorkbookAreaIds || [];
                 prioritizedWorkbookAreaIds.push(this.props.workbookArea.id);
@@ -2411,8 +2414,7 @@ CS.Controllers.WorkbookArea = P(function (c) {
                     {
                         animation: 150,
                         onUpdate: function () {
-                            CS.Controllers.WorkbookAreaCommon.handleWorkbookItemsReordered(this.$list, this.state.workbookArea.className);
-                            this.state.controller.reRender();
+                            CS.Controllers.WorkbookAreaCommon.handleWorkbookItemsReordered(this.$list.children(), this.state.workbookArea.className, this.state.controller.reRender.bind(this.state.controller));
                         }.bind(this),
                         handle: ".fa-bars"
                     }
@@ -2437,11 +2439,11 @@ CS.Controllers.WorkbookArea = P(function (c) {
                 this._fetchLatestAccountDataAndUpdateIt(itemNameToAdd);
             }
 
-            CS.Controllers.WorkbookAreaCommon.resetAndHideForm(this.$textarea, $.proxy(this._hideForm, this));
+            CS.Controllers.WorkbookAreaCommon.resetAndHideForm(this.$textarea, this._hideForm.bind(this));
         },
 
         _handleTextareaKeyUp: function (e) {
-            CS.Controllers.WorkbookAreaCommon.handleTextareaKeyUp(e, $.proxy(this._handleComposerFormSubmit, this), $.proxy(this._hideForm, this));
+            CS.Controllers.WorkbookAreaCommon.handleTextareaKeyUp(e, this._handleComposerFormSubmit.bind(this), this._hideForm.bind(this));
         },
 
         _hideForm: function () {
@@ -2576,7 +2578,7 @@ CS.Controllers.WorkbookAreaWorkbookItem = React.createClass({displayName: "Workb
     },
 
     _handleTextareaKeyUp: function(e) {
-        CS.Controllers.WorkbookAreaCommon.handleTextareaKeyUp(e, $.proxy(this._handleComposerFormSubmit, this), $.proxy(this._hideForm, this));
+        CS.Controllers.WorkbookAreaCommon.handleTextareaKeyUp(e, this._handleComposerFormSubmit.bind(this), this._hideForm.bind(this));
     },
 
     _hideForm: function() {
@@ -2610,7 +2612,7 @@ CS.Controllers.WorkbookAreaWorkbookItem = React.createClass({displayName: "Workb
                     this.$listItem.hide();
                 }
 
-                CS.Controllers.WorkbookAreaCommon.resetAndHideForm(this.$textarea, $.proxy(this._hideForm, this));
+                CS.Controllers.WorkbookAreaCommon.resetAndHideForm(this.$textarea, this._hideForm.bind(this));
 
                 CS.account.data[this.props.workbookAreaClassName] = updatedBlueprintAreaData;
                 CS.workbookAreaController.saveAccountData();
@@ -2730,7 +2732,7 @@ CS.Controllers.WorkbookItemAddItemTask = React.createClass({displayName: "Workbo
             url: url,
             type: type,
             success: function (data) {
-                CS.account.data = data;
+                CS.account.data = data || {};
 
                 if (this._isValid(itemNoteToAdd) && !CS.Controllers.WorkbookItemCommon.doesItemAlreadyExist(itemNoteToAdd, this.props.workbookArea.className, this.props.workbookItemIndex)) {
                     var updatedWorkbookItemNotesData = CS.account.data[this.props.workbookArea.className][this.props.workbookItemIndex].notes || [];
@@ -2832,11 +2834,11 @@ CS.Controllers.WorkbookItem = P(function (c) {
                 this._fetchLatestAccountDataAndUpdateIt(itemNoteToAdd);
             }
 
-            CS.Controllers.WorkbookItemCommon.resetAndHideForm(this.$textarea, $.proxy(this._hideForm, this));
+            CS.Controllers.WorkbookItemCommon.resetAndHideForm(this.$textarea, this._hideForm.bind(this));
         },
 
         _handleTextareaKeyUp: function (e) {
-            CS.Controllers.WorkbookItemCommon.handleTextareaKeyUp(e, $.proxy(this._hideForm, this));
+            CS.Controllers.WorkbookItemCommon.handleTextareaKeyUp(e, this._hideForm.bind(this));
         },
 
         _hideForm: function () {
@@ -2852,7 +2854,7 @@ CS.Controllers.WorkbookItem = P(function (c) {
                 url: url,
                 type: type,
                 success: function (data) {
-                    CS.account.data = data;
+                    CS.account.data = data || {};
 
                     var updatedWorkbookItemNotesData = CS.account.data[this.state.workbookArea.className][this.state.workbookItemIndex].notes || [];
                     updatedWorkbookItemNotesData.push(itemNoteToAdd);
@@ -2965,7 +2967,7 @@ CS.Controllers.WorkbookItemNote = React.createClass({displayName: "WorkbookItemN
     },
 
     _handleTextareaKeyUp: function(e) {
-        CS.Controllers.WorkbookItemCommon.handleTextareaKeyUp(e, $.proxy(this._handleComposerFormSubmit, this), $.proxy(this._hideForm, this));
+        CS.Controllers.WorkbookItemCommon.handleTextareaKeyUp(e, this._handleComposerFormSubmit.bind(this), this._hideForm.bind(this));
     },
 
     _hideForm: function() {
@@ -2984,7 +2986,7 @@ CS.Controllers.WorkbookItemNote = React.createClass({displayName: "WorkbookItemN
             url: url,
             type: type,
             success: function (data) {
-                CS.account.data = data;
+                CS.account.data = data || {};
 
                 var updatedWorkbookItemNotesData = CS.account.data[this.props.workbookAreaClassName][this.props.workbookItemIndex].notes || [];
 

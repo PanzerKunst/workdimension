@@ -52,8 +52,7 @@ CS.Controllers.OverviewBlueprintAreaPanel = React.createClass({
             {
                 animation: 150,
                 onUpdate: function () {
-                    CS.Controllers.WorkbookAreaCommon.handleWorkbookItemsReordered(this.$itemNamesList, this._getBlueprintArea().className);
-                    CS.overviewController.reRender();
+                    CS.Controllers.WorkbookAreaCommon.handleWorkbookItemsReordered(this.$itemNamesList.children(), this._getBlueprintArea().className, CS.overviewController.reRender.bind(CS.overviewController));
                 }.bind(this),
                 handle: ".fa-bars"
             }

@@ -30,7 +30,7 @@ CS.Controllers.WorkbookAreaPrioritizeItemsTask = React.createClass({
             url: url,
             type: type,
             success: function (data) {
-                CS.account.data = data;
+                CS.account.data = data || {};
 
                 var prioritizedWorkbookAreaIds = CS.account.data.prioritizedWorkbookAreaIds || [];
                 prioritizedWorkbookAreaIds.push(this.props.workbookArea.id);

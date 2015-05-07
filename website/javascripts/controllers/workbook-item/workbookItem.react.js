@@ -81,11 +81,11 @@ CS.Controllers.WorkbookItem = P(function (c) {
                 this._fetchLatestAccountDataAndUpdateIt(itemNoteToAdd);
             }
 
-            CS.Controllers.WorkbookItemCommon.resetAndHideForm(this.$textarea, $.proxy(this._hideForm, this));
+            CS.Controllers.WorkbookItemCommon.resetAndHideForm(this.$textarea, this._hideForm.bind(this));
         },
 
         _handleTextareaKeyUp: function (e) {
-            CS.Controllers.WorkbookItemCommon.handleTextareaKeyUp(e, $.proxy(this._hideForm, this));
+            CS.Controllers.WorkbookItemCommon.handleTextareaKeyUp(e, this._hideForm.bind(this));
         },
 
         _hideForm: function () {
@@ -101,7 +101,7 @@ CS.Controllers.WorkbookItem = P(function (c) {
                 url: url,
                 type: type,
                 success: function (data) {
-                    CS.account.data = data;
+                    CS.account.data = data || {};
 
                     var updatedWorkbookItemNotesData = CS.account.data[this.state.workbookArea.className][this.state.workbookItemIndex].notes || [];
                     updatedWorkbookItemNotesData.push(itemNoteToAdd);

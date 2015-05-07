@@ -69,7 +69,7 @@ CS.Controllers.WorkbookItemNote = React.createClass({
     },
 
     _handleTextareaKeyUp: function(e) {
-        CS.Controllers.WorkbookItemCommon.handleTextareaKeyUp(e, $.proxy(this._handleComposerFormSubmit, this), $.proxy(this._hideForm, this));
+        CS.Controllers.WorkbookItemCommon.handleTextareaKeyUp(e, this._handleComposerFormSubmit.bind(this), this._hideForm.bind(this));
     },
 
     _hideForm: function() {
@@ -88,7 +88,7 @@ CS.Controllers.WorkbookItemNote = React.createClass({
             url: url,
             type: type,
             success: function (data) {
-                CS.account.data = data;
+                CS.account.data = data || {};
 
                 var updatedWorkbookItemNotesData = CS.account.data[this.props.workbookAreaClassName][this.props.workbookItemIndex].notes || [];
 

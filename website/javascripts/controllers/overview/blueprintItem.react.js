@@ -84,7 +84,7 @@ CS.Controllers.OverviewBlueprintItem = React.createClass({
     },
 
     _handleTextareaKeyUp: function(e) {
-        CS.Controllers.WorkbookAreaCommon.handleTextareaKeyUp(e, $.proxy(this._handleComposerFormSubmit, this), $.proxy(this._hideForm, this));
+        CS.Controllers.WorkbookAreaCommon.handleTextareaKeyUp(e, this._handleComposerFormSubmit.bind(this), this._hideForm.bind(this));
     },
 
     _hideForm: function() {
@@ -119,7 +119,7 @@ CS.Controllers.OverviewBlueprintItem = React.createClass({
                     this.$listItem.hide();
                 }
 
-                CS.Controllers.WorkbookAreaCommon.resetAndHideForm(this.$textarea, $.proxy(this._hideForm, this));
+                CS.Controllers.WorkbookAreaCommon.resetAndHideForm(this.$textarea, this._hideForm.bind(this));
 
                 CS.account.data[this._getBlueprintAreaClassName()] = updatedBlueprintAreaData;
                 CS.overviewController.saveAccountData();

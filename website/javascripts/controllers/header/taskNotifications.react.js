@@ -56,8 +56,8 @@ CS.Controllers.TaskNotifications = P(function (c) {
     };
 
     c._initEvents = function () {
-        this.$taskNotificationsBtn.click($.proxy(this._toggleNotifications, this));
-        this.$contentOverlayWhenMenuOpen.click($.proxy(this.hide, this));
+        this.$taskNotificationsBtn.click(this._toggleNotifications.bind(this));
+        this.$contentOverlayWhenMenuOpen.click(this.hide.bind(this));
     };
 
     c.reRender = function () {
@@ -148,7 +148,7 @@ CS.Controllers.TaskNotifications = P(function (c) {
             url: url,
             type: type,
             success: function (data) {
-                CS.account.data = data;
+                CS.account.data = data || {};
 
                 // The reason why we store the taskIds and not the tasks themselves is because the isActive() function isn't serialized
                 var viewedTaskIds = _.union(this.activeTasks.map(function (task) {

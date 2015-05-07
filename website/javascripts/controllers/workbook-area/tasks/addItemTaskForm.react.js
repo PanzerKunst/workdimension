@@ -79,7 +79,7 @@ CS.Controllers.WorkbookAreaAddItemTaskForm = React.createClass({
             this.$textarea.val(this.currentWording.sentenceStart);
         }
 
-        CS.Controllers.WorkbookAreaCommon.handleTextareaKeyUp(e, $.proxy(this._handleFormSubmit, this));
+        CS.Controllers.WorkbookAreaCommon.handleTextareaKeyUp(e, this._handleFormSubmit.bind(this));
     },
 
     _fetchLatestAccountDataAndUpdateIt: function(itemNameToAdd) {

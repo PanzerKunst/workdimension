@@ -45,7 +45,7 @@ CS.Controllers.WorkbookAreaCommon = {
         return !_.isEmpty(_.find(areaItems, "name", itemName));
     },
 
-    handleWorkbookItemsReordered: function($list, workbookAreaClassName) {
+    handleWorkbookItemsReordered: function($listItems, workbookAreaClassName, callback) {
         var type = "GET";
         var url = "/api/account-data";
 
@@ -53,17 +53,21 @@ CS.Controllers.WorkbookAreaCommon = {
             url: url,
             type: type,
             success: function (data) {
-                CS.account.data = data;
+                CS.account.data = data || {};
 
                 var newlyOrderedItems = [];
 
-                $list.children().each(function () {
+                $listItems.each(function () {
                     var itemName = $(this).children("p").text();
                     newlyOrderedItems.push(_.find(CS.account.data[workbookAreaClassName], "name", itemName));
                 });
 
                 CS.account.data[workbookAreaClassName] = newlyOrderedItems;
                 CS.saveAccountData();
+
+                if (callback) {
+                    callback();
+                }
             },
             error: function () {
                 alert("AJAX failure doing a " + type + " request to \"" + url + "\"");

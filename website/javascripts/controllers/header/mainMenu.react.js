@@ -49,10 +49,10 @@ CS.Controllers.MainMenu = P(CS.Controllers.Base, function (c) {
     };
 
     c._initEvents = function () {
-        this.$menuBtn.click($.proxy(this._toggleMenu, this));
-        this.$contentOverlayWhenMenuOpen.click($.proxy(this.hideMenu, this));
+        this.$menuBtn.click(this._toggleMenu.bind(this));
+        this.$contentOverlayWhenMenuOpen.click(this.hideMenu.bind(this));
 
-        this.$selectAreasLink.click($.proxy(this._showModal, this));
+        this.$selectAreasLink.click(this._showModal.bind(this));
     };
 
     c.reRender = function() {
