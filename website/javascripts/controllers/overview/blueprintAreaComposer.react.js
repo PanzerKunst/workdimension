@@ -51,11 +51,11 @@ CS.Controllers.OverviewBlueprintAreaComposer = React.createClass({
             this._fetchLatestAccountDataAndUpdateIt(itemNameToAdd);
         }
 
-        CS.Controllers.WorkbookAreaCommon.resetAndHideForm(this.$textarea, this._hideForm.bind(this));
+        CS.Controllers.WorkbookAreaCommon.resetAndHideForm(this.$textarea, this._hideForm);
     },
 
     _handleTextareaKeyUp: function (e) {
-        CS.Controllers.WorkbookAreaCommon.handleTextareaKeyUp(e, this._handleComposerFormSubmit.bind(this), this._hideForm.bind(this));
+        CS.Controllers.WorkbookAreaCommon.handleTextareaKeyUp(e, this._handleComposerFormSubmit, this._hideForm);
     },
 
     _hideForm: function () {

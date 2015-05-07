@@ -81,11 +81,11 @@ CS.Controllers.WorkbookItem = P(function (c) {
                 this._fetchLatestAccountDataAndUpdateIt(itemNoteToAdd);
             }
 
-            CS.Controllers.WorkbookItemCommon.resetAndHideForm(this.$textarea, this._hideForm.bind(this));
+            CS.Controllers.WorkbookItemCommon.resetAndHideForm(this.$textarea, this._hideForm);
         },
 
         _handleTextareaKeyUp: function (e) {
-            CS.Controllers.WorkbookItemCommon.handleTextareaKeyUp(e, this._hideForm.bind(this));
+            CS.Controllers.WorkbookItemCommon.handleTextareaKeyUp(e, this._hideForm);
         },
 
         _hideForm: function () {

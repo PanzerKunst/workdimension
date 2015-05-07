@@ -425,11 +425,11 @@ CS.Controllers.OverviewBlueprintAreaComposer = React.createClass({displayName: "
             this._fetchLatestAccountDataAndUpdateIt(itemNameToAdd);
         }
 
-        CS.Controllers.WorkbookAreaCommon.resetAndHideForm(this.$textarea, this._hideForm.bind(this));
+        CS.Controllers.WorkbookAreaCommon.resetAndHideForm(this.$textarea, this._hideForm);
     },
 
     _handleTextareaKeyUp: function (e) {
-        CS.Controllers.WorkbookAreaCommon.handleTextareaKeyUp(e, this._handleComposerFormSubmit.bind(this), this._hideForm.bind(this));
+        CS.Controllers.WorkbookAreaCommon.handleTextareaKeyUp(e, this._handleComposerFormSubmit, this._hideForm);
     },
 
     _hideForm: function () {
@@ -624,7 +624,7 @@ CS.Controllers.OverviewBlueprintItem = React.createClass({displayName: "Overview
     },
 
     _handleTextareaKeyUp: function(e) {
-        CS.Controllers.WorkbookAreaCommon.handleTextareaKeyUp(e, this._handleComposerFormSubmit.bind(this), this._hideForm.bind(this));
+        CS.Controllers.WorkbookAreaCommon.handleTextareaKeyUp(e, this._handleComposerFormSubmit, this._hideForm);
     },
 
     _hideForm: function() {
@@ -659,7 +659,7 @@ CS.Controllers.OverviewBlueprintItem = React.createClass({displayName: "Overview
                     this.$listItem.hide();
                 }
 
-                CS.Controllers.WorkbookAreaCommon.resetAndHideForm(this.$textarea, this._hideForm.bind(this));
+                CS.Controllers.WorkbookAreaCommon.resetAndHideForm(this.$textarea, this._hideForm);
 
                 CS.account.data[this._getBlueprintAreaClassName()] = updatedBlueprintAreaData;
                 CS.overviewController.saveAccountData();
@@ -917,7 +917,7 @@ CS.Controllers.WorkbookAreaAddItemTaskForm = React.createClass({displayName: "Wo
             this.$textarea.val(this.currentWording.sentenceStart);
         }
 
-        CS.Controllers.WorkbookAreaCommon.handleTextareaKeyUp(e, this._handleFormSubmit.bind(this));
+        CS.Controllers.WorkbookAreaCommon.handleTextareaKeyUp(e, this._handleFormSubmit);
     },
 
     _fetchLatestAccountDataAndUpdateIt: function(itemNameToAdd) {
@@ -1119,11 +1119,11 @@ CS.Controllers.WorkbookArea = P(function (c) {
                 this._fetchLatestAccountDataAndUpdateIt(itemNameToAdd);
             }
 
-            CS.Controllers.WorkbookAreaCommon.resetAndHideForm(this.$textarea, this._hideForm.bind(this));
+            CS.Controllers.WorkbookAreaCommon.resetAndHideForm(this.$textarea, this._hideForm);
         },
 
         _handleTextareaKeyUp: function (e) {
-            CS.Controllers.WorkbookAreaCommon.handleTextareaKeyUp(e, this._handleComposerFormSubmit.bind(this), this._hideForm.bind(this));
+            CS.Controllers.WorkbookAreaCommon.handleTextareaKeyUp(e, this._handleComposerFormSubmit, this._hideForm);
         },
 
         _hideForm: function () {
@@ -1258,7 +1258,7 @@ CS.Controllers.WorkbookAreaWorkbookItem = React.createClass({displayName: "Workb
     },
 
     _handleTextareaKeyUp: function(e) {
-        CS.Controllers.WorkbookAreaCommon.handleTextareaKeyUp(e, this._handleComposerFormSubmit.bind(this), this._hideForm.bind(this));
+        CS.Controllers.WorkbookAreaCommon.handleTextareaKeyUp(e, this._handleComposerFormSubmit, this._hideForm);
     },
 
     _hideForm: function() {
@@ -1292,7 +1292,7 @@ CS.Controllers.WorkbookAreaWorkbookItem = React.createClass({displayName: "Workb
                     this.$listItem.hide();
                 }
 
-                CS.Controllers.WorkbookAreaCommon.resetAndHideForm(this.$textarea, this._hideForm.bind(this));
+                CS.Controllers.WorkbookAreaCommon.resetAndHideForm(this.$textarea, this._hideForm);
 
                 CS.account.data[this.props.workbookAreaClassName] = updatedBlueprintAreaData;
                 CS.workbookAreaController.saveAccountData();
@@ -1514,11 +1514,11 @@ CS.Controllers.WorkbookItem = P(function (c) {
                 this._fetchLatestAccountDataAndUpdateIt(itemNoteToAdd);
             }
 
-            CS.Controllers.WorkbookItemCommon.resetAndHideForm(this.$textarea, this._hideForm.bind(this));
+            CS.Controllers.WorkbookItemCommon.resetAndHideForm(this.$textarea, this._hideForm);
         },
 
         _handleTextareaKeyUp: function (e) {
-            CS.Controllers.WorkbookItemCommon.handleTextareaKeyUp(e, this._hideForm.bind(this));
+            CS.Controllers.WorkbookItemCommon.handleTextareaKeyUp(e, this._hideForm);
         },
 
         _hideForm: function () {
@@ -1647,7 +1647,7 @@ CS.Controllers.WorkbookItemNote = React.createClass({displayName: "WorkbookItemN
     },
 
     _handleTextareaKeyUp: function(e) {
-        CS.Controllers.WorkbookItemCommon.handleTextareaKeyUp(e, this._handleComposerFormSubmit.bind(this), this._hideForm.bind(this));
+        CS.Controllers.WorkbookItemCommon.handleTextareaKeyUp(e, this._handleComposerFormSubmit, this._hideForm);
     },
 
     _hideForm: function() {

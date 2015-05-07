@@ -69,7 +69,7 @@ CS.Controllers.WorkbookItemNote = React.createClass({
     },
 
     _handleTextareaKeyUp: function(e) {
-        CS.Controllers.WorkbookItemCommon.handleTextareaKeyUp(e, this._handleComposerFormSubmit.bind(this), this._hideForm.bind(this));
+        CS.Controllers.WorkbookItemCommon.handleTextareaKeyUp(e, this._handleComposerFormSubmit, this._hideForm);
     },
 
     _hideForm: function() {
