@@ -50,7 +50,7 @@ object Application extends Controller {
                 var accountData = AccountDataDto.getOfAccountId(accountId)
 
                 if (request.queryString.contains("taskIdToMarkAsViewed")) {
-                  val taskIdToMarkAsViewed = request.queryString.get("taskIdToMarkAsViewed").get.head.toLong
+                  val taskIdToMarkAsViewed = request.queryString.get("taskIdToMarkAsViewed").get.head
                   accountData = Some(addTaskMarkedAsViewedToAccountData(accountData, taskIdToMarkAsViewed))
 
                   AccountDataDto.create(accountId, accountData.get)
@@ -80,9 +80,18 @@ object Application extends Controller {
                   case None => BadRequest("No account data found")
 
                   case Some(accountData) =>
+                    var accountDat4 = accountData
+
                     val workbookItems = (accountData \ workbookArea.className).as[List[WorkbookItem]]
 
-                    Ok(views.html.workbookItem(WorkbookAreaDto.getAll, workbookArea, workbookItems.apply(index), accountId, accountData))
+                    if (request.queryString.contains("taskIdToMarkAsViewed")) {
+                      val taskIdToMarkAsViewed = request.queryString.get("taskIdToMarkAsViewed").get.head
+                      accountDat4 = addTaskMarkedAsViewedToAccountData(Some(accountData), taskIdToMarkAsViewed)
+
+                      AccountDataDto.create(accountId, accountDat4)
+                    }
+
+                    Ok(views.html.workbookItem(WorkbookAreaDto.getAll, workbookArea, workbookItems.apply(index), accountId, accountDat4))
                       .withHeaders(doNotCachePage: _*)
                 }
             }
@@ -112,18 +121,18 @@ object Application extends Controller {
     tempAccoundId
   }
 
-  private def addTaskMarkedAsViewedToAccountData(accountData: Option[JsObject], taskId: Long): JsObject = {
+  private def addTaskMarkedAsViewedToAccountData(accountData: Option[JsObject], taskId: String): JsObject = {
     accountData match {
       case None => JsObject(Seq(
-        accountDataJsonKeyForClickedTaskIds -> JsArray(Seq(JsNumber(taskId)))
+        accountDataJsonKeyForClickedTaskIds -> JsArray(Seq(JsString(taskId)))
       ))
 
       case Some(data) =>
-        val jsonTransformer = (data \ accountDataJsonKeyForClickedTaskIds).asOpt[List[Long]] match {
-          case None => __.json.update((__ \ accountDataJsonKeyForClickedTaskIds).json.put(JsArray(Seq(JsNumber(taskId)))))
+        val jsonTransformer = (data \ accountDataJsonKeyForClickedTaskIds).asOpt[List[String]] match {
+          case None => __.json.update((__ \ accountDataJsonKeyForClickedTaskIds).json.put(JsArray(Seq(JsString(taskId)))))
 
           case Some(clickedTaskIds) => (__ \ accountDataJsonKeyForClickedTaskIds).json.update(
-            __.read[JsArray].map { clickedTaskIds => clickedTaskIds :+ JsNumber(taskId)}
+            __.read[JsArray].map { clickedTaskIds => clickedTaskIds :+ JsString(taskId)}
           )
         }
 

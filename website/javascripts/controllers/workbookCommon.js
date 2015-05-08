@@ -2,6 +2,10 @@ CS.Controllers.WorkbookCommon = {
     fontSizeLargeScreen: 22,
     fontSizeMediumScreen: 18,
     listItemEditModeClass: "editing",
+    entityTypes: {
+        workbookArea: "workbookArea",
+        workbookItem: "workbookItem"
+    },
 
     resetAndHideForm: function ($textarea, callback, textareaDefaultHeightPx) {
         $textarea.val(null);
@@ -12,7 +16,7 @@ CS.Controllers.WorkbookCommon = {
         }
     },
 
-    getTextareaDefaultHeight: function($textarea, textareaDefaultHeightPx, mediumScreenTextareaDefaultHeightPx, largeScreenTextareaDefaultHeightPx) {
+    getTextareaDefaultHeight: function ($textarea, textareaDefaultHeightPx, mediumScreenTextareaDefaultHeightPx, largeScreenTextareaDefaultHeightPx) {
         var fontSizeStr = $textarea.css("font-size");
         var fontSizePx = parseFloat(fontSizeStr.substring(0, fontSizeStr.indexOf("px")));
 
@@ -25,7 +29,7 @@ CS.Controllers.WorkbookCommon = {
         return textareaDefaultHeightPx;
     },
 
-    setProgressBarWidth: function($progressBar, itemCount, stepCount) {
+    setProgressBarWidth: function ($progressBar, itemCount, stepCount) {
         var itemPercent = itemCount / stepCount * 100;
 
         if (itemPercent > 100) {

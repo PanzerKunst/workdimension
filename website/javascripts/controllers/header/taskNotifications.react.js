@@ -11,14 +11,16 @@ CS.Controllers.TaskNotifications = P(function (c) {
             return (
                 <ul className="styleless">
                     {this.state.activeTasks.map(function (task) {
-                        var id = "notification-for-task-" + task.id;
+                        var id = "notification-for-task-" + task.entityType + "-" + task.id;
 
                         var workbookArea = CS.blueprintAreasModel.getOfId(task.workbookAreaId);
 
-                        var href = "/workbook-areas/" + workbookArea.className + "?taskIdToMarkAsViewed=" + task.id;
+                        var href = task.entityType === CS.Controllers.WorkbookCommon.entityTypes.workbookArea ?
+                            "/workbook-areas/" + workbookArea.className + "?taskIdToMarkAsViewed=" + task.entityType + "-" + task.id :
+                            "/workbook-items/" + workbookArea.className + "/" + task.itemIndex + "?taskIdToMarkAsViewed=" + task.entityType + "-" + task.id;
 
                         var liClasses = classNames({
-                            "clicked": _.includes(CS.account.data.clickedTaskIds, task.id)
+                            "clicked": _.includes(CS.account.data.clickedTaskIds, task.entityType + "-" + task.id)
                         });
 
                         return (
@@ -29,7 +31,7 @@ CS.Controllers.TaskNotifications = P(function (c) {
                     })}
 
                     {this.state.doneTasks.map(function (task) {
-                        var id = "notification-for-task-" + task.id;
+                        var id = "notification-for-task-" + task.entityType + "-" + task.id;
 
                         return (
                             <li key={id} className="done">{task.notificationText}</li>
@@ -61,19 +63,20 @@ CS.Controllers.TaskNotifications = P(function (c) {
     };
 
     c.reRender = function () {
-        this.activeTasks = this._getActiveTasks();
-        var newTasks = this._getNewTasks();
+        this.activeAreaTasks = this._getActiveAreaTasks();
+        this.activeItemTasks = this._getActiveItemTasks();
+
+        var newAreaTasks = this._getNewTasks(this.activeAreaTasks, CS.Controllers.WorkbookCommon.entityTypes.workbookArea);
+        var newItemTasks = this._getNewTasks(this.activeItemTasks, CS.Controllers.WorkbookCommon.entityTypes.workbookItem);
 
         this.reactInstance.replaceState({
-            activeTasks: this._getPrioritizedActiveTasks(newTasks),
-            doneTasks: _.filter(CS.WorkbookAreaTasks, function (task) {
-                return task.isDone();
-            })
+            activeTasks: this._getPrioritizedActiveTasks(newAreaTasks, newItemTasks),
+            doneTasks: this._getDoneTasks()
         });
 
-        if (newTasks.length > 0) {
+        if (newAreaTasks.length + newItemTasks.length > 0) {
             this.$taskNotificationsBtn.addClass("with-new-items");
-            this.$newTaskCountSpan.html(newTasks.length);
+            this.$newTaskCountSpan.html(newAreaTasks.length + newItemTasks.length);
         }
     };
 
@@ -90,24 +93,57 @@ CS.Controllers.TaskNotifications = P(function (c) {
         this.reRender();
     };
 
-    c._getActiveTasks = function () {
-        return _.filter(CS.WorkbookAreaTasks, function (task) {
-            return task.isActive();
+    c._getActiveAreaTasks = function () {
+        var result = [];
+
+        CS.WorkbookAreaTasks.forEach(function (task) {
+            if (task.isActive()) {
+                task.entityType = CS.Controllers.WorkbookCommon.entityTypes.workbookArea;
+                result.push(task);
+            }
+        });
+
+        return result;
+    };
+
+    c._getActiveItemTasks = function () {
+        var result = [];
+
+        // For each active area, get the list of items
+        CS.blueprintAreasModel.getActive().forEach(function (workbookArea) {
+            var workbookItemTasksForThisArea = _.filter(CS.WorkbookItemTasks, "workbookAreaId", workbookArea.id);
+            var workbookItems = CS.account.data[workbookArea.className];
+
+            workbookItemTasksForThisArea.forEach(function (task) {
+                // Call isActive() for each item. Stop on the first found.
+                for (var i = 0; i < _.size(workbookItems); i++) {
+                    if (task.isActive(i) && !task.isDone(i)) {
+                        // Add that task to the list of active ones
+                        task.entityType = CS.Controllers.WorkbookCommon.entityTypes.workbookItem;
+                        task.itemIndex = i;
+                        result.push(task);
+
+                        break;
+                    }
+                }
+            });
+        });
+
+        return result;
+    };
+
+    c._getNewTasks = function (tasks, prefix) {
+        return _.reject(tasks, function (task) {
+            return _.include(CS.account.data.viewedTaskIds, prefix + "-" + task.id);
         });
     };
 
-    c._getNewTasks = function () {
-        return _.reject(this.activeTasks, function (task) {
-            return _.include(CS.account.data.viewedTaskIds, task.id);
-        });
-    };
-
-    c._getPrioritizedActiveTasks = function (newTasks) {
-        var oldTasks = _.reject(this.activeTasks, function (task) {
-            return _.find(newTasks, "id", task.id);
+    c._getPrioritizedActiveTasks = function (newAreaTasks, newItemTasks) {
+        var oldAreaTasks = _.reject(this.activeAreaTasks, function (task) {
+            return _.find(newAreaTasks, "id", task.id);
         });
 
-        var activeOldLvl1Tasks = _.filter(oldTasks, function (task) {
+        var activeOldLvl1Tasks = _.filter(oldAreaTasks, function (task) {
             return task.level === 1;
         });
 
@@ -116,7 +152,7 @@ CS.Controllers.TaskNotifications = P(function (c) {
             return CS.account.data[workbookArea.className] ? -CS.account.data[workbookArea.className].length : 0;
         });
 
-        var activeOldLvl2Tasks = _.filter(oldTasks, function (task) {
+        var activeOldLvl2Tasks = _.filter(oldAreaTasks, function (task) {
             return task.level === 2;
         });
 
@@ -125,11 +161,46 @@ CS.Controllers.TaskNotifications = P(function (c) {
             return CS.account.data[workbookArea.className] ? -CS.account.data[workbookArea.className].length : 0;
         });
 
-        var activeOldLvl3Tasks = _.filter(oldTasks, function (task) {
+        var activeOldLvl3Tasks = _.filter(oldAreaTasks, function (task) {
             return task.level === 3;
         });
 
-        return _.union(newTasks, prioritizedOldLvl1Tasks, prioritizedOldLvl2Tasks, activeOldLvl3Tasks);
+        var activeOldItemTasks = _.reject(this.activeItemTasks, function (task) {
+            return _.find(newItemTasks, "id", task.id);
+        });
+
+        return _.union(newAreaTasks, newItemTasks, prioritizedOldLvl1Tasks, prioritizedOldLvl2Tasks, activeOldLvl3Tasks, activeOldItemTasks);
+    };
+
+    c._getDoneTasks = function () {
+        var doneAreaTasks = [];
+
+        CS.WorkbookAreaTasks.forEach(function (task) {
+            if (task.isDone()) {
+                task.entityType = CS.Controllers.WorkbookCommon.entityTypes.workbookArea;
+                doneAreaTasks.push(task);
+            }
+        });
+
+        var doneItemTasks = [];
+
+        CS.blueprintAreasModel.getActive().forEach(function (workbookArea) {
+            var workbookItemTasksForThisArea = _.filter(CS.WorkbookItemTasks, "workbookAreaId", workbookArea.id);
+            var workbookItems = CS.account.data[workbookArea.className];
+
+            workbookItemTasksForThisArea.forEach(function (task) {
+                for (var i = 0; i < _.size(workbookItems); i++) {
+                    if (task.isDone(i)) {
+                        task.entityType = CS.Controllers.WorkbookCommon.entityTypes.workbookItem;
+                        doneItemTasks.push(task);
+
+                        break;
+                    }
+                }
+            });
+        });
+
+        return _.union(doneAreaTasks, doneItemTasks);
     };
 
     c._toggleNotifications = function () {
@@ -140,7 +211,7 @@ CS.Controllers.TaskNotifications = P(function (c) {
         this._fetchLatestAccountDataAndUpdateIt();
     };
 
-    c._fetchLatestAccountDataAndUpdateIt = function() {
+    c._fetchLatestAccountDataAndUpdateIt = function () {
         var type = "GET";
         var url = "/api/account-data";
 
@@ -150,9 +221,11 @@ CS.Controllers.TaskNotifications = P(function (c) {
             success: function (data) {
                 CS.account.data = data || {};
 
+                var activeTasks = _.union(this.activeAreaTasks, this.activeItemTasks);
+
                 // The reason why we store the taskIds and not the tasks themselves is because the isActive() function isn't serialized
-                var viewedTaskIds = _.union(this.activeTasks.map(function (task) {
-                        return task.id;
+                var viewedTaskIds = _.union(activeTasks.map(function (task) {
+                        return task.entityType + "-" + task.id;
                     }),
                     CS.account.data.viewedTaskIds
                 );
@@ -161,7 +234,7 @@ CS.Controllers.TaskNotifications = P(function (c) {
                     CS.account.data.viewedTaskIds = viewedTaskIds;
                     CS.saveAccountData();
                 }
-            },
+            }.bind(this),
             error: function () {
                 alert("AJAX failure doing a " + type + " request to \"" + url + "\"");
             }

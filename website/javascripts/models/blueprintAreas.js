@@ -41,12 +41,7 @@ CS.Models.BlueprintAreas = P(function (c) {
 
         // If none is active, we set the top-N priority as active
         if (this.isInitial && _.isEmpty(this.blueprintAreas.active)) {
-            for (var i = 0; i < this.nbDefaultActiveBlueprintAreas; i++) {
-                var instanceToActivate = this.blueprintAreaInstances[i];
-                instanceToActivate.activate(this.isInitial);
-                this.blueprintAreas.active.push(instanceToActivate);
-                this.blueprintAreas.inactive = _.without(this.blueprintAreas.inactive, instanceToActivate);
-            }
+            this._activateSeveral(_.take(this.blueprintAreaInstances, this.nbDefaultActiveBlueprintAreas));
         }
 
         if (CS.overviewController) {
@@ -57,5 +52,30 @@ CS.Models.BlueprintAreas = P(function (c) {
         }
 
         this.isInitial = false;
+    };
+
+    c._activateSeveral = function(instancesToActivate) {
+        var type = "GET";
+        var url = "/api/account-data";
+
+        $.ajax({
+            url: url,
+            type: type,
+            success: function (data) {
+                CS.account.data = data || {};
+                CS.account.data.activeBlueprintAreas = CS.account.data.activeBlueprintAreas || [];
+                instancesToActivate.forEach(function(instanceToActivate) {
+                    CS.account.data.activeBlueprintAreas.push(instanceToActivate.className);
+                    this.blueprintAreas.active.push(instanceToActivate);
+                    this.blueprintAreas.inactive = _.without(this.blueprintAreas.inactive, instanceToActivate);
+                }.bind(this));
+
+                CS.saveAccountData();
+                CS.blueprintAreasModel.updateStatus();
+            }.bind(this),
+            error: function () {
+                alert("AJAX failure doing a " + type + " request to \"" + url + "\"");
+            }
+        });
     };
 });

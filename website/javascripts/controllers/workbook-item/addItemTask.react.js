@@ -113,6 +113,15 @@ CS.Controllers.WorkbookItemAddItemTask = React.createClass({
                     updatedWorkbookItemNotesData.push(itemNoteToAdd);
 
                     CS.account.data[this.props.workbookArea.className][this.props.workbookItemIndex].notes = updatedWorkbookItemNotesData;
+
+                    var describedWorkbookItemIds = CS.account.data.describedWorkbookItemIds || {};
+                    var describedWorkbookItemIdsForThisArea = describedWorkbookItemIds[this.props.workbookArea.className] || [];
+                    if (!_.contains(describedWorkbookItemIdsForThisArea, this.props.workbookItemIndex)) {
+                        describedWorkbookItemIdsForThisArea.push(this.props.workbookItemIndex);
+                    }
+                    describedWorkbookItemIds[this.props.workbookArea.className] = describedWorkbookItemIdsForThisArea;
+                    CS.account.data.describedWorkbookItemIds = describedWorkbookItemIds;
+
                     CS.saveAccountData();
                 }
 

@@ -107,6 +107,15 @@ CS.Controllers.WorkbookItem = P(function (c) {
                     updatedWorkbookItemNotesData.push(itemNoteToAdd);
 
                     CS.account.data[this.state.workbookArea.className][this.state.workbookItemIndex].notes = updatedWorkbookItemNotesData;
+
+                    var describedWorkbookItemIds = CS.account.data.describedWorkbookItemIds || {};
+                    var describedWorkbookItemIdsForThisArea = describedWorkbookItemIds[this.state.workbookArea.className] || [];
+                    if (!_.contains(describedWorkbookItemIdsForThisArea, this.state.workbookItemIndex)) {
+                        describedWorkbookItemIdsForThisArea.push(this.state.workbookItemIndex);
+                    }
+                    describedWorkbookItemIds[this.state.workbookArea.className] = describedWorkbookItemIdsForThisArea;
+                    CS.account.data.describedWorkbookItemIds = describedWorkbookItemIds;
+
                     this.state.controller.saveAccountData();
                 }.bind(this),
                 error: function () {

@@ -14,7 +14,7 @@ CS.Models.BlueprintArea = P(function (c) {
         return CS.account.data.activeBlueprintAreas.indexOf(this.className) > -1;
     };
 
-    c.activate = function (isInitial) {
+    c.activate = function () {
         var type = "GET";
         var url = "/api/account-data";
 
@@ -26,10 +26,8 @@ CS.Models.BlueprintArea = P(function (c) {
                 CS.account.data.activeBlueprintAreas = CS.account.data.activeBlueprintAreas || [];
                 CS.account.data.activeBlueprintAreas.push(this.className);
 
-                if (!isInitial) {
-                    CS.saveAccountData();
-                    CS.blueprintAreasModel.updateStatus();
-                }
+                CS.saveAccountData();
+                CS.blueprintAreasModel.updateStatus();
             }.bind(this),
             error: function () {
                 alert("AJAX failure doing a " + type + " request to \"" + url + "\"");

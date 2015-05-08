@@ -9,10 +9,11 @@ CS.WorkbookItemTasks = [
                 return false;
             }
 
-            // TODO, and likewise for each task below
-            this.workbookNotesForThisItem = CS.account.data[workbookArea.className][itemIndex].notes;
-
-            return true;
+            return CS.account.data[workbookArea.className] && !_.isEmpty(CS.account.data[workbookArea.className][itemIndex]);
+        },
+        isDone: function (itemIndex) {
+            var workbookArea = CS.blueprintAreasModel.getOfId(5);
+            return CS.account.data.describedWorkbookItemIds && _.includes(CS.account.data.describedWorkbookItemIds[workbookArea.className], itemIndex);
         },
         wordings: [
             {
@@ -40,9 +41,11 @@ CS.WorkbookItemTasks = [
                 return false;
             }
 
-            this.workbookNotesForThisItem = CS.account.data[workbookArea.className][itemIndex].notes;
-
-            return true;
+            return CS.account.data[workbookArea.className] && !_.isEmpty(CS.account.data[workbookArea.className][itemIndex]);
+        },
+        isDone: function (itemIndex) {
+            var workbookArea = CS.blueprintAreasModel.getOfId(18);
+            return CS.account.data.describedWorkbookItemIds && _.includes(CS.account.data.describedWorkbookItemIds[workbookArea.className], itemIndex);
         },
         wordings: [
             {
@@ -70,9 +73,11 @@ CS.WorkbookItemTasks = [
                 return false;
             }
 
-            this.workbookNotesForThisItem = CS.account.data[workbookArea.className][itemIndex].notes;
-
-            return true;
+            return CS.account.data[workbookArea.className] && !_.isEmpty(CS.account.data[workbookArea.className][itemIndex]);
+        },
+        isDone: function (itemIndex) {
+            var workbookArea = CS.blueprintAreasModel.getOfId(1);
+            return CS.account.data.describedWorkbookItemIds && _.includes(CS.account.data.describedWorkbookItemIds[workbookArea.className], itemIndex);
         },
         wordings: [
             {
@@ -103,9 +108,11 @@ CS.WorkbookItemTasks = [
                 return false;
             }
 
-            this.workbookNotesForThisItem = CS.account.data[workbookArea.className][itemIndex].notes;
-
-            return true;
+            return CS.account.data[workbookArea.className] && !_.isEmpty(CS.account.data[workbookArea.className][itemIndex]);
+        },
+        isDone: function (itemIndex) {
+            var workbookArea = CS.blueprintAreasModel.getOfId(2);
+            return CS.account.data.describedWorkbookItemIds && _.includes(CS.account.data.describedWorkbookItemIds[workbookArea.className], itemIndex);
         },
         wordings: [
             {
@@ -127,9 +134,11 @@ CS.WorkbookItemTasks = [
                 return false;
             }
 
-            this.workbookNotesForThisItem = CS.account.data[workbookArea.className][itemIndex].notes;
-
-            return true;
+            return CS.account.data[workbookArea.className] && !_.isEmpty(CS.account.data[workbookArea.className][itemIndex]);
+        },
+        isDone: function (itemIndex) {
+            var workbookArea = CS.blueprintAreasModel.getOfId(4);
+            return CS.account.data.describedWorkbookItemIds && _.includes(CS.account.data.describedWorkbookItemIds[workbookArea.className], itemIndex);
         },
         wordings: [
             {
@@ -151,9 +160,11 @@ CS.WorkbookItemTasks = [
                 return false;
             }
 
-            this.workbookNotesForThisItem = CS.account.data[workbookArea.className][itemIndex].notes;
-
-            return true;
+            return CS.account.data[workbookArea.className] && !_.isEmpty(CS.account.data[workbookArea.className][itemIndex]);
+        },
+        isDone: function (itemIndex) {
+            var workbookArea = CS.blueprintAreasModel.getOfId(12);
+            return CS.account.data.describedWorkbookItemIds && _.includes(CS.account.data.describedWorkbookItemIds[workbookArea.className], itemIndex);
         },
         wordings: [
             {
@@ -175,9 +186,11 @@ CS.WorkbookItemTasks = [
                 return false;
             }
 
-            this.workbookNotesForThisItem = CS.account.data[workbookArea.className][itemIndex].notes;
-
-            return true;
+            return CS.account.data[workbookArea.className] && !_.isEmpty(CS.account.data[workbookArea.className][itemIndex]);
+        },
+        isDone: function (itemIndex) {
+            var workbookArea = CS.blueprintAreasModel.getOfId(17);
+            return CS.account.data.describedWorkbookItemIds && _.includes(CS.account.data.describedWorkbookItemIds[workbookArea.className], itemIndex);
         },
         wordings: [
             {
@@ -199,9 +212,11 @@ CS.WorkbookItemTasks = [
                 return false;
             }
 
-            this.workbookNotesForThisItem = CS.account.data[workbookArea.className][itemIndex].notes;
-
-            return true;
+            return CS.account.data[workbookArea.className] && !_.isEmpty(CS.account.data[workbookArea.className][itemIndex]);
+        },
+        isDone: function (itemIndex) {
+            var workbookArea = CS.blueprintAreasModel.getOfId(9);
+            return CS.account.data.describedWorkbookItemIds && _.includes(CS.account.data.describedWorkbookItemIds[workbookArea.className], itemIndex);
         },
         wordings: [
             {
@@ -223,9 +238,11 @@ CS.WorkbookItemTasks = [
                 return false;
             }
 
-            this.workbookNotesForThisItem = CS.account.data[workbookArea.className][itemIndex].notes;
-
-            return true;
+            return CS.account.data[workbookArea.className] && !_.isEmpty(CS.account.data[workbookArea.className][itemIndex]);
+        },
+        isDone: function (itemIndex) {
+            var workbookArea = CS.blueprintAreasModel.getOfId(3);
+            return CS.account.data.describedWorkbookItemIds && _.includes(CS.account.data.describedWorkbookItemIds[workbookArea.className], itemIndex);
         },
         wordings: [
             {
