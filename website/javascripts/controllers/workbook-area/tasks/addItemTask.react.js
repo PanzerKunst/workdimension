@@ -8,8 +8,8 @@ CS.Controllers.WorkbookAreaAddItemTask = React.createClass({
         }
 
         return (
-            <div className="workbook-task" ref="wrapper">
-                <button className="styleless fa fa-question-circle" onClick={this._showAreaDescription}></button>
+            <div className="workbook-task">
+                <button className="styleless fa fa-question-circle" onClick={CS.Controllers.WorkbookAreaCommon.showAreaDescription}></button>
                 <p>Working on: {this.props.task.workingOnText}</p>
                 <div className="progress">
                     <div ref="progressBar" className="progress-bar progress-bar-success" role="progressbar" aria-valuenow="" aria-valuemin="0" aria-valuemax="100"></div>
@@ -30,9 +30,7 @@ CS.Controllers.WorkbookAreaAddItemTask = React.createClass({
     },
 
     _initElements: function () {
-        this.$wrapper = $(React.findDOMNode(this.refs.wrapper));
-        this.$progressBar = this.$wrapper.find(".progress-bar");
-        this.$areaDescriptionWrapper = $("#area-description");
+        this.$progressBar = $(React.findDOMNode(this.refs.progressBar));
     },
 
     _initProgressBar: function () {
@@ -43,14 +41,5 @@ CS.Controllers.WorkbookAreaAddItemTask = React.createClass({
         }
 
         CS.Controllers.WorkbookCommon.setProgressBarWidth(this.$progressBar, itemCount, this.props.task.stepCount);
-    },
-
-    _showAreaDescription: function () {
-        CS.Services.Animator.fadeOut(this.$wrapper, {
-            animationDuration: 0.2,
-            onComplete: function () {
-                CS.Services.Animator.fadeIn(this.$areaDescriptionWrapper);
-            }.bind(this)
-        });
     }
 });

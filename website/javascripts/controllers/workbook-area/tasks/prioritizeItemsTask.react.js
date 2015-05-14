@@ -11,6 +11,7 @@ CS.Controllers.WorkbookAreaPrioritizeItemsTask = React.createClass({
 
         return (
             <div className="workbook-task">
+                <button className="styleless fa fa-question-circle" onClick={CS.Controllers.WorkbookAreaCommon.showAreaDescription}></button>
                 <p>Working on: {this.props.task.workingOnText}</p>
                 <div className="progress">
                     <div ref="progressBar" className="progress-bar progress-bar-success" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">0%</div>

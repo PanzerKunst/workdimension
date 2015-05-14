@@ -87,6 +87,15 @@ CS.Controllers.WorkbookAreaCommon = {
         $notesIndicator.css("width", (noteCount * CS.Controllers.WorkbookAreaCommon.noteIndicatorUnitLengthEm) + "em");
     },
 
+    showAreaDescription: function () {
+        CS.Services.Animator.fadeOut($(".workbook-task"), {
+            animationDuration: 0.2,
+            onComplete: function () {
+                CS.Services.Animator.fadeIn($("#area-description"));
+            }
+        });
+    },
+
     _getTextareaDefaultHeight: function($textarea) {
         return CS.Controllers.WorkbookCommon.getTextareaDefaultHeight($textarea, this.textareaDefaultHeightPx, this.mediumScreenTextareaDefaultHeightPx, this.largeScreenTextareaDefaultHeightPx);
     }

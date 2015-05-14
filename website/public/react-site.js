@@ -883,52 +883,7 @@ CS.Controllers.WorkbookAreaAddItemLvl2Task = React.createClass({displayName: "Wo
 
         return (
             React.createElement("div", {className: "workbook-task"}, 
-                React.createElement("p", null, "Working on: ", this.props.task.workingOnText), 
-                React.createElement("div", {className: "progress"}, 
-                    React.createElement("div", {ref: "progressBar", className: "progress-bar progress-bar-success", role: "progressbar", "aria-valuenow": "", "aria-valuemin": "0", "aria-valuemax": "100"})
-                ), 
-                comingUpNextParagraph, 
-                React.createElement(CS.Controllers.WorkbookAreaAddItemTaskForm, {task: this.props.task, workbookArea: this.props.workbookArea, controller: this.props.controller})
-            )
-            );
-    },
-
-    componentDidMount: function () {
-        this._initElements();
-        this._initProgressBar();
-    },
-
-    componentDidUpdate: function() {
-        this._initProgressBar();
-    },
-
-    _initElements: function () {
-        this.$progressBar = $(React.findDOMNode(this.refs.progressBar));
-    },
-
-    _initProgressBar: function() {
-        var itemCount = 0;
-
-        if (CS.account.data && !_.isEmpty(CS.account.data[this.props.workbookArea.className])) {
-            itemCount = CS.account.data[this.props.workbookArea.className].length - CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl1TaskComplete;
-        }
-
-        CS.Controllers.WorkbookCommon.setProgressBarWidth(this.$progressBar, itemCount, this.props.task.stepCount);
-    }
-});
-
-CS.Controllers.WorkbookAreaAddItemTask = React.createClass({displayName: "WorkbookAreaAddItemTask",
-    render: function () {
-        var comingUpNextParagraph = null;
-        if (this.props.comingUpNextText) {
-            comingUpNextParagraph = (
-                React.createElement("p", {className: "coming-up-next"}, "Coming up next: ", this.props.comingUpNextText)
-                );
-        }
-
-        return (
-            React.createElement("div", {className: "workbook-task", ref: "wrapper"}, 
-                React.createElement("button", {className: "styleless fa fa-question-circle", onClick: this._showAreaDescription}), 
+                React.createElement("button", {className: "styleless fa fa-question-circle", onClick: CS.Controllers.WorkbookAreaCommon.showAreaDescription}), 
                 React.createElement("p", null, "Working on: ", this.props.task.workingOnText), 
                 React.createElement("div", {className: "progress"}, 
                     React.createElement("div", {ref: "progressBar", className: "progress-bar progress-bar-success", role: "progressbar", "aria-valuenow": "", "aria-valuemin": "0", "aria-valuemax": "100"})
@@ -949,9 +904,53 @@ CS.Controllers.WorkbookAreaAddItemTask = React.createClass({displayName: "Workbo
     },
 
     _initElements: function () {
-        this.$wrapper = $(React.findDOMNode(this.refs.wrapper));
-        this.$progressBar = this.$wrapper.find(".progress-bar");
-        this.$areaDescriptionWrapper = $("#area-description");
+        this.$progressBar = $(React.findDOMNode(this.refs.progressBar));
+    },
+
+    _initProgressBar: function () {
+        var itemCount = 0;
+
+        if (CS.account.data && !_.isEmpty(CS.account.data[this.props.workbookArea.className])) {
+            itemCount = CS.account.data[this.props.workbookArea.className].length - CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl1TaskComplete;
+        }
+
+        CS.Controllers.WorkbookCommon.setProgressBarWidth(this.$progressBar, itemCount, this.props.task.stepCount);
+    }
+});
+
+CS.Controllers.WorkbookAreaAddItemTask = React.createClass({displayName: "WorkbookAreaAddItemTask",
+    render: function () {
+        var comingUpNextParagraph = null;
+        if (this.props.comingUpNextText) {
+            comingUpNextParagraph = (
+                React.createElement("p", {className: "coming-up-next"}, "Coming up next: ", this.props.comingUpNextText)
+                );
+        }
+
+        return (
+            React.createElement("div", {className: "workbook-task"}, 
+                React.createElement("button", {className: "styleless fa fa-question-circle", onClick: CS.Controllers.WorkbookAreaCommon.showAreaDescription}), 
+                React.createElement("p", null, "Working on: ", this.props.task.workingOnText), 
+                React.createElement("div", {className: "progress"}, 
+                    React.createElement("div", {ref: "progressBar", className: "progress-bar progress-bar-success", role: "progressbar", "aria-valuenow": "", "aria-valuemin": "0", "aria-valuemax": "100"})
+                ), 
+                comingUpNextParagraph, 
+                React.createElement(CS.Controllers.WorkbookAreaAddItemTaskForm, {task: this.props.task, workbookArea: this.props.workbookArea, controller: this.props.controller})
+            )
+            );
+    },
+
+    componentDidMount: function () {
+        this._initElements();
+        this._initProgressBar();
+    },
+
+    componentDidUpdate: function () {
+        this._initProgressBar();
+    },
+
+    _initElements: function () {
+        this.$progressBar = $(React.findDOMNode(this.refs.progressBar));
     },
 
     _initProgressBar: function () {
@@ -962,15 +961,6 @@ CS.Controllers.WorkbookAreaAddItemTask = React.createClass({displayName: "Workbo
         }
 
         CS.Controllers.WorkbookCommon.setProgressBarWidth(this.$progressBar, itemCount, this.props.task.stepCount);
-    },
-
-    _showAreaDescription: function () {
-        CS.Services.Animator.fadeOut(this.$wrapper, {
-            animationDuration: 0.2,
-            onComplete: function () {
-                CS.Services.Animator.fadeIn(this.$areaDescriptionWrapper);
-            }.bind(this)
-        });
     }
 });
 
@@ -1101,6 +1091,7 @@ CS.Controllers.WorkbookAreaPrioritizeItemsTask = React.createClass({displayName:
 
         return (
             React.createElement("div", {className: "workbook-task"}, 
+                React.createElement("button", {className: "styleless fa fa-question-circle", onClick: CS.Controllers.WorkbookAreaCommon.showAreaDescription}), 
                 React.createElement("p", null, "Working on: ", this.props.task.workingOnText), 
                 React.createElement("div", {className: "progress"}, 
                     React.createElement("div", {ref: "progressBar", className: "progress-bar progress-bar-success", role: "progressbar", "aria-valuenow": "0", "aria-valuemin": "0", "aria-valuemax": "100"}, "0%")
