@@ -99,3 +99,9 @@ a.fa {
     font-size: 1.25em;
   }
 }
+
+.workbook-area-description-text-wrapper {
+  > p:last-child {
+    margin-bottom: 0;
+  }
+}

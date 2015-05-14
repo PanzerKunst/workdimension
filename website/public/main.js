@@ -725,21 +725,24 @@ CS.saveAccountData = function (callback) {
     };
 });
 ;CS.Services.Animator = {
-    fadeIn: function ($el) {
+    fadeIn: function ($el, params) {
         if (!$el.is(":visible")) {
+            var animationDuration = params && _.isNumber(params.animationDuration) ? params.animationDuration : CS.defaultAnimationDuration;
+
             TweenLite.set($el, {display: "block", alpha: 0});
-            TweenLite.to($el, CS.defaultAnimationDuration, {alpha: 1});
+            TweenLite.to($el, animationDuration, {alpha: 1});
         }
     },
-    fadeOut: function ($el, onComplete) {
+    fadeOut: function ($el, params) {
         if ($el.is(":visible")) {
-            TweenLite.to($el, CS.defaultAnimationDuration, {
+            var animationDuration = params && _.isNumber(params.animationDuration) ? params.animationDuration : CS.defaultAnimationDuration;
+
+            TweenLite.to($el, animationDuration, {
                 alpha: 0,
                 onComplete: function () {
-                    if (onComplete) {
-                        onComplete();
-                    } else {
-                        $el.hide();
+                    $el.hide().css("opacity", 1);
+                    if (params && _.isFunction(params.onComplete)) {
+                        params.onComplete();
                     }
                 }
             });
@@ -1016,6 +1019,103 @@ CS.saveAccountData = function (callback) {
         history.back();
     };
 });
+;CS.Controllers.Texts = [
+    {
+        type: "workbook-area-description",
+        workbookAreaClassName: "Strengths",
+        htmlText: "<p>TODO</p>"
+    },
+    {
+        type: "workbook-area-description",
+        workbookAreaClassName: "Drivers",
+        htmlText: "<p>TODO</p>"
+    },
+    {
+        type: "workbook-area-description",
+        workbookAreaClassName: "Contexts",
+        htmlText: "<p>TODO</p>"
+    },
+    {
+        type: "workbook-area-description",
+        workbookAreaClassName: "Workplace",
+        htmlText: "<p>TODO</p>"
+    },
+    {
+        type: "workbook-area-description",
+        workbookAreaClassName: "Achievements",
+        htmlText: "<p>TODO</p>"
+    },
+    {
+        type: "workbook-area-description",
+        workbookAreaClassName: "Coworkers",
+        htmlText: "<p>TODO</p>"
+    },
+    {
+        type: "workbook-area-description",
+        workbookAreaClassName: "Culture",
+        htmlText: "<p>TODO</p>"
+    },
+    {
+        type: "workbook-area-description",
+        workbookAreaClassName: "Expertise",
+        htmlText: "<p>TODO</p>"
+    },
+    {
+        type: "workbook-area-description",
+        workbookAreaClassName: "Leadership",
+        htmlText: "<p>TODO</p>"
+    },
+    {
+        type: "workbook-area-description",
+        workbookAreaClassName: "Lesses",
+        htmlText: "<p>TODO</p>"
+    },
+    {
+        type: "workbook-area-description",
+        workbookAreaClassName: "ManagementStyle",
+        htmlText: "<p>TODO</p>"
+    },
+    {
+        type: "workbook-area-description",
+        workbookAreaClassName: "Mores",
+        htmlText: "<p>TODO</p>"
+    },
+    {
+        type: "workbook-area-description",
+        workbookAreaClassName: "Employers",
+        htmlText: "<p>TODO</p>"
+    },
+    {
+        type: "workbook-area-description",
+        workbookAreaClassName: "PhaseAndSize",
+        htmlText: "<p>TODO</p>"
+    },
+    {
+        type: "workbook-area-description",
+        workbookAreaClassName: "Projects",
+        htmlText: "<p>TODO</p>"
+    },
+    {
+        type: "workbook-area-description",
+        workbookAreaClassName: "Roles",
+        htmlText: "<p>TODO</p>"
+    },
+    {
+        type: "workbook-area-description",
+        workbookAreaClassName: "ToolsAndMethods",
+        htmlText: "<p>TODO</p>"
+    },
+    {
+        type: "workbook-area-description",
+        workbookAreaClassName: "Tracks",
+        htmlText: "<p>Putting words on what we want to do helps us make better decisions and makes it easier to reach what we aim for. Setting a goal can however feel daunting and not reaching it makes you feel bad about yourself.</p><p>We have a different approach. Think of different tracks you would like to or could see yourself try out some time. A track to pursue can be anything from a position you'd like to try, an industry that would be interesting to work in or an area you would like to learn more of.</p>"
+    },
+    {
+        type: "workbook-area-description",
+        workbookAreaClassName: "Values",
+        htmlText: "<p>TODO</p>"
+    }
+];
 ;CS.Controllers.WorkbookCommon = {
     fontSizeLargeScreen: 22,
     fontSizeMediumScreen: 18,
@@ -1792,7 +1892,7 @@ CS.Controllers.OverviewBlueprintAreaComposer = React.createClass({displayName: "
 
     render: function () {
         return (
-            React.createElement("section", {ref: "wrapper"}, 
+            React.createElement("section", {ref: "wrapper", className: "add-item-section"}, 
                 React.createElement("form", {role: "form", className: "item-composer", ref: "form", onSubmit: this._handleComposerFormSubmit}, 
                     React.createElement("textarea", {className: "form-control", onKeyUp: this._handleTextareaKeyUp}), 
                     React.createElement("button", {className: "btn btn-primary"}, "Add"), 
@@ -1888,13 +1988,24 @@ CS.Controllers.OverviewBlueprintAreaPanel = React.createClass({displayName: "Ove
                 "collapsed-list": this.props.blueprintAreaWithData.items.length > CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl1TaskComplete
             });
 
+        var workbookAreaDescription = _.find(CS.Controllers.Texts, function(text) {
+            return text.type === "workbook-area-description" &&
+                text.workbookAreaClassName === this._getBlueprintArea().className;
+        }.bind(this)).htmlText;
+
         return (
             React.createElement("li", {className: "blueprint-area-panel", ref: "li"}, 
                 React.createElement("div", {className: wellClasses}, 
                     React.createElement("h2", null, 
                         React.createElement("a", {href: workbookAreaTitleHref}, this._getBlueprintArea().title)
                     ), 
-                    React.createElement("button", {className: "styleless fa fa-eye-slash", onClick: this._hideBlueprintAreaPanel}), 
+                    React.createElement("button", {className: "styleless fa fa-chevron-down menu", onClick: this._showActionsMenu}), 
+                    React.createElement("section", {className: "workbook-area-actions"}, 
+                        React.createElement("ul", {className: "styleless"}, 
+                            React.createElement("li", null, React.createElement("i", {className: "fa fa-question-circle"}), React.createElement("a", {onClick: this._showWorkbookAreaDescriptionModal}, "Area info")), 
+                            React.createElement("li", null, React.createElement("i", {className: "fa fa-eye-slash"}), React.createElement("a", {onClick: this._hideBlueprintAreaPanel}, "Hide this area"))
+                        )
+                    ), 
 
                     React.createElement("ul", {className: "styleless item-names-list"}, 
                         this.props.blueprintAreaWithData.items.map(function (item, index) {
@@ -1904,10 +2015,27 @@ CS.Controllers.OverviewBlueprintAreaPanel = React.createClass({displayName: "Ove
                         }.bind(this))
                     ), 
 
-                    React.createElement("button", {className: "styleless fa fa-chevron-down", onClick: this._toggleCollapsedList}), 
+                    React.createElement("button", {className: "styleless fa fa-chevron-down expand", onClick: this._toggleCollapsedList}), 
                     React.createElement("button", {className: "styleless fa fa-chevron-up", onClick: this._toggleCollapsedList}), 
 
                     React.createElement(CS.Controllers.OverviewBlueprintAreaComposer, {blueprintAreaClassName: this._getBlueprintArea().className})
+                ), 
+
+                React.createElement("div", {className: "modal fade workbook-area-description-modal"}, 
+                    React.createElement("div", {className: "modal-dialog"}, 
+                        React.createElement("div", {className: "modal-content"}, 
+                            React.createElement("div", {className: "modal-header"}, 
+                                React.createElement("button", {type: "button", className: "close", "data-dismiss": "modal", "aria-label": "Close"}, 
+                                    React.createElement("span", {"aria-hidden": "true"}, "×")
+                                ), 
+                                React.createElement("h2", {className: "modal-title"}, this._getBlueprintArea().title)
+                            ), 
+                            React.createElement("div", {className: "modal-body workbook-area-description-text-wrapper", dangerouslySetInnerHTML: {__html: workbookAreaDescription}}), 
+                            React.createElement("div", {className: "modal-footer"}, 
+                                React.createElement("button", {type: "button", className: "btn btn-default", "data-dismiss": "modal"}, "Close")
+                            )
+                        )
+                    )
                 )
             )
             );
@@ -1916,6 +2044,7 @@ CS.Controllers.OverviewBlueprintAreaPanel = React.createClass({displayName: "Ove
     componentDidMount: function () {
         this._initElements();
         this._initSortable();
+        this._initNonReactableEvents();
     },
 
     _getBlueprintArea: function () {
@@ -1924,8 +2053,13 @@ CS.Controllers.OverviewBlueprintAreaPanel = React.createClass({displayName: "Ove
 
     _initElements: function () {
         this.$listItem = $(React.findDOMNode(this.refs.li));
-        this.$well = this.$listItem.children();
+        this.$well = this.$listItem.children(".well");
+        this.$areaDescriptionModal = this.$listItem.children(".workbook-area-description-modal");
+        this.$actionsMenu = this.$well.children(".workbook-area-actions");
         this.$itemNamesList = this.$well.children(".item-names-list");
+
+        this.$mainContainer = $("#container");
+        this.$contentOverlayWhenMenuOpen = this.$mainContainer.find("#content-overlay-when-menu-open");
     },
 
     _initSortable: function () {
@@ -1940,6 +2074,10 @@ CS.Controllers.OverviewBlueprintAreaPanel = React.createClass({displayName: "Ove
         );
     },
 
+    _initNonReactableEvents: function() {
+        this.$contentOverlayWhenMenuOpen.click(this._hideActionsMenu);
+    },
+
     _hideBlueprintAreaPanel: function () {
         this._getBlueprintArea().deactivate();
         CS.overviewController.reRender();
@@ -1950,6 +2088,21 @@ CS.Controllers.OverviewBlueprintAreaPanel = React.createClass({displayName: "Ove
         this.$well.toggleClass("expanded-list");
 
         CS.overviewController.rePackerise();
+    },
+
+    _showActionsMenu: function() {
+        this.$mainContainer.addClass("workbook-area-actions-menu-open");
+        this.$actionsMenu.show();
+    },
+
+    _hideActionsMenu: function() {
+        this.$mainContainer.removeClass("workbook-area-actions-menu-open");
+        this.$actionsMenu.hide();
+    },
+
+    _showWorkbookAreaDescriptionModal: function() {
+        this.$areaDescriptionModal.modal();
+        this._hideActionsMenu();
     }
 });
 
@@ -2216,7 +2369,8 @@ CS.Controllers.WorkbookAreaAddItemTask = React.createClass({displayName: "Workbo
         }
 
         return (
-            React.createElement("div", {className: "workbook-task"}, 
+            React.createElement("div", {className: "workbook-task", ref: "wrapper"}, 
+                React.createElement("button", {className: "styleless fa fa-question-circle", onClick: this._showAreaDescription}), 
                 React.createElement("p", null, "Working on: ", this.props.task.workingOnText), 
                 React.createElement("div", {className: "progress"}, 
                     React.createElement("div", {ref: "progressBar", className: "progress-bar progress-bar-success", role: "progressbar", "aria-valuenow": "", "aria-valuemin": "0", "aria-valuemax": "100"})
@@ -2232,15 +2386,17 @@ CS.Controllers.WorkbookAreaAddItemTask = React.createClass({displayName: "Workbo
         this._initProgressBar();
     },
 
-    componentDidUpdate: function() {
+    componentDidUpdate: function () {
         this._initProgressBar();
     },
 
     _initElements: function () {
-        this.$progressBar = $(React.findDOMNode(this.refs.progressBar));
+        this.$wrapper = $(React.findDOMNode(this.refs.wrapper));
+        this.$progressBar = this.$wrapper.find(".progress-bar");
+        this.$areaDescriptionWrapper = $("#area-description");
     },
 
-    _initProgressBar: function() {
+    _initProgressBar: function () {
         var itemCount = 0;
 
         if (CS.account.data && !_.isEmpty(CS.account.data[this.props.workbookArea.className])) {
@@ -2248,6 +2404,15 @@ CS.Controllers.WorkbookAreaAddItemTask = React.createClass({displayName: "Workbo
         }
 
         CS.Controllers.WorkbookCommon.setProgressBarWidth(this.$progressBar, itemCount, this.props.task.stepCount);
+    },
+
+    _showAreaDescription: function () {
+        CS.Services.Animator.fadeOut(this.$wrapper, {
+            animationDuration: 0.2,
+            onComplete: function () {
+                CS.Services.Animator.fadeIn(this.$areaDescriptionWrapper);
+            }.bind(this)
+        });
     }
 });
 
@@ -2426,21 +2591,36 @@ CS.Controllers.WorkbookArea = P(function (c) {
         },
 
         render: function () {
+            var workbookAreaDescriptionReact = null;
             var taskReact = null;
 
             if (this.state.workbookArea) {
-                var activeTask = _.find(CS.WorkbookAreaTasks, function(task) {  // Level 3
+                var workbookAreaDescription = _.find(CS.Controllers.Texts, function(text) {
+                    return text.type === "workbook-area-description" &&
+                        text.workbookAreaClassName === this.state.workbookArea.className;
+                }.bind(this)).htmlText;
+
+                workbookAreaDescriptionReact = (
+                    React.createElement("div", {id: "area-description"}, 
+                        React.createElement("article", {className: "workbook-area-description-text-wrapper", dangerouslySetInnerHTML: {__html: workbookAreaDescription}}), 
+                        React.createElement("div", {className: "centered-contents"}, 
+                            React.createElement("button", {className: "btn btn-primary", onClick: this._showTask}, "Got it")
+                        )
+                    )
+                    );
+
+                var activeTask = _.find(CS.WorkbookAreaTasks, function (task) {  // Level 3
                     return task.workbookAreaId === this.state.workbookArea.id && task.level === 3 && task.isActive();
                 }.bind(this)) ||
-                    _.find(CS.WorkbookAreaTasks, function(task) {   // Level 2
+                    _.find(CS.WorkbookAreaTasks, function (task) {   // Level 2
                         return task.workbookAreaId === this.state.workbookArea.id && task.level === 2 && task.isActive();
                     }.bind(this)) ||
-                    _.find(CS.WorkbookAreaTasks, function(task) {   // Level 1
+                    _.find(CS.WorkbookAreaTasks, function (task) {   // Level 1
                         return task.workbookAreaId === this.state.workbookArea.id && task.level === 1 && task.isActive();
                     }.bind(this));
 
                 if (activeTask) {
-                    var nextTask = _.find(CS.WorkbookAreaTasks, function(task) {
+                    var nextTask = _.find(CS.WorkbookAreaTasks, function (task) {
                         return task.previousTaskId === activeTask.id;
                     });
 
@@ -2448,7 +2628,7 @@ CS.Controllers.WorkbookArea = P(function (c) {
 
                     taskReact = React.createElement(CS.Controllers[activeTask.templateClassName], {task: activeTask, workbookArea: this.state.workbookArea, comingUpNextText: comingUpNextText, controller: this.state.controller});
                 } else {
-                    var doneTask = _.find(CS.WorkbookAreaTasks, function(task) {  // Level 3
+                    var doneTask = _.find(CS.WorkbookAreaTasks, function (task) {  // Level 3
                         return task.workbookAreaId === this.state.workbookArea.id && task.level === 3 && task.isDone();
                     }.bind(this));
 
@@ -2466,6 +2646,7 @@ CS.Controllers.WorkbookArea = P(function (c) {
 
             return (
                 React.createElement("div", {ref: "wrapper", id: "content-wrapper"}, 
+                    workbookAreaDescriptionReact, 
                     taskReact, 
 
                     React.createElement("ul", {className: "styleless item-names-list"}, 
@@ -2491,8 +2672,9 @@ CS.Controllers.WorkbookArea = P(function (c) {
             this._initElements();
         },
 
-        componentDidUpdate: function() {
+        componentDidUpdate: function () {
             this._initSortable();
+            this._initDescriptionAndTaskPanels();
         },
 
         _initElements: function () {
@@ -2501,6 +2683,19 @@ CS.Controllers.WorkbookArea = P(function (c) {
             this.$form = this.$wrapper.children("form");
             this.$addItemLink = this.$form.siblings(".add-item-link");
             this.$textarea = this.$form.children("textarea");
+        },
+
+        _initDescriptionAndTaskPanels: function () {
+            this.$areaDescriptionWrapper = this.$wrapper.children("#area-description");
+            this.$taskWrapper = this.$wrapper.children(".workbook-task");
+
+            if (_.isEmpty(this.state.workbookItems)) {
+                this.$taskWrapper.hide();
+                this.$areaDescriptionWrapper.show();
+            } else {
+                this.$areaDescriptionWrapper.hide();
+                this.$taskWrapper.show();
+            }
         },
 
         _initSortable: function () {
@@ -2546,7 +2741,7 @@ CS.Controllers.WorkbookArea = P(function (c) {
             this.$addItemLink.show();
         },
 
-        _fetchLatestAccountDataAndUpdateIt: function(itemNameToAdd) {
+        _fetchLatestAccountDataAndUpdateIt: function (itemNameToAdd) {
             var type = "GET";
             var url = "/api/account-data";
 
@@ -2568,6 +2763,15 @@ CS.Controllers.WorkbookArea = P(function (c) {
                 error: function () {
                     alert("AJAX failure doing a " + type + " request to \"" + url + "\"");
                 }
+            });
+        },
+
+        _showTask: function () {
+            CS.Services.Animator.fadeOut(this.$areaDescriptionWrapper, {
+                animationDuration: 0.2,
+                onComplete: function () {
+                    CS.Services.Animator.fadeIn(this.$taskWrapper);
+                }.bind(this)
             });
         }
     });

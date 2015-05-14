@@ -11,21 +11,36 @@ CS.Controllers.WorkbookArea = P(function (c) {
         },
 
         render: function () {
+            var workbookAreaDescriptionReact = null;
             var taskReact = null;
 
             if (this.state.workbookArea) {
-                var activeTask = _.find(CS.WorkbookAreaTasks, function(task) {  // Level 3
+                var workbookAreaDescription = _.find(CS.Controllers.Texts, function(text) {
+                    return text.type === "workbook-area-description" &&
+                        text.workbookAreaClassName === this.state.workbookArea.className;
+                }.bind(this)).htmlText;
+
+                workbookAreaDescriptionReact = (
+                    <div id="area-description">
+                        <article className="workbook-area-description-text-wrapper" dangerouslySetInnerHTML={{__html: workbookAreaDescription}} />
+                        <div className="centered-contents">
+                            <button className="btn btn-primary" onClick={this._showTask}>Got it</button>
+                        </div>
+                    </div>
+                    );
+
+                var activeTask = _.find(CS.WorkbookAreaTasks, function (task) {  // Level 3
                     return task.workbookAreaId === this.state.workbookArea.id && task.level === 3 && task.isActive();
                 }.bind(this)) ||
-                    _.find(CS.WorkbookAreaTasks, function(task) {   // Level 2
+                    _.find(CS.WorkbookAreaTasks, function (task) {   // Level 2
                         return task.workbookAreaId === this.state.workbookArea.id && task.level === 2 && task.isActive();
                     }.bind(this)) ||
-                    _.find(CS.WorkbookAreaTasks, function(task) {   // Level 1
+                    _.find(CS.WorkbookAreaTasks, function (task) {   // Level 1
                         return task.workbookAreaId === this.state.workbookArea.id && task.level === 1 && task.isActive();
                     }.bind(this));
 
                 if (activeTask) {
-                    var nextTask = _.find(CS.WorkbookAreaTasks, function(task) {
+                    var nextTask = _.find(CS.WorkbookAreaTasks, function (task) {
                         return task.previousTaskId === activeTask.id;
                     });
 
@@ -33,7 +48,7 @@ CS.Controllers.WorkbookArea = P(function (c) {
 
                     taskReact = React.createElement(CS.Controllers[activeTask.templateClassName], {task: activeTask, workbookArea: this.state.workbookArea, comingUpNextText: comingUpNextText, controller: this.state.controller});
                 } else {
-                    var doneTask = _.find(CS.WorkbookAreaTasks, function(task) {  // Level 3
+                    var doneTask = _.find(CS.WorkbookAreaTasks, function (task) {  // Level 3
                         return task.workbookAreaId === this.state.workbookArea.id && task.level === 3 && task.isDone();
                     }.bind(this));
 
@@ -51,6 +66,7 @@ CS.Controllers.WorkbookArea = P(function (c) {
 
             return (
                 <div ref="wrapper" id="content-wrapper">
+                    {workbookAreaDescriptionReact}
                     {taskReact}
 
                     <ul className="styleless item-names-list">
@@ -76,8 +92,9 @@ CS.Controllers.WorkbookArea = P(function (c) {
             this._initElements();
         },
 
-        componentDidUpdate: function() {
+        componentDidUpdate: function () {
             this._initSortable();
+            this._initDescriptionAndTaskPanels();
         },
 
         _initElements: function () {
@@ -86,6 +103,19 @@ CS.Controllers.WorkbookArea = P(function (c) {
             this.$form = this.$wrapper.children("form");
             this.$addItemLink = this.$form.siblings(".add-item-link");
             this.$textarea = this.$form.children("textarea");
+        },
+
+        _initDescriptionAndTaskPanels: function () {
+            this.$areaDescriptionWrapper = this.$wrapper.children("#area-description");
+            this.$taskWrapper = this.$wrapper.children(".workbook-task");
+
+            if (_.isEmpty(this.state.workbookItems)) {
+                this.$taskWrapper.hide();
+                this.$areaDescriptionWrapper.show();
+            } else {
+                this.$areaDescriptionWrapper.hide();
+                this.$taskWrapper.show();
+            }
         },
 
         _initSortable: function () {
@@ -131,7 +161,7 @@ CS.Controllers.WorkbookArea = P(function (c) {
             this.$addItemLink.show();
         },
 
-        _fetchLatestAccountDataAndUpdateIt: function(itemNameToAdd) {
+        _fetchLatestAccountDataAndUpdateIt: function (itemNameToAdd) {
             var type = "GET";
             var url = "/api/account-data";
 
@@ -153,6 +183,15 @@ CS.Controllers.WorkbookArea = P(function (c) {
                 error: function () {
                     alert("AJAX failure doing a " + type + " request to \"" + url + "\"");
                 }
+            });
+        },
+
+        _showTask: function () {
+            CS.Services.Animator.fadeOut(this.$areaDescriptionWrapper, {
+                animationDuration: 0.2,
+                onComplete: function () {
+                    CS.Services.Animator.fadeIn(this.$taskWrapper);
+                }.bind(this)
             });
         }
     });

@@ -1,6 +1,16 @@
 .workbook-task {
-  padding: 1em;
+  padding: 1.5em 1em 1em 1em;
   background-color: $well-bg;
+
+  position: relative;
+
+  > button {
+    position: absolute;
+    top: 0;
+    right: 0.1em;
+
+    padding: 0.93em 1em;
+  }
 
   > p {
     margin-bottom: 0;

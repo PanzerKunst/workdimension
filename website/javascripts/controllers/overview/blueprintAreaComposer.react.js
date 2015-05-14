@@ -3,7 +3,7 @@ CS.Controllers.OverviewBlueprintAreaComposer = React.createClass({
 
     render: function () {
         return (
-            <section ref="wrapper">
+            <section ref="wrapper" className="add-item-section">
                 <form role="form" className="item-composer" ref="form" onSubmit={this._handleComposerFormSubmit}>
                     <textarea className="form-control" onKeyUp={this._handleTextareaKeyUp} />
                     <button className="btn btn-primary">Add</button>

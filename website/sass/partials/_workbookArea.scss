@@ -49,4 +49,16 @@
       font-size: 1em;
     }
   }
+
+  #area-description {
+    background-color: $well-bg;
+
+    > article {
+      padding: 1em;
+    }
+
+    > .centered-contents {
+      padding-bottom: 1em;
+    }
+  }
 }

@@ -34,7 +34,7 @@
       padding: 0 0.5em 0.5em 0.5em;
       margin-bottom: $spacer-unit-size;
 
-      position: relative; // Because of absolutely-positioned hide and expand buttons
+      position: relative; // Because of absolutely-positioned menu and expand buttons
 
       &.add-item-composer-open {
         &.collapsed-list > .fa-chevron-down,
@@ -69,19 +69,15 @@
 
         color: lighten($gray-base, 60%);
 
-        &.fa-info-circle {
-          right: 2.5em;
+        &.fa-chevron-down.menu {
+          right: -0.45em;
           top: -0.45em;
 
           &:focus {
             outline: none;
           }
         }
-        &.fa-eye-slash {
-          right: -0.45em;
-          top: -0.45em;
-        }
-        &.fa-chevron-down,
+        &.fa-chevron-down.expand,
         &.fa-chevron-up {
           right: 9.4em;
           bottom: 1.5em;
@@ -90,8 +86,33 @@
         }
       }
 
+      > .workbook-area-actions {
+        position: absolute;
+        right: 0.3em;
+        top: 1.8em;
+        z-index: $z-index-menu;
+
+        background-color: white;
+
+        border: 1px solid rgba(0, 0, 0, 0.15);
+        border-radius: 0.3em 0 0.3em 0.3em;
+
+        box-shadow: 0 0.3em 0.6em rgba(0, 0, 0, 0.25);
+
+        display: none;
+
+        li {
+          margin: 0.2em 0.5em;
+        }
+
+        .fa {
+          margin-right: 0.5em;
+          color: $action-color;
+        }
+      }
+
       &.collapsed-list {
-        > .fa-chevron-down {
+        > .fa-chevron-down.expand {
           display: inline-block;
         }
 
@@ -109,7 +130,7 @@
           display: inline-block;
         }
 
-        > .fa-chevron-down {
+        > .fa-chevron-down.expand {
           display: none;
         }
 
@@ -118,7 +139,7 @@
         }
       }
 
-      > section {
+      > .add-item-section {
         margin-top: 1.4em;
       }
     }
@@ -153,6 +174,19 @@
       }
 
       @include link-color($background-body-color);
+    }
+
+    .workbook-area-description-modal {
+      .modal-header {
+        > .close {
+          @include medium-screen {
+            margin-top: -6px;
+          }
+          @include large-screen {
+            margin-top: -6px;
+          }
+        }
+      }
     }
   }
 }

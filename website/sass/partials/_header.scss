@@ -230,6 +230,12 @@ header {
       @include open-menu-triangle;
     }
   }
+
+  &.workbook-area-actions-menu-open {
+    #content-overlay-when-menu-open {
+      display: block;
+    }
+  }
 }
 
 #sign-in-with-linkedin {

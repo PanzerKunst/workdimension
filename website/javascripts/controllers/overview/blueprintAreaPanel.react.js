@@ -7,13 +7,24 @@ CS.Controllers.OverviewBlueprintAreaPanel = React.createClass({
                 "collapsed-list": this.props.blueprintAreaWithData.items.length > CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl1TaskComplete
             });
 
+        var workbookAreaDescription = _.find(CS.Controllers.Texts, function(text) {
+            return text.type === "workbook-area-description" &&
+                text.workbookAreaClassName === this._getBlueprintArea().className;
+        }.bind(this)).htmlText;
+
         return (
             <li className="blueprint-area-panel" ref="li">
                 <div className={wellClasses}>
                     <h2>
                         <a href={workbookAreaTitleHref}>{this._getBlueprintArea().title}</a>
                     </h2>
-                    <button className="styleless fa fa-eye-slash" onClick={this._hideBlueprintAreaPanel}></button>
+                    <button className="styleless fa fa-chevron-down menu" onClick={this._showActionsMenu}></button>
+                    <section className="workbook-area-actions">
+                        <ul className="styleless">
+                            <li><i className="fa fa-question-circle"></i><a onClick={this._showWorkbookAreaDescriptionModal}>Area info</a></li>
+                            <li><i className="fa fa-eye-slash"></i><a onClick={this._hideBlueprintAreaPanel}>Hide this area</a></li>
+                        </ul>
+                    </section>
 
                     <ul className="styleless item-names-list">
                         {this.props.blueprintAreaWithData.items.map(function (item, index) {
@@ -23,10 +34,27 @@ CS.Controllers.OverviewBlueprintAreaPanel = React.createClass({
                         }.bind(this))}
                     </ul>
 
-                    <button className="styleless fa fa-chevron-down" onClick={this._toggleCollapsedList}></button>
+                    <button className="styleless fa fa-chevron-down expand" onClick={this._toggleCollapsedList}></button>
                     <button className="styleless fa fa-chevron-up" onClick={this._toggleCollapsedList}></button>
 
                     <CS.Controllers.OverviewBlueprintAreaComposer blueprintAreaClassName={this._getBlueprintArea().className} />
+                </div>
+
+                <div className="modal fade workbook-area-description-modal">
+                    <div className="modal-dialog">
+                        <div className="modal-content">
+                            <div className="modal-header">
+                                <button type="button" className="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                                <h2 className="modal-title">{this._getBlueprintArea().title}</h2>
+                            </div>
+                            <div className="modal-body workbook-area-description-text-wrapper" dangerouslySetInnerHTML={{__html: workbookAreaDescription}}></div>
+                            <div className="modal-footer">
+                                <button type="button" className="btn btn-default" data-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </li>
             );
@@ -35,6 +63,7 @@ CS.Controllers.OverviewBlueprintAreaPanel = React.createClass({
     componentDidMount: function () {
         this._initElements();
         this._initSortable();
+        this._initNonReactableEvents();
     },
 
     _getBlueprintArea: function () {
@@ -43,8 +72,13 @@ CS.Controllers.OverviewBlueprintAreaPanel = React.createClass({
 
     _initElements: function () {
         this.$listItem = $(React.findDOMNode(this.refs.li));
-        this.$well = this.$listItem.children();
+        this.$well = this.$listItem.children(".well");
+        this.$areaDescriptionModal = this.$listItem.children(".workbook-area-description-modal");
+        this.$actionsMenu = this.$well.children(".workbook-area-actions");
         this.$itemNamesList = this.$well.children(".item-names-list");
+
+        this.$mainContainer = $("#container");
+        this.$contentOverlayWhenMenuOpen = this.$mainContainer.find("#content-overlay-when-menu-open");
     },
 
     _initSortable: function () {
@@ -59,6 +93,10 @@ CS.Controllers.OverviewBlueprintAreaPanel = React.createClass({
         );
     },
 
+    _initNonReactableEvents: function() {
+        this.$contentOverlayWhenMenuOpen.click(this._hideActionsMenu);
+    },
+
     _hideBlueprintAreaPanel: function () {
         this._getBlueprintArea().deactivate();
         CS.overviewController.reRender();
@@ -69,5 +107,20 @@ CS.Controllers.OverviewBlueprintAreaPanel = React.createClass({
         this.$well.toggleClass("expanded-list");
 
         CS.overviewController.rePackerise();
+    },
+
+    _showActionsMenu: function() {
+        this.$mainContainer.addClass("workbook-area-actions-menu-open");
+        this.$actionsMenu.show();
+    },
+
+    _hideActionsMenu: function() {
+        this.$mainContainer.removeClass("workbook-area-actions-menu-open");
+        this.$actionsMenu.hide();
+    },
+
+    _showWorkbookAreaDescriptionModal: function() {
+        this.$areaDescriptionModal.modal();
+        this._hideActionsMenu();
     }
 });

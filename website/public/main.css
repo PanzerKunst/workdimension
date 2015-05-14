@@ -6254,6 +6254,9 @@ a.fa:hover, a.fa:focus {
     vertical-align: top;
     font-size: 1.25em; }
 
+.workbook-area-description-text-wrapper > p:last-child {
+  margin-bottom: 0; }
+
 header {
   background-color: #4285f4;
   position: fixed;
@@ -6438,6 +6441,8 @@ header {
   right: 14px;
   z-index: 11;
   color: white; }
+#container.workbook-area-actions-menu-open #content-overlay-when-menu-open {
+  display: block; }
 
 #sign-in-with-linkedin {
   font: 0/0 a;
@@ -6519,19 +6524,31 @@ footer {
       position: absolute;
       padding: .93em .93em;
       color: #999999; }
-      #index #content .well > button.fa-info-circle {
-        right: 2.5em;
-        top: -0.45em; }
-        #index #content .well > button.fa-info-circle:focus {
-          outline: none; }
-      #index #content .well > button.fa-eye-slash {
+      #index #content .well > button.fa-chevron-down.menu {
         right: -0.45em;
         top: -0.45em; }
-      #index #content .well > button.fa-chevron-down, #index #content .well > button.fa-chevron-up {
+        #index #content .well > button.fa-chevron-down.menu:focus {
+          outline: none; }
+      #index #content .well > button.fa-chevron-down.expand, #index #content .well > button.fa-chevron-up {
         right: 9.4em;
         bottom: 1.5em;
         display: none; }
-    #index #content .well.collapsed-list > .fa-chevron-down {
+    #index #content .well > .workbook-area-actions {
+      position: absolute;
+      right: 0.3em;
+      top: 1.8em;
+      z-index: 10;
+      background-color: white;
+      border: 1px solid rgba(0, 0, 0, 0.15);
+      border-radius: 0.3em 0 0.3em 0.3em;
+      box-shadow: 0 0.3em 0.6em rgba(0, 0, 0, 0.25);
+      display: none; }
+      #index #content .well > .workbook-area-actions li {
+        margin: 0.2em 0.5em; }
+      #index #content .well > .workbook-area-actions .fa {
+        margin-right: 0.5em;
+        color: #4285f4; }
+    #index #content .well.collapsed-list > .fa-chevron-down.expand {
       display: inline-block; }
     #index #content .well.collapsed-list > .fa-chevron-up {
       display: none; }
@@ -6539,11 +6556,11 @@ footer {
       display: none; }
     #index #content .well.expanded-list > .fa-chevron-up {
       display: inline-block; }
-    #index #content .well.expanded-list > .fa-chevron-down {
+    #index #content .well.expanded-list > .fa-chevron-down.expand {
       display: none; }
     #index #content .well.expanded-list li:nth-of-type(1n+4) {
       display: list-item; }
-    #index #content .well > section {
+    #index #content .well > .add-item-section {
       margin-top: 1.4em; }
   #index #content h2 {
     font-size: 16.8px;
@@ -6566,6 +6583,12 @@ footer {
   #index #content .item-names-list a:hover,
   #index #content .item-names-list a:focus {
     color: white; }
+  @media screen and (min-width: 640px) {
+    #index #content .workbook-area-description-modal .modal-header > .close {
+      margin-top: -6px; } }
+  @media screen and (min-width: 960px) {
+    #index #content .workbook-area-description-modal .modal-header > .close {
+      margin-top: -6px; } }
 
 #select-areas-modal .modal-title {
   font-size: 1.2em;
@@ -6592,8 +6615,14 @@ footer {
       font-size: 0.8125em; } }
 
 .workbook-task {
-  padding: 1em;
-  background-color: #f5f5f5; }
+  padding: 1.5em 1em 1em 1em;
+  background-color: #f5f5f5;
+  position: relative; }
+  .workbook-task > button {
+    position: absolute;
+    top: 0;
+    right: 0.1em;
+    padding: 0.93em 1em; }
   .workbook-task > p {
     margin-bottom: 0; }
   .workbook-task > .coming-up-next {
@@ -6665,6 +6694,12 @@ footer {
 @media screen and (min-width: 960px) {
   #workbook-area .fa-times {
     font-size: 1em; } }
+#workbook-area #area-description {
+  background-color: #f5f5f5; }
+  #workbook-area #area-description > article {
+    padding: 1em; }
+  #workbook-area #area-description > .centered-contents {
+    padding-bottom: 1em; }
 
 #workbook-item #content > div {
   margin: 0 auto; }
