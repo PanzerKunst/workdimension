@@ -65,6 +65,7 @@ CS.Controllers.WorkbookItemNote = React.createClass({
         }
 
         var newItemNote = this.$textarea.val().trim();
+        this._hideForm();
         this._fetchLatestAccountDataAndUpdateIt(newItemNote);
     },
 

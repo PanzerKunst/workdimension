@@ -3280,6 +3280,7 @@ CS.Controllers.WorkbookItemNote = React.createClass({displayName: "WorkbookItemN
         }
 
         var newItemNote = this.$textarea.val().trim();
+        this._hideForm();
         this._fetchLatestAccountDataAndUpdateIt(newItemNote);
     },
 
