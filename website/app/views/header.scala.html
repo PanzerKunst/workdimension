@@ -1,12 +1,23 @@
 @(pageId: String, pageTitle: String)
 
-<a href="/" id="home-btn" class="fa fa-home"></a>
-<h1>@Html(pageTitle)</h1>
+<section id="top-bar">
+    <a href="/" id="home-btn" class="fa fa-home"></a>
+    <h1>@Html(pageTitle)</h1>
 
-<button id="menu-btn" class="styleless fa fa-bars"></button>
-<button id="task-notifications-btn" class="styleless fa fa-cubes">
-    <span></span>
-</button>
+    <button class="styleless fa fa-question-circle"></button>
+
+    <button id="menu-btn" class="styleless fa fa-bars"></button>
+    <button id="task-notifications-btn" class="styleless fa fa-cubes">
+        <span></span>
+    </button>
+</section>
+
+<section id="get-started">
+    <div>
+        <p>Standouts are what make you uniquely qualified, uniquely motivated, and uniquely inspiring. What are your standouts?</p>
+        <p>We've selected a few areas for you to start with. Start by clicking any of them, or adding another area from the menu.</p>
+    </div>
+</section>
 
 <div id="content-overlay-when-menu-open"></div>
 

@@ -6258,25 +6258,33 @@ a.fa:hover, a.fa:focus {
   margin-bottom: 0; }
 
 header {
-  background-color: #4285f4;
+  color: white;
   position: fixed;
-  height: 40px;
   width: 100%;
   z-index: 10; }
-  header > .fa {
+  header > section {
+    background-color: #4285f4; }
+  header > #top-bar:before, header > #top-bar:after {
+    content: " ";
+    display: table; }
+  header > #top-bar:after {
+    clear: both; }
+  header > #top-bar > a {
+    color: white; }
+  header > #top-bar > .fa {
     font-size: 21px;
     padding: 10px 11px;
-    color: white;
     float: left; }
-    header > .fa:focus {
+    header > #top-bar > .fa:focus {
       outline: none; }
-    header > .fa.fa-cubes {
+    header > #top-bar > .fa.fa-cubes {
       padding: 10px 6.5px; }
-  header > h1 {
+  header > #top-bar > button.fa {
+    float: right; }
+  header > #top-bar > h1 {
     margin: 0;
     padding-left: 14px;
     font-size: 1em;
-    color: white;
     text-align: left;
     max-width: 60%;
     float: left;
@@ -6284,22 +6292,35 @@ header {
     overflow: hidden;
     text-overflow: ellipsis;
     padding-top: 9px; }
-    header > h1 a,
-    header > h1 a:visited,
-    header > h1 a:hover,
-    header > h1 a:focus {
+    header > #top-bar > h1 a,
+    header > #top-bar > h1 a:visited,
+    header > #top-bar > h1 a:hover,
+    header > #top-bar > h1 a:focus {
       color: white; }
     @media screen and (min-width: 640px) {
-      header > h1 {
+      header > #top-bar > h1 {
         padding-top: 5px; } }
     @media screen and (min-width: 960px) {
-      header > h1 {
+      header > #top-bar > h1 {
         padding-top: 1px; } }
-  header button.fa {
-    float: right; }
-  header .fa-angle-right {
-    font-size: 0.9em;
-    margin: 0 0.5em; }
+    header > #top-bar > h1 > .fa-angle-right {
+      font-size: 0.9em;
+      margin: 0 0.5em; }
+  header > #top-bar .fa-question-circle {
+    position: absolute;
+    left: 50%;
+    margin-left: -0.3em; }
+  header > #get-started {
+    display: none; }
+    header > #get-started > div {
+      padding: 1em;
+      margin: 0 auto; }
+      @media screen and (min-width: 640px) {
+        header > #get-started > div {
+          width: 480px; } }
+      @media screen and (min-width: 960px) {
+        header > #get-started > div {
+          width: 640px; } }
 
 #task-notifications-btn {
   color: #0c57d3; }
@@ -6441,7 +6462,7 @@ header {
   right: 14px;
   z-index: 11;
   color: white; }
-#container.workbook-area-actions-menu-open #content-overlay-when-menu-open {
+#container.workbook-area-actions-menu-open #content-overlay-when-menu-open, #container.get-started-section-open #content-overlay-when-menu-open {
   display: block; }
 
 #sign-in-with-linkedin {

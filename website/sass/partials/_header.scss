@@ -1,60 +1,90 @@
-$header-btn-color: white;
-
 header {
-  background-color: $action-color;
+  color: $background-body-color;
 
   position: fixed;
-  height: $header-height;
+  // height: $header-height;
   width: 100%;
 
   z-index: $z-index-menu;
 
-  > .fa {
-    font-size: $font-size-menu-btn;
-    padding: $padding-menu-btn;
-    color: $header-btn-color;
-    float: left;
+  > section {
+    background-color: $action-color;
+  }
 
-    &:focus {
-      outline: none;
+  > #top-bar {
+    @include clearfix;
+
+    > a {
+      color: $background-body-color;
     }
 
-    &.fa-cubes {
-      padding: 10px 6.5px;
+    > .fa {
+      font-size: $font-size-menu-btn;
+      padding: $padding-menu-btn;
+      float: left;
+
+      &:focus {
+        outline: none;
+      }
+
+      &.fa-cubes {
+        padding: 10px 6.5px;
+      }
+    }
+
+    > button.fa {
+      float: right;
+    }
+
+    > h1 {
+      margin: 0;
+      padding-left: $spacer-unit-size;
+
+      font-size: 1em;
+      text-align: left;
+
+      max-width: 60%;
+
+      float: left;
+
+      @include ellipsis;
+      @include link-color($background-body-color);
+
+      padding-top: 9px;
+      @include medium-screen {
+        padding-top: 5px;
+      }
+      @include large-screen {
+        padding-top: 1px;
+      }
+
+      > .fa-angle-right {
+        font-size: 0.9em;
+        margin: 0 0.5em;
+      }
+    }
+
+    .fa-question-circle {
+      position: absolute;
+      left: 50%;
+      margin-left: -0.3em;
     }
   }
 
-  > h1 {
-    margin: 0;
-    padding-left: $spacer-unit-size;
+  > #get-started {
+    display: none;
 
-    font-size: 1em;
-    color: $background-body-color;
-    text-align: left;
+    > div {
+      padding: 1em;
+      margin: 0 auto;
 
-    max-width: 60%;
-
-    float: left;
-
-    @include ellipsis;
-    @include link-color($background-body-color);
-
-    padding-top: 9px;
-    @include medium-screen {
-      padding-top: 5px;
+      @include medium-screen {
+        width: ($small-content-width + $medium-content-width) / 2;
+      }
+      @include large-screen {
+        width: $medium-content-width;
+      }
     }
-    @include large-screen {
-      padding-top: 1px;
-    }
-  }
-
-  button.fa {
-    float: right;
-  }
-
-  .fa-angle-right {
-    font-size: 0.9em;
-    margin: 0 0.5em;
   }
 }
 
@@ -67,7 +97,7 @@ header {
   }
 
   &.with-new-items {
-    color: $header-btn-color;
+    color: $background-body-color;
 
     position: relative;
 
@@ -231,7 +261,8 @@ header {
     }
   }
 
-  &.workbook-area-actions-menu-open {
+  &.workbook-area-actions-menu-open,
+  &.get-started-section-open {
     #content-overlay-when-menu-open {
       display: block;
     }
