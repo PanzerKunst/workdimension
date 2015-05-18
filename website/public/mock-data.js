@@ -368,26 +368,7 @@ CS.WorkbookAreaTasks = [
 
             return !_.isEmpty(workbookItemsForThisArea) && workbookItemsForThisArea.length >= CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl2TaskComplete;
         },
-        wordings: [
-            {
-                prompt: "Describe a situation where you've solved a problem in a very good or unexpected way"
-            },
-            {
-                prompt: "Something you feel really proud of"
-            },
-            {
-                prompt: "Have you won any awards or prices for your work or educational achievements?",
-                sentenceStart: "I was "
-            },
-            {
-                prompt: "Think about the last job you had. One thing you achieved when you worked there was..."
-            }
-        ],
-        stepCount: CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl2TaskComplete - CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl1TaskComplete,
-        templateClassName: "WorkbookAreaAddItemLvl2Task",
-        workingOnText: "making level 2 inventory of Achievements",
-        notificationText: "Make level 2 inventory of Achievements",
-        comingUpText: "making inventory level 2"
+        templateClassName: "WorkbookAreaAddItemLvl1Complete"
     },
     {
         id: 11,
@@ -413,22 +394,7 @@ CS.WorkbookAreaTasks = [
 
             return !_.isEmpty(workbookItemsForThisArea) && workbookItemsForThisArea.length >= CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl2TaskComplete;
         },
-        wordings: [
-            {
-                prompt: "What tracks would you like to pursue at some point?"
-            },
-            {
-                prompt: "Anything you dreamed of when you were younger but haven't done and still would find exciting to try out?"
-            },
-            {
-                prompt: "If you get a salary for working on anything you want, what would you work with?"
-            }
-        ],
-        stepCount: CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl2TaskComplete - CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl1TaskComplete,
-        templateClassName: "WorkbookAreaAddItemLvl2Task",
-        workingOnText: "making level 2 inventory of Tracks",
-        notificationText: "Make level 2 inventory of Tracks",
-        comingUpText: "making inventory level 2"
+        templateClassName: "WorkbookAreaAddItemLvl1Complete"
     },
     {
         id: 12,
@@ -454,26 +420,7 @@ CS.WorkbookAreaTasks = [
 
             return !_.isEmpty(workbookItemsForThisArea) && workbookItemsForThisArea.length >= CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl2TaskComplete;
         },
-        wordings: [
-            {
-                prompt: "What things are you good at?"
-            },
-            {
-                prompt: "What qualities were important in the last role you had"
-            },
-            {
-                prompt: "What are you the most confident at in your work?"
-            },
-            {
-                prompt: "When are you the happiest with your work?",
-                sentenceStart: "When I "
-            }
-        ],
-        stepCount: CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl2TaskComplete - CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl1TaskComplete,
-        templateClassName: "WorkbookAreaAddItemLvl2Task",
-        workingOnText: "making level 2 inventory of Strengths",
-        notificationText: "Make level 2 inventory of Strengths",
-        comingUpText: "making inventory level 2"
+        templateClassName: "WorkbookAreaAddItemLvl1Complete"
     },
     {
         id: 13,
@@ -499,27 +446,7 @@ CS.WorkbookAreaTasks = [
 
             return !_.isEmpty(workbookItemsForThisArea) && workbookItemsForThisArea.length >= CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl2TaskComplete;
         },
-        wordings: [
-            {
-                prompt: "Why do you go to work, except from the salary?"
-            },
-            {
-                prompt: "When do you feel the most energy at work?",
-                sentenceStart: "When I "
-            },
-            {
-                prompt: "What are you passions?",
-                sentenceStart: "I'm passionate about "
-            },
-            {
-                prompt: "What impact do you want to have on the world?"
-            }
-        ],
-        stepCount: CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl2TaskComplete - CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl1TaskComplete,
-        templateClassName: "WorkbookAreaAddItemLvl2Task",
-        workingOnText: "making level 2 inventory of Drivers",
-        notificationText: "Make level 2 inventory of Drivers",
-        comingUpText: "making inventory level 2"
+        templateClassName: "WorkbookAreaAddItemLvl1Complete"
     },
     {
         id: 14,
@@ -545,19 +472,7 @@ CS.WorkbookAreaTasks = [
 
             return !_.isEmpty(workbookItemsForThisArea) && workbookItemsForThisArea.length >= CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl2TaskComplete;
         },
-        wordings: [
-            {
-                prompt: "What kind of environment are you the most creative in?"
-            },
-            {
-                prompt: "What kind of environment are you the most productive in?"
-            }
-        ],
-        stepCount: CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl2TaskComplete - CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl1TaskComplete,
-        templateClassName: "WorkbookAreaAddItemLvl2Task",
-        workingOnText: "making level 2 inventory of Workplace preferences",
-        notificationText: "Make level 2 inventory of Workplace preferences",
-        comingUpText: "making inventory level 2"
+        templateClassName: "WorkbookAreaAddItemLvl1Complete"
     },
     {
         id: 15,
@@ -583,22 +498,7 @@ CS.WorkbookAreaTasks = [
 
             return !_.isEmpty(workbookItemsForThisArea) && workbookItemsForThisArea.length >= CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl2TaskComplete;
         },
-        wordings: [
-            {
-                prompt: "What would you like to spend more time on in your work?"
-            },
-            {
-                prompt: "In what area do you want to improve yourself in your work?"
-            },
-            {
-                prompt: "What are the tasks you look the most forward to?"
-            }
-        ],
-        stepCount: CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl2TaskComplete - CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl1TaskComplete,
-        templateClassName: "WorkbookAreaAddItemLvl2Task",
-        workingOnText: "making level 2 inventory of Mores",
-        notificationText: "Make level 2 inventory of Mores",
-        comingUpText: "making inventory level 2"
+        templateClassName: "WorkbookAreaAddItemLvl1Complete"
     },
     {
         id: 16,
@@ -624,22 +524,7 @@ CS.WorkbookAreaTasks = [
 
             return !_.isEmpty(workbookItemsForThisArea) && workbookItemsForThisArea.length >= CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl2TaskComplete;
         },
-        wordings: [
-            {
-                prompt: "What methods do you use to do your work?"
-            },
-            {
-                prompt: "What are the tools you consider indespensible to do your work?"
-            },
-            {
-                prompt: "If you could freely select the tools and methodologies to do your work, what would you chose?"
-            }
-        ],
-        stepCount: CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl2TaskComplete - CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl1TaskComplete,
-        templateClassName: "WorkbookAreaAddItemLvl2Task",
-        workingOnText: "making level 2 inventory of Tools and Methods",
-        notificationText: "Make level 2 inventory of Tools and Methods",
-        comingUpText: "making inventory level 2"
+        templateClassName: "WorkbookAreaAddItemLvl1Complete"
     },
     {
         id: 17,
@@ -665,16 +550,7 @@ CS.WorkbookAreaTasks = [
 
             return !_.isEmpty(workbookItemsForThisArea) && workbookItemsForThisArea.length >= CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl2TaskComplete;
         },
-        wordings: [
-            {
-                prompt: "This is something my boss should keep in mind to make me stay..."
-            }
-        ],
-        stepCount: CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl2TaskComplete - CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl1TaskComplete,
-        templateClassName: "WorkbookAreaAddItemLvl2Task",
-        workingOnText: "making level 2 inventory of Leadership preferences",
-        notificationText: "Make level 2 inventory of Leadership preferences",
-        comingUpText: "making inventory level 2"
+        templateClassName: "WorkbookAreaAddItemLvl1Complete"
     },
     {
         id: 18,
@@ -700,30 +576,7 @@ CS.WorkbookAreaTasks = [
 
             return !_.isEmpty(workbookItemsForThisArea) && workbookItemsForThisArea.length >= CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl2TaskComplete;
         },
-        wordings: [
-            {
-                prompt: "Name a position or role you'd like to have!",
-                sentenceStart: "I would like to work as "
-            },
-            {
-                prompt: "Name an industry you're interested in working in!"
-            },
-            {
-                prompt: "What position would you chose, if given the possibility to decide all by yourself?"
-            },
-            {
-                prompt: "Please name an organization that you would find interesting to work with"
-            },
-            {
-                prompt: "What industries would you not work in?",
-                sentenceStart: "I would never work in "
-            }
-        ],
-        stepCount: CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl2TaskComplete - CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl1TaskComplete,
-        templateClassName: "WorkbookAreaAddItemLvl2Task",
-        workingOnText: "making level 2 inventory of Contexts",
-        notificationText: "Make level 2 inventory of Contexts",
-        comingUpText: "making inventory level 2"
+        templateClassName: "WorkbookAreaAddItemLvl1Complete"
     },
     {   // Level 3
         id: 19,

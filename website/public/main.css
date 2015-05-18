@@ -6116,8 +6116,7 @@ button.styleless {
     border: none;
     box-shadow: none;
     border-radius: 0;
-    background-color: transparent;
-    padding: 0; }
+    background-color: transparent; }
   button.styleless:hover {
     cursor: pointer; }
 
@@ -6660,7 +6659,7 @@ footer {
     top: 0;
     right: 0.1em;
     padding: 0.93em 1em; }
-  .workbook-task > p {
+  .workbook-task > .working-on {
     margin-bottom: 0; }
   .workbook-task > .coming-up-next {
     text-align: right;
@@ -6676,11 +6675,13 @@ footer {
   .workbook-task.complete > h2,
   .workbook-task.complete > p {
     text-align: center; }
-  .workbook-task.complete h2 {
+  .workbook-task.complete > h2 {
     font-size: 1.5em; }
-    .workbook-task.complete h2 .fa-star {
+    .workbook-task.complete > h2 .fa-star {
       color: #FDC300;
       margin: 0 1em; }
+  .workbook-task.complete > p:last-child {
+    margin-bottom: 0; }
 
 .item-composer.task {
   display: block; }

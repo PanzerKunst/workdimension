@@ -12,7 +12,7 @@
     padding: 0.93em 1em;
   }
 
-  > p {
+  > .working-on {
     margin-bottom: 0;
   }
 
@@ -41,13 +41,17 @@
       text-align: center;
     }
 
-    h2 {
+    > h2 {
       font-size: 1.5em;
 
       .fa-star {
         color: #FDC300;
         margin: 0 1em;
       }
+    }
+
+    > p:last-child {
+      margin-bottom: 0;
     }
   }
 }

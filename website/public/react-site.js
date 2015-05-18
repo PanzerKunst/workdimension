@@ -858,6 +858,18 @@ CS.Controllers.Overview = P(function (c) {
     };
 });
 
+CS.Controllers.WorkbookAreaAddItemLvl1Complete = React.createClass({displayName: "WorkbookAreaAddItemLvl1Complete",
+    render: function () {
+        return (
+            React.createElement("div", {className: "workbook-task complete"}, 
+                React.createElement("h2", null, React.createElement("i", {className: "fa fa-star"}), "Great work!", React.createElement("i", {className: "fa fa-star"})), 
+                React.createElement("p", null, "A career advisor will get back to you with personal advice."), 
+                React.createElement("p", null, "In the meantime, you can continue filling in your workbook; by adding more items to this topic, describing them, or navigating to other topics.")
+            )
+            );
+    }
+});
+
 CS.Controllers.WorkbookAreaAddItemLvl2Task = React.createClass({displayName: "WorkbookAreaAddItemLvl2Task",
     render: function () {
         var comingUpNextParagraph = null;
@@ -870,7 +882,7 @@ CS.Controllers.WorkbookAreaAddItemLvl2Task = React.createClass({displayName: "Wo
         return (
             React.createElement("div", {className: "workbook-task"}, 
                 React.createElement("button", {className: "styleless fa fa-question-circle", onClick: CS.Controllers.WorkbookAreaCommon.showAreaDescription}), 
-                React.createElement("p", null, "Working on: ", this.props.task.workingOnText), 
+                React.createElement("p", {className: "working-on"}, "Working on: ", this.props.task.workingOnText), 
                 React.createElement("div", {className: "progress"}, 
                     React.createElement("div", {ref: "progressBar", className: "progress-bar progress-bar-success", role: "progressbar", "aria-valuenow": "", "aria-valuemin": "0", "aria-valuemax": "100"})
                 ), 
@@ -916,7 +928,7 @@ CS.Controllers.WorkbookAreaAddItemTask = React.createClass({displayName: "Workbo
         return (
             React.createElement("div", {className: "workbook-task"}, 
                 React.createElement("button", {className: "styleless fa fa-question-circle", onClick: CS.Controllers.WorkbookAreaCommon.showAreaDescription}), 
-                React.createElement("p", null, "Working on: ", this.props.task.workingOnText), 
+                React.createElement("p", {className: "working-on"}, "Working on: ", this.props.task.workingOnText), 
                 React.createElement("div", {className: "progress"}, 
                     React.createElement("div", {ref: "progressBar", className: "progress-bar progress-bar-success", role: "progressbar", "aria-valuenow": "", "aria-valuemin": "0", "aria-valuemax": "100"})
                 ), 
@@ -1078,7 +1090,7 @@ CS.Controllers.WorkbookAreaPrioritizeItemsTask = React.createClass({displayName:
         return (
             React.createElement("div", {className: "workbook-task"}, 
                 React.createElement("button", {className: "styleless fa fa-question-circle", onClick: CS.Controllers.WorkbookAreaCommon.showAreaDescription}), 
-                React.createElement("p", null, "Working on: ", this.props.task.workingOnText), 
+                React.createElement("p", {className: "working-on"}, "Working on: ", this.props.task.workingOnText), 
                 React.createElement("div", {className: "progress"}, 
                     React.createElement("div", {ref: "progressBar", className: "progress-bar progress-bar-success", role: "progressbar", "aria-valuenow": "0", "aria-valuemin": "0", "aria-valuemax": "100"}, "0%")
                 ), 

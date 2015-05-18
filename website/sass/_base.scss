@@ -83,20 +83,18 @@ ul {
   box-shadow: none;
   border-radius: 0;
   background-color: transparent;
-  padding: 0;
 }
 
-button {
-  &.styleless {
+button.styleless {
+  @include styleless-btn;
+  padding: 0;
+
+  &:focus {
     @include styleless-btn;
+  }
 
-    &:focus {
-      @include styleless-btn;
-    }
-
-    &:hover {
-      cursor: pointer;
-    }
+  &:hover {
+    cursor: pointer;
   }
 }
 
