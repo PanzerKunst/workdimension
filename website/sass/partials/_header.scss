@@ -1,6 +1,4 @@
 header {
-  color: $background-body-color;
-
   position: fixed;
   // height: $header-height;
   width: 100%;
@@ -8,6 +6,7 @@ header {
   z-index: $z-index-menu;
 
   > section {
+    color: $background-body-color;
     background-color: $action-color;
   }
 
@@ -153,20 +152,6 @@ header {
     display: block;
   }
 
-  > #sign-out {
-    display: none;
-  }
-
-  &.signed-in {
-    > #sign-in-with-linkedin {
-      display: none;
-    }
-
-    > #sign-out {
-      display: block;
-    }
-  }
-
   ul {
     margin-bottom: 0;
   }
@@ -269,9 +254,7 @@ header {
   }
 }
 
-#sign-in-with-linkedin {
-  @include hide-text;
-
+.sign-in-with-linkedin {
   $sign-in-with-linked-in-button-image-location-x: 0;
   $sign-in-with-linked-in-button-image-location-y: 0;
 
@@ -295,5 +278,41 @@ header {
 
     width: 215px;
     height: 41px;
+  }
+
+  > span,
+  > .fa-spinner {
+    color: white;
+  }
+
+  > span {
+    font-family: Arial;
+    font-size: 11px;
+    letter-spacing: 0.05em;
+
+    margin-left: 1.8em;
+
+    @include medium-screen {
+      font-size: 16px;
+      letter-spacing: 0.03em;
+
+      margin-left: 2.5em;
+    }
+  }
+
+  > .fa-spinner {
+    display: none;
+
+    font-size: 13.9px;
+    margin-left: 10px;
+
+    @include medium-screen {
+      font-size: 17.7px;
+      margin-left: 40px;
+    }
+
+    @include large-screen {
+      font-size: 21.6px;
+    }
   }
 }

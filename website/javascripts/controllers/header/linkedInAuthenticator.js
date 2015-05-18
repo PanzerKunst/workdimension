@@ -6,12 +6,16 @@ CS.Controllers.MainMenuLinkedInAuthenticator = P(CS.Controllers.Base, function (
     };
 
     c._initElements = function () {
-        this.$signInWithLinkedInLink = $("#sign-in-with-linkedin");
+        this.$signInWithLinkedInBtn = $(".sign-in-with-linkedin");
+        this.$signInBtnSpan = this.$signInWithLinkedInBtn.children("span");
+        this.$signInBtnSpinner = this.$signInWithLinkedInBtn.children(".fa-spinner");
+
         this.$signOutLink = $("#sign-out");
+        this.$signInModal = $("#sign-in-modal");
     };
 
     c._initEvents = function () {
-        this.$signInWithLinkedInLink.click(this._signInWithLinkedIn.bind(this));
+        this.$signInWithLinkedInBtn.click(this._signInWithLinkedIn.bind(this));
         this.$signOutLink.click(this._signOut.bind(this));
         IN.Event.on(IN, "auth", this._signIn.bind(this));
     };
@@ -50,6 +54,8 @@ CS.Controllers.MainMenuLinkedInAuthenticator = P(CS.Controllers.Base, function (
 
     c._signIn = function () {
         if (this.isTemporaryAccount()) {
+            this._spin();
+
             IN.API.Profile("me").result(function (profiles) {
                 var type = "POST";
                 var url = "/api/auth?linkedinAccountId=" + profiles.values[0].id;
@@ -103,8 +109,9 @@ CS.Controllers.MainMenuLinkedInAuthenticator = P(CS.Controllers.Base, function (
         CS.account.id = data.accountId;
         CS.account.data = data.accountData;
 
-        this.$signInWithLinkedInLink.hide();
+        this.$signInWithLinkedInBtn.hide();
         this.$signOutLink.show();
+        this.$signInModal.modal("hide");
 
         CS.mainMenuController.hideMenu();
         CS.blueprintAreasModel.updateStatus();
@@ -113,5 +120,10 @@ CS.Controllers.MainMenuLinkedInAuthenticator = P(CS.Controllers.Base, function (
 
     c._signOut = function () {
         IN.User.logout(CS.mainMenuController.signOut, this);
+    };
+
+    c._spin = function() {
+        this.$signInBtnSpan.hide();
+        this.$signInBtnSpinner.show();
     };
 });

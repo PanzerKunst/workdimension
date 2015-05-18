@@ -1,4 +1,4 @@
-CS.Controllers.GetStartedPanel = P(CS.Controllers.Base, function (c) {
+CS.Controllers.GetStartedPanel = P(function (c) {
     c.init = function () {
         this._initElements();
         this._initEvents();

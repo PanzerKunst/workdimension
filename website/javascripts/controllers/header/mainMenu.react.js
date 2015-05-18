@@ -44,8 +44,6 @@ CS.Controllers.MainMenu = P(CS.Controllers.Base, function (c) {
 
         this.$activeAreasSection = this.$menu.children("section");
         this.$selectAreasLink = this.$menu.children("#select-areas");
-        this.$signInWithLinkedInLink = this.$mainContainer.find("#sign-in-with-linkedin");
-        this.$signOutLink = this.$menu.children("#sign-out");
     };
 
     c._initEvents = function () {
@@ -95,20 +93,8 @@ CS.Controllers.MainMenu = P(CS.Controllers.Base, function (c) {
     };
 
     c._toggleMenu = function () {
-        this._initSignInLinks();
-
         CS.taskNotificationsController.hide();
         this.$mainContainer.toggleClass("menu-open");
-    };
-
-    c._initSignInLinks = function() {
-        if (this.isTemporaryAccount()) {
-            this.$signOutLink.hide();
-            this.$signInWithLinkedInLink.show();
-        } else {
-            this.$signInWithLinkedInLink.hide();
-            this.$signOutLink.show();
-        }
     };
 
     c._showModal = function() {

@@ -32,7 +32,6 @@
     @if(pageId == "index") {
     <a id="select-areas">Add an area</a>
     }
-    <a id="sign-in-with-linkedin">Sign in with LinkedIn</a>
     <a id="sign-out">Sign out</a>
 </nav>
 
@@ -48,6 +47,20 @@
             <div class="modal-body"></div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<div class="modal fade" id="sign-in-modal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body centered-contents">
+                <p>You need to sign-in to access this page</p>
+                <button class="styleless sign-in-with-linkedin">
+                    <span>Sign in with LinkedIn</span>
+                    <i class="fa fa-spinner fa-pulse"></i>
+                </button>
             </div>
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->

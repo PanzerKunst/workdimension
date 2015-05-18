@@ -81,82 +81,6 @@ CS.Controllers.BlueprintAreaSelectorItem = React.createClass({displayName: "Blue
     }
 });
 
-CS.Controllers.GetStartedPanel = P(CS.Controllers.Base, function (c) {
-    c.init = function () {
-        this._initElements();
-        this._initEvents();
-        this._showPanelIfNeverClosed();
-    };
-
-    c._initElements = function () {
-        this.$mainContainer = $("#container");
-        this.$contentOverlayWhenMenuOpen = this.$mainContainer.find("#content-overlay-when-menu-open");
-        this.$toggleBtn = this.$mainContainer.find("#top-bar").children(".fa-question-circle");
-        this.$getStartedPanel = this.$mainContainer.find("#get-started");
-    };
-
-    c._initEvents = function () {
-        this.$toggleBtn.click(this._togglePanel.bind(this));
-        this.$contentOverlayWhenMenuOpen.click(this._hidePanel.bind(this));
-    };
-
-    c._showPanelIfNeverClosed = function() {
-        if (!CS.account.data.hasClosedGetStartedPanel) {
-            this._showPanel();
-        }
-    };
-
-    c._togglePanel = function() {
-        if (this.$getStartedPanel.is(":visible")) {
-            this._hidePanel();
-        } else {
-            this._showPanel();
-        }
-    };
-
-    c._showPanel = function() {
-        CS.Services.Animator.fadeIn(this.$getStartedPanel, {
-            animationDuration: 0.2,
-            opacity: 0.95,
-            onComplete: function() {
-                this.$mainContainer.addClass("get-started-section-open");
-            }.bind(this)
-        });
-    };
-
-    c._hidePanel = function() {
-        if (!CS.account.data.hasClosedGetStartedPanel) {
-            this._fetchLatestAccountDataAndUpdateIt();
-        }
-
-        CS.Services.Animator.fadeOut(this.$getStartedPanel, {
-            animationDuration: 0.2,
-            onComplete: function() {
-                this.$mainContainer.removeClass("get-started-section-open");
-            }.bind(this)
-        });
-    };
-
-    c._fetchLatestAccountDataAndUpdateIt = function () {
-        var type = "GET";
-        var url = "/api/account-data";
-
-        $.ajax({
-            url: url,
-            type: type,
-            success: function (data) {
-                CS.account.data = data || {};
-
-                CS.account.data.hasClosedGetStartedPanel = true;
-                CS.saveAccountData();
-            },
-            error: function () {
-                alert("AJAX failure doing a " + type + " request to \"" + url + "\"");
-            }
-        });
-    };
-});
-
 CS.Controllers.MainMenu = P(CS.Controllers.Base, function (c) {
     c.reactClass = React.createClass({displayName: "reactClass",
         getInitialState: function () {
@@ -203,8 +127,6 @@ CS.Controllers.MainMenu = P(CS.Controllers.Base, function (c) {
 
         this.$activeAreasSection = this.$menu.children("section");
         this.$selectAreasLink = this.$menu.children("#select-areas");
-        this.$signInWithLinkedInLink = this.$mainContainer.find("#sign-in-with-linkedin");
-        this.$signOutLink = this.$menu.children("#sign-out");
     };
 
     c._initEvents = function () {
@@ -254,20 +176,8 @@ CS.Controllers.MainMenu = P(CS.Controllers.Base, function (c) {
     };
 
     c._toggleMenu = function () {
-        this._initSignInLinks();
-
         CS.taskNotificationsController.hide();
         this.$mainContainer.toggleClass("menu-open");
-    };
-
-    c._initSignInLinks = function() {
-        if (this.isTemporaryAccount()) {
-            this.$signOutLink.hide();
-            this.$signInWithLinkedInLink.show();
-        } else {
-            this.$signInWithLinkedInLink.hide();
-            this.$signOutLink.show();
-        }
     };
 
     c._showModal = function() {
