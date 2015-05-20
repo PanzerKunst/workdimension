@@ -1,0 +1,23 @@
+.add-custom-task-panel {
+  margin-top: 2em;
+  padding: 1em;
+  background-color: lighten($brand-warning, 32%);
+
+  > a {
+    color:$brand-warning;
+  }
+
+  > form {
+    display: none;
+    margin-top: 1.5em;
+
+    > .form-group {
+      width: auto;
+      margin-bottom: 1.5em;
+    }
+
+    textarea {
+      height: $slimTextareaHeight;
+    }
+  }
+}

@@ -7,6 +7,7 @@ import play.api.db.DB
 
 object DbAdmin {
   def reCreateTables() {
+    dropTable("custom_task")
     dropTable("workbook_area")
     dropTable("workbook_category")
     dropTable("account_data")
@@ -16,6 +17,7 @@ object DbAdmin {
     createTableAccountData()
     createTableWorkbookCategory()
     createTableWorkbookArea()
+    createTableCustomTask()
   }
 
   private def createTableAccount() {
@@ -79,6 +81,26 @@ object DbAdmin {
           );"""
 
       Logger.info("DbAdmin.createTableWorkbookArea():" + query)
+
+      SQL(query).executeUpdate()
+    }
+  }
+
+  private def createTableCustomTask() {
+    DB.withConnection { implicit c =>
+      val query = """
+          create table custom_task (
+            id bigserial primary key,
+            account_id bigint not null references account(id),
+            tip varchar(512),
+            question varchar(512),
+            workbook_area_id bigint not null references workbook_area(id),
+            workbook_item_index smallint,
+            creation_timestamp bigint not null,
+            completion_timestamp bigint
+          );"""
+
+      Logger.info("DbAdmin.createTableCustomTask():" + query)
 
       SQL(query).executeUpdate()
     }

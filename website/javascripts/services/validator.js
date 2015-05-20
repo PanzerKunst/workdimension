@@ -287,7 +287,7 @@ CS.Services.Validator = P(function (c) {
 
         // Max length?
         if (this._isToCheckIfMaxLength($field)) {
-            if (!this._isMaxLength($field.val().trim(), $field.attr("maxlength"))) {
+            if (!this._isMaxLength($field.val().trim(), $field.attr("maxLength"))) {
                 this.flagInvalid($field);
                 this.showErrorMessage(this._get$maxLength($field));
                 return false;

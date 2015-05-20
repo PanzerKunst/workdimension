@@ -4,7 +4,9 @@
     <a href="/" id="home-btn" class="fa fa-home"></a>
     <h1>@Html(pageTitle)</h1>
 
+    @if(pageId == "index") {
     <button class="styleless fa fa-question-circle"></button>
+    }
 
     <button id="menu-btn" class="styleless fa fa-bars"></button>
     <button id="task-notifications-btn" class="styleless fa fa-cubes">

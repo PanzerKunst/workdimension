@@ -13,7 +13,11 @@ CS.account = {
     data: null
 };
 CS.router = new Grapnel();
-CS.defaultAnimationDuration = 0.5;
+
+CS.animationDuration = {
+    default: 0.5,
+    short: 0.2
+};
 
 CS.blueprintAreasModel = null;
 CS.mainMenuController = null;

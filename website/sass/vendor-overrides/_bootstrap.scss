@@ -70,6 +70,13 @@ button {
   }
 }
 
+.has-error,
+.has-success {
+  .form-control {
+    border-width: 0.125em;
+  }
+}
+
 .form-control,
 .btn {
   font-size: $font-size-base-em;

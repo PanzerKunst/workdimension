@@ -21,3 +21,6 @@ DELETE  /api/auth                                   controllers.api.AuthApi.sign
 
 GET     /api/account-data                           controllers.api.AccountDataApi.getForCurrentUser
 POST    /api/account-data                           controllers.api.AccountDataApi.add
+
+POST    /api/custom-tasks                           controllers.api.CustomTaskApi.create
+PUT     /api/custom-tasks                           controllers.api.CustomTaskApi.update

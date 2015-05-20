@@ -45,7 +45,10 @@ CS.Controllers.WorkbookAreaAddItemTaskForm = React.createClass({
         }
 
         var itemNameToAdd = this.$textarea.val().trim();
-        this._fetchLatestAccountDataAndUpdateIt(itemNameToAdd);
+
+        if (this._isValid(itemNameToAdd) && !CS.Controllers.WorkbookAreaCommon.doesItemAlreadyExist(itemNameToAdd, this.props.workbookArea.className)) {
+            this._fetchLatestAccountDataAndUpdateIt(itemNameToAdd);
+        }
     },
 
     _isValid: function(trimmedItemName) {
@@ -92,16 +95,15 @@ CS.Controllers.WorkbookAreaAddItemTaskForm = React.createClass({
             success: function (data) {
                 CS.account.data = data || {};
 
-                if (this._isValid(itemNameToAdd) && !CS.Controllers.WorkbookAreaCommon.doesItemAlreadyExist(itemNameToAdd, this.props.workbookArea.className)) {
-                    var updatedBlueprintAreaData = CS.account.data && !_.isEmpty(CS.account.data[this.props.workbookArea.className]) ? _.clone(CS.account.data[this.props.workbookArea.className], true) : [];
-                    updatedBlueprintAreaData.push({
-                        name: itemNameToAdd,
-                        notes: []
-                    });
 
-                    CS.account.data[this.props.workbookArea.className] = updatedBlueprintAreaData;
-                    CS.saveAccountData();
-                }
+                var updatedBlueprintAreaData = CS.account.data && !_.isEmpty(CS.account.data[this.props.workbookArea.className]) ? _.clone(CS.account.data[this.props.workbookArea.className], true) : [];
+                updatedBlueprintAreaData.push({
+                    name: itemNameToAdd,
+                    notes: []
+                });
+
+                CS.account.data[this.props.workbookArea.className] = updatedBlueprintAreaData;
+                CS.saveAccountData();
 
                 this._setCurrentTaskAsSkippedAndReRender();
             }.bind(this),

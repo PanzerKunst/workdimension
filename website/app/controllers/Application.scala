@@ -12,6 +12,12 @@ object Application extends Controller {
   val accountDataJsonKeyForClickedTaskIds = "clickedTaskIds"
 
   def index = Action { request =>
+    var newSession = request.session
+
+    if (request.queryString.contains("role") && request.queryString.get("role").get.head == "admin") {
+      newSession = request.session + ("isAdmin" -> "true")
+    }
+
     val accountId = if (request.queryString.contains("email")) {  // TODO: remove
       AccountDto.getOfEmailAddress(request.queryString.get("email").get.head).get.id.get
     } else {
@@ -29,9 +35,11 @@ object Application extends Controller {
       }
     }
 
-    Ok(views.html.index(WorkbookAreaDto.getAll, accountId, AccountDataDto.getOfAccountId(accountId))).withSession(request.session
-      +("accountId", accountId.toString)
-    ).withHeaders(doNotCachePage: _*)
+    newSession = newSession + ("accountId" -> accountId.toString)
+
+    Ok(views.html.index(WorkbookAreaDto.getAll, accountId, AccountDataDto.getOfAccountId(accountId)))
+      .withSession(newSession)
+      .withHeaders(doNotCachePage: _*)
   }
 
   def workbookArea(className: String) = Action { request =>
@@ -56,7 +64,9 @@ object Application extends Controller {
                   AccountDataDto.create(accountId, accountData.get)
                 }
 
-                Ok(views.html.workbookArea(WorkbookAreaDto.getAll, workbookArea, accountId, accountData))
+                val customTasks = CustomTaskDto.get(account.id.get, workbookArea.id)
+
+                Ok(views.html.workbookArea(WorkbookAreaDto.getAll, workbookArea, accountId, accountData, customTasks, isAdmin(request.session)))
                   .withHeaders(doNotCachePage: _*)
             }
         }
@@ -138,5 +148,9 @@ object Application extends Controller {
 
         data.transform(jsonTransformer).get
     }
+  }
+
+  private def isAdmin(session: Session): Boolean = {
+    session.get("isAdmin").isDefined
   }
 }

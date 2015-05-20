@@ -1,4 +1,4 @@
-@(workbookAreas: List[WorkbookArea], workbookArea: WorkbookArea, accountId: Long, accountData: Option[play.api.libs.json.JsObject])
+@(workbookAreas: List[WorkbookArea], workbookArea: WorkbookArea, accountId: Long, accountData: Option[play.api.libs.json.JsObject], customTasks: List[CustomTask], isAdmin: Boolean)
 @main(workbookArea.title, "workbook-area") {
 <!--
     Header
@@ -23,7 +23,11 @@
         CS.Controllers.SignInModal();
         CS.mainMenuController = CS.Controllers.MainMenu(@Html(play.api.libs.json.Json.toJson(workbookAreas).toString));
         CS.taskNotificationsController = CS.Controllers.TaskNotifications();
-        CS.workbookAreaController = CS.Controllers.WorkbookArea(@Html(play.api.libs.json.Json.toJson(workbookArea).toString));
+        CS.workbookAreaController = CS.Controllers.WorkbookArea(
+            @Html(play.api.libs.json.Json.toJson(workbookArea).toString),
+            @Html(play.api.libs.json.Json.toJson(customTasks).toString),
+            @Html(play.api.libs.json.Json.toJson(isAdmin).toString)
+        );
     });
 </script>
 }

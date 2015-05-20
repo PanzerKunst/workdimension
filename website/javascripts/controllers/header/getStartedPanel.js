@@ -33,7 +33,7 @@ CS.Controllers.GetStartedPanel = P(function (c) {
 
     c._showPanel = function() {
         CS.Services.Animator.fadeIn(this.$getStartedPanel, {
-            animationDuration: 0.2,
+            animationDuration: CS.animationDuration.short,
             opacity: 0.95,
             onComplete: function() {
                 this.$mainContainer.addClass("get-started-section-open");
@@ -47,7 +47,7 @@ CS.Controllers.GetStartedPanel = P(function (c) {
         }
 
         CS.Services.Animator.fadeOut(this.$getStartedPanel, {
-            animationDuration: 0.2,
+            animationDuration: CS.animationDuration.short,
             onComplete: function() {
                 this.$mainContainer.removeClass("get-started-section-open");
             }.bind(this)

@@ -6,13 +6,16 @@ CS.Controllers.WorkbookArea = P(function (c) {
             return {
                 controller: null,
                 workbookArea: null,
-                workbookItems: []
+                workbookItems: [],
+                customTask: null,
+                isAdmin: false
             };
         },
 
         render: function () {
             var workbookAreaDescriptionReact = null;
             var taskReact = null;
+            var addCustomTaskPanelReact = null;
 
             if (this.state.workbookArea) {
                 var workbookAreaDescription = _.find(CS.Controllers.Texts, function(text) {
@@ -29,9 +32,10 @@ CS.Controllers.WorkbookArea = P(function (c) {
                     </div>
                     );
 
-                var activeTask = _.find(CS.WorkbookAreaTasks, function (task) {  // Level 3
-                    return task.workbookAreaId === this.state.workbookArea.id && task.level === 3 && task.isActive();
-                }.bind(this)) ||
+                var activeTask = this.state.customTask ||
+                    _.find(CS.WorkbookAreaTasks, function (task) {  // Level 3
+                        return task.workbookAreaId === this.state.workbookArea.id && task.level === 3 && task.isActive();
+                    }.bind(this)) ||
                     _.find(CS.WorkbookAreaTasks, function (task) {   // Level 2
                         return task.workbookAreaId === this.state.workbookArea.id && task.level === 2 && task.isActive();
                     }.bind(this)) ||
@@ -62,12 +66,17 @@ CS.Controllers.WorkbookArea = P(function (c) {
                             );
                     }
                 }
+
+                if (this.state.isAdmin && !this.state.customTask) {
+                    addCustomTaskPanelReact = <CS.Controllers.WorkbookAreaAddCustomTask workbookAreaId={this.state.workbookArea.id} controller={this.state.controller} />;
+                }
             }
 
             return (
                 <div ref="wrapper" id="content-wrapper">
                     {workbookAreaDescriptionReact}
                     {taskReact}
+                    {addCustomTaskPanelReact}
 
                     <ul className="styleless item-names-list">
                         {this.state.workbookItems.map(function (item, index) {
@@ -188,7 +197,7 @@ CS.Controllers.WorkbookArea = P(function (c) {
 
         _showTask: function () {
             CS.Services.Animator.fadeOut(this.$areaDescriptionWrapper, {
-                animationDuration: 0.2,
+                animationDuration: CS.animationDuration.short,
                 onComplete: function () {
                     CS.Services.Animator.fadeIn(this.$taskWrapper);
                 }.bind(this)
@@ -196,8 +205,18 @@ CS.Controllers.WorkbookArea = P(function (c) {
         }
     });
 
-    c.init = function (workbookArea) {
+    c.init = function (workbookArea, customTasks, isAdmin) {
         this.workbookArea = workbookArea;
+
+        this.customTasks = customTasks;
+        if (!_.isEmpty(this.customTasks)) {
+            this.customTasks = _.map(this.customTasks, function(task) {
+                task.templateClassName = CS.Controllers.WorkbookAreaCommon.customTaskTemplateClassName;
+                return task;
+            });
+        }
+
+        this.isAdmin = isAdmin;
 
         this.reactInstance = React.render(
             React.createElement(this.reactClass),
@@ -208,10 +227,16 @@ CS.Controllers.WorkbookArea = P(function (c) {
     };
 
     c.reRender = function () {
+        var firstCustomTaskNotCompleted = _.find(this.customTasks, function(task) {
+            return task.completionTimestamp === undefined;
+        });
+
         this.reactInstance.replaceState({
             controller: this,
             workbookArea: this.workbookArea,
-            workbookItems: CS.account.data[this.workbookArea.className] ? CS.account.data[this.workbookArea.className] : []
+            workbookItems: CS.account.data[this.workbookArea.className] ? CS.account.data[this.workbookArea.className] : [],
+            customTask: firstCustomTaskNotCompleted,
+            isAdmin: this.isAdmin
         });
     };
 

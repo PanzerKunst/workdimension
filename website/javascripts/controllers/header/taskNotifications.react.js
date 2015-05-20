@@ -97,7 +97,7 @@ CS.Controllers.TaskNotifications = P(function (c) {
         var result = [];
 
         CS.WorkbookAreaTasks.forEach(function (task) {
-            if (task.isActive()) {
+            if (task.notificationText && task.isActive()) {
                 task.entityType = CS.Controllers.WorkbookCommon.entityTypes.workbookArea;
                 result.push(task);
             }
@@ -115,15 +115,17 @@ CS.Controllers.TaskNotifications = P(function (c) {
             var workbookItems = CS.account.data[workbookArea.className];
 
             workbookItemTasksForThisArea.forEach(function (task) {
-                // Call isActive() for each item. Stop on the first found.
-                for (var i = 0; i < _.size(workbookItems); i++) {
-                    if (task.isActive(i) && !task.isDone(i)) {
-                        // Add that task to the list of active ones
-                        task.entityType = CS.Controllers.WorkbookCommon.entityTypes.workbookItem;
-                        task.itemIndex = i;
-                        result.push(task);
+                if (task.notificationText) {
+                    // Call isActive() for each item. Stop on the first found.
+                    for (var i = 0; i < _.size(workbookItems); i++) {
+                        if (task.isActive(i) && !task.isDone(i)) {
+                            // Add that task to the list of active ones
+                            task.entityType = CS.Controllers.WorkbookCommon.entityTypes.workbookItem;
+                            task.itemIndex = i;
+                            result.push(task);
 
-                        break;
+                            break;
+                        }
                     }
                 }
             });

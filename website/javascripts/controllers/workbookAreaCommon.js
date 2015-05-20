@@ -3,6 +3,7 @@ CS.Controllers.WorkbookAreaCommon = {
     mediumScreenTextareaDefaultHeightPx: 53,
     largeScreenTextareaDefaultHeightPx: 65,
     noteIndicatorUnitLengthEm: 2.5,
+    customTaskTemplateClassName: "WorkbookAreaCustomTask",
 
     handleTextareaKeyUp: function (e, formSubmitFunction, formCancelFunction) {
         if (e.keyCode === CS.Services.Keyboard.keyCode.enter && formSubmitFunction) {
@@ -89,7 +90,7 @@ CS.Controllers.WorkbookAreaCommon = {
 
     showAreaDescription: function () {
         CS.Services.Animator.fadeOut($(".workbook-task"), {
-            animationDuration: 0.2,
+            animationDuration: CS.animationDuration.short,
             onComplete: function () {
                 CS.Services.Animator.fadeIn($("#area-description"));
             }

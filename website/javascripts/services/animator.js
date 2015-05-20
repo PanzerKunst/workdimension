@@ -1,7 +1,7 @@
 CS.Services.Animator = {
     fadeIn: function ($el, params) {
         if (!$el.is(":visible")) {
-            var animationDuration = params && _.isNumber(params.animationDuration) ? params.animationDuration : CS.defaultAnimationDuration;
+            var animationDuration = params && _.isNumber(params.animationDuration) ? params.animationDuration : CS.animationDuration.default;
             var alpha = params && _.isNumber(params.opacity) ? params.opacity : 1;
 
             TweenLite.set($el, {display: "block", alpha: 0});
@@ -17,7 +17,7 @@ CS.Services.Animator = {
     },
     fadeOut: function ($el, params) {
         if ($el.is(":visible")) {
-            var animationDuration = params && _.isNumber(params.animationDuration) ? params.animationDuration : CS.defaultAnimationDuration;
+            var animationDuration = params && _.isNumber(params.animationDuration) ? params.animationDuration : CS.animationDuration.default;
 
             TweenLite.to($el, animationDuration, {
                 alpha: 0,
