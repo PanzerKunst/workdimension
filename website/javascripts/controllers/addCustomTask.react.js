@@ -1,4 +1,4 @@
-CS.Controllers.WorkbookAreaAddCustomTask = React.createClass({
+CS.Controllers.AddCustomTask = React.createClass({
     render: function () {
         return (
             <section className="add-custom-task-panel" ref="wrapper">
@@ -65,7 +65,8 @@ CS.Controllers.WorkbookAreaAddCustomTask = React.createClass({
                 accountId: CS.account.id,
                 tip: tip || null,
                 question: question || null,
-                workbookAreaId: this.props.workbookAreaId
+                workbookAreaId: this.props.workbookAreaId,
+                workbookItemIndex: this.props.workbookItemIndex
             };
 
             if (task.tip || task.question) {
@@ -87,7 +88,7 @@ CS.Controllers.WorkbookAreaAddCustomTask = React.createClass({
                 this.$form[0].reset();
 
                 task.id = id;
-                task.templateClassName = CS.Controllers.WorkbookAreaCommon.customTaskTemplateClassName;
+                task.templateClassName = _.isNumber(this.props.workbookItemIndex) ? CS.Controllers.WorkbookAreaCommon.customItemTaskTemplateClassName : CS.Controllers.WorkbookAreaCommon.customAreaTaskTemplateClassName;
 
                 this.props.controller.customTasks.push(task);
                 this.props.controller.reRender();

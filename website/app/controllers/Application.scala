@@ -64,7 +64,7 @@ object Application extends Controller {
                   AccountDataDto.create(accountId, accountData.get)
                 }
 
-                val customTasks = CustomTaskDto.get(account.id.get, workbookArea.id)
+                val customTasks = CustomTaskDto.get(account.id.get, workbookArea.id, None)
 
                 Ok(views.html.workbookArea(WorkbookAreaDto.getAll, workbookArea, accountId, accountData, customTasks, isAdmin(request.session)))
                   .withHeaders(doNotCachePage: _*)
@@ -101,7 +101,9 @@ object Application extends Controller {
                       AccountDataDto.create(accountId, accountDat4)
                     }
 
-                    Ok(views.html.workbookItem(WorkbookAreaDto.getAll, workbookArea, workbookItems.apply(index), accountId, accountDat4))
+                    val customTasks = CustomTaskDto.get(account.id.get, workbookArea.id, Some(index))
+
+                    Ok(views.html.workbookItem(WorkbookAreaDto.getAll, workbookArea, workbookItems.apply(index), accountId, accountDat4, customTasks, isAdmin(request.session)))
                       .withHeaders(doNotCachePage: _*)
                 }
             }

@@ -1,4 +1,4 @@
-@(workbookAreas: List[WorkbookArea], workbookArea: WorkbookArea, workbookItem: frontend.WorkbookItem, accountId: Long, accountData: play.api.libs.json.JsObject)
+@(workbookAreas: List[WorkbookArea], workbookArea: WorkbookArea, workbookItem: frontend.WorkbookItem, accountId: Long, accountData: play.api.libs.json.JsObject, customTasks: List[CustomTask], isAdmin: Boolean)
 
 @headerText(workbookArea: WorkbookArea, workbookItem: frontend.WorkbookItem) = @{
     "<a href=\"/workbook-areas/" + workbookArea.className + "\">" + workbookArea.className + "</a><i class=\"fa fa-angle-right\"></i>" + workbookItem.name
@@ -28,7 +28,12 @@
         CS.Controllers.SignInModal();
         CS.mainMenuController = CS.Controllers.MainMenu(@Html(play.api.libs.json.Json.toJson(workbookAreas).toString));
         CS.taskNotificationsController = CS.Controllers.TaskNotifications();
-        CS.workbookItemController = CS.Controllers.WorkbookItem(@Html(play.api.libs.json.Json.toJson(workbookArea).toString), @Html(play.api.libs.json.Json.toJson(workbookItem).toString));
+        CS.workbookItemController = CS.Controllers.WorkbookItem(
+            @Html(play.api.libs.json.Json.toJson(workbookArea).toString),
+            @Html(play.api.libs.json.Json.toJson(workbookItem).toString),
+            @Html(play.api.libs.json.Json.toJson(customTasks).toString),
+            @Html(play.api.libs.json.Json.toJson(isAdmin).toString)
+        );
     });
 </script>
 }

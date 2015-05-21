@@ -38,4 +38,19 @@ object EmailService {
       headers = Seq()
     ))
   }
+
+  def sendNewCustomTaskForYouEmail(taskUrl: String, tip: Option[String]): Unit = {
+    val body = views.html.email.newCustomTaskForYou(taskUrl, tip).toString()
+
+    MailerPlugin.send(Email(
+      subject = "New task for you",
+      from = accountName + "<" + accountAddress + ">",
+      to = Seq(accountAddress),
+      bodyHtml = Some(body),
+      cc = Seq(),
+      bcc = Seq(),
+      attachments = Seq(),
+      headers = Seq()
+    ))
+  }
 }

@@ -61,7 +61,10 @@ CS.Controllers.WorkbookItemAddItemTask = React.createClass({
         }
 
         var itemNoteToAdd = this.$textarea.val().trim();
-        this._fetchLatestAccountDataAndUpdateIt(itemNoteToAdd);
+
+        if (this._isValid(itemNoteToAdd) && !CS.Controllers.WorkbookItemCommon.doesItemAlreadyExist(itemNoteToAdd, this.props.workbookArea.className, this.props.workbookItemIndex)) {
+            this._fetchLatestAccountDataAndUpdateIt(itemNoteToAdd);
+        }
     },
 
     _isValid: function(trimmedItemNote) {
@@ -108,22 +111,20 @@ CS.Controllers.WorkbookItemAddItemTask = React.createClass({
             success: function (data) {
                 CS.account.data = data || {};
 
-                if (this._isValid(itemNoteToAdd) && !CS.Controllers.WorkbookItemCommon.doesItemAlreadyExist(itemNoteToAdd, this.props.workbookArea.className, this.props.workbookItemIndex)) {
-                    var updatedWorkbookItemNotesData = CS.account.data[this.props.workbookArea.className][this.props.workbookItemIndex].notes || [];
-                    updatedWorkbookItemNotesData.push(itemNoteToAdd);
+                var updatedWorkbookItemNotesData = CS.account.data[this.props.workbookArea.className][this.props.workbookItemIndex].notes || [];
+                updatedWorkbookItemNotesData.push(itemNoteToAdd);
 
-                    CS.account.data[this.props.workbookArea.className][this.props.workbookItemIndex].notes = updatedWorkbookItemNotesData;
+                CS.account.data[this.props.workbookArea.className][this.props.workbookItemIndex].notes = updatedWorkbookItemNotesData;
 
-                    var describedWorkbookItemIds = CS.account.data.describedWorkbookItemIds || {};
-                    var describedWorkbookItemIdsForThisArea = describedWorkbookItemIds[this.props.workbookArea.className] || [];
-                    if (!_.contains(describedWorkbookItemIdsForThisArea, this.props.workbookItemIndex)) {
-                        describedWorkbookItemIdsForThisArea.push(this.props.workbookItemIndex);
-                    }
-                    describedWorkbookItemIds[this.props.workbookArea.className] = describedWorkbookItemIdsForThisArea;
-                    CS.account.data.describedWorkbookItemIds = describedWorkbookItemIds;
-
-                    CS.saveAccountData();
+                var describedWorkbookItemIds = CS.account.data.describedWorkbookItemIds || {};
+                var describedWorkbookItemIdsForThisArea = describedWorkbookItemIds[this.props.workbookArea.className] || [];
+                if (!_.contains(describedWorkbookItemIdsForThisArea, this.props.workbookItemIndex)) {
+                    describedWorkbookItemIdsForThisArea.push(this.props.workbookItemIndex);
                 }
+                describedWorkbookItemIds[this.props.workbookArea.className] = describedWorkbookItemIdsForThisArea;
+                CS.account.data.describedWorkbookItemIds = describedWorkbookItemIds;
+
+                CS.saveAccountData();
 
                 this._setCurrentTaskAsSkippedAndReRender();
             }.bind(this),

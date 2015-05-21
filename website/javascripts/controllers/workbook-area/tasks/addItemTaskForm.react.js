@@ -95,7 +95,6 @@ CS.Controllers.WorkbookAreaAddItemTaskForm = React.createClass({
             success: function (data) {
                 CS.account.data = data || {};
 
-
                 var updatedBlueprintAreaData = CS.account.data && !_.isEmpty(CS.account.data[this.props.workbookArea.className]) ? _.clone(CS.account.data[this.props.workbookArea.className], true) : [];
                 updatedBlueprintAreaData.push({
                     name: itemNameToAdd,

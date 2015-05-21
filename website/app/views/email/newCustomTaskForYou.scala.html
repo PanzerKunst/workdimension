@@ -1,0 +1,21 @@
+@(taskUrl: String, tip: Option[String])
+<!DOCTYPE html>
+<html>
+<body>
+    <p>Hello there!</p>
+
+    <p>Erik Fors-Andrée has
+
+    @if(tip.isDefined){
+        given you a tip and
+    }
+
+    asked you a new question! Click <a href="@taskUrl">here</a> to read
+
+    @if(tip.isDefined){
+        them.
+    } else {
+        it.
+    }
+</body>
+</html>

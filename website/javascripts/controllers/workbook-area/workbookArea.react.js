@@ -68,7 +68,7 @@ CS.Controllers.WorkbookArea = P(function (c) {
                 }
 
                 if (this.state.isAdmin && !this.state.customTask) {
-                    addCustomTaskPanelReact = <CS.Controllers.WorkbookAreaAddCustomTask workbookAreaId={this.state.workbookArea.id} controller={this.state.controller} />;
+                    addCustomTaskPanelReact = <CS.Controllers.AddCustomTask workbookAreaId={this.state.workbookArea.id} controller={this.state.controller} />;
                 }
             }
 
@@ -211,7 +211,7 @@ CS.Controllers.WorkbookArea = P(function (c) {
         this.customTasks = customTasks;
         if (!_.isEmpty(this.customTasks)) {
             this.customTasks = _.map(this.customTasks, function(task) {
-                task.templateClassName = CS.Controllers.WorkbookAreaCommon.customTaskTemplateClassName;
+                task.templateClassName = CS.Controllers.WorkbookAreaCommon.customAreaTaskTemplateClassName;
                 return task;
             });
         }

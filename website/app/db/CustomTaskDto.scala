@@ -9,13 +9,21 @@ import play.api.Play.current
 import play.api.db.DB
 
 object CustomTaskDto {
-  def get(accountId: Long, workbookAreaId: Long): List[CustomTask] = {
+  def get(accountId: Long, workbookAreaId: Long, workbookItemIndex: Option[Int]): List[CustomTask] = {
     DB.withConnection { implicit c =>
+      val workbookItemIndexClause = workbookItemIndex match {
+        case None => """
+            and workbook_item_index is null"""
+        case Some(index) => """
+            and workbook_item_index = """ + index
+      }
+
       val query = """
       select id, tip, question, creation_timestamp, completion_timestamp
       from custom_task
       where account_id = """ + accountId + """
-        and workbook_area_id = """ + workbookAreaId + """;"""
+        and workbook_area_id = """ + workbookAreaId +
+        workbookItemIndexClause + """;"""
 
       Logger.info("CustomTaskDto.get():" + query)
 
@@ -26,7 +34,7 @@ object CustomTaskDto {
           row[Option[String]]("tip"),
           row[Option[String]]("question"),
           workbookAreaId,
-          None,
+          workbookItemIndex,
           row[Long]("creation_timestamp"),
           row[Option[Long]]("completion_timestamp")
         )

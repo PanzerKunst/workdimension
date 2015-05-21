@@ -1,3 +1,6 @@
+$task-icon-color: #FDC300;
+$task-icon-size: 1.5em;
+
 .workbook-task {
   padding: 1.5em 1em 1em 1em;
   background-color: $well-bg;
@@ -42,10 +45,11 @@
     }
 
     > h2 {
-      font-size: 1.5em;
+      font-size: $task-icon-size;
 
       .fa-star {
-        color: #FDC300;
+        color: $task-icon-color;
+
         margin: 0 1em;
       }
     }
@@ -77,4 +81,34 @@
     margin-left: 1em;
     vertical-align: middle;
   }
+}
+
+$tip-icon-width: 10%;
+
+#custom-task-tip {
+  @include clearfix;
+
+  margin-top: 1em;
+
+  > .fa,
+  > p {
+    float: left;
+  }
+
+  > .fa {
+    color: $task-icon-color;
+    font-size: $task-icon-size;
+
+    width: $tip-icon-width;
+    text-align: center;
+    margin-top: 0.1em;
+  }
+
+  > p {
+    width: (100% - $tip-icon-width);
+  }
+}
+
+.item-composer.task.custom {
+  margin-top: 0;
 }

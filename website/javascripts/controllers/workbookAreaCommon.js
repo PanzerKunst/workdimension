@@ -3,7 +3,8 @@ CS.Controllers.WorkbookAreaCommon = {
     mediumScreenTextareaDefaultHeightPx: 53,
     largeScreenTextareaDefaultHeightPx: 65,
     noteIndicatorUnitLengthEm: 2.5,
-    customTaskTemplateClassName: "WorkbookAreaCustomTask",
+    customAreaTaskTemplateClassName: "WorkbookAreaCustomTask",
+    customItemTaskTemplateClassName: "WorkbookItemCustomTask",
 
     handleTextareaKeyUp: function (e, formSubmitFunction, formCancelFunction) {
         if (e.keyCode === CS.Services.Keyboard.keyCode.enter && formSubmitFunction) {

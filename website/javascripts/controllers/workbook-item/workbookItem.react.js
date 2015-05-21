@@ -7,21 +7,29 @@ CS.Controllers.WorkbookItem = P(function (c) {
                 controller: null,
                 workbookArea: null,
                 workbookItem: null,
-                workbookItemIndex: null
+                workbookItemIndex: null,
+                customTask: null,
+                isAdmin: false
             };
         },
 
         render: function () {
             var taskReact = null;
+            var addCustomTaskPanelReact = null;
 
             if (this.state.workbookArea) {
-                var activeTask = _.find(CS.WorkbookItemTasks, function (task) {
-                    return task.workbookAreaId === this.state.workbookArea.id && task.isActive(this.state.workbookItemIndex);
-                }.bind(this));
+                var activeTask = this.state.customTask ||
+                    _.find(CS.WorkbookItemTasks, function (task) {
+                        return task.workbookAreaId === this.state.workbookArea.id && task.isActive(this.state.workbookItemIndex);
+                    }.bind(this));
 
                 if (activeTask) {
                     taskReact = React.createElement(CS.Controllers[activeTask.templateClassName], {task: activeTask, workbookArea: this.state.workbookArea, workbookItemName: this.state.workbookItem.name, workbookItemIndex: this.state.workbookItemIndex, controller: this.state.controller});
                 }
+            }
+
+            if (this.state.isAdmin && !this.state.customTask) {
+                addCustomTaskPanelReact = <CS.Controllers.AddCustomTask workbookAreaId={this.state.workbookArea.id} workbookItemIndex={this.state.workbookItemIndex} controller={this.state.controller} />;
             }
 
             var listItems = null;
@@ -36,6 +44,7 @@ CS.Controllers.WorkbookItem = P(function (c) {
             return (
                 <div ref="wrapper">
                     {taskReact}
+                    {addCustomTaskPanelReact}
 
                     <ul className="styleless item-notes-list">
                         {listItems}
@@ -93,7 +102,7 @@ CS.Controllers.WorkbookItem = P(function (c) {
             this.$addNoteLink.show();
         },
 
-        _fetchLatestAccountDataAndUpdateIt: function(itemNoteToAdd) {
+        _fetchLatestAccountDataAndUpdateIt: function (itemNoteToAdd) {
             var type = "GET";
             var url = "/api/account-data";
 
@@ -125,9 +134,19 @@ CS.Controllers.WorkbookItem = P(function (c) {
         }
     });
 
-    c.init = function (workbookArea, workbookItem) {
+    c.init = function (workbookArea, workbookItem, customTasks, isAdmin) {
         this.workbookArea = workbookArea;
         this.workbookItem = workbookItem;
+
+        this.customTasks = customTasks;
+        if (!_.isEmpty(this.customTasks)) {
+            this.customTasks = _.map(this.customTasks, function(task) {
+                task.templateClassName = CS.Controllers.WorkbookAreaCommon.customItemTaskTemplateClassName;
+                return task;
+            });
+        }
+
+        this.isAdmin = isAdmin;
 
         this.reactInstance = React.render(
             React.createElement(this.reactClass),
@@ -138,11 +157,17 @@ CS.Controllers.WorkbookItem = P(function (c) {
     };
 
     c.reRender = function () {
+        var firstCustomTaskNotCompleted = _.find(this.customTasks, function(task) {
+            return task.completionTimestamp === undefined;
+        });
+
         this.reactInstance.replaceState({
             controller: this,
             workbookArea: this.workbookArea,
             workbookItem: _.find(CS.account.data[this.workbookArea.className], "name", this.workbookItem.name),
-            workbookItemIndex: _.findIndex(CS.account.data[this.workbookArea.className], "name", this.workbookItem.name)
+            workbookItemIndex: _.findIndex(CS.account.data[this.workbookArea.className], "name", this.workbookItem.name),
+            customTask: firstCustomTaskNotCompleted,
+            isAdmin: this.isAdmin
         });
     };
 

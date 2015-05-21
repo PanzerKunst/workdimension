@@ -1176,7 +1176,8 @@ CS.saveAccountData = function (callback) {
     mediumScreenTextareaDefaultHeightPx: 53,
     largeScreenTextareaDefaultHeightPx: 65,
     noteIndicatorUnitLengthEm: 2.5,
-    customTaskTemplateClassName: "WorkbookAreaCustomTask",
+    customAreaTaskTemplateClassName: "WorkbookAreaCustomTask",
+    customItemTaskTemplateClassName: "WorkbookItemCustomTask",
 
     handleTextareaKeyUp: function (e, formSubmitFunction, formCancelFunction) {
         if (e.keyCode === CS.Services.Keyboard.keyCode.enter && formSubmitFunction) {
@@ -1568,7 +1569,109 @@ CS.Controllers.MainMenuLinkedInAuthenticator = P(CS.Controllers.Base, function (
         CS.Services.Browser.removeFromLocalStorage(this.getLocalStorageKeyForSkippedTaskIds(workbookAreaClassName));
     }
 };
-;CS.Controllers.BlueprintAreasSelector = P(function (c) {
+;CS.Controllers.AddCustomTask = React.createClass({displayName: "AddCustomTask",
+    render: function () {
+        return (
+            React.createElement("section", {className: "add-custom-task-panel", ref: "wrapper"}, 
+                React.createElement("a", {onClick: this._handleAddCustomTaskClick}, "Add custom task"), 
+
+                React.createElement("form", {onSubmit: this._handleFormSubmit}, 
+                    React.createElement("div", {className: "form-group"}, 
+                        React.createElement("label", {htmlFor: "tip"}, "Tip"), 
+                        React.createElement("textarea", {className: "form-control", id: "tip", maxLength: "512", onKeyUp: this._handleTextareaKeyUp}), 
+
+                        React.createElement("p", {className: "field-error", "data-check": "max-length"}, "512 characters maximum")
+                    ), 
+
+                    React.createElement("div", {className: "form-group"}, 
+                        React.createElement("label", {htmlFor: "question"}, "Question"), 
+                        React.createElement("textarea", {className: "form-control", id: "question", maxLength: "512", onKeyUp: this._handleTextareaKeyUp}), 
+
+                        React.createElement("p", {className: "field-error", "data-check": "max-length"}, "512 characters maximum")
+                    ), 
+
+                    React.createElement("div", {className: "centered-contents"}, 
+                        React.createElement("button", {className: "btn btn-warning"}, "Add task")
+                    )
+                )
+            )
+            );
+    },
+
+    componentDidMount: function () {
+        this._initElements();
+        this._initValidation();
+    },
+
+    _initElements: function () {
+        this.$wrapper = $(React.findDOMNode(this.refs.wrapper));
+        this.$form = this.$wrapper.children("form");
+        this.$tipField = this.$form.find("#tip");
+        this.$questionField = this.$form.find("#question");
+    },
+
+    _initValidation: function() {
+        this.validator = CS.Services.Validator([
+            "tip",
+            "question"
+        ]);
+    },
+
+    _handleAddCustomTaskClick: function () {
+        this.$form.toggle();
+    },
+
+    _handleTextareaKeyUp: function (e) {
+        CS.Controllers.WorkbookAreaCommon.handleTextareaKeyUp(e, this._handleFormSubmit);
+    },
+
+    _handleFormSubmit: function (e) {
+        e.preventDefault();
+
+        if (this.validator.isValid()) {
+            var tip = this.$tipField.val().trim();
+            var question = this.$questionField.val().trim();
+
+            var task = {
+                accountId: CS.account.id,
+                tip: tip || null,
+                question: question || null,
+                workbookAreaId: this.props.workbookAreaId,
+                workbookItemIndex: this.props.workbookItemIndex
+            };
+
+            if (task.tip || task.question) {
+                this._addCustomTask(task);
+            }
+        }
+    },
+
+    _addCustomTask: function (task) {
+        var type = "POST";
+        var url = "/api/custom-tasks";
+
+        $.ajax({
+            url: url,
+            type: type,
+            contentType: "application/json",
+            data: JSON.stringify(task),
+            success: function (id) {
+                this.$form[0].reset();
+
+                task.id = id;
+                task.templateClassName = _.isNumber(this.props.workbookItemIndex) ? CS.Controllers.WorkbookAreaCommon.customItemTaskTemplateClassName : CS.Controllers.WorkbookAreaCommon.customAreaTaskTemplateClassName;
+
+                this.props.controller.customTasks.push(task);
+                this.props.controller.reRender();
+            }.bind(this),
+            error: function () {
+                alert("AJAX failure doing a " + type + " request to \"" + url + "\"");
+            }
+        });
+    }
+});
+
+CS.Controllers.BlueprintAreasSelector = P(function (c) {
     c.reactClass = React.createClass({displayName: "reactClass",
         getInitialState: function () {
             return {
@@ -2430,107 +2533,6 @@ CS.Controllers.Overview = P(function (c) {
     };
 });
 
-CS.Controllers.WorkbookAreaAddCustomTask = React.createClass({displayName: "WorkbookAreaAddCustomTask",
-    render: function () {
-        return (
-            React.createElement("section", {className: "add-custom-task-panel", ref: "wrapper"}, 
-                React.createElement("a", {onClick: this._handleAddCustomTaskClick}, "Add custom task"), 
-
-                React.createElement("form", {onSubmit: this._handleFormSubmit}, 
-                    React.createElement("div", {className: "form-group"}, 
-                        React.createElement("label", {htmlFor: "tip"}, "Tip"), 
-                        React.createElement("textarea", {className: "form-control", id: "tip", maxLength: "512", onKeyUp: this._handleTextareaKeyUp}), 
-
-                        React.createElement("p", {className: "field-error", "data-check": "max-length"}, "512 characters maximum")
-                    ), 
-
-                    React.createElement("div", {className: "form-group"}, 
-                        React.createElement("label", {htmlFor: "question"}, "Question"), 
-                        React.createElement("textarea", {className: "form-control", id: "question", maxLength: "512", onKeyUp: this._handleTextareaKeyUp}), 
-
-                        React.createElement("p", {className: "field-error", "data-check": "max-length"}, "512 characters maximum")
-                    ), 
-
-                    React.createElement("div", {className: "centered-contents"}, 
-                        React.createElement("button", {className: "btn btn-warning"}, "Add task")
-                    )
-                )
-            )
-            );
-    },
-
-    componentDidMount: function () {
-        this._initElements();
-        this._initValidation();
-    },
-
-    _initElements: function () {
-        this.$wrapper = $(React.findDOMNode(this.refs.wrapper));
-        this.$form = this.$wrapper.children("form");
-        this.$tipField = this.$form.find("#tip");
-        this.$questionField = this.$form.find("#question");
-    },
-
-    _initValidation: function() {
-        this.validator = CS.Services.Validator([
-            "tip",
-            "question"
-        ]);
-    },
-
-    _handleAddCustomTaskClick: function () {
-        this.$form.toggle();
-    },
-
-    _handleTextareaKeyUp: function (e) {
-        CS.Controllers.WorkbookAreaCommon.handleTextareaKeyUp(e, this._handleFormSubmit);
-    },
-
-    _handleFormSubmit: function (e) {
-        e.preventDefault();
-
-        if (this.validator.isValid()) {
-            var tip = this.$tipField.val().trim();
-            var question = this.$questionField.val().trim();
-
-            var task = {
-                accountId: CS.account.id,
-                tip: tip || null,
-                question: question || null,
-                workbookAreaId: this.props.workbookAreaId
-            };
-
-            if (task.tip || task.question) {
-                this._addCustomTask(task);
-            }
-        }
-    },
-
-    _addCustomTask: function (task) {
-        var type = "POST";
-        var url = "/api/custom-tasks";
-
-        $.ajax({
-            url: url,
-            type: type,
-            contentType: "application/json",
-            data: JSON.stringify(task),
-            success: function (id) {
-                this.$form[0].reset();
-
-                task.id = id;
-                task.templateClassName = CS.Controllers.WorkbookAreaCommon.customTaskTemplateClassName;
-
-                this.props.controller.customTasks.push(task);
-                this.props.controller.reRender();
-            }.bind(this),
-            error: function () {
-                alert("AJAX failure doing a " + type + " request to \"" + url + "\"");
-            }
-        });
-    }
-});
-
 CS.Controllers.WorkbookAreaAddItemLvl1Complete = React.createClass({displayName: "WorkbookAreaAddItemLvl1Complete",
     render: function () {
         return (
@@ -2732,7 +2734,6 @@ CS.Controllers.WorkbookAreaAddItemTaskForm = React.createClass({displayName: "Wo
             success: function (data) {
                 CS.account.data = data || {};
 
-
                 var updatedBlueprintAreaData = CS.account.data && !_.isEmpty(CS.account.data[this.props.workbookArea.className]) ? _.clone(CS.account.data[this.props.workbookArea.className], true) : [];
                 updatedBlueprintAreaData.push({
                     name: itemNameToAdd,
@@ -2755,9 +2756,20 @@ CS.Controllers.WorkbookAreaCustomTask = React.createClass({displayName: "Workboo
     render: function () {
         var tipReact = null;
         if (this.props.task.tip) {
+            var tipReadBtnReact = null;
+
+            if (!this.props.task.question) {
+                tipReadBtnReact = (
+                    React.createElement("div", {className: "centered-contents"}, 
+                        React.createElement("button", {className: "btn btn-primary", onClick: this._setCustomTaskAsCompletedAndReRender}, "Got it")
+                    )
+                    );
+            }
+
             tipReact = (
-                React.createElement("article", null, 
-                    React.createElement("p", null, this.props.task.tip)
+                React.createElement("div", {id: "custom-task-tip"}, 
+                    React.createElement("i", {className: "fa fa-lightbulb-o"}), React.createElement("p", null, this.props.task.tip), 
+                    tipReadBtnReact
                 )
                 );
         }
@@ -2765,7 +2777,7 @@ CS.Controllers.WorkbookAreaCustomTask = React.createClass({displayName: "Workboo
         var questionReact = null;
         if (this.props.task.question) {
             questionReact = (
-                React.createElement("form", {role: "form", ref: "form", className: "item-composer task", onSubmit: this._handleFormSubmit}, 
+                React.createElement("form", {role: "form", ref: "form", className: "item-composer task custom", onSubmit: this._handleFormSubmit}, 
                     React.createElement("div", {className: "form-group"}, 
                         React.createElement("label", {htmlFor: "custom-task-field"}, this.props.task.question), 
                         React.createElement("textarea", {className: "form-control", id: "custom-task-field", onKeyUp: this._handleTextareaKeyUp})
@@ -2850,7 +2862,7 @@ CS.Controllers.WorkbookAreaCustomTask = React.createClass({displayName: "Workboo
             contentType: "application/json",
             data: JSON.stringify(this.props.task),
             success: function (data) {
-                this.$form[0].reset();
+                this._resetForm();
 
                 var lastIndex = this.props.controller.customTasks.length - 1;
                 this.props.controller.customTasks[lastIndex] = data;
@@ -2861,6 +2873,12 @@ CS.Controllers.WorkbookAreaCustomTask = React.createClass({displayName: "Workboo
                 alert("AJAX failure doing a " + type + " request to \"" + url + "\"");
             }
         });
+    },
+
+    _resetForm: function() {
+        if (this.$form.length > 0) {
+            this.$form[0].reset();
+        }
     }
 });
 
@@ -2884,7 +2902,9 @@ CS.Controllers.WorkbookAreaPrioritizeItemsTask = React.createClass({displayName:
                 ), 
                 comingUpNextParagraph, 
                 React.createElement("label", null, currentWording.prompt), 
-                React.createElement("button", {className: "btn btn-primary", onClick: this._setCurrentWorkbookAreaAsPrioritizedAndReRender}, "I'm done prioritizing")
+                React.createElement("div", {className: "centered-contents"}, 
+                    React.createElement("button", {className: "btn btn-primary", onClick: this._setCurrentWorkbookAreaAsPrioritizedAndReRender}, "I'm done prioritizing")
+                )
             )
             );
     },
@@ -2983,7 +3003,7 @@ CS.Controllers.WorkbookArea = P(function (c) {
                 }
 
                 if (this.state.isAdmin && !this.state.customTask) {
-                    addCustomTaskPanelReact = React.createElement(CS.Controllers.WorkbookAreaAddCustomTask, {workbookAreaId: this.state.workbookArea.id, controller: this.state.controller});
+                    addCustomTaskPanelReact = React.createElement(CS.Controllers.AddCustomTask, {workbookAreaId: this.state.workbookArea.id, controller: this.state.controller});
                 }
             }
 
@@ -3126,7 +3146,7 @@ CS.Controllers.WorkbookArea = P(function (c) {
         this.customTasks = customTasks;
         if (!_.isEmpty(this.customTasks)) {
             this.customTasks = _.map(this.customTasks, function(task) {
-                task.templateClassName = CS.Controllers.WorkbookAreaCommon.customTaskTemplateClassName;
+                task.templateClassName = CS.Controllers.WorkbookAreaCommon.customAreaTaskTemplateClassName;
                 return task;
             });
         }
@@ -3346,7 +3366,10 @@ CS.Controllers.WorkbookItemAddItemTask = React.createClass({displayName: "Workbo
         }
 
         var itemNoteToAdd = this.$textarea.val().trim();
-        this._fetchLatestAccountDataAndUpdateIt(itemNoteToAdd);
+
+        if (this._isValid(itemNoteToAdd) && !CS.Controllers.WorkbookItemCommon.doesItemAlreadyExist(itemNoteToAdd, this.props.workbookArea.className, this.props.workbookItemIndex)) {
+            this._fetchLatestAccountDataAndUpdateIt(itemNoteToAdd);
+        }
     },
 
     _isValid: function(trimmedItemNote) {
@@ -3393,22 +3416,20 @@ CS.Controllers.WorkbookItemAddItemTask = React.createClass({displayName: "Workbo
             success: function (data) {
                 CS.account.data = data || {};
 
-                if (this._isValid(itemNoteToAdd) && !CS.Controllers.WorkbookItemCommon.doesItemAlreadyExist(itemNoteToAdd, this.props.workbookArea.className, this.props.workbookItemIndex)) {
-                    var updatedWorkbookItemNotesData = CS.account.data[this.props.workbookArea.className][this.props.workbookItemIndex].notes || [];
-                    updatedWorkbookItemNotesData.push(itemNoteToAdd);
+                var updatedWorkbookItemNotesData = CS.account.data[this.props.workbookArea.className][this.props.workbookItemIndex].notes || [];
+                updatedWorkbookItemNotesData.push(itemNoteToAdd);
 
-                    CS.account.data[this.props.workbookArea.className][this.props.workbookItemIndex].notes = updatedWorkbookItemNotesData;
+                CS.account.data[this.props.workbookArea.className][this.props.workbookItemIndex].notes = updatedWorkbookItemNotesData;
 
-                    var describedWorkbookItemIds = CS.account.data.describedWorkbookItemIds || {};
-                    var describedWorkbookItemIdsForThisArea = describedWorkbookItemIds[this.props.workbookArea.className] || [];
-                    if (!_.contains(describedWorkbookItemIdsForThisArea, this.props.workbookItemIndex)) {
-                        describedWorkbookItemIdsForThisArea.push(this.props.workbookItemIndex);
-                    }
-                    describedWorkbookItemIds[this.props.workbookArea.className] = describedWorkbookItemIdsForThisArea;
-                    CS.account.data.describedWorkbookItemIds = describedWorkbookItemIds;
-
-                    CS.saveAccountData();
+                var describedWorkbookItemIds = CS.account.data.describedWorkbookItemIds || {};
+                var describedWorkbookItemIdsForThisArea = describedWorkbookItemIds[this.props.workbookArea.className] || [];
+                if (!_.contains(describedWorkbookItemIdsForThisArea, this.props.workbookItemIndex)) {
+                    describedWorkbookItemIdsForThisArea.push(this.props.workbookItemIndex);
                 }
+                describedWorkbookItemIds[this.props.workbookArea.className] = describedWorkbookItemIdsForThisArea;
+                CS.account.data.describedWorkbookItemIds = describedWorkbookItemIds;
+
+                CS.saveAccountData();
 
                 this._setCurrentTaskAsSkippedAndReRender();
             }.bind(this),
@@ -3416,6 +3437,137 @@ CS.Controllers.WorkbookItemAddItemTask = React.createClass({displayName: "Workbo
                 alert("AJAX failure doing a " + type + " request to \"" + url + "\"");
             }
         });
+    }
+});
+
+CS.Controllers.WorkbookItemCustomTask = React.createClass({displayName: "WorkbookItemCustomTask",
+    render: function () {
+        var tipReact = null;
+        if (this.props.task.tip) {
+            var tipReadBtnReact = null;
+
+            if (!this.props.task.question) {
+                tipReadBtnReact = (
+                    React.createElement("div", {className: "centered-contents"}, 
+                        React.createElement("button", {className: "btn btn-primary", onClick: this._setCustomTaskAsCompletedAndReRender}, "Got it")
+                    )
+                    );
+            }
+
+            tipReact = (
+                React.createElement("div", {id: "custom-task-tip"}, 
+                    React.createElement("i", {className: "fa fa-lightbulb-o"}), React.createElement("p", null, this.props.task.tip), 
+                    tipReadBtnReact
+                )
+                );
+        }
+
+        var questionReact = null;
+        if (this.props.task.question) {
+            questionReact = (
+                React.createElement("form", {role: "form", ref: "form", className: "item-composer task custom", onSubmit: this._handleFormSubmit}, 
+                    React.createElement("div", {className: "form-group"}, 
+                        React.createElement("label", {htmlFor: "custom-task-field"}, this.props.task.question), 
+                        React.createElement("textarea", {className: "form-control", id: "custom-task-field", onKeyUp: CS.Controllers.WorkbookItemCommon.handleTextareaKeyUp})
+                    ), 
+                    React.createElement("button", {className: "btn btn-primary"}, "Add note")
+                )
+                );
+        }
+
+        return (
+            React.createElement("div", {className: "workbook-task"}, 
+                tipReact, 
+                questionReact
+            )
+            );
+    },
+
+    componentDidMount: function () {
+        this._initElements();
+    },
+
+    _initElements: function () {
+        this.$form = $(React.findDOMNode(this.refs.form));
+        this.$textarea = this.$form.find("#custom-task-field");
+    },
+
+    _handleFormSubmit: function (e) {
+        if (e) {
+            e.preventDefault();
+        }
+
+        var itemNoteToAdd = this.$textarea.val().trim();
+
+        if (this._isValid(itemNoteToAdd) && !CS.Controllers.WorkbookItemCommon.doesItemAlreadyExist(itemNoteToAdd, this.props.workbookArea.className, this.props.workbookItemIndex)) {
+            this._fetchLatestAccountDataAndUpdateIt(itemNoteToAdd);
+        }
+    },
+
+    _fetchLatestAccountDataAndUpdateIt: function (itemNoteToAdd) {
+        var type = "GET";
+        var url = "/api/account-data";
+
+        $.ajax({
+            url: url,
+            type: type,
+            success: function (data) {
+                CS.account.data = data || {};
+
+                var updatedWorkbookItemNotesData = CS.account.data[this.props.workbookArea.className][this.props.workbookItemIndex].notes || [];
+                updatedWorkbookItemNotesData.push(itemNoteToAdd);
+
+                CS.account.data[this.props.workbookArea.className][this.props.workbookItemIndex].notes = updatedWorkbookItemNotesData;
+
+                var describedWorkbookItemIds = CS.account.data.describedWorkbookItemIds || {};
+                var describedWorkbookItemIdsForThisArea = describedWorkbookItemIds[this.props.workbookArea.className] || [];
+                if (!_.contains(describedWorkbookItemIdsForThisArea, this.props.workbookItemIndex)) {
+                    describedWorkbookItemIdsForThisArea.push(this.props.workbookItemIndex);
+                }
+                describedWorkbookItemIds[this.props.workbookArea.className] = describedWorkbookItemIdsForThisArea;
+                CS.account.data.describedWorkbookItemIds = describedWorkbookItemIds;
+
+                CS.saveAccountData();
+
+                this._setCustomTaskAsCompletedAndReRender();
+            }.bind(this),
+            error: function () {
+                alert("AJAX failure doing a " + type + " request to \"" + url + "\"");
+            }
+        });
+    },
+
+    _isValid: function(trimmedItemName) {
+        return trimmedItemName;
+    },
+
+    _setCustomTaskAsCompletedAndReRender: function () {
+        var type = "PUT";
+        var url = "/api/custom-tasks";
+
+        $.ajax({
+            url: url,
+            type: type,
+            contentType: "application/json",
+            data: JSON.stringify(this.props.task),
+            success: function (data) {
+                this._resetForm();
+
+                var lastIndex = this.props.controller.customTasks.length - 1;
+                this.props.controller.customTasks[lastIndex] = data;
+
+                this.props.controller.reRender();
+            }.bind(this),
+            error: function () {
+                alert("AJAX failure doing a " + type + " request to \"" + url + "\"");
+            }
+        });
+    },
+
+    _resetForm: function() {
+        if (this.$form.length > 0) {
+            this.$form[0].reset();
+        }
     }
 });
 
@@ -3428,21 +3580,29 @@ CS.Controllers.WorkbookItem = P(function (c) {
                 controller: null,
                 workbookArea: null,
                 workbookItem: null,
-                workbookItemIndex: null
+                workbookItemIndex: null,
+                customTask: null,
+                isAdmin: false
             };
         },
 
         render: function () {
             var taskReact = null;
+            var addCustomTaskPanelReact = null;
 
             if (this.state.workbookArea) {
-                var activeTask = _.find(CS.WorkbookItemTasks, function (task) {
-                    return task.workbookAreaId === this.state.workbookArea.id && task.isActive(this.state.workbookItemIndex);
-                }.bind(this));
+                var activeTask = this.state.customTask ||
+                    _.find(CS.WorkbookItemTasks, function (task) {
+                        return task.workbookAreaId === this.state.workbookArea.id && task.isActive(this.state.workbookItemIndex);
+                    }.bind(this));
 
                 if (activeTask) {
                     taskReact = React.createElement(CS.Controllers[activeTask.templateClassName], {task: activeTask, workbookArea: this.state.workbookArea, workbookItemName: this.state.workbookItem.name, workbookItemIndex: this.state.workbookItemIndex, controller: this.state.controller});
                 }
+            }
+
+            if (this.state.isAdmin && !this.state.customTask) {
+                addCustomTaskPanelReact = React.createElement(CS.Controllers.AddCustomTask, {workbookAreaId: this.state.workbookArea.id, workbookItemIndex: this.state.workbookItemIndex, controller: this.state.controller});
             }
 
             var listItems = null;
@@ -3457,6 +3617,7 @@ CS.Controllers.WorkbookItem = P(function (c) {
             return (
                 React.createElement("div", {ref: "wrapper"}, 
                     taskReact, 
+                    addCustomTaskPanelReact, 
 
                     React.createElement("ul", {className: "styleless item-notes-list"}, 
                         listItems
@@ -3514,7 +3675,7 @@ CS.Controllers.WorkbookItem = P(function (c) {
             this.$addNoteLink.show();
         },
 
-        _fetchLatestAccountDataAndUpdateIt: function(itemNoteToAdd) {
+        _fetchLatestAccountDataAndUpdateIt: function (itemNoteToAdd) {
             var type = "GET";
             var url = "/api/account-data";
 
@@ -3546,9 +3707,19 @@ CS.Controllers.WorkbookItem = P(function (c) {
         }
     });
 
-    c.init = function (workbookArea, workbookItem) {
+    c.init = function (workbookArea, workbookItem, customTasks, isAdmin) {
         this.workbookArea = workbookArea;
         this.workbookItem = workbookItem;
+
+        this.customTasks = customTasks;
+        if (!_.isEmpty(this.customTasks)) {
+            this.customTasks = _.map(this.customTasks, function(task) {
+                task.templateClassName = CS.Controllers.WorkbookAreaCommon.customItemTaskTemplateClassName;
+                return task;
+            });
+        }
+
+        this.isAdmin = isAdmin;
 
         this.reactInstance = React.render(
             React.createElement(this.reactClass),
@@ -3559,11 +3730,17 @@ CS.Controllers.WorkbookItem = P(function (c) {
     };
 
     c.reRender = function () {
+        var firstCustomTaskNotCompleted = _.find(this.customTasks, function(task) {
+            return task.completionTimestamp === undefined;
+        });
+
         this.reactInstance.replaceState({
             controller: this,
             workbookArea: this.workbookArea,
             workbookItem: _.find(CS.account.data[this.workbookArea.className], "name", this.workbookItem.name),
-            workbookItemIndex: _.findIndex(CS.account.data[this.workbookArea.className], "name", this.workbookItem.name)
+            workbookItemIndex: _.findIndex(CS.account.data[this.workbookArea.className], "name", this.workbookItem.name),
+            customTask: firstCustomTaskNotCompleted,
+            isAdmin: this.isAdmin
         });
     };
 

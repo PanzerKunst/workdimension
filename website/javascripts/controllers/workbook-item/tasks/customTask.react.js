@@ -1,4 +1,4 @@
-CS.Controllers.WorkbookAreaCustomTask = React.createClass({
+CS.Controllers.WorkbookItemCustomTask = React.createClass({
     render: function () {
         var tipReact = null;
         if (this.props.task.tip) {
@@ -26,16 +26,15 @@ CS.Controllers.WorkbookAreaCustomTask = React.createClass({
                 <form role="form" ref="form" className="item-composer task custom" onSubmit={this._handleFormSubmit}>
                     <div className="form-group">
                         <label htmlFor="custom-task-field">{this.props.task.question}</label>
-                        <textarea className="form-control" id="custom-task-field" onKeyUp={this._handleTextareaKeyUp} />
+                        <textarea className="form-control" id="custom-task-field" onKeyUp={CS.Controllers.WorkbookItemCommon.handleTextareaKeyUp} />
                     </div>
-                    <button className="btn btn-primary">Add item</button>
+                    <button className="btn btn-primary">Add note</button>
                 </form>
                 );
         }
 
         return (
             <div className="workbook-task">
-                <button className="styleless fa fa-question-circle" onClick={CS.Controllers.WorkbookAreaCommon.showAreaDescription}></button>
                 {tipReact}
                 {questionReact}
             </div>
@@ -56,18 +55,14 @@ CS.Controllers.WorkbookAreaCustomTask = React.createClass({
             e.preventDefault();
         }
 
-        var itemNameToAdd = this.$textarea.val().trim();
+        var itemNoteToAdd = this.$textarea.val().trim();
 
-        if (this._isValid(itemNameToAdd) && !CS.Controllers.WorkbookAreaCommon.doesItemAlreadyExist(itemNameToAdd, this.props.workbookArea.className)) {
-            this._fetchLatestAccountDataAndUpdateIt(itemNameToAdd);
+        if (this._isValid(itemNoteToAdd) && !CS.Controllers.WorkbookItemCommon.doesItemAlreadyExist(itemNoteToAdd, this.props.workbookArea.className, this.props.workbookItemIndex)) {
+            this._fetchLatestAccountDataAndUpdateIt(itemNoteToAdd);
         }
     },
 
-    _handleTextareaKeyUp: function (e) {
-        CS.Controllers.WorkbookAreaCommon.handleTextareaKeyUp(e, this._handleFormSubmit);
-    },
-
-    _fetchLatestAccountDataAndUpdateIt: function (itemNameToAdd) {
+    _fetchLatestAccountDataAndUpdateIt: function (itemNoteToAdd) {
         var type = "GET";
         var url = "/api/account-data";
 
@@ -77,13 +72,19 @@ CS.Controllers.WorkbookAreaCustomTask = React.createClass({
             success: function (data) {
                 CS.account.data = data || {};
 
-                var updatedBlueprintAreaData = CS.account.data && !_.isEmpty(CS.account.data[this.props.workbookArea.className]) ? _.clone(CS.account.data[this.props.workbookArea.className], true) : [];
-                updatedBlueprintAreaData.push({
-                    name: itemNameToAdd,
-                    notes: []
-                });
+                var updatedWorkbookItemNotesData = CS.account.data[this.props.workbookArea.className][this.props.workbookItemIndex].notes || [];
+                updatedWorkbookItemNotesData.push(itemNoteToAdd);
 
-                CS.account.data[this.props.workbookArea.className] = updatedBlueprintAreaData;
+                CS.account.data[this.props.workbookArea.className][this.props.workbookItemIndex].notes = updatedWorkbookItemNotesData;
+
+                var describedWorkbookItemIds = CS.account.data.describedWorkbookItemIds || {};
+                var describedWorkbookItemIdsForThisArea = describedWorkbookItemIds[this.props.workbookArea.className] || [];
+                if (!_.contains(describedWorkbookItemIdsForThisArea, this.props.workbookItemIndex)) {
+                    describedWorkbookItemIdsForThisArea.push(this.props.workbookItemIndex);
+                }
+                describedWorkbookItemIds[this.props.workbookArea.className] = describedWorkbookItemIdsForThisArea;
+                CS.account.data.describedWorkbookItemIds = describedWorkbookItemIds;
+
                 CS.saveAccountData();
 
                 this._setCustomTaskAsCompletedAndReRender();

@@ -6701,6 +6701,28 @@ footer {
     margin-left: 1em;
     vertical-align: middle; }
 
+#custom-task-tip {
+  margin-top: 1em; }
+  #custom-task-tip:before, #custom-task-tip:after {
+    content: " ";
+    display: table; }
+  #custom-task-tip:after {
+    clear: both; }
+  #custom-task-tip > .fa,
+  #custom-task-tip > p {
+    float: left; }
+  #custom-task-tip > .fa {
+    color: #FDC300;
+    font-size: 1.5em;
+    width: 10%;
+    text-align: center;
+    margin-top: 0.1em; }
+  #custom-task-tip > p {
+    width: 90%; }
+
+.item-composer.task.custom {
+  margin-top: 0; }
+
 #workbook-area #content-wrapper {
   margin: 0 auto; }
   @media screen and (min-width: 640px) {
