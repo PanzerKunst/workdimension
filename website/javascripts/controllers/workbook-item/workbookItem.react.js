@@ -9,7 +9,8 @@ CS.Controllers.WorkbookItem = P(function (c) {
                 workbookItem: null,
                 workbookItemIndex: null,
                 customTask: null,
-                isAdmin: false
+                isAdmin: false,
+                isCustomTaskComplete: false
             };
         },
 
@@ -18,10 +19,25 @@ CS.Controllers.WorkbookItem = P(function (c) {
             var addCustomTaskPanelReact = null;
 
             if (this.state.workbookArea) {
-                var activeTask = this.state.customTask ||
-                    _.find(CS.WorkbookItemTasks, function (task) {
-                        return task.workbookAreaId === this.state.workbookArea.id && task.isActive(this.state.workbookItemIndex);
-                    }.bind(this));
+                var activeTask = null;
+
+                if (this.state.isCustomTaskComplete) {
+                    taskReact = (
+                        <div className="workbook-task complete">
+                            <h2><i className="fa fa-star"></i>Great work!<i className="fa fa-star"></i></h2>
+                            <p>A career advisor will get back to you shortly.<br/>
+                            In the meantime, we invite you to continue working on this topic, or maybe switch to another one&#63;</p>
+                            <div className="centered-contents">
+                                <button className="btn btn-primary" onClick={this._handleCustomTaskCompleteConfirmed}>Continue</button>
+                            </div>
+                        </div>
+                        );
+                } else {
+                    activeTask = this.state.customTask ||
+                        _.find(CS.WorkbookItemTasks, function (task) {
+                            return task.workbookAreaId === this.state.workbookArea.id && task.isActive(this.state.workbookItemIndex);
+                        }.bind(this));
+                }
 
                 if (activeTask) {
                     taskReact = React.createElement(CS.Controllers[activeTask.templateClassName], {task: activeTask, workbookArea: this.state.workbookArea, workbookItemName: this.state.workbookItem.name, workbookItemIndex: this.state.workbookItemIndex, controller: this.state.controller});
@@ -97,6 +113,10 @@ CS.Controllers.WorkbookItem = P(function (c) {
             CS.Controllers.WorkbookItemCommon.handleTextareaKeyUp(e, this._hideForm);
         },
 
+        _handleCustomTaskCompleteConfirmed: function() {
+            this.setState({isCustomTaskComplete: false});
+        },
+
         _hideForm: function () {
             this.$form.hide();
             this.$addNoteLink.show();
@@ -140,7 +160,7 @@ CS.Controllers.WorkbookItem = P(function (c) {
 
         this.customTasks = customTasks;
         if (!_.isEmpty(this.customTasks)) {
-            this.customTasks = _.map(this.customTasks, function(task) {
+            this.customTasks = _.map(this.customTasks, function (task) {
                 task.templateClassName = CS.Controllers.WorkbookAreaCommon.customItemTaskTemplateClassName;
                 return task;
             });
@@ -157,7 +177,7 @@ CS.Controllers.WorkbookItem = P(function (c) {
     };
 
     c.reRender = function () {
-        var firstCustomTaskNotCompleted = _.find(this.customTasks, function(task) {
+        var firstCustomTaskNotCompleted = _.find(this.customTasks, function (task) {
             return task.completionTimestamp === undefined;
         });
 
@@ -167,7 +187,8 @@ CS.Controllers.WorkbookItem = P(function (c) {
             workbookItem: _.find(CS.account.data[this.workbookArea.className], "name", this.workbookItem.name),
             workbookItemIndex: _.findIndex(CS.account.data[this.workbookArea.className], "name", this.workbookItem.name),
             customTask: firstCustomTaskNotCompleted,
-            isAdmin: this.isAdmin
+            isAdmin: this.isAdmin,
+            isCustomTaskComplete: this.isCustomTaskComplete || false
         });
     };
 

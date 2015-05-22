@@ -8,7 +8,8 @@ CS.Controllers.WorkbookArea = P(function (c) {
                 workbookArea: null,
                 workbookItems: [],
                 customTask: null,
-                isAdmin: false
+                isAdmin: false,
+                isCustomTaskComplete: false
             };
         },
 
@@ -32,16 +33,31 @@ CS.Controllers.WorkbookArea = P(function (c) {
                     </div>
                     );
 
-                var activeTask = this.state.customTask ||
-                    _.find(CS.WorkbookAreaTasks, function (task) {  // Level 3
-                        return task.workbookAreaId === this.state.workbookArea.id && task.level === 3 && task.isActive();
-                    }.bind(this)) ||
-                    _.find(CS.WorkbookAreaTasks, function (task) {   // Level 2
-                        return task.workbookAreaId === this.state.workbookArea.id && task.level === 2 && task.isActive();
-                    }.bind(this)) ||
-                    _.find(CS.WorkbookAreaTasks, function (task) {   // Level 1
-                        return task.workbookAreaId === this.state.workbookArea.id && task.level === 1 && task.isActive();
-                    }.bind(this));
+                var activeTask = null;
+
+                if (this.state.isCustomTaskComplete) {
+                    taskReact = (
+                        <div className="workbook-task complete">
+                            <h2><i className="fa fa-star"></i>Great work!<i className="fa fa-star"></i></h2>
+                            <p>A career advisor will get back to you shortly.<br/>
+                            In the meantime, we invite you to continue working on this topic, or maybe switch to another one&#63;</p>
+                            <div className="centered-contents">
+                                <button className="btn btn-primary" onClick={this._handleCustomTaskCompleteConfirmed}>Continue</button>
+                            </div>
+                        </div>
+                        );
+                } else {
+                    activeTask = this.state.customTask ||
+                        _.find(CS.WorkbookAreaTasks, function (task) {  // Level 3
+                            return task.workbookAreaId === this.state.workbookArea.id && task.level === 3 && task.isActive();
+                        }.bind(this)) ||
+                        _.find(CS.WorkbookAreaTasks, function (task) {   // Level 2
+                            return task.workbookAreaId === this.state.workbookArea.id && task.level === 2 && task.isActive();
+                        }.bind(this)) ||
+                        _.find(CS.WorkbookAreaTasks, function (task) {   // Level 1
+                            return task.workbookAreaId === this.state.workbookArea.id && task.level === 1 && task.isActive();
+                        }.bind(this));
+                }
 
                 if (activeTask) {
                     var nextTask = _.find(CS.WorkbookAreaTasks, function (task) {
@@ -51,7 +67,7 @@ CS.Controllers.WorkbookArea = P(function (c) {
                     var comingUpNextText = nextTask ? nextTask.comingUpText : null;
 
                     taskReact = React.createElement(CS.Controllers[activeTask.templateClassName], {task: activeTask, workbookArea: this.state.workbookArea, comingUpNextText: comingUpNextText, controller: this.state.controller});
-                } else {
+                } else if (!this.state.isCustomTaskComplete) {
                     var doneTask = _.find(CS.WorkbookAreaTasks, function (task) {  // Level 3
                         return task.workbookAreaId === this.state.workbookArea.id && task.level === 3 && task.isDone();
                     }.bind(this));
@@ -61,7 +77,7 @@ CS.Controllers.WorkbookArea = P(function (c) {
                             <div className="workbook-task complete">
                                 <h2><i className="fa fa-star"></i>Great work!<i className="fa fa-star"></i></h2>
                                 <p>You have completed all tasks for {this.state.workbookArea.className}.<br />
-                                We invite you to work on other areas.</p>
+                                We invite you to work on other topics.</p>
                             </div>
                             );
                     }
@@ -165,6 +181,10 @@ CS.Controllers.WorkbookArea = P(function (c) {
             CS.Controllers.WorkbookAreaCommon.handleTextareaKeyUp(e, this._handleComposerFormSubmit, this._hideForm);
         },
 
+        _handleCustomTaskCompleteConfirmed: function() {
+            this.setState({isCustomTaskComplete: false});
+        },
+
         _hideForm: function () {
             this.$form.hide();
             this.$addItemLink.show();
@@ -236,7 +256,8 @@ CS.Controllers.WorkbookArea = P(function (c) {
             workbookArea: this.workbookArea,
             workbookItems: CS.account.data[this.workbookArea.className] ? CS.account.data[this.workbookArea.className] : [],
             customTask: firstCustomTaskNotCompleted,
-            isAdmin: this.isAdmin
+            isAdmin: this.isAdmin,
+            isCustomTaskComplete: this.isCustomTaskComplete || false
         });
     };
 

@@ -113,6 +113,7 @@ CS.Controllers.WorkbookItemCustomTask = React.createClass({
 
                 var lastIndex = this.props.controller.customTasks.length - 1;
                 this.props.controller.customTasks[lastIndex] = data;
+                this.props.controller.isCustomTaskComplete = true;
 
                 this.props.controller.reRender();
             }.bind(this),
