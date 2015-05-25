@@ -1,0 +1,33 @@
+<mockup version="1.0" skin="sketch" measuredW="1190" measuredH="816" mockupW="960" mockupH="793">
+  <controls>
+    <control controlID="0" controlTypeID="com.balsamiq.mockups::BrowserWindow" x="230" y="23" w="960" h="793" measuredW="450" measuredH="400" zOrder="0" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Default%20categories%0Ahttp%3A//</text>
+      </controlProperties>
+    </control>
+    <control controlID="1" controlTypeID="com.balsamiq.mockups::Label" x="261" y="116" w="-1" h="-1" measuredW="178" measuredH="28" zOrder="1" locked="false" isInGroup="-1">
+      <controlProperties>
+        <bold>true</bold>
+        <size>20</size>
+        <text>Default%20Categories</text>
+      </controlProperties>
+    </control>
+    <control controlID="4" controlTypeID="com.balsamiq.mockups::ComboBox" x="661" y="188" w="163" h="-1" measuredW="81" measuredH="23" zOrder="2" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Svenska</text>
+      </controlProperties>
+    </control>
+    <control controlID="6" controlTypeID="com.balsamiq.mockups::Label" x="596" y="190" w="-1" h="-1" measuredW="61" measuredH="21" zOrder="3" locked="false" isInGroup="-1">
+      <controlProperties>
+        <bold>true</bold>
+        <text>Language</text>
+      </controlProperties>
+    </control>
+    <control controlID="7" controlTypeID="com.balsamiq.mockups::Image" x="302" y="226" w="818" h="563" measuredW="1148" measuredH="791" zOrder="4" locked="false" isInGroup="-1">
+      <controlProperties>
+        <src>../../../Users/blackbird/Desktop/Untitled.png</src>
+        <text/>
+      </controlProperties>
+    </control>
+  </controls>
+</mockup>

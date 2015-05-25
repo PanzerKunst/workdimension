@@ -69,12 +69,8 @@ CS.Controllers.WorkbookAreaAddItemTaskForm = React.createClass({
 
         CS.Services.Browser.saveInLocalStorage(this.getLocalStorageKeyForSkippedTaskPrompts(), skippedTaskPrompts);
 
-        this._resetForm();
+        this.$form[0].reset();
         this.props.controller.reRender();
-    },
-
-    _resetForm: function () {
-        this.$textarea.val(null);
     },
 
     _handleTextareaKeyUp: function (e) {

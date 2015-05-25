@@ -39,8 +39,8 @@ CS.Controllers.WorkbookArea = P(function (c) {
                     taskReact = (
                         <div className="workbook-task complete">
                             <h2><i className="fa fa-star"></i>Great work!<i className="fa fa-star"></i></h2>
-                            <p>A career advisor will get back to you shortly.<br/>
-                            In the meantime, we invite you to continue working on this topic, or maybe switch to another one&#63;</p>
+                            <p>A career advisor will get back to you shortly.</p>
+                            <p>In the meantime, we invite you to continue working on this topic, or maybe switch to another one&#63;</p>
                             <div className="centered-contents">
                                 <button className="btn btn-primary" onClick={this._handleCustomTaskCompleteConfirmed}>Continue</button>
                             </div>
@@ -76,8 +76,8 @@ CS.Controllers.WorkbookArea = P(function (c) {
                         taskReact = (
                             <div className="workbook-task complete">
                                 <h2><i className="fa fa-star"></i>Great work!<i className="fa fa-star"></i></h2>
-                                <p>You have completed all tasks for {this.state.workbookArea.className}.<br />
-                                We invite you to work on other topics.</p>
+                                <p>You have completed all tasks for {this.state.workbookArea.className}.</p>
+                                <p>We invite you to work on other topics.</p>
                             </div>
                             );
                     }
@@ -134,7 +134,7 @@ CS.Controllers.WorkbookArea = P(function (c) {
             this.$areaDescriptionWrapper = this.$wrapper.children("#area-description");
             this.$taskWrapper = this.$wrapper.children(".workbook-task");
 
-            if (_.isEmpty(this.state.workbookItems)) {
+            if (_.isEmpty(this.state.workbookItems) && !_.includes(CS.account.data.idOfClosedAreaDescriptionPanels, this.state.workbookArea.id)) {
                 this.$taskWrapper.hide();
                 this.$areaDescriptionWrapper.show();
             } else {
@@ -182,7 +182,8 @@ CS.Controllers.WorkbookArea = P(function (c) {
         },
 
         _handleCustomTaskCompleteConfirmed: function() {
-            this.setState({isCustomTaskComplete: false});
+            this.controller.isCustomTaskComplete = false;
+            this.controller.reRender();
         },
 
         _hideForm: function () {
@@ -216,6 +217,8 @@ CS.Controllers.WorkbookArea = P(function (c) {
         },
 
         _showTask: function () {
+            CS.Controllers.WorkbookCommon.saveAreaDescriptionAsClosed(this.state.workbookArea.id);
+
             CS.Services.Animator.fadeOut(this.$areaDescriptionWrapper, {
                 animationDuration: CS.animationDuration.short,
                 onComplete: function () {

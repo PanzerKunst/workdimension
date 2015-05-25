@@ -39,5 +39,14 @@ CS.Controllers.WorkbookCommon = {
         $progressBar.attr("aria-valuenow", itemPercent);
         $progressBar.css("width", itemPercent + "%");
         $progressBar.html(parseInt(itemPercent, 10) + "%");
+    },
+
+    saveAreaDescriptionAsClosed: function(workbookAreaId) {
+        var idOfClosedAreaDescriptionPanels = CS.account.data.idOfClosedAreaDescriptionPanels || [];
+        if (!_.includes(idOfClosedAreaDescriptionPanels, workbookAreaId)) {
+            idOfClosedAreaDescriptionPanels.push(workbookAreaId);
+        }
+        CS.account.data.idOfClosedAreaDescriptionPanels = idOfClosedAreaDescriptionPanels;
+        CS.saveAccountData();
     }
 };

@@ -95,6 +95,7 @@ CS.Controllers.OverviewBlueprintAreaPanel = React.createClass({
 
     _initNonReactableEvents: function() {
         this.$contentOverlayWhenMenuOpen.click(this._hideActionsMenu);
+        this.$areaDescriptionModal.on("hidden.bs.modal", this._saveAreaDescriptionAsClosed);
     },
 
     _hideBlueprintAreaPanel: function () {
@@ -122,5 +123,9 @@ CS.Controllers.OverviewBlueprintAreaPanel = React.createClass({
     _showWorkbookAreaDescriptionModal: function() {
         this.$areaDescriptionModal.modal();
         this._hideActionsMenu();
+    },
+
+    _saveAreaDescriptionAsClosed: function() {
+        CS.Controllers.WorkbookCommon.saveAreaDescriptionAsClosed(this._getBlueprintArea().id);
     }
 });

@@ -469,7 +469,7 @@ CS.Controllers.TaskNotifications = P(function (c) {
         var doneAreaTasks = [];
 
         CS.WorkbookAreaTasks.forEach(function (task) {
-            if (task.isDone()) {
+            if (task.notificationText && task.isDone()) {
                 task.entityType = CS.Controllers.WorkbookCommon.entityTypes.workbookArea;
                 doneAreaTasks.push(task);
             }
@@ -724,6 +724,7 @@ CS.Controllers.OverviewBlueprintAreaPanel = React.createClass({displayName: "Ove
 
     _initNonReactableEvents: function() {
         this.$contentOverlayWhenMenuOpen.click(this._hideActionsMenu);
+        this.$areaDescriptionModal.on("hidden.bs.modal", this._saveAreaDescriptionAsClosed);
     },
 
     _hideBlueprintAreaPanel: function () {
@@ -751,6 +752,10 @@ CS.Controllers.OverviewBlueprintAreaPanel = React.createClass({displayName: "Ove
     _showWorkbookAreaDescriptionModal: function() {
         this.$areaDescriptionModal.modal();
         this._hideActionsMenu();
+    },
+
+    _saveAreaDescriptionAsClosed: function() {
+        CS.Controllers.WorkbookCommon.saveAreaDescriptionAsClosed(this._getBlueprintArea().id);
     }
 });
 
@@ -1137,12 +1142,8 @@ CS.Controllers.WorkbookAreaAddItemTaskForm = React.createClass({displayName: "Wo
 
         CS.Services.Browser.saveInLocalStorage(this.getLocalStorageKeyForSkippedTaskPrompts(), skippedTaskPrompts);
 
-        this._resetForm();
+        this.$form[0].reset();
         this.props.controller.reRender();
-    },
-
-    _resetForm: function () {
-        this.$textarea.val(null);
     },
 
     _handleTextareaKeyUp: function (e) {
@@ -1404,8 +1405,8 @@ CS.Controllers.WorkbookArea = P(function (c) {
                     taskReact = (
                         React.createElement("div", {className: "workbook-task complete"}, 
                             React.createElement("h2", null, React.createElement("i", {className: "fa fa-star"}), "Great work!", React.createElement("i", {className: "fa fa-star"})), 
-                            React.createElement("p", null, "A career advisor will get back to you shortly.", React.createElement("br", null), 
-                            "In the meantime, we invite you to continue working on this topic, or maybe switch to another one?"), 
+                            React.createElement("p", null, "A career advisor will get back to you shortly."), 
+                            React.createElement("p", null, "In the meantime, we invite you to continue working on this topic, or maybe switch to another one?"), 
                             React.createElement("div", {className: "centered-contents"}, 
                                 React.createElement("button", {className: "btn btn-primary", onClick: this._handleCustomTaskCompleteConfirmed}, "Continue")
                             )
@@ -1441,8 +1442,8 @@ CS.Controllers.WorkbookArea = P(function (c) {
                         taskReact = (
                             React.createElement("div", {className: "workbook-task complete"}, 
                                 React.createElement("h2", null, React.createElement("i", {className: "fa fa-star"}), "Great work!", React.createElement("i", {className: "fa fa-star"})), 
-                                React.createElement("p", null, "You have completed all tasks for ", this.state.workbookArea.className, ".", React.createElement("br", null), 
-                                "We invite you to work on other topics.")
+                                React.createElement("p", null, "You have completed all tasks for ", this.state.workbookArea.className, "."), 
+                                React.createElement("p", null, "We invite you to work on other topics.")
                             )
                             );
                     }
@@ -1499,7 +1500,7 @@ CS.Controllers.WorkbookArea = P(function (c) {
             this.$areaDescriptionWrapper = this.$wrapper.children("#area-description");
             this.$taskWrapper = this.$wrapper.children(".workbook-task");
 
-            if (_.isEmpty(this.state.workbookItems)) {
+            if (_.isEmpty(this.state.workbookItems) && !_.includes(CS.account.data.idOfClosedAreaDescriptionPanels, this.state.workbookArea.id)) {
                 this.$taskWrapper.hide();
                 this.$areaDescriptionWrapper.show();
             } else {
@@ -1547,7 +1548,8 @@ CS.Controllers.WorkbookArea = P(function (c) {
         },
 
         _handleCustomTaskCompleteConfirmed: function() {
-            this.setState({isCustomTaskComplete: false});
+            this.controller.isCustomTaskComplete = false;
+            this.controller.reRender();
         },
 
         _hideForm: function () {
@@ -1581,6 +1583,8 @@ CS.Controllers.WorkbookArea = P(function (c) {
         },
 
         _showTask: function () {
+            CS.Controllers.WorkbookCommon.saveAreaDescriptionAsClosed(this.state.workbookArea.id);
+
             CS.Services.Animator.fadeOut(this.$areaDescriptionWrapper, {
                 animationDuration: CS.animationDuration.short,
                 onComplete: function () {
@@ -1841,12 +1845,8 @@ CS.Controllers.WorkbookItemAddItemTask = React.createClass({displayName: "Workbo
 
         CS.Services.Browser.saveInLocalStorage(this.getLocalStorageKeyForSkippedTaskPrompts(), skippedTaskPrompts);
 
-        this._resetForm();
+        this.$form[0].reset();
         this.props.controller.reRender();
-    },
-
-    _resetForm: function () {
-        this.$textarea.val(null);
     },
 
     _handleTextareaKeyUp: function (e) {
@@ -2050,8 +2050,8 @@ CS.Controllers.WorkbookItem = P(function (c) {
                     taskReact = (
                         React.createElement("div", {className: "workbook-task complete"}, 
                             React.createElement("h2", null, React.createElement("i", {className: "fa fa-star"}), "Great work!", React.createElement("i", {className: "fa fa-star"})), 
-                            React.createElement("p", null, "A career advisor will get back to you shortly.", React.createElement("br", null), 
-                            "In the meantime, we invite you to continue working on this topic, or maybe switch to another one?"), 
+                            React.createElement("p", null, "A career advisor will get back to you shortly."), 
+                            React.createElement("p", null, "In the meantime, we invite you to continue working on this topic, or maybe switch to another one?"), 
                             React.createElement("div", {className: "centered-contents"}, 
                                 React.createElement("button", {className: "btn btn-primary", onClick: this._handleCustomTaskCompleteConfirmed}, "Continue")
                             )
@@ -2139,7 +2139,8 @@ CS.Controllers.WorkbookItem = P(function (c) {
         },
 
         _handleCustomTaskCompleteConfirmed: function() {
-            this.setState({isCustomTaskComplete: false});
+            this.controller.isCustomTaskComplete = false;
+            this.controller.reRender();
         },
 
         _hideForm: function () {

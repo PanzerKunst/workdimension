@@ -25,8 +25,8 @@ CS.Controllers.WorkbookItem = P(function (c) {
                     taskReact = (
                         <div className="workbook-task complete">
                             <h2><i className="fa fa-star"></i>Great work!<i className="fa fa-star"></i></h2>
-                            <p>A career advisor will get back to you shortly.<br/>
-                            In the meantime, we invite you to continue working on this topic, or maybe switch to another one&#63;</p>
+                            <p>A career advisor will get back to you shortly.</p>
+                            <p>In the meantime, we invite you to continue working on this topic, or maybe switch to another one&#63;</p>
                             <div className="centered-contents">
                                 <button className="btn btn-primary" onClick={this._handleCustomTaskCompleteConfirmed}>Continue</button>
                             </div>
@@ -114,7 +114,8 @@ CS.Controllers.WorkbookItem = P(function (c) {
         },
 
         _handleCustomTaskCompleteConfirmed: function() {
-            this.setState({isCustomTaskComplete: false});
+            this.controller.isCustomTaskComplete = false;
+            this.controller.reRender();
         },
 
         _hideForm: function () {

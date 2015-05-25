@@ -2,7 +2,7 @@ CS.Controllers.Texts = [
     {
         type: "workbook-area-description",
         workbookAreaClassName: "Strengths",
-        htmlText: "<p>What makes you, you? What parts of your character help you get the job done, and what aspects of your personality make you see things in a unique way? What are your skills? In this section you'll answer questions about what makes you do a job like no one else can. </p>"
+        htmlText: "<p>What makes you, you? What parts of your character help you get the job done, and what aspects of your personality make you see things in a unique way? What are your skills?</p><p>In this section you'll answer questions about what makes you do a job like no one else can. </p>"
     },
     {
         type: "workbook-area-description",

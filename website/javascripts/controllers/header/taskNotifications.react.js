@@ -178,7 +178,7 @@ CS.Controllers.TaskNotifications = P(function (c) {
         var doneAreaTasks = [];
 
         CS.WorkbookAreaTasks.forEach(function (task) {
-            if (task.isDone()) {
+            if (task.notificationText && task.isDone()) {
                 task.entityType = CS.Controllers.WorkbookCommon.entityTypes.workbookArea;
                 doneAreaTasks.push(task);
             }
