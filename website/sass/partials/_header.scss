@@ -254,21 +254,24 @@ header {
   }
 }
 
-.sign-in-with-linkedin {
-  $sign-in-with-linked-in-button-image-location-x: 0;
-  $sign-in-with-linked-in-button-image-location-y: 0;
-
-  @include hdpi-sprite;
-  background-position: $sign-in-with-linked-in-button-image-location-x $sign-in-with-linked-in-button-image-location-y;
-  @include hidpi {
-    background-position: half-pos($sign-in-with-linked-in-button-image-location-x, $sign-in-with-linked-in-button-image-location-y);
+#sign-in-modal {
+  #tracks-intro {
+    font-weight: bold;
+    margin: 0.5em 1em;
   }
 
-  width: 146px;
-  height: 21px;
+  .centered-contents {
+    margin: 3em 0 3.2em 0;
 
-  @include medium-screen {
-    $sign-in-with-linked-in-button-image-location-x: -300px;
+    > p {
+      text-align: center;
+      margin-bottom: 0.5em;
+    }
+  }
+
+  .sign-in-with-linkedin {
+    $sign-in-with-linked-in-button-image-location-x: 0;
+    $sign-in-with-linked-in-button-image-location-y: 0;
 
     @include hdpi-sprite;
     background-position: $sign-in-with-linked-in-button-image-location-x $sign-in-with-linked-in-button-image-location-y;
@@ -276,43 +279,63 @@ header {
       background-position: half-pos($sign-in-with-linked-in-button-image-location-x, $sign-in-with-linked-in-button-image-location-y);
     }
 
-    width: 215px;
-    height: 41px;
-  }
-
-  > span,
-  > .fa-spinner {
-    color: white;
-  }
-
-  > span {
-    font-family: Arial;
-    font-size: 11px;
-    letter-spacing: 0.05em;
-
-    margin-left: 1.8em;
+    width: 146px;
+    height: 21px;
 
     @include medium-screen {
-      font-size: 16px;
-      letter-spacing: 0.03em;
+      $sign-in-with-linked-in-button-image-location-x: -300px;
 
-      margin-left: 2.5em;
+      @include hdpi-sprite;
+      background-position: $sign-in-with-linked-in-button-image-location-x $sign-in-with-linked-in-button-image-location-y;
+      @include hidpi {
+        background-position: half-pos($sign-in-with-linked-in-button-image-location-x, $sign-in-with-linked-in-button-image-location-y);
+      }
+
+      width: 215px;
+      height: 41px;
+    }
+
+    > span,
+    > .fa-spinner {
+      color: white;
+    }
+
+    > span {
+      font-family: Arial;
+      font-size: 11px;
+      letter-spacing: 0.05em;
+
+      margin-left: 1.8em;
+
+      @include medium-screen {
+        font-size: 16px;
+        letter-spacing: 0.03em;
+
+        margin-left: 2.5em;
+      }
+    }
+
+    > .fa-spinner {
+      display: none;
+
+      font-size: 13.9px;
+      margin-left: 10px;
+
+      @include medium-screen {
+        font-size: 17.7px;
+        margin-left: 40px;
+      }
+
+      @include large-screen {
+        font-size: 21.6px;
+      }
     }
   }
 
-  > .fa-spinner {
-    display: none;
+  #disclaimer {
+    $displaimer-font-size: 0.8;
 
-    font-size: 13.9px;
-    margin-left: 10px;
-
-    @include medium-screen {
-      font-size: 17.7px;
-      margin-left: 40px;
-    }
-
-    @include large-screen {
-      font-size: 21.6px;
-    }
+    font-size: #{$displaimer-font-size}em;
+    margin: 0 #{1/$displaimer-font-size}em 1em;
   }
 }

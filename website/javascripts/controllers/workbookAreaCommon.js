@@ -90,6 +90,8 @@ CS.Controllers.WorkbookAreaCommon = {
     },
 
     showAreaDescription: function () {
+        $(".add-item-link").hide();
+
         CS.Services.Animator.fadeOut($(".workbook-task"), {
             animationDuration: CS.animationDuration.short,
             onComplete: function () {

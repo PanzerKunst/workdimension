@@ -135,11 +135,13 @@ CS.Controllers.WorkbookArea = P(function (c) {
             this.$taskWrapper = this.$wrapper.children(".workbook-task");
 
             if (_.isEmpty(this.state.workbookItems) && !_.includes(CS.account.data.idOfClosedAreaDescriptionPanels, this.state.workbookArea.id)) {
+                this.$addItemLink.hide();
                 this.$taskWrapper.hide();
                 this.$areaDescriptionWrapper.show();
             } else {
                 this.$areaDescriptionWrapper.hide();
                 this.$taskWrapper.show();
+                this.$addItemLink.show();
             }
         },
 
@@ -223,6 +225,7 @@ CS.Controllers.WorkbookArea = P(function (c) {
                 animationDuration: CS.animationDuration.short,
                 onComplete: function () {
                     CS.Services.Animator.fadeIn(this.$taskWrapper);
+                    CS.Services.Animator.fadeIn(this.$addItemLink);
                 }.bind(this)
             });
         }
