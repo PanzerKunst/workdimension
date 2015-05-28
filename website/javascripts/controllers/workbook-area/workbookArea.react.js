@@ -23,7 +23,7 @@ CS.Controllers.WorkbookArea = P(function (c) {
             if (this.state.workbookArea) {
                 workbookAreaDescriptionReact = <CS.Controllers.WorkbookAreaDescription workbookAreaClassName={this.state.workbookArea.className} controller={this.state.controller} />;
 
-                if (!this.state.isPepTalkClosed) {
+                if (!this.state.isPepTalkClosed && !this.state.customTask) {
                     var taskCompletePepTalk = null;
 
                     if (this.state.isCustomTaskComplete) {
@@ -33,10 +33,10 @@ CS.Controllers.WorkbookArea = P(function (c) {
                             return pepTalk.getWorkbookArea().id === this.state.workbookArea.id && pepTalk.isActive();
                         }.bind(this));
                     }
-                }
 
-                if (taskCompletePepTalk) {
-                    pepTalkReact = React.createElement(CS.Controllers[taskCompletePepTalk.templateClassName], {workbookArea: this.state.workbookArea, controller: this.state.controller});
+                    if (taskCompletePepTalk) {
+                        pepTalkReact = React.createElement(CS.Controllers[taskCompletePepTalk.templateClassName], {workbookArea: this.state.workbookArea, controller: this.state.controller});
+                    }
                 }
 
                 if (!this.state.isCustomTaskComplete) {

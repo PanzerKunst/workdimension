@@ -1642,7 +1642,9 @@ CS.Controllers.MainMenuLinkedInAuthenticator = P(CS.Controllers.Base, function (
     },
 
     _handleFormSubmit: function (e) {
-        e.preventDefault();
+        if (e) {
+            e.preventDefault();
+        }
 
         if (this.validator.isValid()) {
             var tip = this.$tipField.val().trim();
@@ -1678,6 +1680,7 @@ CS.Controllers.MainMenuLinkedInAuthenticator = P(CS.Controllers.Base, function (
                 task.templateClassName = _.isNumber(this.props.workbookItemIndex) ? CS.Controllers.WorkbookAreaCommon.customItemTaskTemplateClassName : CS.Controllers.WorkbookAreaCommon.customAreaTaskTemplateClassName;
 
                 this.props.controller.customTasks.push(task);
+                this.props.controller.isCustomTaskComplete = false;
                 this.props.controller.reRender();
             }.bind(this),
             error: function () {
@@ -2558,7 +2561,7 @@ CS.Controllers.WorkbookAreaAddItemLvl1Complete = React.createClass({displayName:
     render: function () {
         return (
             React.createElement("div", {id: "task-complete-pep-talk"}, 
-                React.createElement("h2", null, React.createElement("i", {className: "fa fa-star"}), "Great work!", React.createElement("i", {className: "fa fa-star"})), 
+                React.createElement("h2", null, React.createElement("i", {className: "fa fa-star"}), "Nice!", React.createElement("i", {className: "fa fa-star"})), 
                 React.createElement("p", null, "Let's add two more."), 
                 React.createElement("p", null, "Once you have five, a career advisor will have a look and you'll receive additional help."), 
                 React.createElement("div", {className: "centered-contents"}, 
@@ -2596,14 +2599,18 @@ CS.Controllers.WorkbookAreaCustomTaskComplete = React.createClass({displayName: 
     render: function () {
         return (
             React.createElement("div", {id: "task-complete-pep-talk"}, 
-                React.createElement("h2", null, React.createElement("i", {className: "fa fa-star"}), "Great work!", React.createElement("i", {className: "fa fa-star"})), 
+                React.createElement("h2", null, React.createElement("i", {className: "fa fa-star"}), "Thanks!", React.createElement("i", {className: "fa fa-star"})), 
                 React.createElement("p", null, "A career advisor will get back to you shortly."), 
                 React.createElement("p", null, "In the meantime, we invite you to continue working on this topic, or maybe switch to another one?"), 
                 React.createElement("div", {className: "centered-contents"}, 
-                    React.createElement("button", {className: "btn btn-primary", onClick: this.props.controller.handleCustomTaskCompleteConfirmed}, "Continue")
+                    React.createElement("button", {className: "btn btn-primary", onClick: this._handleTaskCompletePepTalkClosed}, "Continue")
                 )
             )
             );
+    },
+
+    _handleTaskCompletePepTalkClosed: function () {
+        this.props.controller.handleTaskCompletePepTalkClosed();
     }
 });
 
@@ -2611,9 +2618,10 @@ CS.Controllers.WorkbookAreaPrioritizeItemsComplete = React.createClass({displayN
     render: function () {
         return (
             React.createElement("div", {id: "task-complete-pep-talk"}, 
-                React.createElement("h2", null, React.createElement("i", {className: "fa fa-star"}), "Great work!", React.createElement("i", {className: "fa fa-star"})), 
-                React.createElement("p", null, "Dig deeper into what you’ve discovered. Confirm, find examples and describe more thoroughly."), 
-                React.createElement("p", null, "Click on an item to get started.")
+                React.createElement("h2", null, React.createElement("i", {className: "fa fa-star"}), "Awesome!", React.createElement("i", {className: "fa fa-star"})), 
+                React.createElement("p", null, "Dig deeper into what you’ve discovered.", React.createElement("br", null), 
+                    "Confirm, find examples and describe more thoroughly."), 
+                React.createElement("p", null, "Click on one of the items below to get started:")
             )
             );
     }
@@ -3049,7 +3057,7 @@ CS.Controllers.WorkbookArea = P(function (c) {
             if (this.state.workbookArea) {
                 workbookAreaDescriptionReact = React.createElement(CS.Controllers.WorkbookAreaDescription, {workbookAreaClassName: this.state.workbookArea.className, controller: this.state.controller});
 
-                if (!this.state.isPepTalkClosed) {
+                if (!this.state.isPepTalkClosed && !this.state.customTask) {
                     var taskCompletePepTalk = null;
 
                     if (this.state.isCustomTaskComplete) {
@@ -3059,10 +3067,10 @@ CS.Controllers.WorkbookArea = P(function (c) {
                             return pepTalk.getWorkbookArea().id === this.state.workbookArea.id && pepTalk.isActive();
                         }.bind(this));
                     }
-                }
 
-                if (taskCompletePepTalk) {
-                    pepTalkReact = React.createElement(CS.Controllers[taskCompletePepTalk.templateClassName], {workbookArea: this.state.workbookArea, controller: this.state.controller});
+                    if (taskCompletePepTalk) {
+                        pepTalkReact = React.createElement(CS.Controllers[taskCompletePepTalk.templateClassName], {workbookArea: this.state.workbookArea, controller: this.state.controller});
+                    }
                 }
 
                 if (!this.state.isCustomTaskComplete) {
@@ -3465,14 +3473,18 @@ CS.Controllers.WorkbookItemCustomTaskComplete = React.createClass({displayName: 
     render: function () {
         return (
             React.createElement("div", {id: "task-complete-pep-talk"}, 
-                React.createElement("h2", null, React.createElement("i", {className: "fa fa-star"}), "Great work!", React.createElement("i", {className: "fa fa-star"})), 
+                React.createElement("h2", null, React.createElement("i", {className: "fa fa-star"}), "Thanks!", React.createElement("i", {className: "fa fa-star"})), 
                 React.createElement("p", null, "A career advisor will get back to you shortly."), 
-                React.createElement("p", null, "In the meantime, we invite you to continue working on this item, or switch to something else?"), 
+                React.createElement("p", null, "In the meantime, we invite you to continue working on this topic, or maybe switch to another one?"), 
                 React.createElement("div", {className: "centered-contents"}, 
-                    React.createElement("button", {className: "btn btn-primary", onClick: this.props.controller.handleCustomTaskCompleteConfirmed}, "Continue")
+                    React.createElement("button", {className: "btn btn-primary", onClick: this._handleTaskCompletePepTalkClosed}, "Continue")
                 )
             )
             );
+    },
+
+    _handleTaskCompletePepTalkClosed: function () {
+        this.props.controller.handleTaskCompletePepTalkClosed();
     }
 });
 
@@ -3770,7 +3782,7 @@ CS.Controllers.WorkbookItem = P(function (c) {
             var listItemsReact = null;
 
             if (this.state.workbookArea) {
-                if (!this.state.isPepTalkClosed) {
+                if (!this.state.isPepTalkClosed && !this.state.customTask) {
                     var taskCompletePepTalk = null;
 
                     if (this.state.isCustomTaskComplete) {
@@ -3780,10 +3792,10 @@ CS.Controllers.WorkbookItem = P(function (c) {
                             return pepTalk.getWorkbookArea().id === this.state.workbookArea.id && pepTalk.isActive(this.state.workbookItemIndex);
                         }.bind(this));
                     }
-                }
 
-                if (taskCompletePepTalk) {
-                    pepTalkReact = React.createElement(CS.Controllers[taskCompletePepTalk.templateClassName], {workbookArea: this.state.workbookArea, controller: this.state.controller});
+                    if (taskCompletePepTalk) {
+                        pepTalkReact = React.createElement(CS.Controllers[taskCompletePepTalk.templateClassName], {workbookArea: this.state.workbookArea, controller: this.state.controller});
+                    }
                 }
 
                 if (!this.state.isCustomTaskComplete) {

@@ -55,7 +55,9 @@ CS.Controllers.AddCustomTask = React.createClass({
     },
 
     _handleFormSubmit: function (e) {
-        e.preventDefault();
+        if (e) {
+            e.preventDefault();
+        }
 
         if (this.validator.isValid()) {
             var tip = this.$tipField.val().trim();
@@ -91,6 +93,7 @@ CS.Controllers.AddCustomTask = React.createClass({
                 task.templateClassName = _.isNumber(this.props.workbookItemIndex) ? CS.Controllers.WorkbookAreaCommon.customItemTaskTemplateClassName : CS.Controllers.WorkbookAreaCommon.customAreaTaskTemplateClassName;
 
                 this.props.controller.customTasks.push(task);
+                this.props.controller.isCustomTaskComplete = false;
                 this.props.controller.reRender();
             }.bind(this),
             error: function () {

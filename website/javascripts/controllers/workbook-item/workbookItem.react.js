@@ -22,7 +22,7 @@ CS.Controllers.WorkbookItem = P(function (c) {
             var listItemsReact = null;
 
             if (this.state.workbookArea) {
-                if (!this.state.isPepTalkClosed) {
+                if (!this.state.isPepTalkClosed && !this.state.customTask) {
                     var taskCompletePepTalk = null;
 
                     if (this.state.isCustomTaskComplete) {
@@ -32,10 +32,10 @@ CS.Controllers.WorkbookItem = P(function (c) {
                             return pepTalk.getWorkbookArea().id === this.state.workbookArea.id && pepTalk.isActive(this.state.workbookItemIndex);
                         }.bind(this));
                     }
-                }
 
-                if (taskCompletePepTalk) {
-                    pepTalkReact = React.createElement(CS.Controllers[taskCompletePepTalk.templateClassName], {workbookArea: this.state.workbookArea, controller: this.state.controller});
+                    if (taskCompletePepTalk) {
+                        pepTalkReact = React.createElement(CS.Controllers[taskCompletePepTalk.templateClassName], {workbookArea: this.state.workbookArea, controller: this.state.controller});
+                    }
                 }
 
                 if (!this.state.isCustomTaskComplete) {
