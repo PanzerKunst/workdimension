@@ -19,6 +19,8 @@ CS.animationDuration = {
     short: 0.2
 };
 
+CS.workbookAreas = [];
+
 CS.blueprintAreasModel = null;
 CS.mainMenuController = null;
 CS.taskNotificationsController = null;

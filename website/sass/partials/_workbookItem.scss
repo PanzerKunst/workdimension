@@ -17,6 +17,16 @@
         margin: 0;
       }
     }
+
+    label {
+      > p {
+        margin-bottom: 0.2em;
+
+        &:last-child {
+          margin-bottom: 0;
+        }
+      }
+    }
   }
 
   #add-note-task {

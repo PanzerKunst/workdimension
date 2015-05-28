@@ -210,8 +210,8 @@ CS.Controllers.MainMenu = P(CS.Controllers.Base, function (c) {
         }
     });
 
-    c.init = function (blueprintAreas) {
-        CS.blueprintAreasModel = CS.Models.BlueprintAreas(blueprintAreas);
+    c.init = function () {
+        CS.blueprintAreasModel = CS.Models.BlueprintAreas();
         CS.blueprintAreasModel.updateStatus();
 
         this._initElements();
@@ -304,7 +304,7 @@ CS.Controllers.TaskNotifications = P(function (c) {
                     this.state.activeTasks.map(function (task) {
                         var id = "notification-for-task-" + task.entityType + "-" + task.id;
 
-                        var workbookArea = CS.blueprintAreasModel.getOfId(task.workbookAreaId);
+                        var workbookArea = CS.blueprintAreasModel.getOfId(task.getWorkbookArea().id);
 
                         var href = task.entityType === CS.Controllers.WorkbookCommon.entityTypes.workbookArea ?
                             "/workbook-areas/" + workbookArea.className + "?taskIdToMarkAsViewed=" + task.entityType + "-" + task.id :
@@ -441,7 +441,7 @@ CS.Controllers.TaskNotifications = P(function (c) {
         });
 
         var prioritizedOldLvl1Tasks = _.sortBy(activeOldLvl1Tasks, function (task) {
-            var workbookArea = CS.blueprintAreasModel.getOfId(task.workbookAreaId);
+            var workbookArea = CS.blueprintAreasModel.getOfId(task.getWorkbookArea().id);
             return CS.account.data[workbookArea.className] ? -CS.account.data[workbookArea.className].length : 0;
         });
 
@@ -450,7 +450,7 @@ CS.Controllers.TaskNotifications = P(function (c) {
         });
 
         var prioritizedOldLvl2Tasks = _.sortBy(activeOldLvl2Tasks, function (task) {
-            var workbookArea = CS.blueprintAreasModel.getOfId(task.workbookAreaId);
+            var workbookArea = CS.blueprintAreasModel.getOfId(task.getWorkbookArea().id);
             return CS.account.data[workbookArea.className] ? -CS.account.data[workbookArea.className].length : 0;
         });
 
@@ -970,10 +970,63 @@ CS.Controllers.Overview = P(function (c) {
 CS.Controllers.WorkbookAreaAddItemLvl1Complete = React.createClass({displayName: "WorkbookAreaAddItemLvl1Complete",
     render: function () {
         return (
-            React.createElement("div", {className: "workbook-task complete"}, 
+            React.createElement("div", {id: "task-complete-pep-talk"}, 
                 React.createElement("h2", null, React.createElement("i", {className: "fa fa-star"}), "Great work!", React.createElement("i", {className: "fa fa-star"})), 
-                React.createElement("p", null, "A career advisor will get back to you with personal advice."), 
-                React.createElement("p", null, "In the meantime, you can continue filling in your workbook; by adding more items to this topic, describing them, or navigating to other topics.")
+                React.createElement("p", null, "Let's add two more."), 
+                React.createElement("p", null, "Once you have five, a career advisor will have a look and you'll receive additional help."), 
+                React.createElement("div", {className: "centered-contents"}, 
+                    React.createElement("button", {className: "btn btn-primary", onClick: this._handleTaskCompletePepTalkClosed}, "Alright")
+                )
+            )
+            );
+    },
+
+    _handleTaskCompletePepTalkClosed: function () {
+        this.props.controller.handleTaskCompletePepTalkClosed();
+    }
+});
+
+CS.Controllers.WorkbookAreaAddItemLvl2Complete = React.createClass({displayName: "WorkbookAreaAddItemLvl2Complete",
+    render: function () {
+        return (
+            React.createElement("div", {id: "task-complete-pep-talk"}, 
+                React.createElement("h2", null, React.createElement("i", {className: "fa fa-star"}), "Great work!", React.createElement("i", {className: "fa fa-star"})), 
+                React.createElement("p", null, "A career advisor has been notified of your progress and will e-mail you with additional questions or advice."), 
+                React.createElement("p", null, "Meanwhile, please keep moving. Follow the instructions or move to other areas in the app."), 
+                React.createElement("div", {className: "centered-contents"}, 
+                    React.createElement("button", {className: "btn btn-primary", onClick: this._handleTaskCompletePepTalkClosed}, "Alright")
+                )
+            )
+            );
+    },
+
+    _handleTaskCompletePepTalkClosed: function () {
+        this.props.controller.handleTaskCompletePepTalkClosed();
+    }
+});
+
+CS.Controllers.WorkbookAreaCustomTaskComplete = React.createClass({displayName: "WorkbookAreaCustomTaskComplete",
+    render: function () {
+        return (
+            React.createElement("div", {id: "task-complete-pep-talk"}, 
+                React.createElement("h2", null, React.createElement("i", {className: "fa fa-star"}), "Great work!", React.createElement("i", {className: "fa fa-star"})), 
+                React.createElement("p", null, "A career advisor will get back to you shortly."), 
+                React.createElement("p", null, "In the meantime, we invite you to continue working on this topic, or maybe switch to another one?"), 
+                React.createElement("div", {className: "centered-contents"}, 
+                    React.createElement("button", {className: "btn btn-primary", onClick: this.props.controller.handleCustomTaskCompleteConfirmed}, "Continue")
+                )
+            )
+            );
+    }
+});
+
+CS.Controllers.WorkbookAreaPrioritizeItemsComplete = React.createClass({displayName: "WorkbookAreaPrioritizeItemsComplete",
+    render: function () {
+        return (
+            React.createElement("div", {id: "task-complete-pep-talk"}, 
+                React.createElement("h2", null, React.createElement("i", {className: "fa fa-star"}), "Great work!", React.createElement("i", {className: "fa fa-star"})), 
+                React.createElement("p", null, "Dig deeper into what you’ve discovered. Confirm, find examples and describe more thoroughly."), 
+                React.createElement("p", null, "Click on an item to get started.")
             )
             );
     }
@@ -988,8 +1041,13 @@ CS.Controllers.WorkbookAreaAddItemLvl2Task = React.createClass({displayName: "Wo
                 );
         }
 
+        var wrapperClasses = classNames({
+            "workbook-task": true,
+            "hidd3n": this.props.hidden
+        });
+
         return (
-            React.createElement("div", {className: "workbook-task"}, 
+            React.createElement("div", {className: wrapperClasses}, 
                 React.createElement("button", {className: "styleless fa fa-question-circle", onClick: CS.Controllers.WorkbookAreaCommon.showAreaDescription}), 
                 React.createElement("p", {className: "working-on"}, "Working on: ", this.props.task.workingOnText), 
                 React.createElement("div", {className: "progress"}, 
@@ -1034,8 +1092,13 @@ CS.Controllers.WorkbookAreaAddItemTask = React.createClass({displayName: "Workbo
                 );
         }
 
+        var wrapperClasses = classNames({
+            "workbook-task": true,
+            "hidd3n": this.props.hidden
+        });
+
         return (
-            React.createElement("div", {className: "workbook-task"}, 
+            React.createElement("div", {className: wrapperClasses}, 
                 React.createElement("button", {className: "styleless fa fa-question-circle", onClick: CS.Controllers.WorkbookAreaCommon.showAreaDescription}), 
                 React.createElement("p", {className: "working-on"}, "Working on: ", this.props.task.workingOnText), 
                 React.createElement("div", {className: "progress"}, 
@@ -1172,6 +1235,8 @@ CS.Controllers.WorkbookAreaAddItemTaskForm = React.createClass({displayName: "Wo
 
                 CS.account.data[this.props.workbookArea.className] = updatedBlueprintAreaData;
                 CS.saveAccountData();
+
+                this.props.controller.isPepTalkClosed = false;
 
                 this._setCurrentTaskAsSkippedAndReRender();
             }.bind(this),
@@ -1322,10 +1387,15 @@ CS.Controllers.WorkbookAreaPrioritizeItemsTask = React.createClass({displayName:
                 );
         }
 
+        var wrapperClasses = classNames({
+            "workbook-task": true,
+            "hidd3n": this.props.hidden
+        });
+
         var currentWording = CS.Models.WorkbookAreaTaskCommon.getNextWording(this.props.task);
 
         return (
-            React.createElement("div", {className: "workbook-task"}, 
+            React.createElement("div", {className: wrapperClasses}, 
                 React.createElement("button", {className: "styleless fa fa-question-circle", onClick: CS.Controllers.WorkbookAreaCommon.showAreaDescription}), 
                 React.createElement("p", {className: "working-on"}, "Working on: ", this.props.task.workingOnText), 
                 React.createElement("div", {className: "progress"}, 
@@ -1355,6 +1425,9 @@ CS.Controllers.WorkbookAreaPrioritizeItemsTask = React.createClass({displayName:
 
                 CS.account.data.prioritizedWorkbookAreaIds = prioritizedWorkbookAreaIds;
                 CS.saveAccountData();
+
+                this.props.controller.isPepTalkClosed = false;
+
                 this.props.controller.reRender();
             }.bind(this),
             error: function () {
@@ -1375,77 +1448,56 @@ CS.Controllers.WorkbookArea = P(function (c) {
                 workbookItems: [],
                 customTask: null,
                 isAdmin: false,
-                isCustomTaskComplete: false
+                isCustomTaskComplete: false,
+                isPepTalkClosed: false
             };
         },
 
         render: function () {
             var workbookAreaDescriptionReact = null;
+            var pepTalkReact = null;
             var taskReact = null;
             var addCustomTaskPanelReact = null;
 
             if (this.state.workbookArea) {
-                var workbookAreaDescription = _.find(CS.Controllers.Texts, function(text) {
-                    return text.type === "workbook-area-description" &&
-                        text.workbookAreaClassName === this.state.workbookArea.className;
-                }.bind(this)).htmlText;
+                workbookAreaDescriptionReact = React.createElement(CS.Controllers.WorkbookAreaDescription, {workbookAreaClassName: this.state.workbookArea.className, controller: this.state.controller});
 
-                workbookAreaDescriptionReact = (
-                    React.createElement("div", {id: "area-description"}, 
-                        React.createElement("article", {className: "workbook-area-description-text-wrapper", dangerouslySetInnerHTML: {__html: workbookAreaDescription}}), 
-                        React.createElement("div", {className: "centered-contents"}, 
-                            React.createElement("button", {className: "btn btn-primary", onClick: this._showTask}, "Got it")
-                        )
-                    )
-                    );
+                if (!this.state.isPepTalkClosed) {
+                    var taskCompletePepTalk = null;
 
-                var activeTask = null;
-
-                if (this.state.isCustomTaskComplete) {
-                    taskReact = (
-                        React.createElement("div", {className: "workbook-task complete"}, 
-                            React.createElement("h2", null, React.createElement("i", {className: "fa fa-star"}), "Great work!", React.createElement("i", {className: "fa fa-star"})), 
-                            React.createElement("p", null, "A career advisor will get back to you shortly."), 
-                            React.createElement("p", null, "In the meantime, we invite you to continue working on this topic, or maybe switch to another one?"), 
-                            React.createElement("div", {className: "centered-contents"}, 
-                                React.createElement("button", {className: "btn btn-primary", onClick: this._handleCustomTaskCompleteConfirmed}, "Continue")
-                            )
-                        )
-                        );
-                } else {
-                    activeTask = this.state.customTask ||
-                        _.find(CS.WorkbookAreaTasks, function (task) {  // Level 3
-                            return task.workbookAreaId === this.state.workbookArea.id && task.level === 3 && task.isActive();
-                        }.bind(this)) ||
-                        _.find(CS.WorkbookAreaTasks, function (task) {   // Level 2
-                            return task.workbookAreaId === this.state.workbookArea.id && task.level === 2 && task.isActive();
-                        }.bind(this)) ||
-                        _.find(CS.WorkbookAreaTasks, function (task) {   // Level 1
-                            return task.workbookAreaId === this.state.workbookArea.id && task.level === 1 && task.isActive();
+                    if (this.state.isCustomTaskComplete) {
+                        taskCompletePepTalk = { templateClassName: "WorkbookAreaCustomTaskComplete" };
+                    } else {
+                        taskCompletePepTalk = _.find(CS.WorkbookAreaTaskCompletePepTalks, function(pepTalk) {
+                            return pepTalk.getWorkbookArea().id === this.state.workbookArea.id && pepTalk.isActive();
                         }.bind(this));
+                    }
                 }
 
-                if (activeTask) {
-                    var nextTask = _.find(CS.WorkbookAreaTasks, function (task) {
-                        return task.previousTaskId === activeTask.id;
-                    });
+                if (taskCompletePepTalk) {
+                    pepTalkReact = React.createElement(CS.Controllers[taskCompletePepTalk.templateClassName], {workbookArea: this.state.workbookArea, controller: this.state.controller});
+                }
 
-                    var comingUpNextText = nextTask ? nextTask.comingUpText : null;
+                if (!this.state.isCustomTaskComplete) {
+                    var activeTask = this.state.customTask ||
+                        _.find(CS.WorkbookAreaTasks, function (task) {  // Level 3
+                            return task.getWorkbookArea().id === this.state.workbookArea.id && task.level === 3 && task.isActive();
+                        }.bind(this)) ||
+                        _.find(CS.WorkbookAreaTasks, function (task) {  // Level 2
+                            return task.getWorkbookArea().id === this.state.workbookArea.id && task.level === 2 && task.isActive();
+                        }.bind(this)) ||
+                        _.find(CS.WorkbookAreaTasks, function (task) {  // Level 1
+                            return task.getWorkbookArea().id === this.state.workbookArea.id && task.level === 1 && task.isActive();
+                        }.bind(this));
 
-                    taskReact = React.createElement(CS.Controllers[activeTask.templateClassName], {task: activeTask, workbookArea: this.state.workbookArea, comingUpNextText: comingUpNextText, controller: this.state.controller});
-                } else if (!this.state.isCustomTaskComplete) {
-                    var doneTask = _.find(CS.WorkbookAreaTasks, function (task) {  // Level 3
-                        return task.workbookAreaId === this.state.workbookArea.id && task.level === 3 && task.isDone();
-                    }.bind(this));
+                    if (activeTask) {
+                        var nextTask = _.find(CS.WorkbookAreaTasks, function (task) {
+                            return task.previousTaskId === activeTask.id;
+                        });
 
-                    if (doneTask) {
-                        taskReact = (
-                            React.createElement("div", {className: "workbook-task complete"}, 
-                                React.createElement("h2", null, React.createElement("i", {className: "fa fa-star"}), "Great work!", React.createElement("i", {className: "fa fa-star"})), 
-                                React.createElement("p", null, "You have completed all tasks for ", this.state.workbookArea.className, "."), 
-                                React.createElement("p", null, "We invite you to work on other topics.")
-                            )
-                            );
+                        var comingUpNextText = nextTask ? nextTask.comingUpText : null;
+
+                        taskReact = React.createElement(CS.Controllers[activeTask.templateClassName], {task: activeTask, workbookArea: this.state.workbookArea, comingUpNextText: comingUpNextText, hidden: taskCompletePepTalk && !this.state.isPepTalkClosed, controller: this.state.controller});
                     }
                 }
 
@@ -1457,6 +1509,7 @@ CS.Controllers.WorkbookArea = P(function (c) {
             return (
                 React.createElement("div", {ref: "wrapper", id: "content-wrapper"}, 
                     workbookAreaDescriptionReact, 
+                    pepTalkReact, 
                     taskReact, 
                     addCustomTaskPanelReact, 
 
@@ -1506,8 +1559,11 @@ CS.Controllers.WorkbookArea = P(function (c) {
                 this.$areaDescriptionWrapper.show();
             } else {
                 this.$areaDescriptionWrapper.hide();
-                this.$taskWrapper.show();
-                this.$addItemLink.show();
+
+                if (!this.$taskWrapper.hasClass("hidd3n")) {
+                    this.$taskWrapper.show();
+                    this.$addItemLink.show();
+                }
             }
         },
 
@@ -1529,6 +1585,8 @@ CS.Controllers.WorkbookArea = P(function (c) {
             this.$form.show();
             this.$textarea.focus();
 
+            CS.Controllers.WorkbookAreaCommon.adaptTextareaHeight(this.$textarea);
+
             this.$addItemLink.hide();
         },
 
@@ -1547,11 +1605,6 @@ CS.Controllers.WorkbookArea = P(function (c) {
 
         _handleTextareaKeyUp: function (e) {
             CS.Controllers.WorkbookAreaCommon.handleTextareaKeyUp(e, this._handleComposerFormSubmit, this._hideForm);
-        },
-
-        _handleCustomTaskCompleteConfirmed: function() {
-            this.controller.isCustomTaskComplete = false;
-            this.controller.reRender();
         },
 
         _hideForm: function () {
@@ -1584,7 +1637,7 @@ CS.Controllers.WorkbookArea = P(function (c) {
             });
         },
 
-        _showTask: function () {
+        showTask: function () {
             CS.Controllers.WorkbookCommon.saveAreaDescriptionAsClosed(this.state.workbookArea.id);
 
             CS.Services.Animator.fadeOut(this.$areaDescriptionWrapper, {
@@ -1629,7 +1682,8 @@ CS.Controllers.WorkbookArea = P(function (c) {
             workbookItems: CS.account.data[this.workbookArea.className] ? CS.account.data[this.workbookArea.className] : [],
             customTask: firstCustomTaskNotCompleted,
             isAdmin: this.isAdmin,
-            isCustomTaskComplete: this.isCustomTaskComplete || false
+            isCustomTaskComplete: this.isCustomTaskComplete || false,
+            isPepTalkClosed: this.isPepTalkClosed || false
         });
     };
 
@@ -1637,6 +1691,42 @@ CS.Controllers.WorkbookArea = P(function (c) {
         this.reRender();
         CS.saveAccountData();
     };
+
+    c.showTask = function() {
+        this.reactInstance.showTask();
+    };
+
+    c.handleCustomTaskCompleteConfirmed = function() {
+        this.isCustomTaskComplete = false;
+        this.reRender();
+    };
+
+    c.handleTaskCompletePepTalkClosed = function() {
+        this.isPepTalkClosed = true;
+        this.reRender();
+    };
+});
+
+CS.Controllers.WorkbookAreaDescription = React.createClass({displayName: "WorkbookAreaDescription",
+    render: function () {
+        var workbookAreaDescription = _.find(CS.Controllers.Texts, function(text) {
+            return text.type === "workbook-area-description" &&
+                text.workbookAreaClassName === this.props.workbookAreaClassName;
+        }.bind(this)).htmlText;
+
+        return (
+            React.createElement("div", {id: "area-description"}, 
+                React.createElement("article", {className: "workbook-area-description-text-wrapper", dangerouslySetInnerHTML: {__html: workbookAreaDescription}}), 
+                React.createElement("div", {className: "centered-contents"}, 
+                    React.createElement("button", {className: "btn btn-primary", onClick: this._showTask}, "Got it")
+                )
+            )
+            );
+    },
+
+    _showTask: function() {
+        this.props.controller.showTask();
+    }
 });
 
 CS.Controllers.WorkbookAreaWorkbookItem = React.createClass({displayName: "WorkbookAreaWorkbookItem",
@@ -1761,14 +1851,57 @@ CS.Controllers.WorkbookAreaWorkbookItem = React.createClass({displayName: "Workb
     }
 });
 
+CS.Controllers.WorkbookItemAddItemComplete = React.createClass({displayName: "WorkbookItemAddItemComplete",
+    render: function () {
+        return (
+            React.createElement("div", {id: "task-complete-pep-talk"}, 
+                React.createElement("h2", null, React.createElement("i", {className: "fa fa-star"}), "Great work!", React.createElement("i", {className: "fa fa-star"})), 
+                React.createElement("p", null, "Keep adding examples or try describing more."), 
+                React.createElement("p", null, "Or ", React.createElement("a", {onClick: this._navigateBack}, "go back"), " to work on another item."), 
+                React.createElement("div", {className: "centered-contents"}, 
+                    React.createElement("button", {className: "btn btn-primary", onClick: this._handleTaskCompletePepTalkClosed}, "Alright")
+                )
+            )
+            );
+    },
+
+    _handleTaskCompletePepTalkClosed: function () {
+        this.props.controller.handleTaskCompletePepTalkClosed();
+    },
+
+    _navigateBack: function() {
+        history.back();
+    }
+});
+
+CS.Controllers.WorkbookItemCustomTaskComplete = React.createClass({displayName: "WorkbookItemCustomTaskComplete",
+    render: function () {
+        return (
+            React.createElement("div", {id: "task-complete-pep-talk"}, 
+                React.createElement("h2", null, React.createElement("i", {className: "fa fa-star"}), "Great work!", React.createElement("i", {className: "fa fa-star"})), 
+                React.createElement("p", null, "A career advisor will get back to you shortly."), 
+                React.createElement("p", null, "In the meantime, we invite you to continue working on this item, or switch to something else?"), 
+                React.createElement("div", {className: "centered-contents"}, 
+                    React.createElement("button", {className: "btn btn-primary", onClick: this.props.controller.handleCustomTaskCompleteConfirmed}, "Continue")
+                )
+            )
+            );
+    }
+});
+
 CS.Controllers.WorkbookItemAddItemTask = React.createClass({displayName: "WorkbookItemAddItemTask",
     render: function () {
         var textareaId = "add-note-task";
         this.currentWording = CS.Models.WorkbookItemTaskCommon.getNextWording(this.props.task, this.props.workbookItemIndex);
         var currentWordingPrompt = CS.Services.String.template(this.currentWording.prompt, "itemName", this.props.workbookItemName);
 
+        var wrapperClasses = classNames({
+            "workbook-task": true,
+            "hidd3n": this.props.hidden
+        });
+
         return (
-            React.createElement("div", {className: "workbook-task", ref: "wrapper"}, 
+            React.createElement("div", {className: wrapperClasses, ref: "wrapper"}, 
                 React.createElement("p", null, "Working on: ", this.props.task.workingOnText), 
                 React.createElement("div", {className: "progress"}, 
                     React.createElement("div", {className: "progress-bar progress-bar-success", role: "progressbar", "aria-valuenow": "", "aria-valuemin": "0", "aria-valuemax": "100"})
@@ -2038,60 +2171,66 @@ CS.Controllers.WorkbookItem = P(function (c) {
                 workbookItemIndex: null,
                 customTask: null,
                 isAdmin: false,
-                isCustomTaskComplete: false
+                isCustomTaskComplete: false,
+                isPepTalkClosed: false
             };
         },
 
         render: function () {
+            var pepTalkReact = null;
             var taskReact = null;
             var addCustomTaskPanelReact = null;
+            var listItemsReact = null;
 
             if (this.state.workbookArea) {
-                var activeTask = null;
+                if (!this.state.isPepTalkClosed) {
+                    var taskCompletePepTalk = null;
 
-                if (this.state.isCustomTaskComplete) {
-                    taskReact = (
-                        React.createElement("div", {className: "workbook-task complete"}, 
-                            React.createElement("h2", null, React.createElement("i", {className: "fa fa-star"}), "Great work!", React.createElement("i", {className: "fa fa-star"})), 
-                            React.createElement("p", null, "A career advisor will get back to you shortly."), 
-                            React.createElement("p", null, "In the meantime, we invite you to continue working on this topic, or maybe switch to another one?"), 
-                            React.createElement("div", {className: "centered-contents"}, 
-                                React.createElement("button", {className: "btn btn-primary", onClick: this._handleCustomTaskCompleteConfirmed}, "Continue")
-                            )
-                        )
-                        );
-                } else {
-                    activeTask = this.state.customTask ||
-                        _.find(CS.WorkbookItemTasks, function (task) {
-                            return task.workbookAreaId === this.state.workbookArea.id && task.isActive(this.state.workbookItemIndex);
+                    if (this.state.isCustomTaskComplete) {
+                        taskCompletePepTalk = { templateClassName: "WorkbookItemCustomTaskComplete" };
+                    } else {
+                        taskCompletePepTalk = _.find(CS.WorkbookItemTaskCompletePepTalks, function(pepTalk) {
+                            return pepTalk.getWorkbookArea().id === this.state.workbookArea.id && pepTalk.isActive(this.state.workbookItemIndex);
                         }.bind(this));
+                    }
                 }
 
-                if (activeTask) {
-                    taskReact = React.createElement(CS.Controllers[activeTask.templateClassName], {task: activeTask, workbookArea: this.state.workbookArea, workbookItemName: this.state.workbookItem.name, workbookItemIndex: this.state.workbookItemIndex, controller: this.state.controller});
+                if (taskCompletePepTalk) {
+                    pepTalkReact = React.createElement(CS.Controllers[taskCompletePepTalk.templateClassName], {workbookArea: this.state.workbookArea, controller: this.state.controller});
                 }
-            }
 
-            if (this.state.isAdmin && !this.state.customTask) {
-                addCustomTaskPanelReact = React.createElement(CS.Controllers.AddCustomTask, {workbookAreaId: this.state.workbookArea.id, workbookItemIndex: this.state.workbookItemIndex, controller: this.state.controller});
-            }
+                if (!this.state.isCustomTaskComplete) {
+                    var activeTask = this.state.customTask ||
+                        _.find(CS.WorkbookItemTasks, function (task) {
+                            return task.getWorkbookArea().id === this.state.workbookArea.id && task.isActive(this.state.workbookItemIndex);
+                        }.bind(this));
 
-            var listItems = null;
-            if (this.state.workbookItem && !_.isEmpty(this.state.workbookItem.notes)) {
-                listItems = this.state.workbookItem.notes.map(function (note, index) {
-                    var reactItemId = "workbook-item-note" + note;
+                    if (activeTask) {
+                        taskReact = React.createElement(CS.Controllers[activeTask.templateClassName], {task: activeTask, workbookArea: this.state.workbookArea, workbookItemName: this.state.workbookItem.name, workbookItemIndex: this.state.workbookItemIndex, hidden: taskCompletePepTalk && !this.state.isPepTalkClosed, controller: this.state.controller});
+                    }
+                }
 
-                    return React.createElement(CS.Controllers.WorkbookItemNote, {key: reactItemId, workbookAreaClassName: this.state.workbookArea.className, workbookItem: this.state.workbookItem, workbookItemIndex: this.state.workbookItemIndex, workbookItemNote: note, workbookItemNoteIndex: index});
-                }.bind(this));
+                if (this.state.isAdmin && !this.state.customTask) {
+                    addCustomTaskPanelReact = React.createElement(CS.Controllers.AddCustomTask, {workbookAreaId: this.state.workbookArea.id, workbookItemIndex: this.state.workbookItemIndex, controller: this.state.controller});
+                }
+
+                if (this.state.workbookItem && !_.isEmpty(this.state.workbookItem.notes)) {
+                    listItemsReact = this.state.workbookItem.notes.map(function (note, index) {
+                        var reactItemId = "workbook-item-note" + note;
+
+                        return React.createElement(CS.Controllers.WorkbookItemNote, {key: reactItemId, workbookAreaClassName: this.state.workbookArea.className, workbookItem: this.state.workbookItem, workbookItemIndex: this.state.workbookItemIndex, workbookItemNote: note, workbookItemNoteIndex: index});
+                    }.bind(this));
+                }
             }
 
             return (
                 React.createElement("div", {ref: "wrapper"}, 
+                    pepTalkReact, 
                     taskReact, 
                     addCustomTaskPanelReact, 
 
                     React.createElement("ul", {className: "styleless item-notes-list"}, 
-                        listItems
+                        listItemsReact
                     ), 
 
                     React.createElement("form", {role: "form", className: "item-composer note", onSubmit: this._handleComposerFormSubmit}, 
@@ -2120,6 +2259,8 @@ CS.Controllers.WorkbookItem = P(function (c) {
         _showComposer: function () {
             this.$form.show();
             this.$textarea.focus();
+
+            CS.Controllers.WorkbookItemCommon.adaptTextareaHeight(this.$textarea);
 
             this.$addNoteLink.hide();
         },
@@ -2217,13 +2358,24 @@ CS.Controllers.WorkbookItem = P(function (c) {
             workbookItemIndex: _.findIndex(CS.account.data[this.workbookArea.className], "name", this.workbookItem.name),
             customTask: firstCustomTaskNotCompleted,
             isAdmin: this.isAdmin,
-            isCustomTaskComplete: this.isCustomTaskComplete || false
+            isCustomTaskComplete: this.isCustomTaskComplete || false,
+            isPepTalkClosed: this.isPepTalkClosed || false
         });
     };
 
     c.saveAccountData = function () {
         this.reRender();
         CS.saveAccountData();
+    };
+
+    c.handleCustomTaskCompleteConfirmed = function() {
+        this.isCustomTaskComplete = false;
+        this.reRender();
+    };
+
+    c.handleTaskCompletePepTalkClosed = function() {
+        this.isPepTalkClosed = true;
+        this.reRender();
     };
 });
 

@@ -1,0 +1,20 @@
+#task-complete-pep-talk {
+  > h2,
+  > p {
+    text-align: center;
+  }
+
+  > h2 {
+    font-size: $task-icon-size;
+
+    .fa-star {
+      color: $task-icon-color;
+
+      margin: 0 1em;
+    }
+  }
+
+  > p:last-child {
+    margin-bottom: 0;
+  }
+}

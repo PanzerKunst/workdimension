@@ -114,7 +114,10 @@ CS.Controllers.MainMenuLinkedInAuthenticator = P(CS.Controllers.Base, function (
         this.$signInModal.modal("hide");
 
         CS.mainMenuController.hideMenu();
+
+        CS.blueprintAreasModel = CS.Models.BlueprintAreas();
         CS.blueprintAreasModel.updateStatus();
+
         CS.taskNotificationsController.reRender();
     };
 

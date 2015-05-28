@@ -20,8 +20,10 @@
         CS.account.id = @accountId;
         CS.account.data = @Html(play.api.libs.json.Json.toJson(accountData).toString) || {};
 
+        CS.workbookAreas = @Html(play.api.libs.json.Json.toJson(workbookAreas).toString);
+
         CS.Controllers.SignInModal();
-        CS.mainMenuController = CS.Controllers.MainMenu(@Html(play.api.libs.json.Json.toJson(workbookAreas).toString));
+        CS.mainMenuController = CS.Controllers.MainMenu();
         CS.taskNotificationsController = CS.Controllers.TaskNotifications();
         CS.workbookAreaController = CS.Controllers.WorkbookArea(
             @Html(play.api.libs.json.Json.toJson(workbookArea).toString),

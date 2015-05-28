@@ -78,7 +78,9 @@ module.exports = function (grunt) {
                 },
                 src: [
                     "javascripts/mock-data/workbookAreaTasks.js",
-                    "javascripts/mock-data/workbookItemTasks.js"
+                    "javascripts/mock-data/workbookItemTasks.js",
+                    "javascripts/mock-data/workbookAreaTaskCompletePepTalks.js",
+                    "javascripts/mock-data/workbookItemTaskCompletePepTalks.js"
                 ],
                 dest: "public/mock-data.js"
             },

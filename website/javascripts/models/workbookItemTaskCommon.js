@@ -1,9 +1,9 @@
 CS.Models.WorkbookItemTaskCommon = {
-    minItemCountForAddItemsTaskComplete: 3,
+    minItemCountForAddItemsTaskComplete: 1,
 
     getNextWording: function (itemTask, itemIndex) {
         var firstNotSkipped = _.find(itemTask.wordings, function (wording) {
-            return !_.includes(CS.Services.Browser.getFromLocalStorage(this.getLocalStorageKeyForSkippedTaskPrompts(itemTask.workbookAreaId, itemIndex)), wording.prompt);
+            return !_.includes(CS.Services.Browser.getFromLocalStorage(this.getLocalStorageKeyForSkippedTaskPrompts(itemTask.getWorkbookArea().id, itemIndex)), wording.prompt);
         }.bind(this));
 
         if (firstNotSkipped) {
@@ -11,10 +11,10 @@ CS.Models.WorkbookItemTaskCommon = {
         }
 
         // All have been skipped, we need to unskip them all
-        this._unskipAll(itemTask.workbookAreaId, itemIndex);
+        this._unskipAll(itemTask.getWorkbookArea().id, itemIndex);
 
         return _.find(itemTask.wordings, function (wording) {
-            return !_.includes(CS.Services.Browser.getFromLocalStorage(this.getLocalStorageKeyForSkippedTaskPrompts(itemTask.workbookAreaId, itemIndex)), wording.prompt);
+            return !_.includes(CS.Services.Browser.getFromLocalStorage(this.getLocalStorageKeyForSkippedTaskPrompts(itemTask.getWorkbookArea().id, itemIndex)), wording.prompt);
         }.bind(this));
     },
 

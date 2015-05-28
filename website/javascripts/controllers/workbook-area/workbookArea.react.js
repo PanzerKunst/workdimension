@@ -9,77 +9,56 @@ CS.Controllers.WorkbookArea = P(function (c) {
                 workbookItems: [],
                 customTask: null,
                 isAdmin: false,
-                isCustomTaskComplete: false
+                isCustomTaskComplete: false,
+                isPepTalkClosed: false
             };
         },
 
         render: function () {
             var workbookAreaDescriptionReact = null;
+            var pepTalkReact = null;
             var taskReact = null;
             var addCustomTaskPanelReact = null;
 
             if (this.state.workbookArea) {
-                var workbookAreaDescription = _.find(CS.Controllers.Texts, function(text) {
-                    return text.type === "workbook-area-description" &&
-                        text.workbookAreaClassName === this.state.workbookArea.className;
-                }.bind(this)).htmlText;
+                workbookAreaDescriptionReact = <CS.Controllers.WorkbookAreaDescription workbookAreaClassName={this.state.workbookArea.className} controller={this.state.controller} />;
 
-                workbookAreaDescriptionReact = (
-                    <div id="area-description">
-                        <article className="workbook-area-description-text-wrapper" dangerouslySetInnerHTML={{__html: workbookAreaDescription}} />
-                        <div className="centered-contents">
-                            <button className="btn btn-primary" onClick={this._showTask}>Got it</button>
-                        </div>
-                    </div>
-                    );
+                if (!this.state.isPepTalkClosed) {
+                    var taskCompletePepTalk = null;
 
-                var activeTask = null;
-
-                if (this.state.isCustomTaskComplete) {
-                    taskReact = (
-                        <div className="workbook-task complete">
-                            <h2><i className="fa fa-star"></i>Great work!<i className="fa fa-star"></i></h2>
-                            <p>A career advisor will get back to you shortly.</p>
-                            <p>In the meantime, we invite you to continue working on this topic, or maybe switch to another one&#63;</p>
-                            <div className="centered-contents">
-                                <button className="btn btn-primary" onClick={this._handleCustomTaskCompleteConfirmed}>Continue</button>
-                            </div>
-                        </div>
-                        );
-                } else {
-                    activeTask = this.state.customTask ||
-                        _.find(CS.WorkbookAreaTasks, function (task) {  // Level 3
-                            return task.workbookAreaId === this.state.workbookArea.id && task.level === 3 && task.isActive();
-                        }.bind(this)) ||
-                        _.find(CS.WorkbookAreaTasks, function (task) {   // Level 2
-                            return task.workbookAreaId === this.state.workbookArea.id && task.level === 2 && task.isActive();
-                        }.bind(this)) ||
-                        _.find(CS.WorkbookAreaTasks, function (task) {   // Level 1
-                            return task.workbookAreaId === this.state.workbookArea.id && task.level === 1 && task.isActive();
+                    if (this.state.isCustomTaskComplete) {
+                        taskCompletePepTalk = { templateClassName: "WorkbookAreaCustomTaskComplete" };
+                    } else {
+                        taskCompletePepTalk = _.find(CS.WorkbookAreaTaskCompletePepTalks, function(pepTalk) {
+                            return pepTalk.getWorkbookArea().id === this.state.workbookArea.id && pepTalk.isActive();
                         }.bind(this));
+                    }
                 }
 
-                if (activeTask) {
-                    var nextTask = _.find(CS.WorkbookAreaTasks, function (task) {
-                        return task.previousTaskId === activeTask.id;
-                    });
+                if (taskCompletePepTalk) {
+                    pepTalkReact = React.createElement(CS.Controllers[taskCompletePepTalk.templateClassName], {workbookArea: this.state.workbookArea, controller: this.state.controller});
+                }
 
-                    var comingUpNextText = nextTask ? nextTask.comingUpText : null;
+                if (!this.state.isCustomTaskComplete) {
+                    var activeTask = this.state.customTask ||
+                        _.find(CS.WorkbookAreaTasks, function (task) {  // Level 3
+                            return task.getWorkbookArea().id === this.state.workbookArea.id && task.level === 3 && task.isActive();
+                        }.bind(this)) ||
+                        _.find(CS.WorkbookAreaTasks, function (task) {  // Level 2
+                            return task.getWorkbookArea().id === this.state.workbookArea.id && task.level === 2 && task.isActive();
+                        }.bind(this)) ||
+                        _.find(CS.WorkbookAreaTasks, function (task) {  // Level 1
+                            return task.getWorkbookArea().id === this.state.workbookArea.id && task.level === 1 && task.isActive();
+                        }.bind(this));
 
-                    taskReact = React.createElement(CS.Controllers[activeTask.templateClassName], {task: activeTask, workbookArea: this.state.workbookArea, comingUpNextText: comingUpNextText, controller: this.state.controller});
-                } else if (!this.state.isCustomTaskComplete) {
-                    var doneTask = _.find(CS.WorkbookAreaTasks, function (task) {  // Level 3
-                        return task.workbookAreaId === this.state.workbookArea.id && task.level === 3 && task.isDone();
-                    }.bind(this));
+                    if (activeTask) {
+                        var nextTask = _.find(CS.WorkbookAreaTasks, function (task) {
+                            return task.previousTaskId === activeTask.id;
+                        });
 
-                    if (doneTask) {
-                        taskReact = (
-                            <div className="workbook-task complete">
-                                <h2><i className="fa fa-star"></i>Great work!<i className="fa fa-star"></i></h2>
-                                <p>You have completed all tasks for {this.state.workbookArea.className}.</p>
-                                <p>We invite you to work on other topics.</p>
-                            </div>
-                            );
+                        var comingUpNextText = nextTask ? nextTask.comingUpText : null;
+
+                        taskReact = React.createElement(CS.Controllers[activeTask.templateClassName], {task: activeTask, workbookArea: this.state.workbookArea, comingUpNextText: comingUpNextText, hidden: taskCompletePepTalk && !this.state.isPepTalkClosed, controller: this.state.controller});
                     }
                 }
 
@@ -91,6 +70,7 @@ CS.Controllers.WorkbookArea = P(function (c) {
             return (
                 <div ref="wrapper" id="content-wrapper">
                     {workbookAreaDescriptionReact}
+                    {pepTalkReact}
                     {taskReact}
                     {addCustomTaskPanelReact}
 
@@ -140,8 +120,11 @@ CS.Controllers.WorkbookArea = P(function (c) {
                 this.$areaDescriptionWrapper.show();
             } else {
                 this.$areaDescriptionWrapper.hide();
-                this.$taskWrapper.show();
-                this.$addItemLink.show();
+
+                if (!this.$taskWrapper.hasClass("hidd3n")) {
+                    this.$taskWrapper.show();
+                    this.$addItemLink.show();
+                }
             }
         },
 
@@ -163,6 +146,8 @@ CS.Controllers.WorkbookArea = P(function (c) {
             this.$form.show();
             this.$textarea.focus();
 
+            CS.Controllers.WorkbookAreaCommon.adaptTextareaHeight(this.$textarea);
+
             this.$addItemLink.hide();
         },
 
@@ -181,11 +166,6 @@ CS.Controllers.WorkbookArea = P(function (c) {
 
         _handleTextareaKeyUp: function (e) {
             CS.Controllers.WorkbookAreaCommon.handleTextareaKeyUp(e, this._handleComposerFormSubmit, this._hideForm);
-        },
-
-        _handleCustomTaskCompleteConfirmed: function() {
-            this.controller.isCustomTaskComplete = false;
-            this.controller.reRender();
         },
 
         _hideForm: function () {
@@ -218,7 +198,7 @@ CS.Controllers.WorkbookArea = P(function (c) {
             });
         },
 
-        _showTask: function () {
+        showTask: function () {
             CS.Controllers.WorkbookCommon.saveAreaDescriptionAsClosed(this.state.workbookArea.id);
 
             CS.Services.Animator.fadeOut(this.$areaDescriptionWrapper, {
@@ -263,12 +243,27 @@ CS.Controllers.WorkbookArea = P(function (c) {
             workbookItems: CS.account.data[this.workbookArea.className] ? CS.account.data[this.workbookArea.className] : [],
             customTask: firstCustomTaskNotCompleted,
             isAdmin: this.isAdmin,
-            isCustomTaskComplete: this.isCustomTaskComplete || false
+            isCustomTaskComplete: this.isCustomTaskComplete || false,
+            isPepTalkClosed: this.isPepTalkClosed || false
         });
     };
 
     c.saveAccountData = function () {
         this.reRender();
         CS.saveAccountData();
+    };
+
+    c.showTask = function() {
+        this.reactInstance.showTask();
+    };
+
+    c.handleCustomTaskCompleteConfirmed = function() {
+        this.isCustomTaskComplete = false;
+        this.reRender();
+    };
+
+    c.handleTaskCompletePepTalkClosed = function() {
+        this.isPepTalkClosed = true;
+        this.reRender();
     };
 });

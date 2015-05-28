@@ -2,8 +2,11 @@ CS.WorkbookItemTasks = [
     {
         id: 1,
         workbookAreaId: 5,  // Achievements
+        getWorkbookArea: function() {
+            return CS.blueprintAreasModel.getOfId(this.workbookAreaId);
+        },
         isActive: function (itemIndex) {
-            var workbookArea = CS.blueprintAreasModel.getOfId(5);
+            var workbookArea = this.getWorkbookArea();
 
             if (!workbookArea.isActive()) {
                 return false;
@@ -12,18 +15,17 @@ CS.WorkbookItemTasks = [
             return CS.account.data[workbookArea.className] && !_.isEmpty(CS.account.data[workbookArea.className][itemIndex]);
         },
         isDone: function (itemIndex) {
-            var workbookArea = CS.blueprintAreasModel.getOfId(5);
-            return CS.account.data.describedWorkbookItemIds && _.includes(CS.account.data.describedWorkbookItemIds[workbookArea.className], itemIndex);
+            return CS.account.data.describedWorkbookItemIds && _.includes(CS.account.data.describedWorkbookItemIds[this.getWorkbookArea().className], itemIndex);
         },
         wordings: [
             {
-                prompt: "You mentioned that you <em>{itemName}</em>. How did you achieve this?"
+                prompt: "<p>How did you achieve this:</p><p><em>{itemName}</em></p>"
             },
             {
-                prompt: "What made you succeed with <em>{itemName}</em>?"
+                prompt: "<p><em>{itemName}</em></p><p>What made you succeed?</p>"
             },
             {
-                prompt: "What circumstances were important for you to achieve this: <em>{itemName}</em>?"
+                prompt: "<p>What circumstances were important for you to achieve this:</p><p><em>{itemName}</em></p>"
             }
         ],
         stepCount: CS.Models.WorkbookItemTaskCommon.minItemCountForAddItemsTaskComplete,
@@ -34,8 +36,11 @@ CS.WorkbookItemTasks = [
     {
         id: 2,
         workbookAreaId: 18,  // Tracks
+        getWorkbookArea: function() {
+            return CS.blueprintAreasModel.getOfId(this.workbookAreaId);
+        },
         isActive: function (itemIndex) {
-            var workbookArea = CS.blueprintAreasModel.getOfId(18);
+            var workbookArea = this.getWorkbookArea();
 
             if (!workbookArea.isActive()) {
                 return false;
@@ -44,18 +49,17 @@ CS.WorkbookItemTasks = [
             return CS.account.data[workbookArea.className] && !_.isEmpty(CS.account.data[workbookArea.className][itemIndex]);
         },
         isDone: function (itemIndex) {
-            var workbookArea = CS.blueprintAreasModel.getOfId(18);
-            return CS.account.data.describedWorkbookItemIds && _.includes(CS.account.data.describedWorkbookItemIds[workbookArea.className], itemIndex);
+            return CS.account.data.describedWorkbookItemIds && _.includes(CS.account.data.describedWorkbookItemIds[this.getWorkbookArea().className], itemIndex);
         },
         wordings: [
             {
-                prompt: "What makes you interested in <em>{itemName}</em>?"
+                prompt: "<p>What makes you interested in this:</p><p><em>{itemName}</em></p>"
             },
             {
-                prompt: "Is there anything keeping you from <em>{itemName}</em>?"
+                prompt: "<p>Is there anything keeping you from this:</p><p><em>{itemName}</em></p>"
             },
             {
-                prompt: "If you were not paid, would you still be interested in <em>{itemName}</em>? Why/why not?"
+                prompt: "<p>If you were not paid, would you still be interested in this:</p><p><em>{itemName}</em></p><p>Why/why not?</p>"
             }
         ],
         stepCount: CS.Models.WorkbookItemTaskCommon.minItemCountForAddItemsTaskComplete,
@@ -66,8 +70,11 @@ CS.WorkbookItemTasks = [
     {
         id: 3,
         workbookAreaId: 1,  // Strengths
+        getWorkbookArea: function() {
+            return CS.blueprintAreasModel.getOfId(this.workbookAreaId);
+        },
         isActive: function (itemIndex) {
-            var workbookArea = CS.blueprintAreasModel.getOfId(1);
+            var workbookArea = this.getWorkbookArea();
 
             if (!workbookArea.isActive()) {
                 return false;
@@ -76,21 +83,20 @@ CS.WorkbookItemTasks = [
             return CS.account.data[workbookArea.className] && !_.isEmpty(CS.account.data[workbookArea.className][itemIndex]);
         },
         isDone: function (itemIndex) {
-            var workbookArea = CS.blueprintAreasModel.getOfId(1);
-            return CS.account.data.describedWorkbookItemIds && _.includes(CS.account.data.describedWorkbookItemIds[workbookArea.className], itemIndex);
+            return CS.account.data.describedWorkbookItemIds && _.includes(CS.account.data.describedWorkbookItemIds[this.getWorkbookArea().className], itemIndex);
         },
         wordings: [
             {
-                prompt: "You mentioned you are <em>{itemName}</em>. How can people observe this in your work?"
+                prompt: "<p>How can people observe this in your work:</p><p><em>{itemName}</em></p>"
             },
             {
-                prompt: "Please describe a situation where this was really important in achieving results at work: <em>{itemName}</em>"
+                prompt: "<p>Please describe a situation where this was really important in achieving results at work:</p><p><em>{itemName}</em></p>"
             },
             {
-                prompt: "What happens if you don't get to do this in your work: <em>{itemName}</em>"
+                prompt: "<p>What happens if you don't get to do this in your work:</p><p><em>{itemName}</em></p>"
             },
             {
-                prompt: "What are the drawbacks of <em>{itemName}</em>?"
+                prompt: "<p>What are the drawbacks of:</p><p><em>{itemName}</em></p>"
             }
         ],
         stepCount: CS.Models.WorkbookItemTaskCommon.minItemCountForAddItemsTaskComplete,
@@ -101,8 +107,11 @@ CS.WorkbookItemTasks = [
     {
         id: 4,
         workbookAreaId: 2,  // Drivers
+        getWorkbookArea: function() {
+            return CS.blueprintAreasModel.getOfId(this.workbookAreaId);
+        },
         isActive: function (itemIndex) {
-            var workbookArea = CS.blueprintAreasModel.getOfId(2);
+            var workbookArea = this.getWorkbookArea();
 
             if (!workbookArea.isActive()) {
                 return false;
@@ -111,12 +120,11 @@ CS.WorkbookItemTasks = [
             return CS.account.data[workbookArea.className] && !_.isEmpty(CS.account.data[workbookArea.className][itemIndex]);
         },
         isDone: function (itemIndex) {
-            var workbookArea = CS.blueprintAreasModel.getOfId(2);
-            return CS.account.data.describedWorkbookItemIds && _.includes(CS.account.data.describedWorkbookItemIds[workbookArea.className], itemIndex);
+            return CS.account.data.describedWorkbookItemIds && _.includes(CS.account.data.describedWorkbookItemIds[this.getWorkbookArea().className], itemIndex);
         },
         wordings: [
             {
-                prompt: "Why is <em>{itemName}</em> a driver for you?"
+                prompt: "<p>Why is this a driver for you:</p><p><em>{itemName}</em></p>"
             }
         ],
         stepCount: CS.Models.WorkbookItemTaskCommon.minItemCountForAddItemsTaskComplete,
@@ -127,8 +135,11 @@ CS.WorkbookItemTasks = [
     {
         id: 5,
         workbookAreaId: 4,  // Workplace
+        getWorkbookArea: function() {
+            return CS.blueprintAreasModel.getOfId(this.workbookAreaId);
+        },
         isActive: function (itemIndex) {
-            var workbookArea = CS.blueprintAreasModel.getOfId(4);
+            var workbookArea = this.getWorkbookArea();
 
             if (!workbookArea.isActive()) {
                 return false;
@@ -137,12 +148,11 @@ CS.WorkbookItemTasks = [
             return CS.account.data[workbookArea.className] && !_.isEmpty(CS.account.data[workbookArea.className][itemIndex]);
         },
         isDone: function (itemIndex) {
-            var workbookArea = CS.blueprintAreasModel.getOfId(4);
-            return CS.account.data.describedWorkbookItemIds && _.includes(CS.account.data.describedWorkbookItemIds[workbookArea.className], itemIndex);
+            return CS.account.data.describedWorkbookItemIds && _.includes(CS.account.data.describedWorkbookItemIds[this.getWorkbookArea().className], itemIndex);
         },
         wordings: [
             {
-                prompt: "Why is <em>{itemName}</em> important for you at the workplace?"
+                prompt: "<p>Why is this important for you at the workplace:</p><p><em>{itemName}</em></p>"
             }
         ],
         stepCount: CS.Models.WorkbookItemTaskCommon.minItemCountForAddItemsTaskComplete,
@@ -153,8 +163,11 @@ CS.WorkbookItemTasks = [
     {
         id: 6,
         workbookAreaId: 12,  // Mores
+        getWorkbookArea: function() {
+            return CS.blueprintAreasModel.getOfId(this.workbookAreaId);
+        },
         isActive: function (itemIndex) {
-            var workbookArea = CS.blueprintAreasModel.getOfId(12);
+            var workbookArea = this.getWorkbookArea();
 
             if (!workbookArea.isActive()) {
                 return false;
@@ -163,12 +176,11 @@ CS.WorkbookItemTasks = [
             return CS.account.data[workbookArea.className] && !_.isEmpty(CS.account.data[workbookArea.className][itemIndex]);
         },
         isDone: function (itemIndex) {
-            var workbookArea = CS.blueprintAreasModel.getOfId(12);
-            return CS.account.data.describedWorkbookItemIds && _.includes(CS.account.data.describedWorkbookItemIds[workbookArea.className], itemIndex);
+            return CS.account.data.describedWorkbookItemIds && _.includes(CS.account.data.describedWorkbookItemIds[this.getWorkbookArea().className], itemIndex);
         },
         wordings: [
             {
-                prompt: "Can you describe why you want to do more of <em>{itemName}</em>?"
+                prompt: "<p>Can you describe why you want to do more of this:</p><p><em>{itemName}</em></p>"
             }
         ],
         stepCount: CS.Models.WorkbookItemTaskCommon.minItemCountForAddItemsTaskComplete,
@@ -179,8 +191,11 @@ CS.WorkbookItemTasks = [
     {
         id: 7,
         workbookAreaId: 17,  // ToolsAndMethods
+        getWorkbookArea: function() {
+            return CS.blueprintAreasModel.getOfId(this.workbookAreaId);
+        },
         isActive: function (itemIndex) {
-            var workbookArea = CS.blueprintAreasModel.getOfId(17);
+            var workbookArea = this.getWorkbookArea();
 
             if (!workbookArea.isActive()) {
                 return false;
@@ -189,12 +204,11 @@ CS.WorkbookItemTasks = [
             return CS.account.data[workbookArea.className] && !_.isEmpty(CS.account.data[workbookArea.className][itemIndex]);
         },
         isDone: function (itemIndex) {
-            var workbookArea = CS.blueprintAreasModel.getOfId(17);
-            return CS.account.data.describedWorkbookItemIds && _.includes(CS.account.data.describedWorkbookItemIds[workbookArea.className], itemIndex);
+            return CS.account.data.describedWorkbookItemIds && _.includes(CS.account.data.describedWorkbookItemIds[this.getWorkbookArea().className], itemIndex);
         },
         wordings: [
             {
-                prompt: "How come you like to use <em>{itemName}</em>?"
+                prompt: "<p>How come you like to use this:</p><p><em>{itemName}</em></p>"
             }
         ],
         stepCount: CS.Models.WorkbookItemTaskCommon.minItemCountForAddItemsTaskComplete,
@@ -205,8 +219,11 @@ CS.WorkbookItemTasks = [
     {
         id: 8,
         workbookAreaId: 9,  // Leadership
+        getWorkbookArea: function() {
+            return CS.blueprintAreasModel.getOfId(this.workbookAreaId);
+        },
         isActive: function (itemIndex) {
-            var workbookArea = CS.blueprintAreasModel.getOfId(9);
+            var workbookArea = this.getWorkbookArea();
 
             if (!workbookArea.isActive()) {
                 return false;
@@ -215,12 +232,11 @@ CS.WorkbookItemTasks = [
             return CS.account.data[workbookArea.className] && !_.isEmpty(CS.account.data[workbookArea.className][itemIndex]);
         },
         isDone: function (itemIndex) {
-            var workbookArea = CS.blueprintAreasModel.getOfId(9);
-            return CS.account.data.describedWorkbookItemIds && _.includes(CS.account.data.describedWorkbookItemIds[workbookArea.className], itemIndex);
+            return CS.account.data.describedWorkbookItemIds && _.includes(CS.account.data.describedWorkbookItemIds[this.getWorkbookArea().className], itemIndex);
         },
         wordings: [
             {
-                prompt: "In what way a leadership characterized by <em>{itemName}</em> helps you in your work?"
+                prompt: "<p><em>{itemName}</em></p><p>In what way such a leadership helps you in your work?</p>"
             }
         ],
         stepCount: CS.Models.WorkbookItemTaskCommon.minItemCountForAddItemsTaskComplete,
@@ -231,8 +247,11 @@ CS.WorkbookItemTasks = [
     {
         id: 9,
         workbookAreaId: 3,  // Contexts
+        getWorkbookArea: function() {
+            return CS.blueprintAreasModel.getOfId(this.workbookAreaId);
+        },
         isActive: function (itemIndex) {
-            var workbookArea = CS.blueprintAreasModel.getOfId(3);
+            var workbookArea = this.getWorkbookArea();
 
             if (!workbookArea.isActive()) {
                 return false;
@@ -241,12 +260,11 @@ CS.WorkbookItemTasks = [
             return CS.account.data[workbookArea.className] && !_.isEmpty(CS.account.data[workbookArea.className][itemIndex]);
         },
         isDone: function (itemIndex) {
-            var workbookArea = CS.blueprintAreasModel.getOfId(3);
-            return CS.account.data.describedWorkbookItemIds && _.includes(CS.account.data.describedWorkbookItemIds[workbookArea.className], itemIndex);
+            return CS.account.data.describedWorkbookItemIds && _.includes(CS.account.data.describedWorkbookItemIds[this.getWorkbookArea().className], itemIndex);
         },
         wordings: [
             {
-                prompt: "Can you describe <em>{itemName}</em>?"
+                prompt: "<p>Can you describe this:</p><p><em>{itemName}</em></p>"
             }
         ],
         stepCount: CS.Models.WorkbookItemTaskCommon.minItemCountForAddItemsTaskComplete,

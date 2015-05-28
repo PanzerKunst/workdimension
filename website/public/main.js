@@ -275,6 +275,8 @@ CS.animationDuration = {
     short: 0.2
 };
 
+CS.workbookAreas = [];
+
 CS.blueprintAreasModel = null;
 CS.mainMenuController = null;
 CS.taskNotificationsController = null;
@@ -862,8 +864,8 @@ CS.saveAccountData = function (callback) {
 ;CS.Models.BlueprintAreas = P(function (c) {
     c.nbDefaultActiveBlueprintAreas = 3;
 
-    c.init = function (blueprintAreas) {
-        this.blueprintAreaInstances = blueprintAreas.map(function (item) {
+    c.init = function () {
+        this.blueprintAreaInstances = CS.workbookAreas.map(function (item) {
             return CS.Models.BlueprintArea(item.id, item.className, item.workbookCategoryId, item.title);
         });
 
@@ -955,11 +957,11 @@ CS.saveAccountData = function (callback) {
 });
 ;CS.Models.WorkbookAreaTaskCommon = {
     minItemCountForAddItemsLvl1TaskComplete: 3,
-    minItemCountForAddItemsLvl2TaskComplete: 6,
+    minItemCountForAddItemsLvl2TaskComplete: 5,
 
     getNextWording: function (areaTask) {
         var firstNotSkipped = _.find(areaTask.wordings, function (wording) {
-            return !_.includes(CS.Services.Browser.getFromLocalStorage(this.getLocalStorageKeyForSkippedTaskPrompts(areaTask.workbookAreaId)), wording.prompt);
+            return !_.includes(CS.Services.Browser.getFromLocalStorage(this.getLocalStorageKeyForSkippedTaskPrompts(areaTask.getWorkbookArea().id)), wording.prompt);
         }.bind(this));
 
         if (firstNotSkipped) {
@@ -967,10 +969,10 @@ CS.saveAccountData = function (callback) {
         }
 
         // All have been skipped, we need to unskip them all
-        this._unskipAll(areaTask.workbookAreaId);
+        this._unskipAll(areaTask.getWorkbookArea().id);
 
         return _.find(areaTask.wordings, function (wording) {
-            return !_.includes(CS.Services.Browser.getFromLocalStorage(this.getLocalStorageKeyForSkippedTaskPrompts(areaTask.workbookAreaId)), wording.prompt);
+            return !_.includes(CS.Services.Browser.getFromLocalStorage(this.getLocalStorageKeyForSkippedTaskPrompts(areaTask.getWorkbookArea().id)), wording.prompt);
         }.bind(this));
     },
 
@@ -983,11 +985,11 @@ CS.saveAccountData = function (callback) {
     }
 };
 ;CS.Models.WorkbookItemTaskCommon = {
-    minItemCountForAddItemsTaskComplete: 3,
+    minItemCountForAddItemsTaskComplete: 1,
 
     getNextWording: function (itemTask, itemIndex) {
         var firstNotSkipped = _.find(itemTask.wordings, function (wording) {
-            return !_.includes(CS.Services.Browser.getFromLocalStorage(this.getLocalStorageKeyForSkippedTaskPrompts(itemTask.workbookAreaId, itemIndex)), wording.prompt);
+            return !_.includes(CS.Services.Browser.getFromLocalStorage(this.getLocalStorageKeyForSkippedTaskPrompts(itemTask.getWorkbookArea().id, itemIndex)), wording.prompt);
         }.bind(this));
 
         if (firstNotSkipped) {
@@ -995,10 +997,10 @@ CS.saveAccountData = function (callback) {
         }
 
         // All have been skipped, we need to unskip them all
-        this._unskipAll(itemTask.workbookAreaId, itemIndex);
+        this._unskipAll(itemTask.getWorkbookArea().id, itemIndex);
 
         return _.find(itemTask.wordings, function (wording) {
-            return !_.includes(CS.Services.Browser.getFromLocalStorage(this.getLocalStorageKeyForSkippedTaskPrompts(itemTask.workbookAreaId, itemIndex)), wording.prompt);
+            return !_.includes(CS.Services.Browser.getFromLocalStorage(this.getLocalStorageKeyForSkippedTaskPrompts(itemTask.getWorkbookArea().id, itemIndex)), wording.prompt);
         }.bind(this));
     },
 
@@ -1351,7 +1353,7 @@ CS.saveAccountData = function (callback) {
     };
 
     c._showPanelIfNeverClosed = function() {
-        if (!CS.account.data.hasClosedGetStartedPanel) {
+        if (!CS.account.data || !CS.account.data.hasClosedGetStartedPanel) {
             this._showPanel();
         }
     };
@@ -1375,7 +1377,7 @@ CS.saveAccountData = function (callback) {
     };
 
     c._hidePanel = function() {
-        if (!CS.account.data.hasClosedGetStartedPanel) {
+        if (!CS.account.data || !CS.account.data.hasClosedGetStartedPanel) {
             this._fetchLatestAccountDataAndUpdateIt();
         }
 
@@ -1522,7 +1524,10 @@ CS.Controllers.MainMenuLinkedInAuthenticator = P(CS.Controllers.Base, function (
         this.$signInModal.modal("hide");
 
         CS.mainMenuController.hideMenu();
+
+        CS.blueprintAreasModel = CS.Models.BlueprintAreas();
         CS.blueprintAreasModel.updateStatus();
+
         CS.taskNotificationsController.reRender();
     };
 
@@ -1792,8 +1797,8 @@ CS.Controllers.MainMenu = P(CS.Controllers.Base, function (c) {
         }
     });
 
-    c.init = function (blueprintAreas) {
-        CS.blueprintAreasModel = CS.Models.BlueprintAreas(blueprintAreas);
+    c.init = function () {
+        CS.blueprintAreasModel = CS.Models.BlueprintAreas();
         CS.blueprintAreasModel.updateStatus();
 
         this._initElements();
@@ -1886,7 +1891,7 @@ CS.Controllers.TaskNotifications = P(function (c) {
                     this.state.activeTasks.map(function (task) {
                         var id = "notification-for-task-" + task.entityType + "-" + task.id;
 
-                        var workbookArea = CS.blueprintAreasModel.getOfId(task.workbookAreaId);
+                        var workbookArea = CS.blueprintAreasModel.getOfId(task.getWorkbookArea().id);
 
                         var href = task.entityType === CS.Controllers.WorkbookCommon.entityTypes.workbookArea ?
                             "/workbook-areas/" + workbookArea.className + "?taskIdToMarkAsViewed=" + task.entityType + "-" + task.id :
@@ -2023,7 +2028,7 @@ CS.Controllers.TaskNotifications = P(function (c) {
         });
 
         var prioritizedOldLvl1Tasks = _.sortBy(activeOldLvl1Tasks, function (task) {
-            var workbookArea = CS.blueprintAreasModel.getOfId(task.workbookAreaId);
+            var workbookArea = CS.blueprintAreasModel.getOfId(task.getWorkbookArea().id);
             return CS.account.data[workbookArea.className] ? -CS.account.data[workbookArea.className].length : 0;
         });
 
@@ -2032,7 +2037,7 @@ CS.Controllers.TaskNotifications = P(function (c) {
         });
 
         var prioritizedOldLvl2Tasks = _.sortBy(activeOldLvl2Tasks, function (task) {
-            var workbookArea = CS.blueprintAreasModel.getOfId(task.workbookAreaId);
+            var workbookArea = CS.blueprintAreasModel.getOfId(task.getWorkbookArea().id);
             return CS.account.data[workbookArea.className] ? -CS.account.data[workbookArea.className].length : 0;
         });
 
@@ -2552,10 +2557,63 @@ CS.Controllers.Overview = P(function (c) {
 CS.Controllers.WorkbookAreaAddItemLvl1Complete = React.createClass({displayName: "WorkbookAreaAddItemLvl1Complete",
     render: function () {
         return (
-            React.createElement("div", {className: "workbook-task complete"}, 
+            React.createElement("div", {id: "task-complete-pep-talk"}, 
                 React.createElement("h2", null, React.createElement("i", {className: "fa fa-star"}), "Great work!", React.createElement("i", {className: "fa fa-star"})), 
-                React.createElement("p", null, "A career advisor will get back to you with personal advice."), 
-                React.createElement("p", null, "In the meantime, you can continue filling in your workbook; by adding more items to this topic, describing them, or navigating to other topics.")
+                React.createElement("p", null, "Let's add two more."), 
+                React.createElement("p", null, "Once you have five, a career advisor will have a look and you'll receive additional help."), 
+                React.createElement("div", {className: "centered-contents"}, 
+                    React.createElement("button", {className: "btn btn-primary", onClick: this._handleTaskCompletePepTalkClosed}, "Alright")
+                )
+            )
+            );
+    },
+
+    _handleTaskCompletePepTalkClosed: function () {
+        this.props.controller.handleTaskCompletePepTalkClosed();
+    }
+});
+
+CS.Controllers.WorkbookAreaAddItemLvl2Complete = React.createClass({displayName: "WorkbookAreaAddItemLvl2Complete",
+    render: function () {
+        return (
+            React.createElement("div", {id: "task-complete-pep-talk"}, 
+                React.createElement("h2", null, React.createElement("i", {className: "fa fa-star"}), "Great work!", React.createElement("i", {className: "fa fa-star"})), 
+                React.createElement("p", null, "A career advisor has been notified of your progress and will e-mail you with additional questions or advice."), 
+                React.createElement("p", null, "Meanwhile, please keep moving. Follow the instructions or move to other areas in the app."), 
+                React.createElement("div", {className: "centered-contents"}, 
+                    React.createElement("button", {className: "btn btn-primary", onClick: this._handleTaskCompletePepTalkClosed}, "Alright")
+                )
+            )
+            );
+    },
+
+    _handleTaskCompletePepTalkClosed: function () {
+        this.props.controller.handleTaskCompletePepTalkClosed();
+    }
+});
+
+CS.Controllers.WorkbookAreaCustomTaskComplete = React.createClass({displayName: "WorkbookAreaCustomTaskComplete",
+    render: function () {
+        return (
+            React.createElement("div", {id: "task-complete-pep-talk"}, 
+                React.createElement("h2", null, React.createElement("i", {className: "fa fa-star"}), "Great work!", React.createElement("i", {className: "fa fa-star"})), 
+                React.createElement("p", null, "A career advisor will get back to you shortly."), 
+                React.createElement("p", null, "In the meantime, we invite you to continue working on this topic, or maybe switch to another one?"), 
+                React.createElement("div", {className: "centered-contents"}, 
+                    React.createElement("button", {className: "btn btn-primary", onClick: this.props.controller.handleCustomTaskCompleteConfirmed}, "Continue")
+                )
+            )
+            );
+    }
+});
+
+CS.Controllers.WorkbookAreaPrioritizeItemsComplete = React.createClass({displayName: "WorkbookAreaPrioritizeItemsComplete",
+    render: function () {
+        return (
+            React.createElement("div", {id: "task-complete-pep-talk"}, 
+                React.createElement("h2", null, React.createElement("i", {className: "fa fa-star"}), "Great work!", React.createElement("i", {className: "fa fa-star"})), 
+                React.createElement("p", null, "Dig deeper into what you’ve discovered. Confirm, find examples and describe more thoroughly."), 
+                React.createElement("p", null, "Click on an item to get started.")
             )
             );
     }
@@ -2570,8 +2628,13 @@ CS.Controllers.WorkbookAreaAddItemLvl2Task = React.createClass({displayName: "Wo
                 );
         }
 
+        var wrapperClasses = classNames({
+            "workbook-task": true,
+            "hidd3n": this.props.hidden
+        });
+
         return (
-            React.createElement("div", {className: "workbook-task"}, 
+            React.createElement("div", {className: wrapperClasses}, 
                 React.createElement("button", {className: "styleless fa fa-question-circle", onClick: CS.Controllers.WorkbookAreaCommon.showAreaDescription}), 
                 React.createElement("p", {className: "working-on"}, "Working on: ", this.props.task.workingOnText), 
                 React.createElement("div", {className: "progress"}, 
@@ -2616,8 +2679,13 @@ CS.Controllers.WorkbookAreaAddItemTask = React.createClass({displayName: "Workbo
                 );
         }
 
+        var wrapperClasses = classNames({
+            "workbook-task": true,
+            "hidd3n": this.props.hidden
+        });
+
         return (
-            React.createElement("div", {className: "workbook-task"}, 
+            React.createElement("div", {className: wrapperClasses}, 
                 React.createElement("button", {className: "styleless fa fa-question-circle", onClick: CS.Controllers.WorkbookAreaCommon.showAreaDescription}), 
                 React.createElement("p", {className: "working-on"}, "Working on: ", this.props.task.workingOnText), 
                 React.createElement("div", {className: "progress"}, 
@@ -2754,6 +2822,8 @@ CS.Controllers.WorkbookAreaAddItemTaskForm = React.createClass({displayName: "Wo
 
                 CS.account.data[this.props.workbookArea.className] = updatedBlueprintAreaData;
                 CS.saveAccountData();
+
+                this.props.controller.isPepTalkClosed = false;
 
                 this._setCurrentTaskAsSkippedAndReRender();
             }.bind(this),
@@ -2904,10 +2974,15 @@ CS.Controllers.WorkbookAreaPrioritizeItemsTask = React.createClass({displayName:
                 );
         }
 
+        var wrapperClasses = classNames({
+            "workbook-task": true,
+            "hidd3n": this.props.hidden
+        });
+
         var currentWording = CS.Models.WorkbookAreaTaskCommon.getNextWording(this.props.task);
 
         return (
-            React.createElement("div", {className: "workbook-task"}, 
+            React.createElement("div", {className: wrapperClasses}, 
                 React.createElement("button", {className: "styleless fa fa-question-circle", onClick: CS.Controllers.WorkbookAreaCommon.showAreaDescription}), 
                 React.createElement("p", {className: "working-on"}, "Working on: ", this.props.task.workingOnText), 
                 React.createElement("div", {className: "progress"}, 
@@ -2937,6 +3012,9 @@ CS.Controllers.WorkbookAreaPrioritizeItemsTask = React.createClass({displayName:
 
                 CS.account.data.prioritizedWorkbookAreaIds = prioritizedWorkbookAreaIds;
                 CS.saveAccountData();
+
+                this.props.controller.isPepTalkClosed = false;
+
                 this.props.controller.reRender();
             }.bind(this),
             error: function () {
@@ -2957,77 +3035,56 @@ CS.Controllers.WorkbookArea = P(function (c) {
                 workbookItems: [],
                 customTask: null,
                 isAdmin: false,
-                isCustomTaskComplete: false
+                isCustomTaskComplete: false,
+                isPepTalkClosed: false
             };
         },
 
         render: function () {
             var workbookAreaDescriptionReact = null;
+            var pepTalkReact = null;
             var taskReact = null;
             var addCustomTaskPanelReact = null;
 
             if (this.state.workbookArea) {
-                var workbookAreaDescription = _.find(CS.Controllers.Texts, function(text) {
-                    return text.type === "workbook-area-description" &&
-                        text.workbookAreaClassName === this.state.workbookArea.className;
-                }.bind(this)).htmlText;
+                workbookAreaDescriptionReact = React.createElement(CS.Controllers.WorkbookAreaDescription, {workbookAreaClassName: this.state.workbookArea.className, controller: this.state.controller});
 
-                workbookAreaDescriptionReact = (
-                    React.createElement("div", {id: "area-description"}, 
-                        React.createElement("article", {className: "workbook-area-description-text-wrapper", dangerouslySetInnerHTML: {__html: workbookAreaDescription}}), 
-                        React.createElement("div", {className: "centered-contents"}, 
-                            React.createElement("button", {className: "btn btn-primary", onClick: this._showTask}, "Got it")
-                        )
-                    )
-                    );
+                if (!this.state.isPepTalkClosed) {
+                    var taskCompletePepTalk = null;
 
-                var activeTask = null;
-
-                if (this.state.isCustomTaskComplete) {
-                    taskReact = (
-                        React.createElement("div", {className: "workbook-task complete"}, 
-                            React.createElement("h2", null, React.createElement("i", {className: "fa fa-star"}), "Great work!", React.createElement("i", {className: "fa fa-star"})), 
-                            React.createElement("p", null, "A career advisor will get back to you shortly."), 
-                            React.createElement("p", null, "In the meantime, we invite you to continue working on this topic, or maybe switch to another one?"), 
-                            React.createElement("div", {className: "centered-contents"}, 
-                                React.createElement("button", {className: "btn btn-primary", onClick: this._handleCustomTaskCompleteConfirmed}, "Continue")
-                            )
-                        )
-                        );
-                } else {
-                    activeTask = this.state.customTask ||
-                        _.find(CS.WorkbookAreaTasks, function (task) {  // Level 3
-                            return task.workbookAreaId === this.state.workbookArea.id && task.level === 3 && task.isActive();
-                        }.bind(this)) ||
-                        _.find(CS.WorkbookAreaTasks, function (task) {   // Level 2
-                            return task.workbookAreaId === this.state.workbookArea.id && task.level === 2 && task.isActive();
-                        }.bind(this)) ||
-                        _.find(CS.WorkbookAreaTasks, function (task) {   // Level 1
-                            return task.workbookAreaId === this.state.workbookArea.id && task.level === 1 && task.isActive();
+                    if (this.state.isCustomTaskComplete) {
+                        taskCompletePepTalk = { templateClassName: "WorkbookAreaCustomTaskComplete" };
+                    } else {
+                        taskCompletePepTalk = _.find(CS.WorkbookAreaTaskCompletePepTalks, function(pepTalk) {
+                            return pepTalk.getWorkbookArea().id === this.state.workbookArea.id && pepTalk.isActive();
                         }.bind(this));
+                    }
                 }
 
-                if (activeTask) {
-                    var nextTask = _.find(CS.WorkbookAreaTasks, function (task) {
-                        return task.previousTaskId === activeTask.id;
-                    });
+                if (taskCompletePepTalk) {
+                    pepTalkReact = React.createElement(CS.Controllers[taskCompletePepTalk.templateClassName], {workbookArea: this.state.workbookArea, controller: this.state.controller});
+                }
 
-                    var comingUpNextText = nextTask ? nextTask.comingUpText : null;
+                if (!this.state.isCustomTaskComplete) {
+                    var activeTask = this.state.customTask ||
+                        _.find(CS.WorkbookAreaTasks, function (task) {  // Level 3
+                            return task.getWorkbookArea().id === this.state.workbookArea.id && task.level === 3 && task.isActive();
+                        }.bind(this)) ||
+                        _.find(CS.WorkbookAreaTasks, function (task) {  // Level 2
+                            return task.getWorkbookArea().id === this.state.workbookArea.id && task.level === 2 && task.isActive();
+                        }.bind(this)) ||
+                        _.find(CS.WorkbookAreaTasks, function (task) {  // Level 1
+                            return task.getWorkbookArea().id === this.state.workbookArea.id && task.level === 1 && task.isActive();
+                        }.bind(this));
 
-                    taskReact = React.createElement(CS.Controllers[activeTask.templateClassName], {task: activeTask, workbookArea: this.state.workbookArea, comingUpNextText: comingUpNextText, controller: this.state.controller});
-                } else if (!this.state.isCustomTaskComplete) {
-                    var doneTask = _.find(CS.WorkbookAreaTasks, function (task) {  // Level 3
-                        return task.workbookAreaId === this.state.workbookArea.id && task.level === 3 && task.isDone();
-                    }.bind(this));
+                    if (activeTask) {
+                        var nextTask = _.find(CS.WorkbookAreaTasks, function (task) {
+                            return task.previousTaskId === activeTask.id;
+                        });
 
-                    if (doneTask) {
-                        taskReact = (
-                            React.createElement("div", {className: "workbook-task complete"}, 
-                                React.createElement("h2", null, React.createElement("i", {className: "fa fa-star"}), "Great work!", React.createElement("i", {className: "fa fa-star"})), 
-                                React.createElement("p", null, "You have completed all tasks for ", this.state.workbookArea.className, "."), 
-                                React.createElement("p", null, "We invite you to work on other topics.")
-                            )
-                            );
+                        var comingUpNextText = nextTask ? nextTask.comingUpText : null;
+
+                        taskReact = React.createElement(CS.Controllers[activeTask.templateClassName], {task: activeTask, workbookArea: this.state.workbookArea, comingUpNextText: comingUpNextText, hidden: taskCompletePepTalk && !this.state.isPepTalkClosed, controller: this.state.controller});
                     }
                 }
 
@@ -3039,6 +3096,7 @@ CS.Controllers.WorkbookArea = P(function (c) {
             return (
                 React.createElement("div", {ref: "wrapper", id: "content-wrapper"}, 
                     workbookAreaDescriptionReact, 
+                    pepTalkReact, 
                     taskReact, 
                     addCustomTaskPanelReact, 
 
@@ -3088,8 +3146,11 @@ CS.Controllers.WorkbookArea = P(function (c) {
                 this.$areaDescriptionWrapper.show();
             } else {
                 this.$areaDescriptionWrapper.hide();
-                this.$taskWrapper.show();
-                this.$addItemLink.show();
+
+                if (!this.$taskWrapper.hasClass("hidd3n")) {
+                    this.$taskWrapper.show();
+                    this.$addItemLink.show();
+                }
             }
         },
 
@@ -3111,6 +3172,8 @@ CS.Controllers.WorkbookArea = P(function (c) {
             this.$form.show();
             this.$textarea.focus();
 
+            CS.Controllers.WorkbookAreaCommon.adaptTextareaHeight(this.$textarea);
+
             this.$addItemLink.hide();
         },
 
@@ -3129,11 +3192,6 @@ CS.Controllers.WorkbookArea = P(function (c) {
 
         _handleTextareaKeyUp: function (e) {
             CS.Controllers.WorkbookAreaCommon.handleTextareaKeyUp(e, this._handleComposerFormSubmit, this._hideForm);
-        },
-
-        _handleCustomTaskCompleteConfirmed: function() {
-            this.controller.isCustomTaskComplete = false;
-            this.controller.reRender();
         },
 
         _hideForm: function () {
@@ -3166,7 +3224,7 @@ CS.Controllers.WorkbookArea = P(function (c) {
             });
         },
 
-        _showTask: function () {
+        showTask: function () {
             CS.Controllers.WorkbookCommon.saveAreaDescriptionAsClosed(this.state.workbookArea.id);
 
             CS.Services.Animator.fadeOut(this.$areaDescriptionWrapper, {
@@ -3211,7 +3269,8 @@ CS.Controllers.WorkbookArea = P(function (c) {
             workbookItems: CS.account.data[this.workbookArea.className] ? CS.account.data[this.workbookArea.className] : [],
             customTask: firstCustomTaskNotCompleted,
             isAdmin: this.isAdmin,
-            isCustomTaskComplete: this.isCustomTaskComplete || false
+            isCustomTaskComplete: this.isCustomTaskComplete || false,
+            isPepTalkClosed: this.isPepTalkClosed || false
         });
     };
 
@@ -3219,6 +3278,42 @@ CS.Controllers.WorkbookArea = P(function (c) {
         this.reRender();
         CS.saveAccountData();
     };
+
+    c.showTask = function() {
+        this.reactInstance.showTask();
+    };
+
+    c.handleCustomTaskCompleteConfirmed = function() {
+        this.isCustomTaskComplete = false;
+        this.reRender();
+    };
+
+    c.handleTaskCompletePepTalkClosed = function() {
+        this.isPepTalkClosed = true;
+        this.reRender();
+    };
+});
+
+CS.Controllers.WorkbookAreaDescription = React.createClass({displayName: "WorkbookAreaDescription",
+    render: function () {
+        var workbookAreaDescription = _.find(CS.Controllers.Texts, function(text) {
+            return text.type === "workbook-area-description" &&
+                text.workbookAreaClassName === this.props.workbookAreaClassName;
+        }.bind(this)).htmlText;
+
+        return (
+            React.createElement("div", {id: "area-description"}, 
+                React.createElement("article", {className: "workbook-area-description-text-wrapper", dangerouslySetInnerHTML: {__html: workbookAreaDescription}}), 
+                React.createElement("div", {className: "centered-contents"}, 
+                    React.createElement("button", {className: "btn btn-primary", onClick: this._showTask}, "Got it")
+                )
+            )
+            );
+    },
+
+    _showTask: function() {
+        this.props.controller.showTask();
+    }
 });
 
 CS.Controllers.WorkbookAreaWorkbookItem = React.createClass({displayName: "WorkbookAreaWorkbookItem",
@@ -3343,14 +3438,57 @@ CS.Controllers.WorkbookAreaWorkbookItem = React.createClass({displayName: "Workb
     }
 });
 
+CS.Controllers.WorkbookItemAddItemComplete = React.createClass({displayName: "WorkbookItemAddItemComplete",
+    render: function () {
+        return (
+            React.createElement("div", {id: "task-complete-pep-talk"}, 
+                React.createElement("h2", null, React.createElement("i", {className: "fa fa-star"}), "Great work!", React.createElement("i", {className: "fa fa-star"})), 
+                React.createElement("p", null, "Keep adding examples or try describing more."), 
+                React.createElement("p", null, "Or ", React.createElement("a", {onClick: this._navigateBack}, "go back"), " to work on another item."), 
+                React.createElement("div", {className: "centered-contents"}, 
+                    React.createElement("button", {className: "btn btn-primary", onClick: this._handleTaskCompletePepTalkClosed}, "Alright")
+                )
+            )
+            );
+    },
+
+    _handleTaskCompletePepTalkClosed: function () {
+        this.props.controller.handleTaskCompletePepTalkClosed();
+    },
+
+    _navigateBack: function() {
+        history.back();
+    }
+});
+
+CS.Controllers.WorkbookItemCustomTaskComplete = React.createClass({displayName: "WorkbookItemCustomTaskComplete",
+    render: function () {
+        return (
+            React.createElement("div", {id: "task-complete-pep-talk"}, 
+                React.createElement("h2", null, React.createElement("i", {className: "fa fa-star"}), "Great work!", React.createElement("i", {className: "fa fa-star"})), 
+                React.createElement("p", null, "A career advisor will get back to you shortly."), 
+                React.createElement("p", null, "In the meantime, we invite you to continue working on this item, or switch to something else?"), 
+                React.createElement("div", {className: "centered-contents"}, 
+                    React.createElement("button", {className: "btn btn-primary", onClick: this.props.controller.handleCustomTaskCompleteConfirmed}, "Continue")
+                )
+            )
+            );
+    }
+});
+
 CS.Controllers.WorkbookItemAddItemTask = React.createClass({displayName: "WorkbookItemAddItemTask",
     render: function () {
         var textareaId = "add-note-task";
         this.currentWording = CS.Models.WorkbookItemTaskCommon.getNextWording(this.props.task, this.props.workbookItemIndex);
         var currentWordingPrompt = CS.Services.String.template(this.currentWording.prompt, "itemName", this.props.workbookItemName);
 
+        var wrapperClasses = classNames({
+            "workbook-task": true,
+            "hidd3n": this.props.hidden
+        });
+
         return (
-            React.createElement("div", {className: "workbook-task", ref: "wrapper"}, 
+            React.createElement("div", {className: wrapperClasses, ref: "wrapper"}, 
                 React.createElement("p", null, "Working on: ", this.props.task.workingOnText), 
                 React.createElement("div", {className: "progress"}, 
                     React.createElement("div", {className: "progress-bar progress-bar-success", role: "progressbar", "aria-valuenow": "", "aria-valuemin": "0", "aria-valuemax": "100"})
@@ -3620,60 +3758,66 @@ CS.Controllers.WorkbookItem = P(function (c) {
                 workbookItemIndex: null,
                 customTask: null,
                 isAdmin: false,
-                isCustomTaskComplete: false
+                isCustomTaskComplete: false,
+                isPepTalkClosed: false
             };
         },
 
         render: function () {
+            var pepTalkReact = null;
             var taskReact = null;
             var addCustomTaskPanelReact = null;
+            var listItemsReact = null;
 
             if (this.state.workbookArea) {
-                var activeTask = null;
+                if (!this.state.isPepTalkClosed) {
+                    var taskCompletePepTalk = null;
 
-                if (this.state.isCustomTaskComplete) {
-                    taskReact = (
-                        React.createElement("div", {className: "workbook-task complete"}, 
-                            React.createElement("h2", null, React.createElement("i", {className: "fa fa-star"}), "Great work!", React.createElement("i", {className: "fa fa-star"})), 
-                            React.createElement("p", null, "A career advisor will get back to you shortly."), 
-                            React.createElement("p", null, "In the meantime, we invite you to continue working on this topic, or maybe switch to another one?"), 
-                            React.createElement("div", {className: "centered-contents"}, 
-                                React.createElement("button", {className: "btn btn-primary", onClick: this._handleCustomTaskCompleteConfirmed}, "Continue")
-                            )
-                        )
-                        );
-                } else {
-                    activeTask = this.state.customTask ||
-                        _.find(CS.WorkbookItemTasks, function (task) {
-                            return task.workbookAreaId === this.state.workbookArea.id && task.isActive(this.state.workbookItemIndex);
+                    if (this.state.isCustomTaskComplete) {
+                        taskCompletePepTalk = { templateClassName: "WorkbookItemCustomTaskComplete" };
+                    } else {
+                        taskCompletePepTalk = _.find(CS.WorkbookItemTaskCompletePepTalks, function(pepTalk) {
+                            return pepTalk.getWorkbookArea().id === this.state.workbookArea.id && pepTalk.isActive(this.state.workbookItemIndex);
                         }.bind(this));
+                    }
                 }
 
-                if (activeTask) {
-                    taskReact = React.createElement(CS.Controllers[activeTask.templateClassName], {task: activeTask, workbookArea: this.state.workbookArea, workbookItemName: this.state.workbookItem.name, workbookItemIndex: this.state.workbookItemIndex, controller: this.state.controller});
+                if (taskCompletePepTalk) {
+                    pepTalkReact = React.createElement(CS.Controllers[taskCompletePepTalk.templateClassName], {workbookArea: this.state.workbookArea, controller: this.state.controller});
                 }
-            }
 
-            if (this.state.isAdmin && !this.state.customTask) {
-                addCustomTaskPanelReact = React.createElement(CS.Controllers.AddCustomTask, {workbookAreaId: this.state.workbookArea.id, workbookItemIndex: this.state.workbookItemIndex, controller: this.state.controller});
-            }
+                if (!this.state.isCustomTaskComplete) {
+                    var activeTask = this.state.customTask ||
+                        _.find(CS.WorkbookItemTasks, function (task) {
+                            return task.getWorkbookArea().id === this.state.workbookArea.id && task.isActive(this.state.workbookItemIndex);
+                        }.bind(this));
 
-            var listItems = null;
-            if (this.state.workbookItem && !_.isEmpty(this.state.workbookItem.notes)) {
-                listItems = this.state.workbookItem.notes.map(function (note, index) {
-                    var reactItemId = "workbook-item-note" + note;
+                    if (activeTask) {
+                        taskReact = React.createElement(CS.Controllers[activeTask.templateClassName], {task: activeTask, workbookArea: this.state.workbookArea, workbookItemName: this.state.workbookItem.name, workbookItemIndex: this.state.workbookItemIndex, hidden: taskCompletePepTalk && !this.state.isPepTalkClosed, controller: this.state.controller});
+                    }
+                }
 
-                    return React.createElement(CS.Controllers.WorkbookItemNote, {key: reactItemId, workbookAreaClassName: this.state.workbookArea.className, workbookItem: this.state.workbookItem, workbookItemIndex: this.state.workbookItemIndex, workbookItemNote: note, workbookItemNoteIndex: index});
-                }.bind(this));
+                if (this.state.isAdmin && !this.state.customTask) {
+                    addCustomTaskPanelReact = React.createElement(CS.Controllers.AddCustomTask, {workbookAreaId: this.state.workbookArea.id, workbookItemIndex: this.state.workbookItemIndex, controller: this.state.controller});
+                }
+
+                if (this.state.workbookItem && !_.isEmpty(this.state.workbookItem.notes)) {
+                    listItemsReact = this.state.workbookItem.notes.map(function (note, index) {
+                        var reactItemId = "workbook-item-note" + note;
+
+                        return React.createElement(CS.Controllers.WorkbookItemNote, {key: reactItemId, workbookAreaClassName: this.state.workbookArea.className, workbookItem: this.state.workbookItem, workbookItemIndex: this.state.workbookItemIndex, workbookItemNote: note, workbookItemNoteIndex: index});
+                    }.bind(this));
+                }
             }
 
             return (
                 React.createElement("div", {ref: "wrapper"}, 
+                    pepTalkReact, 
                     taskReact, 
                     addCustomTaskPanelReact, 
 
                     React.createElement("ul", {className: "styleless item-notes-list"}, 
-                        listItems
+                        listItemsReact
                     ), 
 
                     React.createElement("form", {role: "form", className: "item-composer note", onSubmit: this._handleComposerFormSubmit}, 
@@ -3702,6 +3846,8 @@ CS.Controllers.WorkbookItem = P(function (c) {
         _showComposer: function () {
             this.$form.show();
             this.$textarea.focus();
+
+            CS.Controllers.WorkbookItemCommon.adaptTextareaHeight(this.$textarea);
 
             this.$addNoteLink.hide();
         },
@@ -3799,13 +3945,24 @@ CS.Controllers.WorkbookItem = P(function (c) {
             workbookItemIndex: _.findIndex(CS.account.data[this.workbookArea.className], "name", this.workbookItem.name),
             customTask: firstCustomTaskNotCompleted,
             isAdmin: this.isAdmin,
-            isCustomTaskComplete: this.isCustomTaskComplete || false
+            isCustomTaskComplete: this.isCustomTaskComplete || false,
+            isPepTalkClosed: this.isPepTalkClosed || false
         });
     };
 
     c.saveAccountData = function () {
         this.reRender();
         CS.saveAccountData();
+    };
+
+    c.handleCustomTaskCompleteConfirmed = function() {
+        this.isCustomTaskComplete = false;
+        this.reRender();
+    };
+
+    c.handleTaskCompletePepTalkClosed = function() {
+        this.isPepTalkClosed = true;
+        this.reRender();
     };
 });
 
@@ -3927,20 +4084,23 @@ CS.Controllers.WorkbookItemNote = React.createClass({displayName: "WorkbookItemN
         id: 1,
         level: 1,
         workbookAreaId: 5,  // Achievements
+        getWorkbookArea: function() {
+            return CS.blueprintAreasModel.getOfId(this.workbookAreaId);
+        },
+        getWorkbookItemsForThisArea: function() {
+            return CS.account.data ? CS.account.data[this.getWorkbookArea().className] : [];
+        },
         isActive: function () {
-            var workbookArea = CS.blueprintAreasModel.getOfId(5);
-
-            if (!workbookArea.isActive()) {
+            if (!this.getWorkbookArea().isActive()) {
                 return false;
             }
 
-            var workbookItemsForThisArea = CS.account.data[workbookArea.className];
+            var workbookItemsForThisArea = this.getWorkbookItemsForThisArea();
 
             return _.isEmpty(workbookItemsForThisArea) || workbookItemsForThisArea.length < CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl1TaskComplete;
         },
         isDone: function() {
-            var workbookArea = CS.blueprintAreasModel.getOfId(5);
-            var workbookItemsForThisArea = CS.account.data[workbookArea.className];
+            var workbookItemsForThisArea = this.getWorkbookItemsForThisArea();
 
             return !_.isEmpty(workbookItemsForThisArea) && workbookItemsForThisArea.length >= CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl1TaskComplete;
         },
@@ -3952,7 +4112,7 @@ CS.Controllers.WorkbookItemNote = React.createClass({displayName: "WorkbookItemN
                 prompt: "Something you feel really proud of"
             },
             {
-                prompt: "Have you won any awards or prices for you work or educational achievements?",
+                prompt: "Have you won any awards or prices for your work or educational achievements?",
                 sentenceStart: "I was "
             },
             {
@@ -3968,20 +4128,23 @@ CS.Controllers.WorkbookItemNote = React.createClass({displayName: "WorkbookItemN
         id: 2,
         level: 1,
         workbookAreaId: 18,  // Tracks
+        getWorkbookArea: function() {
+            return CS.blueprintAreasModel.getOfId(this.workbookAreaId);
+        },
+        getWorkbookItemsForThisArea: function() {
+            return CS.account.data ? CS.account.data[this.getWorkbookArea().className] : [];
+        },
         isActive: function () {
-            var workbookArea = CS.blueprintAreasModel.getOfId(18);
-
-            if (!workbookArea.isActive()) {
+            if (!this.getWorkbookArea().isActive()) {
                 return false;
             }
 
-            var workbookItemsForThisArea = CS.account.data[workbookArea.className];
+            var workbookItemsForThisArea = this.getWorkbookItemsForThisArea();
 
             return _.isEmpty(workbookItemsForThisArea) || workbookItemsForThisArea.length < CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl1TaskComplete;
         },
         isDone: function() {
-            var workbookArea = CS.blueprintAreasModel.getOfId(18);
-            var workbookItemsForThisArea = CS.account.data[workbookArea.className];
+            var workbookItemsForThisArea = this.getWorkbookItemsForThisArea();
 
             return !_.isEmpty(workbookItemsForThisArea) && workbookItemsForThisArea.length >= CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl1TaskComplete;
         },
@@ -4005,20 +4168,23 @@ CS.Controllers.WorkbookItemNote = React.createClass({displayName: "WorkbookItemN
         id: 3,
         level: 1,
         workbookAreaId: 1,  // Strengths
+        getWorkbookArea: function() {
+            return CS.blueprintAreasModel.getOfId(this.workbookAreaId);
+        },
+        getWorkbookItemsForThisArea: function() {
+            return CS.account.data ? CS.account.data[this.getWorkbookArea().className] : [];
+        },
         isActive: function () {
-            var workbookArea = CS.blueprintAreasModel.getOfId(1);
-
-            if (!workbookArea.isActive()) {
+            if (!this.getWorkbookArea().isActive()) {
                 return false;
             }
 
-            var workbookItemsForThisArea = CS.account.data[workbookArea.className];
+            var workbookItemsForThisArea = this.getWorkbookItemsForThisArea();
 
             return _.isEmpty(workbookItemsForThisArea) || workbookItemsForThisArea.length < CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl1TaskComplete;
         },
         isDone: function() {
-            var workbookArea = CS.blueprintAreasModel.getOfId(1);
-            var workbookItemsForThisArea = CS.account.data[workbookArea.className];
+            var workbookItemsForThisArea = this.getWorkbookItemsForThisArea();
 
             return !_.isEmpty(workbookItemsForThisArea) && workbookItemsForThisArea.length >= CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl1TaskComplete;
         },
@@ -4046,20 +4212,23 @@ CS.Controllers.WorkbookItemNote = React.createClass({displayName: "WorkbookItemN
         id: 4,
         level: 1,
         workbookAreaId: 2,  // Drivers
+        getWorkbookArea: function() {
+            return CS.blueprintAreasModel.getOfId(this.workbookAreaId);
+        },
+        getWorkbookItemsForThisArea: function() {
+            return CS.account.data ? CS.account.data[this.getWorkbookArea().className] : [];
+        },
         isActive: function () {
-            var workbookArea = CS.blueprintAreasModel.getOfId(2);
-
-            if (!workbookArea.isActive()) {
+            if (!this.getWorkbookArea().isActive()) {
                 return false;
             }
 
-            var workbookItemsForThisArea = CS.account.data[workbookArea.className];
+            var workbookItemsForThisArea = this.getWorkbookItemsForThisArea();
 
             return _.isEmpty(workbookItemsForThisArea) || workbookItemsForThisArea.length < CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl1TaskComplete;
         },
         isDone: function() {
-            var workbookArea = CS.blueprintAreasModel.getOfId(2);
-            var workbookItemsForThisArea = CS.account.data[workbookArea.className];
+            var workbookItemsForThisArea = this.getWorkbookItemsForThisArea();
 
             return !_.isEmpty(workbookItemsForThisArea) && workbookItemsForThisArea.length >= CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl1TaskComplete;
         },
@@ -4088,20 +4257,23 @@ CS.Controllers.WorkbookItemNote = React.createClass({displayName: "WorkbookItemN
         id: 5,
         level: 1,
         workbookAreaId: 4,  // Workplace
+        getWorkbookArea: function() {
+            return CS.blueprintAreasModel.getOfId(this.workbookAreaId);
+        },
+        getWorkbookItemsForThisArea: function() {
+            return CS.account.data ? CS.account.data[this.getWorkbookArea().className] : [];
+        },
         isActive: function () {
-            var workbookArea = CS.blueprintAreasModel.getOfId(4);
-
-            if (!workbookArea.isActive()) {
+            if (!this.getWorkbookArea().isActive()) {
                 return false;
             }
 
-            var workbookItemsForThisArea = CS.account.data[workbookArea.className];
+            var workbookItemsForThisArea = this.getWorkbookItemsForThisArea();
 
             return _.isEmpty(workbookItemsForThisArea) || workbookItemsForThisArea.length < CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl1TaskComplete;
         },
         isDone: function() {
-            var workbookArea = CS.blueprintAreasModel.getOfId(4);
-            var workbookItemsForThisArea = CS.account.data[workbookArea.className];
+            var workbookItemsForThisArea = this.getWorkbookItemsForThisArea();
 
             return !_.isEmpty(workbookItemsForThisArea) && workbookItemsForThisArea.length >= CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl1TaskComplete;
         },
@@ -4122,20 +4294,23 @@ CS.Controllers.WorkbookItemNote = React.createClass({displayName: "WorkbookItemN
         id: 6,
         level: 1,
         workbookAreaId: 12,  // Mores
+        getWorkbookArea: function() {
+            return CS.blueprintAreasModel.getOfId(this.workbookAreaId);
+        },
+        getWorkbookItemsForThisArea: function() {
+            return CS.account.data ? CS.account.data[this.getWorkbookArea().className] : [];
+        },
         isActive: function () {
-            var workbookArea = CS.blueprintAreasModel.getOfId(12);
-
-            if (!workbookArea.isActive()) {
+            if (!this.getWorkbookArea().isActive()) {
                 return false;
             }
 
-            var workbookItemsForThisArea = CS.account.data[workbookArea.className];
+            var workbookItemsForThisArea = this.getWorkbookItemsForThisArea();
 
             return _.isEmpty(workbookItemsForThisArea) || workbookItemsForThisArea.length < CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl1TaskComplete;
         },
         isDone: function() {
-            var workbookArea = CS.blueprintAreasModel.getOfId(12);
-            var workbookItemsForThisArea = CS.account.data[workbookArea.className];
+            var workbookItemsForThisArea = this.getWorkbookItemsForThisArea();
 
             return !_.isEmpty(workbookItemsForThisArea) && workbookItemsForThisArea.length >= CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl1TaskComplete;
         },
@@ -4159,20 +4334,23 @@ CS.Controllers.WorkbookItemNote = React.createClass({displayName: "WorkbookItemN
         id: 7,
         level: 1,
         workbookAreaId: 17,  // ToolsAndMethods
+        getWorkbookArea: function() {
+            return CS.blueprintAreasModel.getOfId(this.workbookAreaId);
+        },
+        getWorkbookItemsForThisArea: function() {
+            return CS.account.data ? CS.account.data[this.getWorkbookArea().className] : [];
+        },
         isActive: function () {
-            var workbookArea = CS.blueprintAreasModel.getOfId(17);
-
-            if (!workbookArea.isActive()) {
+            if (!this.getWorkbookArea().isActive()) {
                 return false;
             }
 
-            var workbookItemsForThisArea = CS.account.data[workbookArea.className];
+            var workbookItemsForThisArea = this.getWorkbookItemsForThisArea();
 
             return _.isEmpty(workbookItemsForThisArea) || workbookItemsForThisArea.length < CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl1TaskComplete;
         },
         isDone: function() {
-            var workbookArea = CS.blueprintAreasModel.getOfId(17);
-            var workbookItemsForThisArea = CS.account.data[workbookArea.className];
+            var workbookItemsForThisArea = this.getWorkbookItemsForThisArea();
 
             return !_.isEmpty(workbookItemsForThisArea) && workbookItemsForThisArea.length >= CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl1TaskComplete;
         },
@@ -4196,20 +4374,23 @@ CS.Controllers.WorkbookItemNote = React.createClass({displayName: "WorkbookItemN
         id: 8,
         level: 1,
         workbookAreaId: 9,  // Leadership
+        getWorkbookArea: function() {
+            return CS.blueprintAreasModel.getOfId(this.workbookAreaId);
+        },
+        getWorkbookItemsForThisArea: function() {
+            return CS.account.data ? CS.account.data[this.getWorkbookArea().className] : [];
+        },
         isActive: function () {
-            var workbookArea = CS.blueprintAreasModel.getOfId(9);
-
-            if (!workbookArea.isActive()) {
+            if (!this.getWorkbookArea().isActive()) {
                 return false;
             }
 
-            var workbookItemsForThisArea = CS.account.data[workbookArea.className];
+            var workbookItemsForThisArea = this.getWorkbookItemsForThisArea();
 
             return _.isEmpty(workbookItemsForThisArea) || workbookItemsForThisArea.length < CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl1TaskComplete;
         },
         isDone: function() {
-            var workbookArea = CS.blueprintAreasModel.getOfId(9);
-            var workbookItemsForThisArea = CS.account.data[workbookArea.className];
+            var workbookItemsForThisArea = this.getWorkbookItemsForThisArea();
 
             return !_.isEmpty(workbookItemsForThisArea) && workbookItemsForThisArea.length >= CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl1TaskComplete;
         },
@@ -4227,20 +4408,23 @@ CS.Controllers.WorkbookItemNote = React.createClass({displayName: "WorkbookItemN
         id: 9,
         level: 1,
         workbookAreaId: 3,  // Contexts
+        getWorkbookArea: function() {
+            return CS.blueprintAreasModel.getOfId(this.workbookAreaId);
+        },
+        getWorkbookItemsForThisArea: function() {
+            return CS.account.data ? CS.account.data[this.getWorkbookArea().className] : [];
+        },
         isActive: function () {
-            var workbookArea = CS.blueprintAreasModel.getOfId(3);
-
-            if (!workbookArea.isActive()) {
+            if (!this.getWorkbookArea().isActive()) {
                 return false;
             }
 
-            var workbookItemsForThisArea = CS.account.data[workbookArea.className];
+            var workbookItemsForThisArea = this.getWorkbookItemsForThisArea();
 
             return _.isEmpty(workbookItemsForThisArea) || workbookItemsForThisArea.length < CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl1TaskComplete;
         },
         isDone: function() {
-            var workbookArea = CS.blueprintAreasModel.getOfId(3);
-            var workbookItemsForThisArea = CS.account.data[workbookArea.className];
+            var workbookItemsForThisArea = this.getWorkbookItemsForThisArea();
 
             return !_.isEmpty(workbookItemsForThisArea) && workbookItemsForThisArea.length >= CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl1TaskComplete;
         },
@@ -4271,258 +4455,465 @@ CS.Controllers.WorkbookItemNote = React.createClass({displayName: "WorkbookItemN
     {   // Level 2
         id: 10,
         level: 2,
-        workbookAreaId: 5,  // Achievements
         previousTaskId: 1,
-        isActive: function () {
-            var workbookArea = CS.blueprintAreasModel.getOfId(5);
+        getWorkbookArea: function() {
+            var previousTask = _.find(CS.WorkbookAreaTasks, function (task) {
+                return task.id === this.previousTaskId;
+            }.bind(this));
 
-            if (!workbookArea.isActive()) {
+            return previousTask.getWorkbookArea();
+        },
+        getWorkbookItemsForThisArea: function() {
+            return CS.account.data ? CS.account.data[this.getWorkbookArea().className] : [];
+        },
+        isActive: function () {
+            if (!this.getWorkbookArea().isActive()) {
                 return false;
             }
 
-            var workbookItemsForThisArea = CS.account.data[workbookArea.className];
+            var workbookItemsForThisArea = this.getWorkbookItemsForThisArea();
 
             return !_.isEmpty(workbookItemsForThisArea) &&
                 workbookItemsForThisArea.length >= CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl1TaskComplete &&
                 workbookItemsForThisArea.length < CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl2TaskComplete;
         },
         isDone: function() {
-            var workbookArea = CS.blueprintAreasModel.getOfId(5);
-            var workbookItemsForThisArea = CS.account.data[workbookArea.className];
+            var workbookItemsForThisArea = this.getWorkbookItemsForThisArea();
 
             return !_.isEmpty(workbookItemsForThisArea) && workbookItemsForThisArea.length >= CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl2TaskComplete;
         },
-        templateClassName: "WorkbookAreaAddItemLvl1Complete"
+        wordings: [
+            {
+                prompt: "Describe a situation where you've solved a problem in a very good or unexpected way"
+            },
+            {
+                prompt: "Something you feel really proud of"
+            },
+            {
+                prompt: "Have you won any awards or prices for your work or educational achievements?",
+                sentenceStart: "I was "
+            },
+            {
+                prompt: "Think about the last job you had. One thing you achieved when you worked there was..."
+            }
+        ],
+        stepCount: CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl2TaskComplete - CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl1TaskComplete,
+        templateClassName: "WorkbookAreaAddItemLvl2Task",
+        workingOnText: "making level 2 inventory of Achievements",
+        notificationText: "Make level 2 inventory of Achievements",
+        comingUpText: "making inventory level 2"
     },
     {
         id: 11,
         level: 2,
-        workbookAreaId: 18,  // Tracks
         previousTaskId: 2,
-        isActive: function () {
-            var workbookArea = CS.blueprintAreasModel.getOfId(18);
+        getWorkbookArea: function() {
+            var previousTask = _.find(CS.WorkbookAreaTasks, function (task) {
+                return task.id === this.previousTaskId;
+            }.bind(this));
 
-            if (!workbookArea.isActive()) {
+            return previousTask.getWorkbookArea();
+        },
+        getWorkbookItemsForThisArea: function() {
+            return CS.account.data ? CS.account.data[this.getWorkbookArea().className] : [];
+        },
+        isActive: function () {
+            if (!this.getWorkbookArea().isActive()) {
                 return false;
             }
 
-            var workbookItemsForThisArea = CS.account.data[workbookArea.className];
+            var workbookItemsForThisArea = this.getWorkbookItemsForThisArea();
 
             return !_.isEmpty(workbookItemsForThisArea) &&
                 workbookItemsForThisArea.length >= CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl1TaskComplete &&
                 workbookItemsForThisArea.length < CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl2TaskComplete;
         },
         isDone: function() {
-            var workbookArea = CS.blueprintAreasModel.getOfId(18);
-            var workbookItemsForThisArea = CS.account.data[workbookArea.className];
+            var workbookItemsForThisArea = this.getWorkbookItemsForThisArea();
 
             return !_.isEmpty(workbookItemsForThisArea) && workbookItemsForThisArea.length >= CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl2TaskComplete;
         },
-        templateClassName: "WorkbookAreaAddItemLvl1Complete"
+        wordings: [
+            {
+                prompt: "What tracks would you like to pursue at some point?"
+            },
+            {
+                prompt: "Anything you dreamed of when you were younger but haven't done and still would find exciting to try out?"
+            },
+            {
+                prompt: "If you get a salary for working on anything you want, what would you work with?"
+            }
+        ],
+        stepCount: CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl2TaskComplete - CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl1TaskComplete,
+        templateClassName: "WorkbookAreaAddItemLvl2Task",
+        workingOnText: "making level 2 inventory of Tracks",
+        notificationText: "Make level 2 inventory of Tracks",
+        comingUpText: "making inventory level 2"
     },
     {
         id: 12,
         level: 2,
-        workbookAreaId: 1,  // Strengths
         previousTaskId: 3,
-        isActive: function () {
-            var workbookArea = CS.blueprintAreasModel.getOfId(1);
+        getWorkbookArea: function() {
+            var previousTask = _.find(CS.WorkbookAreaTasks, function (task) {
+                return task.id === this.previousTaskId;
+            }.bind(this));
 
-            if (!workbookArea.isActive()) {
+            return previousTask.getWorkbookArea();
+        },
+        getWorkbookItemsForThisArea: function() {
+            return CS.account.data ? CS.account.data[this.getWorkbookArea().className] : [];
+        },
+        isActive: function () {
+            if (!this.getWorkbookArea().isActive()) {
                 return false;
             }
 
-            var workbookItemsForThisArea = CS.account.data[workbookArea.className];
+            var workbookItemsForThisArea = this.getWorkbookItemsForThisArea();
 
             return !_.isEmpty(workbookItemsForThisArea) &&
                 workbookItemsForThisArea.length >= CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl1TaskComplete &&
                 workbookItemsForThisArea.length < CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl2TaskComplete;
         },
         isDone: function() {
-            var workbookArea = CS.blueprintAreasModel.getOfId(1);
-            var workbookItemsForThisArea = CS.account.data[workbookArea.className];
+            var workbookItemsForThisArea = this.getWorkbookItemsForThisArea();
 
             return !_.isEmpty(workbookItemsForThisArea) && workbookItemsForThisArea.length >= CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl2TaskComplete;
         },
-        templateClassName: "WorkbookAreaAddItemLvl1Complete"
+        wordings: [
+            {
+                prompt: "When are you the happiest with your work?",
+                sentenceStart: "When I "
+            },
+            {
+                prompt: "What are you the most confident at in your work?"
+            },
+            {
+                prompt: "What qualities were important in the last role you had?"
+            },
+            {
+                prompt: "What things are you good at?"
+            }
+        ],
+        stepCount: CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl2TaskComplete - CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl1TaskComplete,
+        templateClassName: "WorkbookAreaAddItemLvl2Task",
+        workingOnText: "making level 2 inventory of Strengths",
+        notificationText: "Make level 2 inventory of Strengths",
+        comingUpText: "making inventory level 2"
     },
     {
         id: 13,
         level: 2,
-        workbookAreaId: 2,  // Drivers
         previousTaskId: 4,
-        isActive: function () {
-            var workbookArea = CS.blueprintAreasModel.getOfId(2);
+        getWorkbookArea: function() {
+            var previousTask = _.find(CS.WorkbookAreaTasks, function (task) {
+                return task.id === this.previousTaskId;
+            }.bind(this));
 
-            if (!workbookArea.isActive()) {
+            return previousTask.getWorkbookArea();
+        },
+        getWorkbookItemsForThisArea: function() {
+            return CS.account.data ? CS.account.data[this.getWorkbookArea().className] : [];
+        },
+        isActive: function () {
+            if (!this.getWorkbookArea().isActive()) {
                 return false;
             }
 
-            var workbookItemsForThisArea = CS.account.data[workbookArea.className];
+            var workbookItemsForThisArea = this.getWorkbookItemsForThisArea();
 
             return !_.isEmpty(workbookItemsForThisArea) &&
                 workbookItemsForThisArea.length >= CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl1TaskComplete &&
                 workbookItemsForThisArea.length < CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl2TaskComplete;
         },
         isDone: function() {
-            var workbookArea = CS.blueprintAreasModel.getOfId(2);
-            var workbookItemsForThisArea = CS.account.data[workbookArea.className];
+            var workbookItemsForThisArea = this.getWorkbookItemsForThisArea();
 
             return !_.isEmpty(workbookItemsForThisArea) && workbookItemsForThisArea.length >= CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl2TaskComplete;
         },
-        templateClassName: "WorkbookAreaAddItemLvl1Complete"
+        wordings: [
+            {
+                prompt: "Why do you go to work, except from the salary?"
+            },
+            {
+                prompt: "When do you feel the most energy at work?",
+                sentenceStart: "When I "
+            },
+            {
+                prompt: "What are you passions?",
+                sentenceStart: "I'm passionate about "
+            },
+            {
+                prompt: "What impact do you want to have on the world?"
+            }
+        ],
+        stepCount: CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl2TaskComplete - CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl1TaskComplete,
+        templateClassName: "WorkbookAreaAddItemLvl2Task",
+        workingOnText: "making level 2 inventory of Drivers",
+        notificationText: "Make level 2 inventory of Drivers",
+        comingUpText: "making inventory level 2"
     },
     {
         id: 14,
         level: 2,
-        workbookAreaId: 4,  // Workplace
         previousTaskId: 5,
-        isActive: function () {
-            var workbookArea = CS.blueprintAreasModel.getOfId(4);
+        getWorkbookArea: function() {
+            var previousTask = _.find(CS.WorkbookAreaTasks, function (task) {
+                return task.id === this.previousTaskId;
+            }.bind(this));
 
-            if (!workbookArea.isActive()) {
+            return previousTask.getWorkbookArea();
+        },
+        getWorkbookItemsForThisArea: function() {
+            return CS.account.data ? CS.account.data[this.getWorkbookArea().className] : [];
+        },
+        isActive: function () {
+            if (!this.getWorkbookArea().isActive()) {
                 return false;
             }
 
-            var workbookItemsForThisArea = CS.account.data[workbookArea.className];
+            var workbookItemsForThisArea = this.getWorkbookItemsForThisArea();
 
             return !_.isEmpty(workbookItemsForThisArea) &&
                 workbookItemsForThisArea.length >= CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl1TaskComplete &&
                 workbookItemsForThisArea.length < CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl2TaskComplete;
         },
         isDone: function() {
-            var workbookArea = CS.blueprintAreasModel.getOfId(4);
-            var workbookItemsForThisArea = CS.account.data[workbookArea.className];
+            var workbookItemsForThisArea = this.getWorkbookItemsForThisArea();
 
             return !_.isEmpty(workbookItemsForThisArea) && workbookItemsForThisArea.length >= CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl2TaskComplete;
         },
-        templateClassName: "WorkbookAreaAddItemLvl1Complete"
+        wordings: [
+            {
+                prompt: "What kind of environment are you the most creative in?"
+            },
+            {
+                prompt: "What kind of environment are you the most productive in?"
+            }
+        ],
+        stepCount: CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl2TaskComplete - CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl1TaskComplete,
+        templateClassName: "WorkbookAreaAddItemLvl2Task",
+        workingOnText: "making level 2 inventory of Workplace preferences",
+        notificationText: "Make level 2 inventory of Workplace preferences",
+        comingUpText: "making inventory level 2"
     },
     {
         id: 15,
         level: 2,
-        workbookAreaId: 12,  // Mores
         previousTaskId: 6,
-        isActive: function () {
-            var workbookArea = CS.blueprintAreasModel.getOfId(12);
+        getWorkbookArea: function() {
+            var previousTask = _.find(CS.WorkbookAreaTasks, function (task) {
+                return task.id === this.previousTaskId;
+            }.bind(this));
 
-            if (!workbookArea.isActive()) {
+            return previousTask.getWorkbookArea();
+        },
+        getWorkbookItemsForThisArea: function() {
+            return CS.account.data ? CS.account.data[this.getWorkbookArea().className] : [];
+        },
+        isActive: function () {
+            if (!this.getWorkbookArea().isActive()) {
                 return false;
             }
 
-            var workbookItemsForThisArea = CS.account.data[workbookArea.className];
+            var workbookItemsForThisArea = this.getWorkbookItemsForThisArea();
 
             return !_.isEmpty(workbookItemsForThisArea) &&
                 workbookItemsForThisArea.length >= CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl1TaskComplete &&
                 workbookItemsForThisArea.length < CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl2TaskComplete;
         },
         isDone: function() {
-            var workbookArea = CS.blueprintAreasModel.getOfId(12);
-            var workbookItemsForThisArea = CS.account.data[workbookArea.className];
+            var workbookItemsForThisArea = this.getWorkbookItemsForThisArea();
 
             return !_.isEmpty(workbookItemsForThisArea) && workbookItemsForThisArea.length >= CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl2TaskComplete;
         },
-        templateClassName: "WorkbookAreaAddItemLvl1Complete"
+        wordings: [
+            {
+                prompt: "What would you like to spend more time on in your work?"
+            },
+            {
+                prompt: "In what area do you want to improve yourself in your work?"
+            },
+            {
+                prompt: "What are the tasks you look the most forward to?"
+            }
+        ],
+        stepCount: CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl2TaskComplete - CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl1TaskComplete,
+        templateClassName: "WorkbookAreaAddItemLvl2Task",
+        workingOnText: "making level 2 inventory of Mores",
+        notificationText: "Make level 2 inventory of Mores",
+        comingUpText: "making inventory level 2"
     },
     {
         id: 16,
         level: 2,
-        workbookAreaId: 17,  // ToolsAndMethods
         previousTaskId: 7,
-        isActive: function () {
-            var workbookArea = CS.blueprintAreasModel.getOfId(17);
+        getWorkbookArea: function() {
+            var previousTask = _.find(CS.WorkbookAreaTasks, function (task) {
+                return task.id === this.previousTaskId;
+            }.bind(this));
 
-            if (!workbookArea.isActive()) {
+            return previousTask.getWorkbookArea();
+        },
+        getWorkbookItemsForThisArea: function() {
+            return CS.account.data ? CS.account.data[this.getWorkbookArea().className] : [];
+        },
+        isActive: function () {
+            if (!this.getWorkbookArea().isActive()) {
                 return false;
             }
 
-            var workbookItemsForThisArea = CS.account.data[workbookArea.className];
+            var workbookItemsForThisArea = this.getWorkbookItemsForThisArea();
 
             return !_.isEmpty(workbookItemsForThisArea) &&
                 workbookItemsForThisArea.length >= CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl1TaskComplete &&
                 workbookItemsForThisArea.length < CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl2TaskComplete;
         },
         isDone: function() {
-            var workbookArea = CS.blueprintAreasModel.getOfId(17);
-            var workbookItemsForThisArea = CS.account.data[workbookArea.className];
+            var workbookItemsForThisArea = this.getWorkbookItemsForThisArea();
 
             return !_.isEmpty(workbookItemsForThisArea) && workbookItemsForThisArea.length >= CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl2TaskComplete;
         },
-        templateClassName: "WorkbookAreaAddItemLvl1Complete"
+        wordings: [
+            {
+                prompt: "What methods do you use to do your work?"
+            },
+            {
+                prompt: "What are the tools you consider essential to do your work?"
+            },
+            {
+                prompt: "If you could freely select the tools and methodologies to do your work, what would you chose?"
+            }
+        ],
+        stepCount: CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl2TaskComplete - CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl1TaskComplete,
+        templateClassName: "WorkbookAreaAddItemLvl2Task",
+        workingOnText: "making level 2 inventory of Tools and Methods",
+        notificationText: "Make level 2 inventory of Tools and Methods",
+        comingUpText: "making inventory level 2"
     },
     {
         id: 17,
         level: 2,
-        workbookAreaId: 9,  // Leadership
         previousTaskId: 8,
-        isActive: function () {
-            var workbookArea = CS.blueprintAreasModel.getOfId(9);
+        getWorkbookArea: function() {
+            var previousTask = _.find(CS.WorkbookAreaTasks, function (task) {
+                return task.id === this.previousTaskId;
+            }.bind(this));
 
-            if (!workbookArea.isActive()) {
+            return previousTask.getWorkbookArea();
+        },
+        getWorkbookItemsForThisArea: function() {
+            return CS.account.data ? CS.account.data[this.getWorkbookArea().className] : [];
+        },
+        isActive: function () {
+            if (!this.getWorkbookArea().isActive()) {
                 return false;
             }
 
-            var workbookItemsForThisArea = CS.account.data[workbookArea.className];
+            var workbookItemsForThisArea = this.getWorkbookItemsForThisArea();
 
             return !_.isEmpty(workbookItemsForThisArea) &&
                 workbookItemsForThisArea.length >= CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl1TaskComplete &&
                 workbookItemsForThisArea.length < CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl2TaskComplete;
         },
         isDone: function() {
-            var workbookArea = CS.blueprintAreasModel.getOfId(9);
-            var workbookItemsForThisArea = CS.account.data[workbookArea.className];
+            var workbookItemsForThisArea = this.getWorkbookItemsForThisArea();
 
             return !_.isEmpty(workbookItemsForThisArea) && workbookItemsForThisArea.length >= CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl2TaskComplete;
         },
-        templateClassName: "WorkbookAreaAddItemLvl1Complete"
+        wordings: [
+            {
+                prompt: "This is something my boss should keep in mind to make me stay..."
+            }
+        ],
+        stepCount: CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl2TaskComplete - CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl1TaskComplete,
+        templateClassName: "WorkbookAreaAddItemLvl2Task",
+        workingOnText: "making level 2 inventory of Leadership preferences",
+        notificationText: "Make level 2 inventory of Leadership preferences",
+        comingUpText: "making inventory level 2"
     },
     {
         id: 18,
         level: 2,
-        workbookAreaId: 3,  // Contexts
         previousTaskId: 9,
-        isActive: function () {
-            var workbookArea = CS.blueprintAreasModel.getOfId(3);
+        getWorkbookArea: function() {
+            var previousTask = _.find(CS.WorkbookAreaTasks, function (task) {
+                return task.id === this.previousTaskId;
+            }.bind(this));
 
-            if (!workbookArea.isActive()) {
+            return previousTask.getWorkbookArea();
+        },
+        getWorkbookItemsForThisArea: function() {
+            return CS.account.data ? CS.account.data[this.getWorkbookArea().className] : [];
+        },
+        isActive: function () {
+            if (!this.getWorkbookArea().isActive()) {
                 return false;
             }
 
-            var workbookItemsForThisArea = CS.account.data[workbookArea.className];
+            var workbookItemsForThisArea = this.getWorkbookItemsForThisArea();
 
             return !_.isEmpty(workbookItemsForThisArea) &&
                 workbookItemsForThisArea.length >= CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl1TaskComplete &&
                 workbookItemsForThisArea.length < CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl2TaskComplete;
         },
         isDone: function() {
-            var workbookArea = CS.blueprintAreasModel.getOfId(3);
-            var workbookItemsForThisArea = CS.account.data[workbookArea.className];
+            var workbookItemsForThisArea = this.getWorkbookItemsForThisArea();
 
             return !_.isEmpty(workbookItemsForThisArea) && workbookItemsForThisArea.length >= CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl2TaskComplete;
         },
-        templateClassName: "WorkbookAreaAddItemLvl1Complete"
+        wordings: [
+            {
+                prompt: "Name a position or role you'd like to have!",
+                sentenceStart: "I would like to work as "
+            },
+            {
+                prompt: "Name an industry you're interested in working in!"
+            },
+            {
+                prompt: "What position would you chose, if given the possibility to decide all by yourself?"
+            },
+            {
+                prompt: "Please name an organization that you would find interesting to work with"
+            },
+            {
+                prompt: "What industries would you not work in?",
+                sentenceStart: "I would never work in "
+            }
+        ],
+        stepCount: CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl2TaskComplete - CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl1TaskComplete,
+        templateClassName: "WorkbookAreaAddItemLvl2Task",
+        workingOnText: "making level 2 inventory of Contexts",
+        notificationText: "Make level 2 inventory of Contexts",
+        comingUpText: "making inventory level 2"
     },
     {   // Level 3
         id: 19,
         level: 3,
-        workbookAreaId: 1,  // Strengths
         previousTaskId: 12,
-        isActive: function () {
-            var workbookArea = CS.blueprintAreasModel.getOfId(1);
+        getWorkbookArea: function() {
+            var previousTask = _.find(CS.WorkbookAreaTasks, function (task) {
+                return task.id === this.previousTaskId;
+            }.bind(this));
 
-            if (!workbookArea.isActive()) {
+            return previousTask.getWorkbookArea();
+        },
+        getWorkbookItemsForThisArea: function() {
+            return CS.account.data ? CS.account.data[this.getWorkbookArea().className] : [];
+        },
+        isActive: function () {
+            if (!this.getWorkbookArea().isActive()) {
                 return false;
             }
 
-            var workbookItemsForThisArea = CS.account.data[workbookArea.className];
+            var workbookItemsForThisArea = this.getWorkbookItemsForThisArea();
 
             return !this.isDone() &&
                 !_.isEmpty(workbookItemsForThisArea) &&
                 workbookItemsForThisArea.length >= CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl2TaskComplete;
         },
         isDone: function() {
-            var workbookArea = CS.blueprintAreasModel.getOfId(1);
-            return _.includes(CS.account.data.prioritizedWorkbookAreaIds, workbookArea.id);
+            return CS.account.data && CS.account.data.prioritizedWorkbookAreaIds && _.includes(CS.account.data.prioritizedWorkbookAreaIds, this.getWorkbookArea().id);
         },
         wordings: [
             {
@@ -4538,24 +4929,30 @@ CS.Controllers.WorkbookItemNote = React.createClass({displayName: "WorkbookItemN
     {
         id: 20,
         level: 3,
-        workbookAreaId: 2,  // Drivers
         previousTaskId: 13,
-        isActive: function () {
-            var workbookArea = CS.blueprintAreasModel.getOfId(2);
+        getWorkbookArea: function() {
+            var previousTask = _.find(CS.WorkbookAreaTasks, function (task) {
+                return task.id === this.previousTaskId;
+            }.bind(this));
 
-            if (!workbookArea.isActive()) {
+            return previousTask.getWorkbookArea();
+        },
+        getWorkbookItemsForThisArea: function() {
+            return CS.account.data ? CS.account.data[this.getWorkbookArea().className] : [];
+        },
+        isActive: function () {
+            if (!this.getWorkbookArea().isActive()) {
                 return false;
             }
 
-            var workbookItemsForThisArea = CS.account.data[workbookArea.className];
+            var workbookItemsForThisArea = this.getWorkbookItemsForThisArea();
 
             return !this.isDone() &&
                 !_.isEmpty(workbookItemsForThisArea) &&
                 workbookItemsForThisArea.length >= CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl2TaskComplete;
         },
         isDone: function() {
-            var workbookArea = CS.blueprintAreasModel.getOfId(2);
-            return _.includes(CS.account.data.prioritizedWorkbookAreaIds, workbookArea.id);
+            return CS.account.data && CS.account.data.prioritizedWorkbookAreaIds && _.includes(CS.account.data.prioritizedWorkbookAreaIds, this.getWorkbookArea().id);
         },
         wordings: [
             {
@@ -4571,24 +4968,30 @@ CS.Controllers.WorkbookItemNote = React.createClass({displayName: "WorkbookItemN
     {
         id: 21,
         level: 3,
-        workbookAreaId: 4,  // Workplace
         previousTaskId: 14,
-        isActive: function () {
-            var workbookArea = CS.blueprintAreasModel.getOfId(4);
+        getWorkbookArea: function() {
+            var previousTask = _.find(CS.WorkbookAreaTasks, function (task) {
+                return task.id === this.previousTaskId;
+            }.bind(this));
 
-            if (!workbookArea.isActive()) {
+            return previousTask.getWorkbookArea();
+        },
+        getWorkbookItemsForThisArea: function() {
+            return CS.account.data ? CS.account.data[this.getWorkbookArea().className] : [];
+        },
+        isActive: function () {
+            if (!this.getWorkbookArea().isActive()) {
                 return false;
             }
 
-            var workbookItemsForThisArea = CS.account.data[workbookArea.className];
+            var workbookItemsForThisArea = this.getWorkbookItemsForThisArea();
 
             return !this.isDone() &&
                 !_.isEmpty(workbookItemsForThisArea) &&
                 workbookItemsForThisArea.length >= CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl2TaskComplete;
         },
         isDone: function() {
-            var workbookArea = CS.blueprintAreasModel.getOfId(4);
-            return _.includes(CS.account.data.prioritizedWorkbookAreaIds, workbookArea.id);
+            return CS.account.data && CS.account.data.prioritizedWorkbookAreaIds && _.includes(CS.account.data.prioritizedWorkbookAreaIds, this.getWorkbookArea().id);
         },
         wordings: [
             {
@@ -4604,24 +5007,30 @@ CS.Controllers.WorkbookItemNote = React.createClass({displayName: "WorkbookItemN
     {
         id: 22,
         level: 3,
-        workbookAreaId: 5,  // Achievements
         previousTaskId: 10,
-        isActive: function () {
-            var workbookArea = CS.blueprintAreasModel.getOfId(5);
+        getWorkbookArea: function() {
+            var previousTask = _.find(CS.WorkbookAreaTasks, function (task) {
+                return task.id === this.previousTaskId;
+            }.bind(this));
 
-            if (!workbookArea.isActive()) {
+            return previousTask.getWorkbookArea();
+        },
+        getWorkbookItemsForThisArea: function() {
+            return CS.account.data ? CS.account.data[this.getWorkbookArea().className] : [];
+        },
+        isActive: function () {
+            if (!this.getWorkbookArea().isActive()) {
                 return false;
             }
 
-            var workbookItemsForThisArea = CS.account.data[workbookArea.className];
+            var workbookItemsForThisArea = this.getWorkbookItemsForThisArea();
 
             return !this.isDone() &&
                 !_.isEmpty(workbookItemsForThisArea) &&
                 workbookItemsForThisArea.length >= CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl2TaskComplete;
         },
         isDone: function() {
-            var workbookArea = CS.blueprintAreasModel.getOfId(5);
-            return _.includes(CS.account.data.prioritizedWorkbookAreaIds, workbookArea.id);
+            return CS.account.data && CS.account.data.prioritizedWorkbookAreaIds && _.includes(CS.account.data.prioritizedWorkbookAreaIds, this.getWorkbookArea().id);
         },
         wordings: [
             {
@@ -4637,24 +5046,30 @@ CS.Controllers.WorkbookItemNote = React.createClass({displayName: "WorkbookItemN
     {
         id: 23,
         level: 3,
-        workbookAreaId: 9,  // Leadership
         previousTaskId: 17,
-        isActive: function () {
-            var workbookArea = CS.blueprintAreasModel.getOfId(9);
+        getWorkbookArea: function() {
+            var previousTask = _.find(CS.WorkbookAreaTasks, function (task) {
+                return task.id === this.previousTaskId;
+            }.bind(this));
 
-            if (!workbookArea.isActive()) {
+            return previousTask.getWorkbookArea();
+        },
+        getWorkbookItemsForThisArea: function() {
+            return CS.account.data ? CS.account.data[this.getWorkbookArea().className] : [];
+        },
+        isActive: function () {
+            if (!this.getWorkbookArea().isActive()) {
                 return false;
             }
 
-            var workbookItemsForThisArea = CS.account.data[workbookArea.className];
+            var workbookItemsForThisArea = this.getWorkbookItemsForThisArea();
 
             return !this.isDone() &&
                 !_.isEmpty(workbookItemsForThisArea) &&
                 workbookItemsForThisArea.length >= CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl2TaskComplete;
         },
         isDone: function() {
-            var workbookArea = CS.blueprintAreasModel.getOfId(9);
-            return _.includes(CS.account.data.prioritizedWorkbookAreaIds, workbookArea.id);
+            return CS.account.data && CS.account.data.prioritizedWorkbookAreaIds && _.includes(CS.account.data.prioritizedWorkbookAreaIds, this.getWorkbookArea().id);
         },
         wordings: [
             {
@@ -4670,24 +5085,30 @@ CS.Controllers.WorkbookItemNote = React.createClass({displayName: "WorkbookItemN
     {
         id: 24,
         level: 3,
-        workbookAreaId: 12,  // Mores
         previousTaskId: 15,
-        isActive: function () {
-            var workbookArea = CS.blueprintAreasModel.getOfId(12);
+        getWorkbookArea: function() {
+            var previousTask = _.find(CS.WorkbookAreaTasks, function (task) {
+                return task.id === this.previousTaskId;
+            }.bind(this));
 
-            if (!workbookArea.isActive()) {
+            return previousTask.getWorkbookArea();
+        },
+        getWorkbookItemsForThisArea: function() {
+            return CS.account.data ? CS.account.data[this.getWorkbookArea().className] : [];
+        },
+        isActive: function () {
+            if (!this.getWorkbookArea().isActive()) {
                 return false;
             }
 
-            var workbookItemsForThisArea = CS.account.data[workbookArea.className];
+            var workbookItemsForThisArea = this.getWorkbookItemsForThisArea();
 
             return !this.isDone() &&
                 !_.isEmpty(workbookItemsForThisArea) &&
                 workbookItemsForThisArea.length >= CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl2TaskComplete;
         },
         isDone: function() {
-            var workbookArea = CS.blueprintAreasModel.getOfId(12);
-            return _.includes(CS.account.data.prioritizedWorkbookAreaIds, workbookArea.id);
+            return CS.account.data && CS.account.data.prioritizedWorkbookAreaIds && _.includes(CS.account.data.prioritizedWorkbookAreaIds, this.getWorkbookArea().id);
         },
         wordings: [
             {
@@ -4703,24 +5124,30 @@ CS.Controllers.WorkbookItemNote = React.createClass({displayName: "WorkbookItemN
     {
         id: 25,
         level: 3,
-        workbookAreaId: 18,  // Tracks
         previousTaskId: 11,
-        isActive: function () {
-            var workbookArea = CS.blueprintAreasModel.getOfId(18);
+        getWorkbookArea: function() {
+            var previousTask = _.find(CS.WorkbookAreaTasks, function (task) {
+                return task.id === this.previousTaskId;
+            }.bind(this));
 
-            if (!workbookArea.isActive()) {
+            return previousTask.getWorkbookArea();
+        },
+        getWorkbookItemsForThisArea: function() {
+            return CS.account.data ? CS.account.data[this.getWorkbookArea().className] : [];
+        },
+        isActive: function () {
+            if (!this.getWorkbookArea().isActive()) {
                 return false;
             }
 
-            var workbookItemsForThisArea = CS.account.data[workbookArea.className];
+            var workbookItemsForThisArea = this.getWorkbookItemsForThisArea();
 
             return !this.isDone() &&
                 !_.isEmpty(workbookItemsForThisArea) &&
                 workbookItemsForThisArea.length >= CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl2TaskComplete;
         },
         isDone: function() {
-            var workbookArea = CS.blueprintAreasModel.getOfId(18);
-            return _.includes(CS.account.data.prioritizedWorkbookAreaIds, workbookArea.id);
+            return CS.account.data && CS.account.data.prioritizedWorkbookAreaIds && _.includes(CS.account.data.prioritizedWorkbookAreaIds, this.getWorkbookArea().id);
         },
         wordings: [
             {
@@ -4738,8 +5165,11 @@ CS.Controllers.WorkbookItemNote = React.createClass({displayName: "WorkbookItemN
     {
         id: 1,
         workbookAreaId: 5,  // Achievements
+        getWorkbookArea: function() {
+            return CS.blueprintAreasModel.getOfId(this.workbookAreaId);
+        },
         isActive: function (itemIndex) {
-            var workbookArea = CS.blueprintAreasModel.getOfId(5);
+            var workbookArea = this.getWorkbookArea();
 
             if (!workbookArea.isActive()) {
                 return false;
@@ -4748,18 +5178,17 @@ CS.Controllers.WorkbookItemNote = React.createClass({displayName: "WorkbookItemN
             return CS.account.data[workbookArea.className] && !_.isEmpty(CS.account.data[workbookArea.className][itemIndex]);
         },
         isDone: function (itemIndex) {
-            var workbookArea = CS.blueprintAreasModel.getOfId(5);
-            return CS.account.data.describedWorkbookItemIds && _.includes(CS.account.data.describedWorkbookItemIds[workbookArea.className], itemIndex);
+            return CS.account.data.describedWorkbookItemIds && _.includes(CS.account.data.describedWorkbookItemIds[this.getWorkbookArea().className], itemIndex);
         },
         wordings: [
             {
-                prompt: "You mentioned that you <em>{itemName}</em>. How did you achieve this?"
+                prompt: "<p>How did you achieve this:</p><p><em>{itemName}</em></p>"
             },
             {
-                prompt: "What made you succeed with <em>{itemName}</em>?"
+                prompt: "<p><em>{itemName}</em></p><p>What made you succeed?</p>"
             },
             {
-                prompt: "What circumstances were important for you to achieve this: <em>{itemName}</em>?"
+                prompt: "<p>What circumstances were important for you to achieve this:</p><p><em>{itemName}</em></p>"
             }
         ],
         stepCount: CS.Models.WorkbookItemTaskCommon.minItemCountForAddItemsTaskComplete,
@@ -4770,8 +5199,11 @@ CS.Controllers.WorkbookItemNote = React.createClass({displayName: "WorkbookItemN
     {
         id: 2,
         workbookAreaId: 18,  // Tracks
+        getWorkbookArea: function() {
+            return CS.blueprintAreasModel.getOfId(this.workbookAreaId);
+        },
         isActive: function (itemIndex) {
-            var workbookArea = CS.blueprintAreasModel.getOfId(18);
+            var workbookArea = this.getWorkbookArea();
 
             if (!workbookArea.isActive()) {
                 return false;
@@ -4780,18 +5212,17 @@ CS.Controllers.WorkbookItemNote = React.createClass({displayName: "WorkbookItemN
             return CS.account.data[workbookArea.className] && !_.isEmpty(CS.account.data[workbookArea.className][itemIndex]);
         },
         isDone: function (itemIndex) {
-            var workbookArea = CS.blueprintAreasModel.getOfId(18);
-            return CS.account.data.describedWorkbookItemIds && _.includes(CS.account.data.describedWorkbookItemIds[workbookArea.className], itemIndex);
+            return CS.account.data.describedWorkbookItemIds && _.includes(CS.account.data.describedWorkbookItemIds[this.getWorkbookArea().className], itemIndex);
         },
         wordings: [
             {
-                prompt: "What makes you interested in <em>{itemName}</em>?"
+                prompt: "<p>What makes you interested in this:</p><p><em>{itemName}</em></p>"
             },
             {
-                prompt: "Is there anything keeping you from <em>{itemName}</em>?"
+                prompt: "<p>Is there anything keeping you from this:</p><p><em>{itemName}</em></p>"
             },
             {
-                prompt: "If you were not paid, would you still be interested in <em>{itemName}</em>? Why/why not?"
+                prompt: "<p>If you were not paid, would you still be interested in this:</p><p><em>{itemName}</em></p><p>Why/why not?</p>"
             }
         ],
         stepCount: CS.Models.WorkbookItemTaskCommon.minItemCountForAddItemsTaskComplete,
@@ -4802,8 +5233,11 @@ CS.Controllers.WorkbookItemNote = React.createClass({displayName: "WorkbookItemN
     {
         id: 3,
         workbookAreaId: 1,  // Strengths
+        getWorkbookArea: function() {
+            return CS.blueprintAreasModel.getOfId(this.workbookAreaId);
+        },
         isActive: function (itemIndex) {
-            var workbookArea = CS.blueprintAreasModel.getOfId(1);
+            var workbookArea = this.getWorkbookArea();
 
             if (!workbookArea.isActive()) {
                 return false;
@@ -4812,21 +5246,20 @@ CS.Controllers.WorkbookItemNote = React.createClass({displayName: "WorkbookItemN
             return CS.account.data[workbookArea.className] && !_.isEmpty(CS.account.data[workbookArea.className][itemIndex]);
         },
         isDone: function (itemIndex) {
-            var workbookArea = CS.blueprintAreasModel.getOfId(1);
-            return CS.account.data.describedWorkbookItemIds && _.includes(CS.account.data.describedWorkbookItemIds[workbookArea.className], itemIndex);
+            return CS.account.data.describedWorkbookItemIds && _.includes(CS.account.data.describedWorkbookItemIds[this.getWorkbookArea().className], itemIndex);
         },
         wordings: [
             {
-                prompt: "You mentioned you are <em>{itemName}</em>. How can people observe this in your work?"
+                prompt: "<p>How can people observe this in your work:</p><p><em>{itemName}</em></p>"
             },
             {
-                prompt: "Please describe a situation where this was really important in achieving results at work: <em>{itemName}</em>"
+                prompt: "<p>Please describe a situation where this was really important in achieving results at work:</p><p><em>{itemName}</em></p>"
             },
             {
-                prompt: "What happens if you don't get to do this in your work: <em>{itemName}</em>"
+                prompt: "<p>What happens if you don't get to do this in your work:</p><p><em>{itemName}</em></p>"
             },
             {
-                prompt: "What are the drawbacks of <em>{itemName}</em>?"
+                prompt: "<p>What are the drawbacks of:</p><p><em>{itemName}</em></p>"
             }
         ],
         stepCount: CS.Models.WorkbookItemTaskCommon.minItemCountForAddItemsTaskComplete,
@@ -4837,8 +5270,11 @@ CS.Controllers.WorkbookItemNote = React.createClass({displayName: "WorkbookItemN
     {
         id: 4,
         workbookAreaId: 2,  // Drivers
+        getWorkbookArea: function() {
+            return CS.blueprintAreasModel.getOfId(this.workbookAreaId);
+        },
         isActive: function (itemIndex) {
-            var workbookArea = CS.blueprintAreasModel.getOfId(2);
+            var workbookArea = this.getWorkbookArea();
 
             if (!workbookArea.isActive()) {
                 return false;
@@ -4847,12 +5283,11 @@ CS.Controllers.WorkbookItemNote = React.createClass({displayName: "WorkbookItemN
             return CS.account.data[workbookArea.className] && !_.isEmpty(CS.account.data[workbookArea.className][itemIndex]);
         },
         isDone: function (itemIndex) {
-            var workbookArea = CS.blueprintAreasModel.getOfId(2);
-            return CS.account.data.describedWorkbookItemIds && _.includes(CS.account.data.describedWorkbookItemIds[workbookArea.className], itemIndex);
+            return CS.account.data.describedWorkbookItemIds && _.includes(CS.account.data.describedWorkbookItemIds[this.getWorkbookArea().className], itemIndex);
         },
         wordings: [
             {
-                prompt: "Why is <em>{itemName}</em> a driver for you?"
+                prompt: "<p>Why is this a driver for you:</p><p><em>{itemName}</em></p>"
             }
         ],
         stepCount: CS.Models.WorkbookItemTaskCommon.minItemCountForAddItemsTaskComplete,
@@ -4863,8 +5298,11 @@ CS.Controllers.WorkbookItemNote = React.createClass({displayName: "WorkbookItemN
     {
         id: 5,
         workbookAreaId: 4,  // Workplace
+        getWorkbookArea: function() {
+            return CS.blueprintAreasModel.getOfId(this.workbookAreaId);
+        },
         isActive: function (itemIndex) {
-            var workbookArea = CS.blueprintAreasModel.getOfId(4);
+            var workbookArea = this.getWorkbookArea();
 
             if (!workbookArea.isActive()) {
                 return false;
@@ -4873,12 +5311,11 @@ CS.Controllers.WorkbookItemNote = React.createClass({displayName: "WorkbookItemN
             return CS.account.data[workbookArea.className] && !_.isEmpty(CS.account.data[workbookArea.className][itemIndex]);
         },
         isDone: function (itemIndex) {
-            var workbookArea = CS.blueprintAreasModel.getOfId(4);
-            return CS.account.data.describedWorkbookItemIds && _.includes(CS.account.data.describedWorkbookItemIds[workbookArea.className], itemIndex);
+            return CS.account.data.describedWorkbookItemIds && _.includes(CS.account.data.describedWorkbookItemIds[this.getWorkbookArea().className], itemIndex);
         },
         wordings: [
             {
-                prompt: "Why is <em>{itemName}</em> important for you at the workplace?"
+                prompt: "<p>Why is this important for you at the workplace:</p><p><em>{itemName}</em></p>"
             }
         ],
         stepCount: CS.Models.WorkbookItemTaskCommon.minItemCountForAddItemsTaskComplete,
@@ -4889,8 +5326,11 @@ CS.Controllers.WorkbookItemNote = React.createClass({displayName: "WorkbookItemN
     {
         id: 6,
         workbookAreaId: 12,  // Mores
+        getWorkbookArea: function() {
+            return CS.blueprintAreasModel.getOfId(this.workbookAreaId);
+        },
         isActive: function (itemIndex) {
-            var workbookArea = CS.blueprintAreasModel.getOfId(12);
+            var workbookArea = this.getWorkbookArea();
 
             if (!workbookArea.isActive()) {
                 return false;
@@ -4899,12 +5339,11 @@ CS.Controllers.WorkbookItemNote = React.createClass({displayName: "WorkbookItemN
             return CS.account.data[workbookArea.className] && !_.isEmpty(CS.account.data[workbookArea.className][itemIndex]);
         },
         isDone: function (itemIndex) {
-            var workbookArea = CS.blueprintAreasModel.getOfId(12);
-            return CS.account.data.describedWorkbookItemIds && _.includes(CS.account.data.describedWorkbookItemIds[workbookArea.className], itemIndex);
+            return CS.account.data.describedWorkbookItemIds && _.includes(CS.account.data.describedWorkbookItemIds[this.getWorkbookArea().className], itemIndex);
         },
         wordings: [
             {
-                prompt: "Can you describe why you want to do more of <em>{itemName}</em>?"
+                prompt: "<p>Can you describe why you want to do more of this:</p><p><em>{itemName}</em></p>"
             }
         ],
         stepCount: CS.Models.WorkbookItemTaskCommon.minItemCountForAddItemsTaskComplete,
@@ -4915,8 +5354,11 @@ CS.Controllers.WorkbookItemNote = React.createClass({displayName: "WorkbookItemN
     {
         id: 7,
         workbookAreaId: 17,  // ToolsAndMethods
+        getWorkbookArea: function() {
+            return CS.blueprintAreasModel.getOfId(this.workbookAreaId);
+        },
         isActive: function (itemIndex) {
-            var workbookArea = CS.blueprintAreasModel.getOfId(17);
+            var workbookArea = this.getWorkbookArea();
 
             if (!workbookArea.isActive()) {
                 return false;
@@ -4925,12 +5367,11 @@ CS.Controllers.WorkbookItemNote = React.createClass({displayName: "WorkbookItemN
             return CS.account.data[workbookArea.className] && !_.isEmpty(CS.account.data[workbookArea.className][itemIndex]);
         },
         isDone: function (itemIndex) {
-            var workbookArea = CS.blueprintAreasModel.getOfId(17);
-            return CS.account.data.describedWorkbookItemIds && _.includes(CS.account.data.describedWorkbookItemIds[workbookArea.className], itemIndex);
+            return CS.account.data.describedWorkbookItemIds && _.includes(CS.account.data.describedWorkbookItemIds[this.getWorkbookArea().className], itemIndex);
         },
         wordings: [
             {
-                prompt: "How come you like to use <em>{itemName}</em>?"
+                prompt: "<p>How come you like to use this:</p><p><em>{itemName}</em></p>"
             }
         ],
         stepCount: CS.Models.WorkbookItemTaskCommon.minItemCountForAddItemsTaskComplete,
@@ -4941,8 +5382,11 @@ CS.Controllers.WorkbookItemNote = React.createClass({displayName: "WorkbookItemN
     {
         id: 8,
         workbookAreaId: 9,  // Leadership
+        getWorkbookArea: function() {
+            return CS.blueprintAreasModel.getOfId(this.workbookAreaId);
+        },
         isActive: function (itemIndex) {
-            var workbookArea = CS.blueprintAreasModel.getOfId(9);
+            var workbookArea = this.getWorkbookArea();
 
             if (!workbookArea.isActive()) {
                 return false;
@@ -4951,12 +5395,11 @@ CS.Controllers.WorkbookItemNote = React.createClass({displayName: "WorkbookItemN
             return CS.account.data[workbookArea.className] && !_.isEmpty(CS.account.data[workbookArea.className][itemIndex]);
         },
         isDone: function (itemIndex) {
-            var workbookArea = CS.blueprintAreasModel.getOfId(9);
-            return CS.account.data.describedWorkbookItemIds && _.includes(CS.account.data.describedWorkbookItemIds[workbookArea.className], itemIndex);
+            return CS.account.data.describedWorkbookItemIds && _.includes(CS.account.data.describedWorkbookItemIds[this.getWorkbookArea().className], itemIndex);
         },
         wordings: [
             {
-                prompt: "In what way a leadership characterized by <em>{itemName}</em> helps you in your work?"
+                prompt: "<p><em>{itemName}</em></p><p>In what way such a leadership helps you in your work?</p>"
             }
         ],
         stepCount: CS.Models.WorkbookItemTaskCommon.minItemCountForAddItemsTaskComplete,
@@ -4967,8 +5410,11 @@ CS.Controllers.WorkbookItemNote = React.createClass({displayName: "WorkbookItemN
     {
         id: 9,
         workbookAreaId: 3,  // Contexts
+        getWorkbookArea: function() {
+            return CS.blueprintAreasModel.getOfId(this.workbookAreaId);
+        },
         isActive: function (itemIndex) {
-            var workbookArea = CS.blueprintAreasModel.getOfId(3);
+            var workbookArea = this.getWorkbookArea();
 
             if (!workbookArea.isActive()) {
                 return false;
@@ -4977,17 +5423,766 @@ CS.Controllers.WorkbookItemNote = React.createClass({displayName: "WorkbookItemN
             return CS.account.data[workbookArea.className] && !_.isEmpty(CS.account.data[workbookArea.className][itemIndex]);
         },
         isDone: function (itemIndex) {
-            var workbookArea = CS.blueprintAreasModel.getOfId(3);
-            return CS.account.data.describedWorkbookItemIds && _.includes(CS.account.data.describedWorkbookItemIds[workbookArea.className], itemIndex);
+            return CS.account.data.describedWorkbookItemIds && _.includes(CS.account.data.describedWorkbookItemIds[this.getWorkbookArea().className], itemIndex);
         },
         wordings: [
             {
-                prompt: "Can you describe <em>{itemName}</em>?"
+                prompt: "<p>Can you describe this:</p><p><em>{itemName}</em></p>"
             }
         ],
         stepCount: CS.Models.WorkbookItemTaskCommon.minItemCountForAddItemsTaskComplete,
         templateClassName: "WorkbookItemAddItemTask",
         workingOnText: "describing Contexts",
         notificationText: "Describe Contexts"
+    }
+];
+;CS.WorkbookAreaTaskCompletePepTalks = [
+    {
+        completedTaskId: 1, // Achievements lvl 1
+        getWorkbookArea: function() {
+            var completedTask = _.find(CS.WorkbookAreaTasks, function (task) {
+                return task.id === this.completedTaskId;
+            }.bind(this));
+
+            return completedTask.getWorkbookArea();
+        },
+        getWorkbookItemsForThisArea: function() {
+            return CS.account.data ? CS.account.data[this.getWorkbookArea().className] : [];
+        },
+        isActive: function () {
+            if (!this.getWorkbookArea().isActive()) {
+                return false;
+            }
+
+            var workbookItemsForThisArea = this.getWorkbookItemsForThisArea();
+
+            return !_.isEmpty(workbookItemsForThisArea) &&
+                workbookItemsForThisArea.length === CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl1TaskComplete;
+        },
+        templateClassName: "WorkbookAreaAddItemLvl1Complete"
+    },
+    {
+        completedTaskId: 2, // Tracks lvl 1
+        getWorkbookArea: function() {
+            var completedTask = _.find(CS.WorkbookAreaTasks, function (task) {
+                return task.id === this.completedTaskId;
+            }.bind(this));
+
+            return completedTask.getWorkbookArea();
+        },
+        getWorkbookItemsForThisArea: function() {
+            return CS.account.data ? CS.account.data[this.getWorkbookArea().className] : [];
+        },
+        isActive: function () {
+            if (!this.getWorkbookArea().isActive()) {
+                return false;
+            }
+
+            var workbookItemsForThisArea = this.getWorkbookItemsForThisArea();
+
+            return !_.isEmpty(workbookItemsForThisArea) &&
+                workbookItemsForThisArea.length === CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl1TaskComplete;
+        },
+        templateClassName: "WorkbookAreaAddItemLvl1Complete"
+    },
+    {
+        completedTaskId: 3, // Strengths lvl 1
+        getWorkbookArea: function() {
+            var completedTask = _.find(CS.WorkbookAreaTasks, function (task) {
+                return task.id === this.completedTaskId;
+            }.bind(this));
+
+            return completedTask.getWorkbookArea();
+        },
+        getWorkbookItemsForThisArea: function() {
+            return CS.account.data ? CS.account.data[this.getWorkbookArea().className] : [];
+        },
+        isActive: function () {
+            if (!this.getWorkbookArea().isActive()) {
+                return false;
+            }
+
+            var workbookItemsForThisArea = this.getWorkbookItemsForThisArea();
+
+            return !_.isEmpty(workbookItemsForThisArea) &&
+                workbookItemsForThisArea.length === CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl1TaskComplete;
+        },
+        templateClassName: "WorkbookAreaAddItemLvl1Complete"
+    },
+    {
+        completedTaskId: 4, // Drivers lvl 1
+        getWorkbookArea: function() {
+            var completedTask = _.find(CS.WorkbookAreaTasks, function (task) {
+                return task.id === this.completedTaskId;
+            }.bind(this));
+
+            return completedTask.getWorkbookArea();
+        },
+        getWorkbookItemsForThisArea: function() {
+            return CS.account.data ? CS.account.data[this.getWorkbookArea().className] : [];
+        },
+        isActive: function () {
+            if (!this.getWorkbookArea().isActive()) {
+                return false;
+            }
+
+            var workbookItemsForThisArea = this.getWorkbookItemsForThisArea();
+
+            return !_.isEmpty(workbookItemsForThisArea) &&
+                workbookItemsForThisArea.length === CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl1TaskComplete;
+        },
+        templateClassName: "WorkbookAreaAddItemLvl1Complete"
+    },
+    {
+        completedTaskId: 5, // Workplace lvl 1
+        getWorkbookArea: function() {
+            var completedTask = _.find(CS.WorkbookAreaTasks, function (task) {
+                return task.id === this.completedTaskId;
+            }.bind(this));
+
+            return completedTask.getWorkbookArea();
+        },
+        getWorkbookItemsForThisArea: function() {
+            return CS.account.data ? CS.account.data[this.getWorkbookArea().className] : [];
+        },
+        isActive: function () {
+            if (!this.getWorkbookArea().isActive()) {
+                return false;
+            }
+
+            var workbookItemsForThisArea = this.getWorkbookItemsForThisArea();
+
+            return !_.isEmpty(workbookItemsForThisArea) &&
+                workbookItemsForThisArea.length === CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl1TaskComplete;
+        },
+        templateClassName: "WorkbookAreaAddItemLvl1Complete"
+    },
+    {
+        completedTaskId: 6, // Mores lvl 1
+        getWorkbookArea: function() {
+            var completedTask = _.find(CS.WorkbookAreaTasks, function (task) {
+                return task.id === this.completedTaskId;
+            }.bind(this));
+
+            return completedTask.getWorkbookArea();
+        },
+        getWorkbookItemsForThisArea: function() {
+            return CS.account.data ? CS.account.data[this.getWorkbookArea().className] : [];
+        },
+        isActive: function () {
+            if (!this.getWorkbookArea().isActive()) {
+                return false;
+            }
+
+            var workbookItemsForThisArea = this.getWorkbookItemsForThisArea();
+
+            return !_.isEmpty(workbookItemsForThisArea) &&
+                workbookItemsForThisArea.length === CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl1TaskComplete;
+        },
+        templateClassName: "WorkbookAreaAddItemLvl1Complete"
+    },
+    {
+        completedTaskId: 7, // ToolsAndMethods lvl 1
+        getWorkbookArea: function() {
+            var completedTask = _.find(CS.WorkbookAreaTasks, function (task) {
+                return task.id === this.completedTaskId;
+            }.bind(this));
+
+            return completedTask.getWorkbookArea();
+        },
+        getWorkbookItemsForThisArea: function() {
+            return CS.account.data ? CS.account.data[this.getWorkbookArea().className] : [];
+        },
+        isActive: function () {
+            if (!this.getWorkbookArea().isActive()) {
+                return false;
+            }
+
+            var workbookItemsForThisArea = this.getWorkbookItemsForThisArea();
+
+            return !_.isEmpty(workbookItemsForThisArea) &&
+                workbookItemsForThisArea.length === CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl1TaskComplete;
+        },
+        templateClassName: "WorkbookAreaAddItemLvl1Complete"
+    },
+    {
+        completedTaskId: 8, // Leadership lvl 1
+        getWorkbookArea: function() {
+            var completedTask = _.find(CS.WorkbookAreaTasks, function (task) {
+                return task.id === this.completedTaskId;
+            }.bind(this));
+
+            return completedTask.getWorkbookArea();
+        },
+        getWorkbookItemsForThisArea: function() {
+            return CS.account.data ? CS.account.data[this.getWorkbookArea().className] : [];
+        },
+        isActive: function () {
+            if (!this.getWorkbookArea().isActive()) {
+                return false;
+            }
+
+            var workbookItemsForThisArea = this.getWorkbookItemsForThisArea();
+
+            return !_.isEmpty(workbookItemsForThisArea) &&
+                workbookItemsForThisArea.length === CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl1TaskComplete;
+        },
+        templateClassName: "WorkbookAreaAddItemLvl1Complete"
+    },
+    {
+        completedTaskId: 9, // Contexts lvl 1
+        getWorkbookArea: function() {
+            var completedTask = _.find(CS.WorkbookAreaTasks, function (task) {
+                return task.id === this.completedTaskId;
+            }.bind(this));
+
+            return completedTask.getWorkbookArea();
+        },
+        getWorkbookItemsForThisArea: function() {
+            return CS.account.data ? CS.account.data[this.getWorkbookArea().className] : [];
+        },
+        isActive: function () {
+            if (!this.getWorkbookArea().isActive()) {
+                return false;
+            }
+
+            var workbookItemsForThisArea = this.getWorkbookItemsForThisArea();
+
+            return !_.isEmpty(workbookItemsForThisArea) &&
+                workbookItemsForThisArea.length === CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl1TaskComplete;
+        },
+        templateClassName: "WorkbookAreaAddItemLvl1Complete"
+    },
+    {   // Level 2
+        completedTaskId: 12, // Strengths lvl 2
+        getWorkbookArea: function() {
+            var completedTask = _.find(CS.WorkbookAreaTasks, function (task) {
+                return task.id === this.completedTaskId;
+            }.bind(this));
+
+            return completedTask.getWorkbookArea();
+        },
+        getWorkbookItemsForThisArea: function() {
+            return CS.account.data ? CS.account.data[this.getWorkbookArea().className] : [];
+        },
+        isActive: function () {
+            if (!this.getWorkbookArea().isActive()) {
+                return false;
+            }
+
+            var workbookItemsForThisArea = this.getWorkbookItemsForThisArea();
+
+            return !_.isEmpty(workbookItemsForThisArea) &&
+                workbookItemsForThisArea.length === CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl2TaskComplete &&
+                (!CS.account.data || !CS.account.data.prioritizedWorkbookAreaIds || !_.includes(CS.account.data.prioritizedWorkbookAreaIds, this.getWorkbookArea().id));
+        },
+        templateClassName: "WorkbookAreaAddItemLvl2Complete"
+    },
+    {
+        completedTaskId: 13, // Drivers lvl 2
+        getWorkbookArea: function() {
+            var completedTask = _.find(CS.WorkbookAreaTasks, function (task) {
+                return task.id === this.completedTaskId;
+            }.bind(this));
+
+            return completedTask.getWorkbookArea();
+        },
+        getWorkbookItemsForThisArea: function() {
+            return CS.account.data ? CS.account.data[this.getWorkbookArea().className] : [];
+        },
+        isActive: function () {
+            if (!this.getWorkbookArea().isActive()) {
+                return false;
+            }
+
+            var workbookItemsForThisArea = this.getWorkbookItemsForThisArea();
+
+            return !_.isEmpty(workbookItemsForThisArea) &&
+                workbookItemsForThisArea.length === CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl2TaskComplete &&
+                (!CS.account.data || !CS.account.data.prioritizedWorkbookAreaIds || !_.includes(CS.account.data.prioritizedWorkbookAreaIds, this.getWorkbookArea().id));
+        },
+        templateClassName: "WorkbookAreaAddItemLvl2Complete"
+    },
+    {
+        completedTaskId: 14, // Workplace lvl 2
+        getWorkbookArea: function() {
+            var completedTask = _.find(CS.WorkbookAreaTasks, function (task) {
+                return task.id === this.completedTaskId;
+            }.bind(this));
+
+            return completedTask.getWorkbookArea();
+        },
+        getWorkbookItemsForThisArea: function() {
+            return CS.account.data ? CS.account.data[this.getWorkbookArea().className] : [];
+        },
+        isActive: function () {
+            if (!this.getWorkbookArea().isActive()) {
+                return false;
+            }
+
+            var workbookItemsForThisArea = this.getWorkbookItemsForThisArea();
+
+            return !_.isEmpty(workbookItemsForThisArea) &&
+                workbookItemsForThisArea.length === CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl2TaskComplete &&
+                (!CS.account.data || !CS.account.data.prioritizedWorkbookAreaIds || !_.includes(CS.account.data.prioritizedWorkbookAreaIds, this.getWorkbookArea().id));
+        },
+        templateClassName: "WorkbookAreaAddItemLvl2Complete"
+    },
+    {
+        completedTaskId: 15, // Mores lvl 2
+        getWorkbookArea: function() {
+            var completedTask = _.find(CS.WorkbookAreaTasks, function (task) {
+                return task.id === this.completedTaskId;
+            }.bind(this));
+
+            return completedTask.getWorkbookArea();
+        },
+        getWorkbookItemsForThisArea: function() {
+            return CS.account.data ? CS.account.data[this.getWorkbookArea().className] : [];
+        },
+        isActive: function () {
+            if (!this.getWorkbookArea().isActive()) {
+                return false;
+            }
+
+            var workbookItemsForThisArea = this.getWorkbookItemsForThisArea();
+
+            return !_.isEmpty(workbookItemsForThisArea) &&
+                workbookItemsForThisArea.length === CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl2TaskComplete &&
+                (!CS.account.data || !CS.account.data.prioritizedWorkbookAreaIds || !_.includes(CS.account.data.prioritizedWorkbookAreaIds, this.getWorkbookArea().id));
+        },
+        templateClassName: "WorkbookAreaAddItemLvl2Complete"
+    },
+    {
+        completedTaskId: 16, // ToolsAndMethods lvl 2
+        getWorkbookArea: function() {
+            var completedTask = _.find(CS.WorkbookAreaTasks, function (task) {
+                return task.id === this.completedTaskId;
+            }.bind(this));
+
+            return completedTask.getWorkbookArea();
+        },
+        getWorkbookItemsForThisArea: function() {
+            return CS.account.data ? CS.account.data[this.getWorkbookArea().className] : [];
+        },
+        isActive: function () {
+            if (!this.getWorkbookArea().isActive()) {
+                return false;
+            }
+
+            var workbookItemsForThisArea = this.getWorkbookItemsForThisArea();
+
+            return !_.isEmpty(workbookItemsForThisArea) &&
+                workbookItemsForThisArea.length === CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl2TaskComplete &&
+                (!CS.account.data || !CS.account.data.prioritizedWorkbookAreaIds || !_.includes(CS.account.data.prioritizedWorkbookAreaIds, this.getWorkbookArea().id));
+        },
+        templateClassName: "WorkbookAreaAddItemLvl2Complete"
+    },
+    {
+        completedTaskId: 17, // Leadership lvl 2
+        getWorkbookArea: function() {
+            var completedTask = _.find(CS.WorkbookAreaTasks, function (task) {
+                return task.id === this.completedTaskId;
+            }.bind(this));
+
+            return completedTask.getWorkbookArea();
+        },
+        getWorkbookItemsForThisArea: function() {
+            return CS.account.data ? CS.account.data[this.getWorkbookArea().className] : [];
+        },
+        isActive: function () {
+            if (!this.getWorkbookArea().isActive()) {
+                return false;
+            }
+
+            var workbookItemsForThisArea = this.getWorkbookItemsForThisArea();
+
+            return !_.isEmpty(workbookItemsForThisArea) &&
+                workbookItemsForThisArea.length === CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl2TaskComplete &&
+                (!CS.account.data || !CS.account.data.prioritizedWorkbookAreaIds || !_.includes(CS.account.data.prioritizedWorkbookAreaIds, this.getWorkbookArea().id));
+        },
+        templateClassName: "WorkbookAreaAddItemLvl2Complete"
+    },
+    {
+        completedTaskId: 18, // Contexts lvl 2
+        getWorkbookArea: function() {
+            var completedTask = _.find(CS.WorkbookAreaTasks, function (task) {
+                return task.id === this.completedTaskId;
+            }.bind(this));
+
+            return completedTask.getWorkbookArea();
+        },
+        getWorkbookItemsForThisArea: function() {
+            return CS.account.data ? CS.account.data[this.getWorkbookArea().className] : [];
+        },
+        isActive: function () {
+            if (!this.getWorkbookArea().isActive()) {
+                return false;
+            }
+
+            var workbookItemsForThisArea = this.getWorkbookItemsForThisArea();
+
+            return !_.isEmpty(workbookItemsForThisArea) &&
+                workbookItemsForThisArea.length === CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl2TaskComplete &&
+                (!CS.account.data || !CS.account.data.prioritizedWorkbookAreaIds || !_.includes(CS.account.data.prioritizedWorkbookAreaIds, this.getWorkbookArea().id));
+        },
+        templateClassName: "WorkbookAreaAddItemLvl2Complete"
+    },
+    {   // Level 3
+        completedTaskId: 19, // Prioritize strengths
+        getWorkbookArea: function() {
+            var completedTask = _.find(CS.WorkbookAreaTasks, function (task) {
+                return task.id === this.completedTaskId;
+            }.bind(this));
+
+            return completedTask.getWorkbookArea();
+        },
+        getWorkbookItemsForThisArea: function() {
+            return CS.account.data ? CS.account.data[this.getWorkbookArea().className] : [];
+        },
+        isActive: function () {
+            if (!this.getWorkbookArea().isActive()) {
+                return false;
+            }
+
+            var workbookItemsForThisArea = this.getWorkbookItemsForThisArea();
+
+            return !_.isEmpty(workbookItemsForThisArea) &&
+                workbookItemsForThisArea.length >= CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl2TaskComplete &&
+                CS.account.data && CS.account.data.prioritizedWorkbookAreaIds && _.includes(CS.account.data.prioritizedWorkbookAreaIds, this.getWorkbookArea().id);
+        },
+        templateClassName: "WorkbookAreaPrioritizeItemsComplete"
+    },
+    {
+        completedTaskId: 20, // Prioritize drivers
+        getWorkbookArea: function() {
+            var completedTask = _.find(CS.WorkbookAreaTasks, function (task) {
+                return task.id === this.completedTaskId;
+            }.bind(this));
+
+            return completedTask.getWorkbookArea();
+        },
+        getWorkbookItemsForThisArea: function() {
+            return CS.account.data ? CS.account.data[this.getWorkbookArea().className] : [];
+        },
+        isActive: function () {
+            if (!this.getWorkbookArea().isActive()) {
+                return false;
+            }
+
+            var workbookItemsForThisArea = this.getWorkbookItemsForThisArea();
+
+            return !_.isEmpty(workbookItemsForThisArea) &&
+                workbookItemsForThisArea.length >= CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl2TaskComplete &&
+                CS.account.data && CS.account.data.prioritizedWorkbookAreaIds && _.includes(CS.account.data.prioritizedWorkbookAreaIds, this.getWorkbookArea().id);
+        },
+        templateClassName: "WorkbookAreaPrioritizeItemsComplete"
+    },
+    {
+        completedTaskId: 21, // Prioritize workplace
+        getWorkbookArea: function() {
+            var completedTask = _.find(CS.WorkbookAreaTasks, function (task) {
+                return task.id === this.completedTaskId;
+            }.bind(this));
+
+            return completedTask.getWorkbookArea();
+        },
+        getWorkbookItemsForThisArea: function() {
+            return CS.account.data ? CS.account.data[this.getWorkbookArea().className] : [];
+        },
+        isActive: function () {
+            if (!this.getWorkbookArea().isActive()) {
+                return false;
+            }
+
+            var workbookItemsForThisArea = this.getWorkbookItemsForThisArea();
+
+            return !_.isEmpty(workbookItemsForThisArea) &&
+                workbookItemsForThisArea.length >= CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl2TaskComplete &&
+                CS.account.data && CS.account.data.prioritizedWorkbookAreaIds && _.includes(CS.account.data.prioritizedWorkbookAreaIds, this.getWorkbookArea().id);
+        },
+        templateClassName: "WorkbookAreaPrioritizeItemsComplete"
+    },
+    {
+        completedTaskId: 22, // Prioritize achievements
+        getWorkbookArea: function() {
+            var completedTask = _.find(CS.WorkbookAreaTasks, function (task) {
+                return task.id === this.completedTaskId;
+            }.bind(this));
+
+            return completedTask.getWorkbookArea();
+        },
+        getWorkbookItemsForThisArea: function() {
+            return CS.account.data ? CS.account.data[this.getWorkbookArea().className] : [];
+        },
+        isActive: function () {
+            if (!this.getWorkbookArea().isActive()) {
+                return false;
+            }
+
+            var workbookItemsForThisArea = this.getWorkbookItemsForThisArea();
+
+            return !_.isEmpty(workbookItemsForThisArea) &&
+                workbookItemsForThisArea.length >= CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl2TaskComplete &&
+                CS.account.data && CS.account.data.prioritizedWorkbookAreaIds && _.includes(CS.account.data.prioritizedWorkbookAreaIds, this.getWorkbookArea().id);
+        },
+        templateClassName: "WorkbookAreaPrioritizeItemsComplete"
+    },
+    {
+        completedTaskId: 23, // Prioritize Leadership preferences
+        getWorkbookArea: function() {
+            var completedTask = _.find(CS.WorkbookAreaTasks, function (task) {
+                return task.id === this.completedTaskId;
+            }.bind(this));
+
+            return completedTask.getWorkbookArea();
+        },
+        getWorkbookItemsForThisArea: function() {
+            return CS.account.data ? CS.account.data[this.getWorkbookArea().className] : [];
+        },
+        isActive: function () {
+            if (!this.getWorkbookArea().isActive()) {
+                return false;
+            }
+
+            var workbookItemsForThisArea = this.getWorkbookItemsForThisArea();
+
+            return !_.isEmpty(workbookItemsForThisArea) &&
+                workbookItemsForThisArea.length >= CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl2TaskComplete &&
+                CS.account.data && CS.account.data.prioritizedWorkbookAreaIds && _.includes(CS.account.data.prioritizedWorkbookAreaIds, this.getWorkbookArea().id);
+        },
+        templateClassName: "WorkbookAreaPrioritizeItemsComplete"
+    },
+    {
+        completedTaskId: 24, // Prioritize Mores
+        getWorkbookArea: function() {
+            var completedTask = _.find(CS.WorkbookAreaTasks, function (task) {
+                return task.id === this.completedTaskId;
+            }.bind(this));
+
+            return completedTask.getWorkbookArea();
+        },
+        getWorkbookItemsForThisArea: function() {
+            return CS.account.data ? CS.account.data[this.getWorkbookArea().className] : [];
+        },
+        isActive: function () {
+            if (!this.getWorkbookArea().isActive()) {
+                return false;
+            }
+
+            var workbookItemsForThisArea = this.getWorkbookItemsForThisArea();
+
+            return !_.isEmpty(workbookItemsForThisArea) &&
+                workbookItemsForThisArea.length >= CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl2TaskComplete &&
+                CS.account.data && CS.account.data.prioritizedWorkbookAreaIds && _.includes(CS.account.data.prioritizedWorkbookAreaIds, this.getWorkbookArea().id);
+        },
+        templateClassName: "WorkbookAreaPrioritizeItemsComplete"
+    },
+    {
+        completedTaskId: 25, // Prioritize Tracks
+        getWorkbookArea: function() {
+            var completedTask = _.find(CS.WorkbookAreaTasks, function (task) {
+                return task.id === this.completedTaskId;
+            }.bind(this));
+
+            return completedTask.getWorkbookArea();
+        },
+        getWorkbookItemsForThisArea: function() {
+            return CS.account.data ? CS.account.data[this.getWorkbookArea().className] : [];
+        },
+        isActive: function () {
+            if (!this.getWorkbookArea().isActive()) {
+                return false;
+            }
+
+            var workbookItemsForThisArea = this.getWorkbookItemsForThisArea();
+
+            return !_.isEmpty(workbookItemsForThisArea) &&
+                workbookItemsForThisArea.length >= CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl2TaskComplete &&
+                CS.account.data && CS.account.data.prioritizedWorkbookAreaIds && _.includes(CS.account.data.prioritizedWorkbookAreaIds, this.getWorkbookArea().id);
+        },
+        templateClassName: "WorkbookAreaPrioritizeItemsComplete"
+    }
+];
+;CS.WorkbookItemTaskCompletePepTalks = [
+    {
+        completedTaskId: 1, // Achievements
+        getWorkbookArea: function() {
+            var completedTask = _.find(CS.WorkbookItemTasks, function (task) {
+                return task.id === this.completedTaskId;
+            }.bind(this));
+
+            return completedTask.getWorkbookArea();
+        },
+        isActive: function (itemIndex) {
+            var workbookArea = this.getWorkbookArea();
+
+            if (!workbookArea.isActive()) {
+                return false;
+            }
+
+            return CS.account.data[workbookArea.className] && !_.isEmpty(CS.account.data[workbookArea.className][itemIndex]) && !_.isEmpty(CS.account.data[workbookArea.className][itemIndex].notes);
+        },
+        templateClassName: "WorkbookItemAddItemComplete"
+    },
+    {
+        completedTaskId: 2, // Tracks
+        getWorkbookArea: function() {
+            var completedTask = _.find(CS.WorkbookItemTasks, function (task) {
+                return task.id === this.completedTaskId;
+            }.bind(this));
+
+            return completedTask.getWorkbookArea();
+        },
+        isActive: function (itemIndex) {
+            var workbookArea = this.getWorkbookArea();
+
+            if (!workbookArea.isActive()) {
+                return false;
+            }
+
+            return CS.account.data[workbookArea.className] && !_.isEmpty(CS.account.data[workbookArea.className][itemIndex]) && !_.isEmpty(CS.account.data[workbookArea.className][itemIndex].notes);
+        },
+        templateClassName: "WorkbookItemAddItemComplete"
+    },
+    {
+        completedTaskId: 3, // Strengths
+        getWorkbookArea: function() {
+            var completedTask = _.find(CS.WorkbookItemTasks, function (task) {
+                return task.id === this.completedTaskId;
+            }.bind(this));
+
+            return completedTask.getWorkbookArea();
+        },
+        isActive: function (itemIndex) {
+            var workbookArea = this.getWorkbookArea();
+
+            if (!workbookArea.isActive()) {
+                return false;
+            }
+
+            return CS.account.data[workbookArea.className] && !_.isEmpty(CS.account.data[workbookArea.className][itemIndex]) && !_.isEmpty(CS.account.data[workbookArea.className][itemIndex].notes);
+        },
+        templateClassName: "WorkbookItemAddItemComplete"
+    },
+    {
+        completedTaskId: 4, // Drivers
+        getWorkbookArea: function() {
+            var completedTask = _.find(CS.WorkbookItemTasks, function (task) {
+                return task.id === this.completedTaskId;
+            }.bind(this));
+
+            return completedTask.getWorkbookArea();
+        },
+        isActive: function (itemIndex) {
+            var workbookArea = this.getWorkbookArea();
+
+            if (!workbookArea.isActive()) {
+                return false;
+            }
+
+            return CS.account.data[workbookArea.className] && !_.isEmpty(CS.account.data[workbookArea.className][itemIndex]) && !_.isEmpty(CS.account.data[workbookArea.className][itemIndex].notes);
+        },
+        templateClassName: "WorkbookItemAddItemComplete"
+    },
+    {
+        completedTaskId: 5, // Workplace
+        getWorkbookArea: function() {
+            var completedTask = _.find(CS.WorkbookItemTasks, function (task) {
+                return task.id === this.completedTaskId;
+            }.bind(this));
+
+            return completedTask.getWorkbookArea();
+        },
+        isActive: function (itemIndex) {
+            var workbookArea = this.getWorkbookArea();
+
+            if (!workbookArea.isActive()) {
+                return false;
+            }
+
+            return CS.account.data[workbookArea.className] && !_.isEmpty(CS.account.data[workbookArea.className][itemIndex]) && !_.isEmpty(CS.account.data[workbookArea.className][itemIndex].notes);
+        },
+        templateClassName: "WorkbookItemAddItemComplete"
+    },
+    {
+        completedTaskId: 6, // Mores
+        getWorkbookArea: function() {
+            var completedTask = _.find(CS.WorkbookItemTasks, function (task) {
+                return task.id === this.completedTaskId;
+            }.bind(this));
+
+            return completedTask.getWorkbookArea();
+        },
+        isActive: function (itemIndex) {
+            var workbookArea = this.getWorkbookArea();
+
+            if (!workbookArea.isActive()) {
+                return false;
+            }
+
+            return CS.account.data[workbookArea.className] && !_.isEmpty(CS.account.data[workbookArea.className][itemIndex]) && !_.isEmpty(CS.account.data[workbookArea.className][itemIndex].notes);
+        },
+        templateClassName: "WorkbookItemAddItemComplete"
+    },
+    {
+        completedTaskId: 7, // ToolsAndMethods
+        getWorkbookArea: function() {
+            var completedTask = _.find(CS.WorkbookItemTasks, function (task) {
+                return task.id === this.completedTaskId;
+            }.bind(this));
+
+            return completedTask.getWorkbookArea();
+        },
+        isActive: function (itemIndex) {
+            var workbookArea = this.getWorkbookArea();
+
+            if (!workbookArea.isActive()) {
+                return false;
+            }
+
+            return CS.account.data[workbookArea.className] && !_.isEmpty(CS.account.data[workbookArea.className][itemIndex]) && !_.isEmpty(CS.account.data[workbookArea.className][itemIndex].notes);
+        },
+        templateClassName: "WorkbookItemAddItemComplete"
+    },
+    {
+        completedTaskId: 8, // Leadership
+        getWorkbookArea: function() {
+            var completedTask = _.find(CS.WorkbookItemTasks, function (task) {
+                return task.id === this.completedTaskId;
+            }.bind(this));
+
+            return completedTask.getWorkbookArea();
+        },
+        isActive: function (itemIndex) {
+            var workbookArea = this.getWorkbookArea();
+
+            if (!workbookArea.isActive()) {
+                return false;
+            }
+
+            return CS.account.data[workbookArea.className] && !_.isEmpty(CS.account.data[workbookArea.className][itemIndex]) && !_.isEmpty(CS.account.data[workbookArea.className][itemIndex].notes);
+        },
+        templateClassName: "WorkbookItemAddItemComplete"
+    },
+    {
+        completedTaskId: 9, // Contexts
+        getWorkbookArea: function() {
+            var completedTask = _.find(CS.WorkbookItemTasks, function (task) {
+                return task.id === this.completedTaskId;
+            }.bind(this));
+
+            return completedTask.getWorkbookArea();
+        },
+        isActive: function (itemIndex) {
+            var workbookArea = this.getWorkbookArea();
+
+            if (!workbookArea.isActive()) {
+                return false;
+            }
+
+            return CS.account.data[workbookArea.className] && !_.isEmpty(CS.account.data[workbookArea.className][itemIndex]) && !_.isEmpty(CS.account.data[workbookArea.className][itemIndex].notes);
+        },
+        templateClassName: "WorkbookItemAddItemComplete"
     }
 ];

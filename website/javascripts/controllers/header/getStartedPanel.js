@@ -18,7 +18,7 @@ CS.Controllers.GetStartedPanel = P(function (c) {
     };
 
     c._showPanelIfNeverClosed = function() {
-        if (!CS.account.data.hasClosedGetStartedPanel) {
+        if (!CS.account.data || !CS.account.data.hasClosedGetStartedPanel) {
             this._showPanel();
         }
     };
@@ -42,7 +42,7 @@ CS.Controllers.GetStartedPanel = P(function (c) {
     };
 
     c._hidePanel = function() {
-        if (!CS.account.data.hasClosedGetStartedPanel) {
+        if (!CS.account.data || !CS.account.data.hasClosedGetStartedPanel) {
             this._fetchLatestAccountDataAndUpdateIt();
         }
 

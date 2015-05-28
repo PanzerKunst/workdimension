@@ -7,8 +7,13 @@ CS.Controllers.WorkbookAreaAddItemTask = React.createClass({
                 );
         }
 
+        var wrapperClasses = classNames({
+            "workbook-task": true,
+            "hidd3n": this.props.hidden
+        });
+
         return (
-            <div className="workbook-task">
+            <div className={wrapperClasses}>
                 <button className="styleless fa fa-question-circle" onClick={CS.Controllers.WorkbookAreaCommon.showAreaDescription}></button>
                 <p className="working-on">Working on: {this.props.task.workingOnText}</p>
                 <div className="progress">

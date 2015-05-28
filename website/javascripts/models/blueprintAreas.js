@@ -1,8 +1,8 @@
 CS.Models.BlueprintAreas = P(function (c) {
     c.nbDefaultActiveBlueprintAreas = 3;
 
-    c.init = function (blueprintAreas) {
-        this.blueprintAreaInstances = blueprintAreas.map(function (item) {
+    c.init = function () {
+        this.blueprintAreaInstances = CS.workbookAreas.map(function (item) {
             return CS.Models.BlueprintArea(item.id, item.className, item.workbookCategoryId, item.title);
         });
 

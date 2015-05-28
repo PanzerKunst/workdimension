@@ -4,8 +4,13 @@ CS.Controllers.WorkbookItemAddItemTask = React.createClass({
         this.currentWording = CS.Models.WorkbookItemTaskCommon.getNextWording(this.props.task, this.props.workbookItemIndex);
         var currentWordingPrompt = CS.Services.String.template(this.currentWording.prompt, "itemName", this.props.workbookItemName);
 
+        var wrapperClasses = classNames({
+            "workbook-task": true,
+            "hidd3n": this.props.hidden
+        });
+
         return (
-            <div className="workbook-task" ref="wrapper">
+            <div className={wrapperClasses} ref="wrapper">
                 <p>Working on: {this.props.task.workingOnText}</p>
                 <div className="progress">
                     <div className="progress-bar progress-bar-success" role="progressbar" aria-valuenow="" aria-valuemin="0" aria-valuemax="100"></div>

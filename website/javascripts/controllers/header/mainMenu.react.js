@@ -25,8 +25,8 @@ CS.Controllers.MainMenu = P(CS.Controllers.Base, function (c) {
         }
     });
 
-    c.init = function (blueprintAreas) {
-        CS.blueprintAreasModel = CS.Models.BlueprintAreas(blueprintAreas);
+    c.init = function () {
+        CS.blueprintAreasModel = CS.Models.BlueprintAreas();
         CS.blueprintAreasModel.updateStatus();
 
         this._initElements();

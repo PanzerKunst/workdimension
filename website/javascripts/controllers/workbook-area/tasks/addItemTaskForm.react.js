@@ -100,6 +100,8 @@ CS.Controllers.WorkbookAreaAddItemTaskForm = React.createClass({
                 CS.account.data[this.props.workbookArea.className] = updatedBlueprintAreaData;
                 CS.saveAccountData();
 
+                this.props.controller.isPepTalkClosed = false;
+
                 this._setCurrentTaskAsSkippedAndReRender();
             }.bind(this),
             error: function () {

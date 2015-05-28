@@ -7,10 +7,15 @@ CS.Controllers.WorkbookAreaPrioritizeItemsTask = React.createClass({
                 );
         }
 
+        var wrapperClasses = classNames({
+            "workbook-task": true,
+            "hidd3n": this.props.hidden
+        });
+
         var currentWording = CS.Models.WorkbookAreaTaskCommon.getNextWording(this.props.task);
 
         return (
-            <div className="workbook-task">
+            <div className={wrapperClasses}>
                 <button className="styleless fa fa-question-circle" onClick={CS.Controllers.WorkbookAreaCommon.showAreaDescription}></button>
                 <p className="working-on">Working on: {this.props.task.workingOnText}</p>
                 <div className="progress">
@@ -40,6 +45,9 @@ CS.Controllers.WorkbookAreaPrioritizeItemsTask = React.createClass({
 
                 CS.account.data.prioritizedWorkbookAreaIds = prioritizedWorkbookAreaIds;
                 CS.saveAccountData();
+
+                this.props.controller.isPepTalkClosed = false;
+
                 this.props.controller.reRender();
             }.bind(this),
             error: function () {

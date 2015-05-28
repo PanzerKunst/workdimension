@@ -13,7 +13,7 @@ CS.Controllers.TaskNotifications = P(function (c) {
                     {this.state.activeTasks.map(function (task) {
                         var id = "notification-for-task-" + task.entityType + "-" + task.id;
 
-                        var workbookArea = CS.blueprintAreasModel.getOfId(task.workbookAreaId);
+                        var workbookArea = CS.blueprintAreasModel.getOfId(task.getWorkbookArea().id);
 
                         var href = task.entityType === CS.Controllers.WorkbookCommon.entityTypes.workbookArea ?
                             "/workbook-areas/" + workbookArea.className + "?taskIdToMarkAsViewed=" + task.entityType + "-" + task.id :
@@ -150,7 +150,7 @@ CS.Controllers.TaskNotifications = P(function (c) {
         });
 
         var prioritizedOldLvl1Tasks = _.sortBy(activeOldLvl1Tasks, function (task) {
-            var workbookArea = CS.blueprintAreasModel.getOfId(task.workbookAreaId);
+            var workbookArea = CS.blueprintAreasModel.getOfId(task.getWorkbookArea().id);
             return CS.account.data[workbookArea.className] ? -CS.account.data[workbookArea.className].length : 0;
         });
 
@@ -159,7 +159,7 @@ CS.Controllers.TaskNotifications = P(function (c) {
         });
 
         var prioritizedOldLvl2Tasks = _.sortBy(activeOldLvl2Tasks, function (task) {
-            var workbookArea = CS.blueprintAreasModel.getOfId(task.workbookAreaId);
+            var workbookArea = CS.blueprintAreasModel.getOfId(task.getWorkbookArea().id);
             return CS.account.data[workbookArea.className] ? -CS.account.data[workbookArea.className].length : 0;
         });
 

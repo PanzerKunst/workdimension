@@ -10,60 +10,66 @@ CS.Controllers.WorkbookItem = P(function (c) {
                 workbookItemIndex: null,
                 customTask: null,
                 isAdmin: false,
-                isCustomTaskComplete: false
+                isCustomTaskComplete: false,
+                isPepTalkClosed: false
             };
         },
 
         render: function () {
+            var pepTalkReact = null;
             var taskReact = null;
             var addCustomTaskPanelReact = null;
+            var listItemsReact = null;
 
             if (this.state.workbookArea) {
-                var activeTask = null;
+                if (!this.state.isPepTalkClosed) {
+                    var taskCompletePepTalk = null;
 
-                if (this.state.isCustomTaskComplete) {
-                    taskReact = (
-                        <div className="workbook-task complete">
-                            <h2><i className="fa fa-star"></i>Great work!<i className="fa fa-star"></i></h2>
-                            <p>A career advisor will get back to you shortly.</p>
-                            <p>In the meantime, we invite you to continue working on this topic, or maybe switch to another one&#63;</p>
-                            <div className="centered-contents">
-                                <button className="btn btn-primary" onClick={this._handleCustomTaskCompleteConfirmed}>Continue</button>
-                            </div>
-                        </div>
-                        );
-                } else {
-                    activeTask = this.state.customTask ||
-                        _.find(CS.WorkbookItemTasks, function (task) {
-                            return task.workbookAreaId === this.state.workbookArea.id && task.isActive(this.state.workbookItemIndex);
+                    if (this.state.isCustomTaskComplete) {
+                        taskCompletePepTalk = { templateClassName: "WorkbookItemCustomTaskComplete" };
+                    } else {
+                        taskCompletePepTalk = _.find(CS.WorkbookItemTaskCompletePepTalks, function(pepTalk) {
+                            return pepTalk.getWorkbookArea().id === this.state.workbookArea.id && pepTalk.isActive(this.state.workbookItemIndex);
                         }.bind(this));
+                    }
                 }
 
-                if (activeTask) {
-                    taskReact = React.createElement(CS.Controllers[activeTask.templateClassName], {task: activeTask, workbookArea: this.state.workbookArea, workbookItemName: this.state.workbookItem.name, workbookItemIndex: this.state.workbookItemIndex, controller: this.state.controller});
+                if (taskCompletePepTalk) {
+                    pepTalkReact = React.createElement(CS.Controllers[taskCompletePepTalk.templateClassName], {workbookArea: this.state.workbookArea, controller: this.state.controller});
                 }
-            }
 
-            if (this.state.isAdmin && !this.state.customTask) {
-                addCustomTaskPanelReact = <CS.Controllers.AddCustomTask workbookAreaId={this.state.workbookArea.id} workbookItemIndex={this.state.workbookItemIndex} controller={this.state.controller} />;
-            }
+                if (!this.state.isCustomTaskComplete) {
+                    var activeTask = this.state.customTask ||
+                        _.find(CS.WorkbookItemTasks, function (task) {
+                            return task.getWorkbookArea().id === this.state.workbookArea.id && task.isActive(this.state.workbookItemIndex);
+                        }.bind(this));
 
-            var listItems = null;
-            if (this.state.workbookItem && !_.isEmpty(this.state.workbookItem.notes)) {
-                listItems = this.state.workbookItem.notes.map(function (note, index) {
-                    var reactItemId = "workbook-item-note" + note;
+                    if (activeTask) {
+                        taskReact = React.createElement(CS.Controllers[activeTask.templateClassName], {task: activeTask, workbookArea: this.state.workbookArea, workbookItemName: this.state.workbookItem.name, workbookItemIndex: this.state.workbookItemIndex, hidden: taskCompletePepTalk && !this.state.isPepTalkClosed, controller: this.state.controller});
+                    }
+                }
 
-                    return <CS.Controllers.WorkbookItemNote key={reactItemId} workbookAreaClassName={this.state.workbookArea.className} workbookItem={this.state.workbookItem} workbookItemIndex={this.state.workbookItemIndex} workbookItemNote={note} workbookItemNoteIndex={index} />;
-                }.bind(this));
+                if (this.state.isAdmin && !this.state.customTask) {
+                    addCustomTaskPanelReact = <CS.Controllers.AddCustomTask workbookAreaId={this.state.workbookArea.id} workbookItemIndex={this.state.workbookItemIndex} controller={this.state.controller} />;
+                }
+
+                if (this.state.workbookItem && !_.isEmpty(this.state.workbookItem.notes)) {
+                    listItemsReact = this.state.workbookItem.notes.map(function (note, index) {
+                        var reactItemId = "workbook-item-note" + note;
+
+                        return <CS.Controllers.WorkbookItemNote key={reactItemId} workbookAreaClassName={this.state.workbookArea.className} workbookItem={this.state.workbookItem} workbookItemIndex={this.state.workbookItemIndex} workbookItemNote={note} workbookItemNoteIndex={index} />;
+                    }.bind(this));
+                }
             }
 
             return (
                 <div ref="wrapper">
+                    {pepTalkReact}
                     {taskReact}
                     {addCustomTaskPanelReact}
 
                     <ul className="styleless item-notes-list">
-                        {listItems}
+                        {listItemsReact}
                     </ul>
 
                     <form role="form" className="item-composer note" onSubmit={this._handleComposerFormSubmit}>
@@ -92,6 +98,8 @@ CS.Controllers.WorkbookItem = P(function (c) {
         _showComposer: function () {
             this.$form.show();
             this.$textarea.focus();
+
+            CS.Controllers.WorkbookItemCommon.adaptTextareaHeight(this.$textarea);
 
             this.$addNoteLink.hide();
         },
@@ -189,12 +197,23 @@ CS.Controllers.WorkbookItem = P(function (c) {
             workbookItemIndex: _.findIndex(CS.account.data[this.workbookArea.className], "name", this.workbookItem.name),
             customTask: firstCustomTaskNotCompleted,
             isAdmin: this.isAdmin,
-            isCustomTaskComplete: this.isCustomTaskComplete || false
+            isCustomTaskComplete: this.isCustomTaskComplete || false,
+            isPepTalkClosed: this.isPepTalkClosed || false
         });
     };
 
     c.saveAccountData = function () {
         this.reRender();
         CS.saveAccountData();
+    };
+
+    c.handleCustomTaskCompleteConfirmed = function() {
+        this.isCustomTaskComplete = false;
+        this.reRender();
+    };
+
+    c.handleTaskCompletePepTalkClosed = function() {
+        this.isPepTalkClosed = true;
+        this.reRender();
     };
 });
