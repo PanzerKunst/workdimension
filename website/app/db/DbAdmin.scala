@@ -76,6 +76,7 @@ object DbAdmin {
             id bigserial primary key,
             workbook_category_id bigint not null references workbook_category(id),
             class_name varchar(32) not null,
+            human_readable_class_name varchar(32) not null,
             title varchar(64) not null,
             unique(class_name)
           );"""
@@ -133,25 +134,25 @@ object DbAdmin {
     DB.withConnection {
       implicit c =>
 
-        SQL("insert into workbook_area(workbook_category_id, class_name, title) values(3, 'Strengths', 'My strengths');").execute()
-        SQL("insert into workbook_area(workbook_category_id, class_name, title) values(1, 'Drivers', 'What motivates me');").execute()
-        SQL("insert into workbook_area(workbook_category_id, class_name, title) values(2, 'Contexts', 'Contexts');").execute()
-        SQL("insert into workbook_area(workbook_category_id, class_name, title) values(2, 'Workplace', 'Good attributes in a workplace');").execute()
-        SQL("insert into workbook_area(workbook_category_id, class_name, title) values(3, 'Achievements', 'Things I''ve achieved');").execute()
-        SQL("insert into workbook_area(workbook_category_id, class_name, title) values(2, 'Coworkers', 'How I''d like my coworkers');").execute()
-        SQL("insert into workbook_area(workbook_category_id, class_name, title) values(2, 'Culture', 'The company culture I prefer');").execute()
-        SQL("insert into workbook_area(workbook_category_id, class_name, title) values(3, 'Expertise', 'Things I''m an expert in');").execute()
-        SQL("insert into workbook_area(workbook_category_id, class_name, title) values(2, 'Leadership', 'The leadership I need');").execute()
-        SQL("insert into workbook_area(workbook_category_id, class_name, title) values(1, 'Lesses', 'Lesses');").execute()
-        SQL("insert into workbook_area(workbook_category_id, class_name, title) values(3, 'ManagementStyle', 'My management style');").execute()
-        SQL("insert into workbook_area(workbook_category_id, class_name, title) values(2, 'Mores', 'Mores');").execute()
-        SQL("insert into workbook_area(workbook_category_id, class_name, title) values(2, 'Employers', 'Interesting employers to work for');").execute()
-        SQL("insert into workbook_area(workbook_category_id, class_name, title) values(2, 'PhaseAndSize', 'Phase & Size');").execute()
-        SQL("insert into workbook_area(workbook_category_id, class_name, title) values(2, 'Projects', 'Projects I''ve done');").execute()
-        SQL("insert into workbook_area(workbook_category_id, class_name, title) values(2, 'Roles', 'Roles I''d like to have');").execute()
-        SQL("insert into workbook_area(workbook_category_id, class_name, title) values(3, 'ToolsAndMethods', 'Tools & methods I like');").execute()
-        SQL("insert into workbook_area(workbook_category_id, class_name, title) values(1, 'Tracks', 'Tracks I''d like to pursue');").execute()
-        SQL("insert into workbook_area(workbook_category_id, class_name, title) values(1, 'Values', 'My values');").execute()
+        SQL("insert into workbook_area(workbook_category_id, class_name, human_readable_class_name, title) values(3, 'Strengths', 'Strengths', 'My strengths');").execute()
+        SQL("insert into workbook_area(workbook_category_id, class_name, human_readable_class_name, title) values(1, 'Drivers', 'Drivers', 'What motivates me');").execute()
+        SQL("insert into workbook_area(workbook_category_id, class_name, human_readable_class_name, title) values(2, 'Contexts', 'Contexts', 'Contexts');").execute()
+        SQL("insert into workbook_area(workbook_category_id, class_name, human_readable_class_name, title) values(2, 'Workplace', 'Good attributes in a workplace', 'Good attributes in a workplace');").execute()
+        SQL("insert into workbook_area(workbook_category_id, class_name, human_readable_class_name, title) values(3, 'Achievements', 'Achievements', 'Things I''ve achieved');").execute()
+        SQL("insert into workbook_area(workbook_category_id, class_name, human_readable_class_name, title) values(2, 'Coworkers', 'Coworker preferences', 'How I''d like my coworkers');").execute()
+        SQL("insert into workbook_area(workbook_category_id, class_name, human_readable_class_name, title) values(2, 'Culture', 'Company culture preferences', 'The company culture I prefer');").execute()
+        SQL("insert into workbook_area(workbook_category_id, class_name, human_readable_class_name, title) values(3, 'Expertise', 'Things I''m an expert in', 'Things I''m an expert in');").execute()
+        SQL("insert into workbook_area(workbook_category_id, class_name, human_readable_class_name, title) values(2, 'Leadership', 'Leadership preferences', 'The leadership I need');").execute()
+        SQL("insert into workbook_area(workbook_category_id, class_name, human_readable_class_name, title) values(1, 'Lesses', 'Lesses', 'Lesses');").execute()
+        SQL("insert into workbook_area(workbook_category_id, class_name, human_readable_class_name, title) values(3, 'ManagementStyle', 'Management styles', 'My management style');").execute()
+        SQL("insert into workbook_area(workbook_category_id, class_name, human_readable_class_name, title) values(2, 'Mores', 'Mores', 'Mores');").execute()
+        SQL("insert into workbook_area(workbook_category_id, class_name, human_readable_class_name, title) values(2, 'Employers', 'Interesting employers', 'Interesting employers to work for');").execute()
+        SQL("insert into workbook_area(workbook_category_id, class_name, human_readable_class_name, title) values(2, 'PhaseAndSize', 'Phase and size preferences', 'Phase & Size');").execute()
+        SQL("insert into workbook_area(workbook_category_id, class_name, human_readable_class_name, title) values(2, 'Projects', 'Projects I''ve done', 'Projects I''ve done');").execute()
+        SQL("insert into workbook_area(workbook_category_id, class_name, human_readable_class_name, title) values(2, 'Roles', 'Roles I''d like to have', 'Roles I''d like to have');").execute()
+        SQL("insert into workbook_area(workbook_category_id, class_name, human_readable_class_name, title) values(3, 'ToolsAndMethods', 'Tools & methods I like', 'Tools & methods I like');").execute()
+        SQL("insert into workbook_area(workbook_category_id, class_name, human_readable_class_name, title) values(1, 'Tracks', 'Tracks I''d like to pursue', 'Tracks I''d like to pursue');").execute()
+        SQL("insert into workbook_area(workbook_category_id, class_name, human_readable_class_name, title) values(1, 'Values', 'Values', 'My values');").execute()
     }
   }
 }

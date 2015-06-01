@@ -61,4 +61,30 @@
       padding-bottom: 1em;
     }
   }
+
+  .three-standouts {
+    padding: 1.5em 1em 1em 1em;
+
+    background-color: $standouts-background-color;
+
+    > h2 {
+      text-align: center;
+      font-size: $icon-success-font-size;
+
+      .fa-star {
+        color: $icon-success-color;
+
+        margin: 0 1em;
+      }
+    }
+
+    > ul {
+      font-weight: bold;
+      margin-bottom: 1em;
+    }
+
+    > p:last-child {
+      margin-bottom: 0;
+    }
+  }
 }

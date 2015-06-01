@@ -97,7 +97,7 @@ CS.Controllers.WorkbookAreaWorkbookItem = React.createClass({
             success: function (data) {
                 CS.account.data = data || {};
 
-                var updatedBlueprintAreaData = CS.account.data && !_.isEmpty(CS.account.data[this.props.workbookAreaClassName]) ? _.clone(CS.account.data[this.props.workbookAreaClassName], true) : [];
+                var updatedBlueprintAreaData = !_.isEmpty(CS.account.data[this.props.workbookAreaClassName]) ? _.clone(CS.account.data[this.props.workbookAreaClassName], true) : [];
 
                 if (newItemName) {
                     updatedBlueprintAreaData[this.props.workbookItemIndex].name = newItemName;

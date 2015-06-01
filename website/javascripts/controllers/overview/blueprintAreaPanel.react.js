@@ -2,10 +2,16 @@ CS.Controllers.OverviewBlueprintAreaPanel = React.createClass({
     render: function () {
         var workbookAreaTitleHref = "/workbook-areas/" + this._getBlueprintArea().className;
 
-        var wellClasses = classNames("well",
-            {
-                "collapsed-list": this.props.blueprintAreaWithData.items.length > CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl1TaskComplete
-            });
+        var threeStandoutsPanelReact = null;
+
+        if (CS.account.data && CS.account.data.standouts && CS.account.data.standouts[this._getBlueprintArea().className]) {
+            threeStandoutsPanelReact = <CS.Controllers.OverviewThreeStandoutsPanel workbookArea={this._getBlueprintArea()} threeStandouts={CS.account.data.standouts[this._getBlueprintArea().className]} />;
+        }
+
+        var wellClasses = classNames("well", {
+            "collapsed-list": this.props.blueprintAreaWithData.items.length > CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl1TaskComplete,
+            "hidd3n": threeStandoutsPanelReact !== null
+        });
 
         var workbookAreaDescription = _.find(CS.Controllers.Texts, function(text) {
             return text.type === "workbook-area-description" &&
@@ -15,10 +21,9 @@ CS.Controllers.OverviewBlueprintAreaPanel = React.createClass({
         return (
             <li className="blueprint-area-panel" ref="li">
                 <div className={wellClasses}>
-                    <h2>
-                        <a href={workbookAreaTitleHref}>{this._getBlueprintArea().title}</a>
-                    </h2>
+                    <h2><a href={workbookAreaTitleHref}>{this._getBlueprintArea().title}</a></h2>
                     <button className="styleless fa fa-chevron-down menu" onClick={this._showActionsMenu}></button>
+
                     <section className="workbook-area-actions">
                         <ul className="styleless">
                             <li><i className="fa fa-question-circle"></i><a onClick={this._showWorkbookAreaDescriptionModal}>Area info</a></li>
@@ -39,6 +44,8 @@ CS.Controllers.OverviewBlueprintAreaPanel = React.createClass({
 
                     <CS.Controllers.OverviewBlueprintAreaComposer blueprintAreaClassName={this._getBlueprintArea().className} />
                 </div>
+
+                {threeStandoutsPanelReact}
 
                 <div className="modal fade workbook-area-description-modal">
                     <div className="modal-dialog">

@@ -1,16 +1,21 @@
 #task-complete-pep-talk {
   padding: 1.5em 1em 0 1em;
 
+  @include medium-screen {
+    padding-left: 0;
+    padding-right: 0;
+  }
+
   > h2,
   > p {
     text-align: center;
   }
 
   > h2 {
-    font-size: $task-icon-size;
+    font-size: $icon-success-font-size;
 
     .fa-star {
-      color: $task-icon-color;
+      color: $icon-success-color;
 
       margin: 0 1em;
     }

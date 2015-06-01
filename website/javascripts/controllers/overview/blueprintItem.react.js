@@ -108,7 +108,7 @@ CS.Controllers.OverviewBlueprintItem = React.createClass({
             success: function (data) {
                 CS.account.data = data || {};
 
-                var updatedBlueprintAreaData = CS.account.data && !_.isEmpty(CS.account.data[this._getBlueprintAreaClassName()]) ? _.clone(CS.account.data[this._getBlueprintAreaClassName()], true) : [];
+                var updatedBlueprintAreaData = !_.isEmpty(CS.account.data[this._getBlueprintAreaClassName()]) ? _.clone(CS.account.data[this._getBlueprintAreaClassName()], true) : [];
 
                 if (newItemName) {
                     updatedBlueprintAreaData[this.props.blueprintItemIndex].name = newItemName;

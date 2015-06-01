@@ -16,63 +16,69 @@ CS.Controllers.WorkbookArea = P(function (c) {
 
         render: function () {
             var workbookAreaDescriptionReact = null;
+            var threeStandoutsReact = null;
             var pepTalkReact = null;
             var taskReact = null;
-            var addCustomTaskPanelReact = null;
+            var adminPanelReact = null;
 
             if (this.state.workbookArea) {
                 workbookAreaDescriptionReact = <CS.Controllers.WorkbookAreaDescription workbookAreaClassName={this.state.workbookArea.className} controller={this.state.controller} />;
 
-                if (!this.state.isPepTalkClosed && !this.state.customTask) {
-                    var taskCompletePepTalk = null;
+                if (CS.account.data && CS.account.data.standouts && CS.account.data.standouts[this.state.workbookArea.className]) {
+                    threeStandoutsReact = <CS.Controllers.WorkbookAreaThreeStandoutsPanel workbookArea={this.state.workbookArea} threeStandouts={CS.account.data.standouts[this.state.workbookArea.className]} />;
+                } else {
+                    if (!this.state.isPepTalkClosed && !this.state.customTask) {
+                        var taskCompletePepTalk = null;
 
-                    if (this.state.isCustomTaskComplete) {
-                        taskCompletePepTalk = { templateClassName: "WorkbookAreaCustomTaskComplete" };
-                    } else {
-                        taskCompletePepTalk = _.find(CS.WorkbookAreaTaskCompletePepTalks, function(pepTalk) {
-                            return pepTalk.getWorkbookArea().id === this.state.workbookArea.id && pepTalk.isActive();
-                        }.bind(this));
+                        if (this.state.isCustomTaskComplete) {
+                            taskCompletePepTalk = { templateClassName: "WorkbookAreaCustomTaskComplete" };
+                        } else {
+                            taskCompletePepTalk = _.find(CS.WorkbookAreaTaskCompletePepTalks, function (pepTalk) {
+                                return pepTalk.getWorkbookArea().id === this.state.workbookArea.id && pepTalk.isActive();
+                            }.bind(this));
+                        }
+
+                        if (taskCompletePepTalk) {
+                            pepTalkReact = React.createElement(CS.Controllers[taskCompletePepTalk.templateClassName], {workbookArea: this.state.workbookArea, controller: this.state.controller});
+                        }
                     }
 
-                    if (taskCompletePepTalk) {
-                        pepTalkReact = React.createElement(CS.Controllers[taskCompletePepTalk.templateClassName], {workbookArea: this.state.workbookArea, controller: this.state.controller});
-                    }
-                }
+                    if (!this.state.isCustomTaskComplete) {
+                        var activeTask = this.state.customTask ||
+                            _.find(CS.WorkbookAreaTasks, function (task) {  // Level 3
+                                return task.getWorkbookArea().id === this.state.workbookArea.id && task.level === 3 && task.isActive();
+                            }.bind(this)) ||
+                            _.find(CS.WorkbookAreaTasks, function (task) {  // Level 2
+                                return task.getWorkbookArea().id === this.state.workbookArea.id && task.level === 2 && task.isActive();
+                            }.bind(this)) ||
+                            _.find(CS.WorkbookAreaTasks, function (task) {  // Level 1
+                                return task.getWorkbookArea().id === this.state.workbookArea.id && task.level === 1 && task.isActive();
+                            }.bind(this));
 
-                if (!this.state.isCustomTaskComplete) {
-                    var activeTask = this.state.customTask ||
-                        _.find(CS.WorkbookAreaTasks, function (task) {  // Level 3
-                            return task.getWorkbookArea().id === this.state.workbookArea.id && task.level === 3 && task.isActive();
-                        }.bind(this)) ||
-                        _.find(CS.WorkbookAreaTasks, function (task) {  // Level 2
-                            return task.getWorkbookArea().id === this.state.workbookArea.id && task.level === 2 && task.isActive();
-                        }.bind(this)) ||
-                        _.find(CS.WorkbookAreaTasks, function (task) {  // Level 1
-                            return task.getWorkbookArea().id === this.state.workbookArea.id && task.level === 1 && task.isActive();
-                        }.bind(this));
+                        if (activeTask) {
+                            var nextTask = _.find(CS.WorkbookAreaTasks, function (task) {
+                                return task.previousTaskId === activeTask.id;
+                            });
 
-                    if (activeTask) {
-                        var nextTask = _.find(CS.WorkbookAreaTasks, function (task) {
-                            return task.previousTaskId === activeTask.id;
-                        });
+                            var comingUpNextText = nextTask ? nextTask.comingUpText : null;
 
-                        var comingUpNextText = nextTask ? nextTask.comingUpText : null;
-
-                        taskReact = React.createElement(CS.Controllers[activeTask.templateClassName], {task: activeTask, workbookArea: this.state.workbookArea, comingUpNextText: comingUpNextText, hidden: taskCompletePepTalk && !this.state.isPepTalkClosed, controller: this.state.controller});
+                            taskReact = React.createElement(CS.Controllers[activeTask.templateClassName], {task: activeTask, workbookArea: this.state.workbookArea, comingUpNextText: comingUpNextText, hidden: taskCompletePepTalk && !this.state.isPepTalkClosed, controller: this.state.controller});
+                        }
                     }
                 }
 
                 if (this.state.isAdmin && !this.state.customTask) {
-                    addCustomTaskPanelReact = <CS.Controllers.AddCustomTask workbookAreaId={this.state.workbookArea.id} controller={this.state.controller} />;
+                    adminPanelReact = <CS.Controllers.AdminPanel workbookArea={this.state.workbookArea} controller={this.state.controller} />;
                 }
             }
 
             return (
                 <div ref="wrapper" id="content-wrapper">
                     {workbookAreaDescriptionReact}
+                    {threeStandoutsReact}
                     {pepTalkReact}
                     {taskReact}
-                    {addCustomTaskPanelReact}
+                    {adminPanelReact}
 
                     <ul className="styleless item-names-list">
                         {this.state.workbookItems.map(function (item, index) {
@@ -183,7 +189,7 @@ CS.Controllers.WorkbookArea = P(function (c) {
                 success: function (data) {
                     CS.account.data = data || {};
 
-                    var updatedBlueprintAreaData = CS.account.data && !_.isEmpty(CS.account.data[this.state.workbookArea.className]) ? _.clone(CS.account.data[this.state.workbookArea.className], true) : [];
+                    var updatedBlueprintAreaData = !_.isEmpty(CS.account.data[this.state.workbookArea.className]) ? _.clone(CS.account.data[this.state.workbookArea.className], true) : [];
                     updatedBlueprintAreaData.push({
                         name: itemNameToAdd,
                         notes: []

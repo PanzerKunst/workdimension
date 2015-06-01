@@ -74,7 +74,7 @@ CS.Controllers.OverviewBlueprintAreaComposer = React.createClass({
             success: function (data) {
                 CS.account.data = data || {};
 
-                var updatedBlueprintAreaData = CS.account.data && !_.isEmpty(CS.account.data[this.props.blueprintAreaClassName]) ? _.clone(CS.account.data[this.props.blueprintAreaClassName], true) : [];
+                var updatedBlueprintAreaData = !_.isEmpty(CS.account.data[this.props.blueprintAreaClassName]) ? _.clone(CS.account.data[this.props.blueprintAreaClassName], true) : [];
                 updatedBlueprintAreaData.push({
                     name: itemNameToAdd,
                     notes: []

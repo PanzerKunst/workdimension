@@ -1,0 +1,22 @@
+<mockup version="1.0" skin="sketch" measuredW="1190" measuredH="736" mockupW="960" mockupH="713">
+  <controls>
+    <control controlID="0" controlTypeID="com.balsamiq.mockups::BrowserWindow" x="230" y="23" w="960" h="713" measuredW="450" measuredH="400" zOrder="0" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Base%20Default%20comments%0Ahttp%3A//</text>
+      </controlProperties>
+    </control>
+    <control controlID="1" controlTypeID="com.balsamiq.mockups::Label" x="261" y="116" w="-1" h="-1" measuredW="223" measuredH="28" zOrder="1" locked="false" isInGroup="-1">
+      <controlProperties>
+        <bold>true</bold>
+        <size>20</size>
+        <text>Base%20Default%20Comments</text>
+      </controlProperties>
+    </control>
+    <control controlID="6" controlTypeID="com.balsamiq.mockups::Image" x="334" y="159" w="753" h="550" measuredW="1157" measuredH="841" zOrder="2" locked="false" isInGroup="-1">
+      <controlProperties>
+        <src>./Default-comments-screenshot.png</src>
+        <text/>
+      </controlProperties>
+    </control>
+  </controls>
+</mockup>

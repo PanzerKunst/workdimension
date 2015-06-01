@@ -6560,6 +6560,8 @@ footer {
     padding: 0 0.5em 0.5em 0.5em;
     margin-bottom: 14px;
     position: relative; }
+    #index #content .well.hidd3n {
+      display: none; }
     #index #content .well.add-item-composer-open.collapsed-list > .fa-chevron-down, #index #content .well.add-item-composer-open.expanded-list > .fa-chevron-up {
       display: none; }
     #index #content .well.add-item-composer-open > section > .item-composer {
@@ -6616,8 +6618,7 @@ footer {
   #index #content h2 {
     font-size: 16.8px;
     font-weight: bold;
-    letter-spacing: -0.05em;
-    padding-right: 1em; }
+    letter-spacing: -0.05em; }
   #index #content .item-names-list > li {
     background-color: #777777;
     margin-bottom: 0.25em; }
@@ -6640,6 +6641,16 @@ footer {
   @media screen and (min-width: 960px) {
     #index #content .workbook-area-description-modal .modal-header > .close {
       margin-top: -6px; } }
+  #index #content .three-standouts {
+    background-color: #e1f2e1; }
+    #index #content .three-standouts > h2 {
+      text-align: center; }
+    #index #content .three-standouts > .fa-times {
+      right: -0.45em;
+      top: -0.45em; }
+  #index #content .fa-star {
+    color: #FDC300;
+    margin: 0 1em; }
 
 #select-areas-modal .modal-title {
   font-size: 1.2em;
@@ -6767,6 +6778,20 @@ footer {
     padding: 1em; }
   #workbook-area #area-description > .centered-contents {
     padding-bottom: 1em; }
+#workbook-area .three-standouts {
+  padding: 1.5em 1em 1em 1em;
+  background-color: #e1f2e1; }
+  #workbook-area .three-standouts > h2 {
+    text-align: center;
+    font-size: 1.5em; }
+    #workbook-area .three-standouts > h2 .fa-star {
+      color: #FDC300;
+      margin: 0 1em; }
+  #workbook-area .three-standouts > ul {
+    font-weight: bold;
+    margin-bottom: 1em; }
+  #workbook-area .three-standouts > p:last-child {
+    margin-bottom: 0; }
 
 #workbook-item #content > div {
   margin: 0 auto; }
@@ -6807,23 +6832,27 @@ footer {
   #workbook-item .fa-times {
     font-size: 1em; } }
 
-.add-custom-task-panel {
+.admin-panel {
   margin-top: 2em;
   padding: 1em;
   background-color: #fdf3e4; }
-  .add-custom-task-panel > a {
+  .admin-panel a {
     color: #f0ad4e; }
-  .add-custom-task-panel > form {
+  .admin-panel form {
     display: none;
     margin-top: 1.5em; }
-    .add-custom-task-panel > form > .form-group {
+    .admin-panel form > .form-group {
       width: auto;
       margin-bottom: 1.5em; }
-    .add-custom-task-panel > form textarea {
+    .admin-panel form textarea {
       height: 2.9em; }
 
 #task-complete-pep-talk {
   padding: 1.5em 1em 0 1em; }
+  @media screen and (min-width: 640px) {
+    #task-complete-pep-talk {
+      padding-left: 0;
+      padding-right: 0; } }
   #task-complete-pep-talk > h2,
   #task-complete-pep-talk > p {
     text-align: center; }

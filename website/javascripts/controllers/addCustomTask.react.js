@@ -1,8 +1,8 @@
 CS.Controllers.AddCustomTask = React.createClass({
     render: function () {
         return (
-            <section className="add-custom-task-panel" ref="wrapper">
-                <a onClick={this._handleAddCustomTaskClick}>Add custom task</a>
+            <div ref="wrapper">
+                <a id="add-custom-task-link" onClick={this._handleAddCustomTaskClick}>Add custom task</a>
 
                 <form onSubmit={this._handleFormSubmit}>
                     <div className="form-group">
@@ -23,7 +23,7 @@ CS.Controllers.AddCustomTask = React.createClass({
                         <button className="btn btn-warning">Add task</button>
                     </div>
                 </form>
-            </section>
+            </div>
             );
     },
 
@@ -37,6 +37,8 @@ CS.Controllers.AddCustomTask = React.createClass({
         this.$form = this.$wrapper.children("form");
         this.$tipField = this.$form.find("#tip");
         this.$questionField = this.$form.find("#question");
+
+        this.$setThreeStandoutsLink = $("#set-three-standouts-link");
     },
 
     _initValidation: function() {
@@ -48,6 +50,7 @@ CS.Controllers.AddCustomTask = React.createClass({
 
     _handleAddCustomTaskClick: function () {
         this.$form.toggle();
+        this.$setThreeStandoutsLink.toggle();
     },
 
     _handleTextareaKeyUp: function (e) {

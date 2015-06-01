@@ -10,7 +10,7 @@ object WorkbookAreaDto {
   def getAll: List[WorkbookArea] = {
     DB.withConnection { implicit c =>
       val query = """
-      select distinct id, workbook_category_id, class_name, title
+      select distinct id, workbook_category_id, class_name, human_readable_class_name, title
       from workbook_area
       order by id;"""
 
@@ -21,6 +21,7 @@ object WorkbookAreaDto {
             row[Long]("id"),
             row[Long]("workbook_category_id"),
             row[String]("class_name"),
+            row[String]("human_readable_class_name"),
             row[String]("title")
           )
       }.toList
@@ -30,7 +31,7 @@ object WorkbookAreaDto {
   def getOfClassName(className: String): Option[WorkbookArea] = {
     DB.withConnection { implicit c =>
       val query = """
-      select id, workbook_category_id, title
+      select id, workbook_category_id, human_readable_class_name, title
       from workbook_area
       where class_name = '""" + className + """';"""
 
@@ -42,6 +43,7 @@ object WorkbookAreaDto {
             row[Long]("id"),
             row[Long]("workbook_category_id"),
             className,
+            row[String]("human_readable_class_name"),
             row[String]("title")
           ))
 

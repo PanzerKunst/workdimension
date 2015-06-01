@@ -1,6 +1,3 @@
-$task-icon-color: #FDC300;
-$task-icon-size: 1.5em;
-
 .workbook-task {
   padding: 1.5em 1em 1em 1em;
   background-color: $well-bg;
@@ -79,8 +76,8 @@ $tip-icon-width: 10%;
   }
 
   > .fa {
-    color: $task-icon-color;
-    font-size: $task-icon-size;
+    color: $icon-success-color;
+    font-size: $icon-success-font-size;
 
     width: $tip-icon-width;
     text-align: center;

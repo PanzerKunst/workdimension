@@ -3,7 +3,13 @@ CS.Models.BlueprintAreas = P(function (c) {
 
     c.init = function () {
         this.blueprintAreaInstances = CS.workbookAreas.map(function (item) {
-            return CS.Models.BlueprintArea(item.id, item.className, item.workbookCategoryId, item.title);
+            return CS.Models.BlueprintArea(
+                item.id,
+                item.className,
+                item.humanReadableClassName,
+                item.workbookCategoryId,
+                item.title
+            );
         });
 
         this.isInitial = true;

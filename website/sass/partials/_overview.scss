@@ -36,6 +36,10 @@
 
       position: relative; // Because of absolutely-positioned menu and expand buttons
 
+      &.hidd3n {
+        display: none;
+      }
+
       &.add-item-composer-open {
         &.collapsed-list > .fa-chevron-down,
         &.expanded-list > .fa-chevron-up {
@@ -148,8 +152,6 @@
       font-size: #{1.2 * $font-size-base-px}px;
       font-weight: bold;
       letter-spacing: -0.05em;
-
-      padding-right: 1em;
     }
 
     .item-names-list {
@@ -187,6 +189,25 @@
           }
         }
       }
+    }
+
+    .three-standouts {
+      background-color: $standouts-background-color;
+
+      > h2 {
+        text-align: center;
+      }
+
+      > .fa-times {
+        right: -0.45em;
+        top: -0.45em;
+      }
+    }
+
+    .fa-star {
+      color: $icon-success-color;
+
+      margin: 0 1em;
     }
   }
 }

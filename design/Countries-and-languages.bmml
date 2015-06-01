@@ -171,16 +171,16 @@
         <text>Edit%0ADelete</text>
       </controlProperties>
     </control>
-    <control controlID="38" controlTypeID="com.balsamiq.mockups::Link" x="952" y="1145" w="-1" h="-1" measuredW="109" measuredH="21" zOrder="30" locked="false" isInGroup="-1">
+    <control controlID="38" controlTypeID="com.balsamiq.mockups::Link" x="952" y="1145" w="-1" h="-1" measuredW="80" measuredH="21" zOrder="30" locked="false" isInGroup="-1">
       <controlProperties>
-        <text>Add%20a%20combination</text>
+        <text>Add%20a%20culture</text>
       </controlProperties>
     </control>
-    <control controlID="39" controlTypeID="com.balsamiq.mockups::Label" x="359" y="901" w="-1" h="-1" measuredW="302" measuredH="26" zOrder="31" locked="false" isInGroup="-1">
+    <control controlID="39" controlTypeID="com.balsamiq.mockups::Label" x="359" y="901" w="-1" h="-1" measuredW="74" measuredH="26" zOrder="31" locked="false" isInGroup="-1">
       <controlProperties>
         <bold>true</bold>
         <size>18</size>
-        <text>Country%20and%20Language%20combinations</text>
+        <text>Cultures</text>
       </controlProperties>
     </control>
   </controls>

@@ -77,7 +77,7 @@ CS.Controllers.WorkbookAreaCustomTask = React.createClass({
             success: function (data) {
                 CS.account.data = data || {};
 
-                var updatedBlueprintAreaData = CS.account.data && !_.isEmpty(CS.account.data[this.props.workbookArea.className]) ? _.clone(CS.account.data[this.props.workbookArea.className], true) : [];
+                var updatedBlueprintAreaData = !_.isEmpty(CS.account.data[this.props.workbookArea.className]) ? _.clone(CS.account.data[this.props.workbookArea.className], true) : [];
                 updatedBlueprintAreaData.push({
                     name: itemNameToAdd,
                     notes: []

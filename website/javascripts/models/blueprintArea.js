@@ -1,7 +1,8 @@
 CS.Models.BlueprintArea = P(function (c) {
-    c.init = function (id, className, blueprintCategoryId, title) {
+    c.init = function (id, className, humanReadableClassName, blueprintCategoryId, title) {
         this.id = id;
         this.className = className;
+        this.humanReadableClassName = humanReadableClassName;
         this.blueprintCategoryId = blueprintCategoryId;
         this.title = title;
     };

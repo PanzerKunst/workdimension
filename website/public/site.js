@@ -802,9 +802,10 @@ CS.saveAccountData = function (callback) {
     }
 };
 ;CS.Models.BlueprintArea = P(function (c) {
-    c.init = function (id, className, blueprintCategoryId, title) {
+    c.init = function (id, className, humanReadableClassName, blueprintCategoryId, title) {
         this.id = id;
         this.className = className;
+        this.humanReadableClassName = humanReadableClassName;
         this.blueprintCategoryId = blueprintCategoryId;
         this.title = title;
     };
@@ -866,7 +867,13 @@ CS.saveAccountData = function (callback) {
 
     c.init = function () {
         this.blueprintAreaInstances = CS.workbookAreas.map(function (item) {
-            return CS.Models.BlueprintArea(item.id, item.className, item.workbookCategoryId, item.title);
+            return CS.Models.BlueprintArea(
+                item.id,
+                item.className,
+                item.humanReadableClassName,
+                item.workbookCategoryId,
+                item.title
+            );
         });
 
         this.isInitial = true;
@@ -1588,8 +1595,8 @@ CS.Controllers.MainMenuLinkedInAuthenticator = P(CS.Controllers.Base, function (
 ;CS.Controllers.AddCustomTask = React.createClass({displayName: "AddCustomTask",
     render: function () {
         return (
-            React.createElement("section", {className: "add-custom-task-panel", ref: "wrapper"}, 
-                React.createElement("a", {onClick: this._handleAddCustomTaskClick}, "Add custom task"), 
+            React.createElement("div", {ref: "wrapper"}, 
+                React.createElement("a", {id: "add-custom-task-link", onClick: this._handleAddCustomTaskClick}, "Add custom task"), 
 
                 React.createElement("form", {onSubmit: this._handleFormSubmit}, 
                     React.createElement("div", {className: "form-group"}, 
@@ -1624,6 +1631,8 @@ CS.Controllers.MainMenuLinkedInAuthenticator = P(CS.Controllers.Base, function (
         this.$form = this.$wrapper.children("form");
         this.$tipField = this.$form.find("#tip");
         this.$questionField = this.$form.find("#question");
+
+        this.$setThreeStandoutsLink = $("#set-three-standouts-link");
     },
 
     _initValidation: function() {
@@ -1635,6 +1644,7 @@ CS.Controllers.MainMenuLinkedInAuthenticator = P(CS.Controllers.Base, function (
 
     _handleAddCustomTaskClick: function () {
         this.$form.toggle();
+        this.$setThreeStandoutsLink.toggle();
     },
 
     _handleTextareaKeyUp: function (e) {
@@ -2201,7 +2211,7 @@ CS.Controllers.OverviewBlueprintAreaComposer = React.createClass({displayName: "
             success: function (data) {
                 CS.account.data = data || {};
 
-                var updatedBlueprintAreaData = CS.account.data && !_.isEmpty(CS.account.data[this.props.blueprintAreaClassName]) ? _.clone(CS.account.data[this.props.blueprintAreaClassName], true) : [];
+                var updatedBlueprintAreaData = !_.isEmpty(CS.account.data[this.props.blueprintAreaClassName]) ? _.clone(CS.account.data[this.props.blueprintAreaClassName], true) : [];
                 updatedBlueprintAreaData.push({
                     name: itemNameToAdd,
                     notes: []
@@ -2221,10 +2231,16 @@ CS.Controllers.OverviewBlueprintAreaPanel = React.createClass({displayName: "Ove
     render: function () {
         var workbookAreaTitleHref = "/workbook-areas/" + this._getBlueprintArea().className;
 
-        var wellClasses = classNames("well",
-            {
-                "collapsed-list": this.props.blueprintAreaWithData.items.length > CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl1TaskComplete
-            });
+        var threeStandoutsPanelReact = null;
+
+        if (CS.account.data && CS.account.data.standouts && CS.account.data.standouts[this._getBlueprintArea().className]) {
+            threeStandoutsPanelReact = React.createElement(CS.Controllers.OverviewThreeStandoutsPanel, {workbookArea: this._getBlueprintArea(), threeStandouts: CS.account.data.standouts[this._getBlueprintArea().className]});
+        }
+
+        var wellClasses = classNames("well", {
+            "collapsed-list": this.props.blueprintAreaWithData.items.length > CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl1TaskComplete,
+            "hidd3n": threeStandoutsPanelReact !== null
+        });
 
         var workbookAreaDescription = _.find(CS.Controllers.Texts, function(text) {
             return text.type === "workbook-area-description" &&
@@ -2234,10 +2250,9 @@ CS.Controllers.OverviewBlueprintAreaPanel = React.createClass({displayName: "Ove
         return (
             React.createElement("li", {className: "blueprint-area-panel", ref: "li"}, 
                 React.createElement("div", {className: wellClasses}, 
-                    React.createElement("h2", null, 
-                        React.createElement("a", {href: workbookAreaTitleHref}, this._getBlueprintArea().title)
-                    ), 
+                    React.createElement("h2", null, React.createElement("a", {href: workbookAreaTitleHref}, this._getBlueprintArea().title)), 
                     React.createElement("button", {className: "styleless fa fa-chevron-down menu", onClick: this._showActionsMenu}), 
+
                     React.createElement("section", {className: "workbook-area-actions"}, 
                         React.createElement("ul", {className: "styleless"}, 
                             React.createElement("li", null, React.createElement("i", {className: "fa fa-question-circle"}), React.createElement("a", {onClick: this._showWorkbookAreaDescriptionModal}, "Area info")), 
@@ -2258,6 +2273,8 @@ CS.Controllers.OverviewBlueprintAreaPanel = React.createClass({displayName: "Ove
 
                     React.createElement(CS.Controllers.OverviewBlueprintAreaComposer, {blueprintAreaClassName: this._getBlueprintArea().className})
                 ), 
+
+                threeStandoutsPanelReact, 
 
                 React.createElement("div", {className: "modal fade workbook-area-description-modal"}, 
                     React.createElement("div", {className: "modal-dialog"}, 
@@ -2459,7 +2476,7 @@ CS.Controllers.OverviewBlueprintItem = React.createClass({displayName: "Overview
             success: function (data) {
                 CS.account.data = data || {};
 
-                var updatedBlueprintAreaData = CS.account.data && !_.isEmpty(CS.account.data[this._getBlueprintAreaClassName()]) ? _.clone(CS.account.data[this._getBlueprintAreaClassName()], true) : [];
+                var updatedBlueprintAreaData = !_.isEmpty(CS.account.data[this._getBlueprintAreaClassName()]) ? _.clone(CS.account.data[this._getBlueprintAreaClassName()], true) : [];
 
                 if (newItemName) {
                     updatedBlueprintAreaData[this.props.blueprintItemIndex].name = newItemName;
@@ -2555,6 +2572,160 @@ CS.Controllers.Overview = P(function (c) {
         this.reRender();
         CS.saveAccountData();
     };
+});
+
+CS.Controllers.OverviewThreeStandoutsPanel = React.createClass({displayName: "OverviewThreeStandoutsPanel",
+    render: function () {
+        var workbookAreaTitleHref = "/workbook-areas/" + this.props.workbookArea.className;
+        var humanReadableClassName = this.props.workbookArea.humanReadableClassName.toLowerCase();
+
+        return (
+            React.createElement("div", {className: "three-standouts well", ref: "wrapper"}, 
+                React.createElement("h2", null, React.createElement("i", {className: "fa fa-star"}), "Top-3 ", React.createElement("a", {href: workbookAreaTitleHref}, humanReadableClassName), React.createElement("i", {className: "fa fa-star"})), 
+                React.createElement("button", {className: "styleless fa fa-times", onClick: this._hide}), 
+
+                React.createElement("ul", null, 
+                    React.createElement("li", null, this.props.threeStandouts[0]), 
+                    React.createElement("li", null, this.props.threeStandouts[1]), 
+                    React.createElement("li", null, this.props.threeStandouts[2])
+                )
+            )
+            );
+    },
+
+    componentDidMount: function () {
+        this._initElements();
+    },
+
+    _initElements: function() {
+        this.$wrapper = $(React.findDOMNode(this.refs.wrapper));
+    },
+
+    _hide: function() {
+        this.$wrapper.hide();
+        this.$wrapper.siblings(".well").show();
+
+        CS.overviewController.rePackerise();
+    }
+});
+
+CS.Controllers.AdminPanel = React.createClass({displayName: "AdminPanel",
+    render: function () {
+        return (
+            React.createElement("section", {className: "admin-panel"}, 
+                React.createElement(CS.Controllers.AddCustomTask, {workbookAreaId: this.props.workbookArea.id, controller: this.props.controller}), 
+                React.createElement(CS.Controllers.SetThreeStandouts, {workbookArea: this.props.workbookArea, controller: this.props.controller})
+            )
+            );
+    }
+});
+
+CS.Controllers.SetThreeStandouts = React.createClass({displayName: "SetThreeStandouts",
+    render: function () {
+        return (
+            React.createElement("div", null, 
+                React.createElement("a", {id: "set-three-standouts-link", onClick: this._handleSetThreeStandoutsClick}, "Three standouts"), 
+
+                React.createElement("form", {onSubmit: this._handleFormSubmit, ref: "form"}, 
+                    React.createElement("div", {className: "form-group"}, 
+                        React.createElement("input", {type: "text", className: "form-control", id: "first-standout", maxLength: "64"}), 
+
+                        React.createElement("p", {className: "field-error", "data-check": "empty"})
+                    ), 
+
+                    React.createElement("div", {className: "form-group"}, 
+                        React.createElement("input", {type: "text", className: "form-control", id: "second-standout", maxLength: "64"}), 
+
+                        React.createElement("p", {className: "field-error", "data-check": "empty"})
+                    ), 
+
+                    React.createElement("div", {className: "form-group"}, 
+                        React.createElement("input", {type: "text", className: "form-control", id: "third-standout", maxLength: "64"}), 
+
+                        React.createElement("p", {className: "field-error", "data-check": "empty"})
+                    ), 
+
+                    React.createElement("div", {className: "centered-contents"}, 
+                        React.createElement("button", {className: "btn btn-warning"}, "Communicate as the three standouts")
+                    )
+                )
+            )
+            );
+    },
+
+    componentDidMount: function () {
+        this._initElements();
+        this._initValidation();
+    },
+
+    _initElements: function () {
+        this.$form = $(React.findDOMNode(this.refs.form));
+        this.$firstStandoutField = this.$form.find("#first-standout");
+        this.$secondStandoutField = this.$form.find("#second-standout");
+        this.$thirdStandoutField = this.$form.find("#third-standout");
+
+        this.$addCustomTaskLink = $("#add-custom-task-link");
+    },
+
+    _initValidation: function() {
+        this.validator = CS.Services.Validator([
+            "first-standout",
+            "second-standout",
+            "third-standout"
+        ]);
+    },
+
+    _handleSetThreeStandoutsClick: function () {
+        this.$form.toggle();
+        this.$addCustomTaskLink.toggle();
+    },
+
+    _handleFormSubmit: function (e) {
+        if (e) {
+            e.preventDefault();
+        }
+
+        if (this.validator.isValid()) {
+            var firstStandout = this.$firstStandoutField.val().trim();
+            var secondStandout = this.$secondStandoutField.val().trim();
+            var thirdStandout = this.$thirdStandoutField.val().trim();
+
+            this._fetchLatestAccountDataAndUpdateIt(firstStandout, secondStandout, thirdStandout);
+        }
+    },
+
+    _fetchLatestAccountDataAndUpdateIt: function(firstStandout, secondStandout, thirdStandout) {
+        var type = "GET";
+        var url = "/api/account-data";
+
+        $.ajax({
+            url: url,
+            type: type,
+            success: function (data) {
+                CS.account.data = data || {};
+
+                CS.account.data.standouts = CS.account.data.standouts || {};
+
+                CS.account.data.standouts[this.props.workbookArea.className] = [
+                    firstStandout,
+                    secondStandout,
+                    thirdStandout
+                ];
+
+                CS.saveAccountData(function() {
+                    this.$form[0].reset();
+
+                    this.$form.hide();
+                    this.$addCustomTaskLink.show();
+                }.bind(this));
+
+                this.props.controller.reRender();
+            }.bind(this),
+            error: function () {
+                alert("AJAX failure doing a " + type + " request to \"" + url + "\"");
+            }
+        });
+    }
 });
 
 CS.Controllers.WorkbookAreaAddItemLvl1Complete = React.createClass({displayName: "WorkbookAreaAddItemLvl1Complete",
@@ -2822,7 +2993,7 @@ CS.Controllers.WorkbookAreaAddItemTaskForm = React.createClass({displayName: "Wo
             success: function (data) {
                 CS.account.data = data || {};
 
-                var updatedBlueprintAreaData = CS.account.data && !_.isEmpty(CS.account.data[this.props.workbookArea.className]) ? _.clone(CS.account.data[this.props.workbookArea.className], true) : [];
+                var updatedBlueprintAreaData = !_.isEmpty(CS.account.data[this.props.workbookArea.className]) ? _.clone(CS.account.data[this.props.workbookArea.className], true) : [];
                 updatedBlueprintAreaData.push({
                     name: itemNameToAdd,
                     notes: []
@@ -2921,7 +3092,7 @@ CS.Controllers.WorkbookAreaCustomTask = React.createClass({displayName: "Workboo
             success: function (data) {
                 CS.account.data = data || {};
 
-                var updatedBlueprintAreaData = CS.account.data && !_.isEmpty(CS.account.data[this.props.workbookArea.className]) ? _.clone(CS.account.data[this.props.workbookArea.className], true) : [];
+                var updatedBlueprintAreaData = !_.isEmpty(CS.account.data[this.props.workbookArea.className]) ? _.clone(CS.account.data[this.props.workbookArea.className], true) : [];
                 updatedBlueprintAreaData.push({
                     name: itemNameToAdd,
                     notes: []
@@ -3032,6 +3203,32 @@ CS.Controllers.WorkbookAreaPrioritizeItemsTask = React.createClass({displayName:
     }
 });
 
+CS.Controllers.WorkbookAreaThreeStandoutsPanel = React.createClass({displayName: "WorkbookAreaThreeStandoutsPanel",
+    render: function () {
+        var humanReadableClassName = this.props.workbookArea.humanReadableClassName.toLowerCase();
+
+        return (
+            React.createElement("div", {className: "three-standouts"}, 
+                React.createElement("h2", null, React.createElement("i", {className: "fa fa-star"}), "Your top-3 ", humanReadableClassName, React.createElement("i", {className: "fa fa-star"})), 
+
+                React.createElement("p", null, "From what you've indicated so far, these are the three ", humanReadableClassName, " that you should focus on when describing yourself:"), 
+
+                React.createElement("ul", null, 
+                    React.createElement("li", null, this.props.threeStandouts[0]), 
+                    React.createElement("li", null, this.props.threeStandouts[1]), 
+                    React.createElement("li", null, this.props.threeStandouts[2])
+                ), 
+
+                React.createElement("p", null, "You have great examples for all of them. Use examples when you write your application and always be prepared to use them during an interview."), 
+
+                React.createElement("p", null, "This exercise is now over. You'll find your top-3 ", humanReadableClassName, " in the app at any time. Keep using the service at your wish."), 
+
+                React.createElement("p", null, "Please help us out by ", React.createElement("a", {href: "#"}, "answering a three-question survey."))
+            )
+            );
+    }
+});
+
 CS.Controllers.WorkbookArea = P(function (c) {
     c.$el = $(document.getElementById("content"));
 
@@ -3050,63 +3247,69 @@ CS.Controllers.WorkbookArea = P(function (c) {
 
         render: function () {
             var workbookAreaDescriptionReact = null;
+            var threeStandoutsReact = null;
             var pepTalkReact = null;
             var taskReact = null;
-            var addCustomTaskPanelReact = null;
+            var adminPanelReact = null;
 
             if (this.state.workbookArea) {
                 workbookAreaDescriptionReact = React.createElement(CS.Controllers.WorkbookAreaDescription, {workbookAreaClassName: this.state.workbookArea.className, controller: this.state.controller});
 
-                if (!this.state.isPepTalkClosed && !this.state.customTask) {
-                    var taskCompletePepTalk = null;
+                if (CS.account.data && CS.account.data.standouts && CS.account.data.standouts[this.state.workbookArea.className]) {
+                    threeStandoutsReact = React.createElement(CS.Controllers.WorkbookAreaThreeStandoutsPanel, {workbookArea: this.state.workbookArea, threeStandouts: CS.account.data.standouts[this.state.workbookArea.className]});
+                } else {
+                    if (!this.state.isPepTalkClosed && !this.state.customTask) {
+                        var taskCompletePepTalk = null;
 
-                    if (this.state.isCustomTaskComplete) {
-                        taskCompletePepTalk = { templateClassName: "WorkbookAreaCustomTaskComplete" };
-                    } else {
-                        taskCompletePepTalk = _.find(CS.WorkbookAreaTaskCompletePepTalks, function(pepTalk) {
-                            return pepTalk.getWorkbookArea().id === this.state.workbookArea.id && pepTalk.isActive();
-                        }.bind(this));
+                        if (this.state.isCustomTaskComplete) {
+                            taskCompletePepTalk = { templateClassName: "WorkbookAreaCustomTaskComplete" };
+                        } else {
+                            taskCompletePepTalk = _.find(CS.WorkbookAreaTaskCompletePepTalks, function (pepTalk) {
+                                return pepTalk.getWorkbookArea().id === this.state.workbookArea.id && pepTalk.isActive();
+                            }.bind(this));
+                        }
+
+                        if (taskCompletePepTalk) {
+                            pepTalkReact = React.createElement(CS.Controllers[taskCompletePepTalk.templateClassName], {workbookArea: this.state.workbookArea, controller: this.state.controller});
+                        }
                     }
 
-                    if (taskCompletePepTalk) {
-                        pepTalkReact = React.createElement(CS.Controllers[taskCompletePepTalk.templateClassName], {workbookArea: this.state.workbookArea, controller: this.state.controller});
-                    }
-                }
+                    if (!this.state.isCustomTaskComplete) {
+                        var activeTask = this.state.customTask ||
+                            _.find(CS.WorkbookAreaTasks, function (task) {  // Level 3
+                                return task.getWorkbookArea().id === this.state.workbookArea.id && task.level === 3 && task.isActive();
+                            }.bind(this)) ||
+                            _.find(CS.WorkbookAreaTasks, function (task) {  // Level 2
+                                return task.getWorkbookArea().id === this.state.workbookArea.id && task.level === 2 && task.isActive();
+                            }.bind(this)) ||
+                            _.find(CS.WorkbookAreaTasks, function (task) {  // Level 1
+                                return task.getWorkbookArea().id === this.state.workbookArea.id && task.level === 1 && task.isActive();
+                            }.bind(this));
 
-                if (!this.state.isCustomTaskComplete) {
-                    var activeTask = this.state.customTask ||
-                        _.find(CS.WorkbookAreaTasks, function (task) {  // Level 3
-                            return task.getWorkbookArea().id === this.state.workbookArea.id && task.level === 3 && task.isActive();
-                        }.bind(this)) ||
-                        _.find(CS.WorkbookAreaTasks, function (task) {  // Level 2
-                            return task.getWorkbookArea().id === this.state.workbookArea.id && task.level === 2 && task.isActive();
-                        }.bind(this)) ||
-                        _.find(CS.WorkbookAreaTasks, function (task) {  // Level 1
-                            return task.getWorkbookArea().id === this.state.workbookArea.id && task.level === 1 && task.isActive();
-                        }.bind(this));
+                        if (activeTask) {
+                            var nextTask = _.find(CS.WorkbookAreaTasks, function (task) {
+                                return task.previousTaskId === activeTask.id;
+                            });
 
-                    if (activeTask) {
-                        var nextTask = _.find(CS.WorkbookAreaTasks, function (task) {
-                            return task.previousTaskId === activeTask.id;
-                        });
+                            var comingUpNextText = nextTask ? nextTask.comingUpText : null;
 
-                        var comingUpNextText = nextTask ? nextTask.comingUpText : null;
-
-                        taskReact = React.createElement(CS.Controllers[activeTask.templateClassName], {task: activeTask, workbookArea: this.state.workbookArea, comingUpNextText: comingUpNextText, hidden: taskCompletePepTalk && !this.state.isPepTalkClosed, controller: this.state.controller});
+                            taskReact = React.createElement(CS.Controllers[activeTask.templateClassName], {task: activeTask, workbookArea: this.state.workbookArea, comingUpNextText: comingUpNextText, hidden: taskCompletePepTalk && !this.state.isPepTalkClosed, controller: this.state.controller});
+                        }
                     }
                 }
 
                 if (this.state.isAdmin && !this.state.customTask) {
-                    addCustomTaskPanelReact = React.createElement(CS.Controllers.AddCustomTask, {workbookAreaId: this.state.workbookArea.id, controller: this.state.controller});
+                    adminPanelReact = React.createElement(CS.Controllers.AdminPanel, {workbookArea: this.state.workbookArea, controller: this.state.controller});
                 }
             }
 
             return (
                 React.createElement("div", {ref: "wrapper", id: "content-wrapper"}, 
                     workbookAreaDescriptionReact, 
+                    threeStandoutsReact, 
                     pepTalkReact, 
                     taskReact, 
-                    addCustomTaskPanelReact, 
+                    adminPanelReact, 
 
                     React.createElement("ul", {className: "styleless item-names-list"}, 
                         this.state.workbookItems.map(function (item, index) {
@@ -3217,7 +3420,7 @@ CS.Controllers.WorkbookArea = P(function (c) {
                 success: function (data) {
                     CS.account.data = data || {};
 
-                    var updatedBlueprintAreaData = CS.account.data && !_.isEmpty(CS.account.data[this.state.workbookArea.className]) ? _.clone(CS.account.data[this.state.workbookArea.className], true) : [];
+                    var updatedBlueprintAreaData = !_.isEmpty(CS.account.data[this.state.workbookArea.className]) ? _.clone(CS.account.data[this.state.workbookArea.className], true) : [];
                     updatedBlueprintAreaData.push({
                         name: itemNameToAdd,
                         notes: []
@@ -3423,7 +3626,7 @@ CS.Controllers.WorkbookAreaWorkbookItem = React.createClass({displayName: "Workb
             success: function (data) {
                 CS.account.data = data || {};
 
-                var updatedBlueprintAreaData = CS.account.data && !_.isEmpty(CS.account.data[this.props.workbookAreaClassName]) ? _.clone(CS.account.data[this.props.workbookAreaClassName], true) : [];
+                var updatedBlueprintAreaData = !_.isEmpty(CS.account.data[this.props.workbookAreaClassName]) ? _.clone(CS.account.data[this.props.workbookAreaClassName], true) : [];
 
                 if (newItemName) {
                     updatedBlueprintAreaData[this.props.workbookItemIndex].name = newItemName;
