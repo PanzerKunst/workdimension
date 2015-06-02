@@ -836,7 +836,7 @@ CS.WorkbookAreaTasks = [
         },
         wordings: [
             {
-                prompt: "Which ones of these do you feel best describe your strengths? Prioritize by drag-and-dropping the items in this area"
+                prompt: "Which ones of these do you feel best describe your strengths? Prioritize by drag-and-dropping the items in this area."
             }
         ],
         stepCount: 1,
@@ -875,7 +875,7 @@ CS.WorkbookAreaTasks = [
         },
         wordings: [
             {
-                prompt: "What's most important to you? Prioritize your drivers by drag-and-dropping the items"
+                prompt: "What's most important to you? Prioritize your drivers by drag-and-dropping the items."
             }
         ],
         stepCount: 1,
@@ -914,7 +914,7 @@ CS.WorkbookAreaTasks = [
         },
         wordings: [
             {
-                prompt: "What's most important to you in a work environment? Please order these items in order of importance by drag-and-dropping"
+                prompt: "What's most important to you in a work environment? Please order these items in order of importance by drag-and-dropping."
             }
         ],
         stepCount: 1,
@@ -953,7 +953,7 @@ CS.WorkbookAreaTasks = [
         },
         wordings: [
             {
-                prompt: "Which ones of these do you feel are your most important achievements? Prioritize by drag-and-dropping the items in this area"
+                prompt: "Which ones of these do you feel are your most important achievements? Prioritize by drag-and-dropping the items in this area."
             }
         ],
         stepCount: 1,
@@ -1031,7 +1031,7 @@ CS.WorkbookAreaTasks = [
         },
         wordings: [
             {
-                prompt: "If you were given the opportunity to do more of only three things in this list, which ones would it be? Place them at the top by drag-and-dropping"
+                prompt: "If you were given the opportunity to do more of only three things in this list, which ones would it be? Place them at the top by drag-and-dropping."
             }
         ],
         stepCount: 1,
@@ -1070,7 +1070,7 @@ CS.WorkbookAreaTasks = [
         },
         wordings: [
             {
-                prompt: "Which ones of these tracks do you find the most interesting to pursue right now? Prioritize by drag-and-dropping the items in this area"
+                prompt: "Which ones of these tracks do you find the most interesting to pursue right now? Prioritize by drag-and-dropping the items in this area."
             }
         ],
         stepCount: 1,

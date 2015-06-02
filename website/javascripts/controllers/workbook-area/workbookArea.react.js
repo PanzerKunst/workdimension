@@ -25,7 +25,7 @@ CS.Controllers.WorkbookArea = P(function (c) {
                 workbookAreaDescriptionReact = <CS.Controllers.WorkbookAreaDescription workbookAreaClassName={this.state.workbookArea.className} controller={this.state.controller} />;
 
                 if (CS.account.data && CS.account.data.standouts && CS.account.data.standouts[this.state.workbookArea.className]) {
-                    threeStandoutsReact = <CS.Controllers.WorkbookAreaThreeStandoutsPanel workbookArea={this.state.workbookArea} threeStandouts={CS.account.data.standouts[this.state.workbookArea.className]} />;
+                    threeStandoutsReact = React.createElement(CS.Controllers.ThreeStandoutPanel[this.state.workbookArea.className], {threeStandouts: CS.account.data.standouts[this.state.workbookArea.className]});
                 } else {
                     if (!this.state.isPepTalkClosed && !this.state.customTask) {
                         var taskCompletePepTalk = null;
@@ -220,9 +220,8 @@ CS.Controllers.WorkbookArea = P(function (c) {
     c.init = function (workbookArea, customTasks, isAdmin) {
         this.workbookArea = workbookArea;
 
-        this.customTasks = customTasks;
-        if (!_.isEmpty(this.customTasks)) {
-            this.customTasks = _.map(this.customTasks, function(task) {
+        if (!_.isEmpty(customTasks)) {
+            this.customTasks = _.map(customTasks, function(task) {
                 task.templateClassName = CS.Controllers.WorkbookAreaCommon.customAreaTaskTemplateClassName;
                 return task;
             });

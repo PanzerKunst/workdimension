@@ -1,12 +1,10 @@
-CS.Controllers.WorkbookAreaThreeStandoutsPanel = React.createClass({
+CS.Controllers.ThreeStandoutPanel.Strengths = React.createClass({
     render: function () {
-        var humanReadableClassName = this.props.workbookArea.humanReadableClassName.toLowerCase();
-
         return (
             <div className="three-standouts">
-                <h2><i className="fa fa-star"></i>Your top-3 {humanReadableClassName}<i className="fa fa-star"></i></h2>
+                <h2><i className="fa fa-star"></i>Your top-3 strengths<i className="fa fa-star"></i></h2>
 
-                <p>From what you've indicated so far, these are the three {humanReadableClassName} that you should focus on when describing yourself:</p>
+                <p>From what you've indicated so far, these are the three strengths that you should focus on when describing yourself:</p>
 
                 <ul>
                     <li>{this.props.threeStandouts[0]}</li>
@@ -16,7 +14,7 @@ CS.Controllers.WorkbookAreaThreeStandoutsPanel = React.createClass({
 
                 <p>You have great examples for all of them. Use examples when you write your application and always be prepared to use them during an interview.</p>
 
-                <p>This exercise is now over. You'll find your top-3 {humanReadableClassName} in the app at any time. Keep using the service at your wish.</p>
+                <p>This exercise is now over. You'll find your top-3 strengths in the app at any time. Keep using the service at your wish.</p>
 
                 <p>Please help us out by <a href="#">answering a three-question survey.</a></p>
             </div>

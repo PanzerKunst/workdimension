@@ -6648,9 +6648,9 @@ footer {
     #index #content .three-standouts > .fa-times {
       right: -0.45em;
       top: -0.45em; }
-  #index #content .fa-star {
-    color: #FDC300;
-    margin: 0 1em; }
+    #index #content .three-standouts .fa-star {
+      color: #FDC300;
+      margin: 0 1em; }
 
 #select-areas-modal .modal-title {
   font-size: 1.2em;

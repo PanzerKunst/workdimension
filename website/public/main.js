@@ -284,6 +284,8 @@ CS.overviewController = null;
 CS.workbookAreaController = null;
 CS.blueprintAreasSelector = null;
 
+CS.Controllers.ThreeStandoutPanel = {};
+
 // Global functions
 CS.saveAccountData = function (callback) {
     var type = "POST";
@@ -2253,12 +2255,7 @@ CS.Controllers.OverviewBlueprintAreaPanel = React.createClass({displayName: "Ove
                     React.createElement("h2", null, React.createElement("a", {href: workbookAreaTitleHref}, this._getBlueprintArea().title)), 
                     React.createElement("button", {className: "styleless fa fa-chevron-down menu", onClick: this._showActionsMenu}), 
 
-                    React.createElement("section", {className: "workbook-area-actions"}, 
-                        React.createElement("ul", {className: "styleless"}, 
-                            React.createElement("li", null, React.createElement("i", {className: "fa fa-question-circle"}), React.createElement("a", {onClick: this._showWorkbookAreaDescriptionModal}, "Area info")), 
-                            React.createElement("li", null, React.createElement("i", {className: "fa fa-eye-slash"}), React.createElement("a", {onClick: this._hideBlueprintAreaPanel}, "Hide this area"))
-                        )
-                    ), 
+                    React.createElement(CS.Controllers.OverviewWorkbookAreaActions, {workbookArea: this._getBlueprintArea(), controller: this}), 
 
                     React.createElement("ul", {className: "styleless item-names-list"}, 
                         this.props.blueprintAreaWithData.items.map(function (item, index) {
@@ -2330,13 +2327,8 @@ CS.Controllers.OverviewBlueprintAreaPanel = React.createClass({displayName: "Ove
     },
 
     _initNonReactableEvents: function() {
-        this.$contentOverlayWhenMenuOpen.click(this._hideActionsMenu);
+        this.$contentOverlayWhenMenuOpen.click(this.hideActionsMenu);
         this.$areaDescriptionModal.on("hidden.bs.modal", this._saveAreaDescriptionAsClosed);
-    },
-
-    _hideBlueprintAreaPanel: function () {
-        this._getBlueprintArea().deactivate();
-        CS.overviewController.reRender();
     },
 
     _toggleCollapsedList: function () {
@@ -2351,14 +2343,9 @@ CS.Controllers.OverviewBlueprintAreaPanel = React.createClass({displayName: "Ove
         this.$actionsMenu.show();
     },
 
-    _hideActionsMenu: function() {
+    hideActionsMenu: function() {
         this.$mainContainer.removeClass("workbook-area-actions-menu-open");
         this.$actionsMenu.hide();
-    },
-
-    _showWorkbookAreaDescriptionModal: function() {
-        this.$areaDescriptionModal.modal();
-        this._hideActionsMenu();
     },
 
     _saveAreaDescriptionAsClosed: function() {
@@ -2599,13 +2586,77 @@ CS.Controllers.OverviewThreeStandoutsPanel = React.createClass({displayName: "Ov
 
     _initElements: function() {
         this.$wrapper = $(React.findDOMNode(this.refs.wrapper));
+        this.$workbookAreaPanel = this.$wrapper.siblings(".well");
     },
 
     _hide: function() {
-        this.$wrapper.hide();
-        this.$wrapper.siblings(".well").show();
+        CS.Services.Animator.fadeOut(this.$wrapper, {
+            animationDuration: CS.animationDuration.short,
+            onComplete: function () {
+                CS.Services.Animator.fadeIn(this.$workbookAreaPanel);
+                CS.overviewController.rePackerise();
+            }.bind(this)
+        });
 
         CS.overviewController.rePackerise();
+    }
+});
+
+CS.Controllers.OverviewWorkbookAreaActions = React.createClass({displayName: "OverviewWorkbookAreaActions",
+    render: function () {
+        var threeStandoutsItemReact = null;
+
+        if (CS.account.data && CS.account.data.standouts && CS.account.data.standouts[this.props.workbookArea.className]) {
+            threeStandoutsItemReact = (
+                React.createElement("li", null, React.createElement("i", {className: "fa fa-star"}), React.createElement("a", {onClick: this._showThreeStandouts}, "Standouts"))
+                );
+        }
+
+        return (
+            React.createElement("section", {className: "workbook-area-actions", ref: "wrapper"}, 
+                React.createElement("ul", {className: "styleless"}, 
+                    React.createElement("li", null, React.createElement("i", {className: "fa fa-question-circle"}), React.createElement("a", {onClick: this._showWorkbookAreaDescriptionModal}, "Area info")), 
+                    React.createElement("li", null, React.createElement("i", {className: "fa fa-eye-slash"}), React.createElement("a", {onClick: this._hideBlueprintAreaPanel}, "Hide this area")), 
+                    threeStandoutsItemReact
+                )
+            )
+            );
+    },
+
+    componentDidMount: function () {
+        this._initElements();
+    },
+
+    _initElements: function () {
+        this.$wrapper = $(React.findDOMNode(this.refs.wrapper));
+        this.$workbookAreaPanel = this.$wrapper.parent();
+        this.$threeStandoutsPanel = this.$workbookAreaPanel.siblings(".three-standouts");
+        this.$areaDescriptionModal = this.$workbookAreaPanel.siblings(".workbook-area-description-modal");
+    },
+
+    _showWorkbookAreaDescriptionModal: function() {
+        this.props.controller.hideActionsMenu();
+
+        this.$areaDescriptionModal.modal();
+    },
+
+    _hideBlueprintAreaPanel: function () {
+        this.props.controller.hideActionsMenu();
+
+        this.props.workbookArea.deactivate();
+        CS.overviewController.reRender();
+    },
+
+    _showThreeStandouts: function() {
+        this.props.controller.hideActionsMenu();
+
+        CS.Services.Animator.fadeOut(this.$workbookAreaPanel, {
+            animationDuration: CS.animationDuration.short,
+            onComplete: function () {
+                CS.Services.Animator.fadeIn(this.$threeStandoutsPanel);
+                CS.overviewController.rePackerise();
+            }.bind(this)
+        });
     }
 });
 
@@ -3203,15 +3254,13 @@ CS.Controllers.WorkbookAreaPrioritizeItemsTask = React.createClass({displayName:
     }
 });
 
-CS.Controllers.WorkbookAreaThreeStandoutsPanel = React.createClass({displayName: "WorkbookAreaThreeStandoutsPanel",
+CS.Controllers.ThreeStandoutPanel.Contexts = React.createClass({displayName: "Contexts",
     render: function () {
-        var humanReadableClassName = this.props.workbookArea.humanReadableClassName.toLowerCase();
-
         return (
             React.createElement("div", {className: "three-standouts"}, 
-                React.createElement("h2", null, React.createElement("i", {className: "fa fa-star"}), "Your top-3 ", humanReadableClassName, React.createElement("i", {className: "fa fa-star"})), 
+                React.createElement("h2", null, React.createElement("i", {className: "fa fa-star"}), "Your top-3 contexts", React.createElement("i", {className: "fa fa-star"})), 
 
-                React.createElement("p", null, "From what you've indicated so far, these are the three ", humanReadableClassName, " that you should focus on when describing yourself:"), 
+                React.createElement("p", null, "From what you've indicated so far, these are the three contexts that you should focus on when describing yourself:"), 
 
                 React.createElement("ul", null, 
                     React.createElement("li", null, this.props.threeStandouts[0]), 
@@ -3221,7 +3270,55 @@ CS.Controllers.WorkbookAreaThreeStandoutsPanel = React.createClass({displayName:
 
                 React.createElement("p", null, "You have great examples for all of them. Use examples when you write your application and always be prepared to use them during an interview."), 
 
-                React.createElement("p", null, "This exercise is now over. You'll find your top-3 ", humanReadableClassName, " in the app at any time. Keep using the service at your wish."), 
+                React.createElement("p", null, "This exercise is now over. You'll find your top-3 contexts in the app at any time. Keep using the service at your wish."), 
+
+                React.createElement("p", null, "Please help us out by ", React.createElement("a", {href: "#"}, "answering a three-question survey."))
+            )
+            );
+    }
+});
+
+CS.Controllers.ThreeStandoutPanel.Drivers = React.createClass({displayName: "Drivers",
+    render: function () {
+        return (
+            React.createElement("div", {className: "three-standouts"}, 
+                React.createElement("h2", null, React.createElement("i", {className: "fa fa-star"}), "Your top-3 drivers", React.createElement("i", {className: "fa fa-star"})), 
+
+                React.createElement("p", null, "From what you've indicated so far, these are the three drivers that you should focus on when describing yourself:"), 
+
+                React.createElement("ul", null, 
+                    React.createElement("li", null, this.props.threeStandouts[0]), 
+                    React.createElement("li", null, this.props.threeStandouts[1]), 
+                    React.createElement("li", null, this.props.threeStandouts[2])
+                ), 
+
+                React.createElement("p", null, "You have great examples for all of them. Use examples when you write your application and always be prepared to use them during an interview."), 
+
+                React.createElement("p", null, "This exercise is now over. You'll find your top-3 drivers in the app at any time. Keep using the service at your wish."), 
+
+                React.createElement("p", null, "Please help us out by ", React.createElement("a", {href: "#"}, "answering a three-question survey."))
+            )
+            );
+    }
+});
+
+CS.Controllers.ThreeStandoutPanel.Strengths = React.createClass({displayName: "Strengths",
+    render: function () {
+        return (
+            React.createElement("div", {className: "three-standouts"}, 
+                React.createElement("h2", null, React.createElement("i", {className: "fa fa-star"}), "Your top-3 strengths", React.createElement("i", {className: "fa fa-star"})), 
+
+                React.createElement("p", null, "From what you've indicated so far, these are the three strengths that you should focus on when describing yourself:"), 
+
+                React.createElement("ul", null, 
+                    React.createElement("li", null, this.props.threeStandouts[0]), 
+                    React.createElement("li", null, this.props.threeStandouts[1]), 
+                    React.createElement("li", null, this.props.threeStandouts[2])
+                ), 
+
+                React.createElement("p", null, "You have great examples for all of them. Use examples when you write your application and always be prepared to use them during an interview."), 
+
+                React.createElement("p", null, "This exercise is now over. You'll find your top-3 strengths in the app at any time. Keep using the service at your wish."), 
 
                 React.createElement("p", null, "Please help us out by ", React.createElement("a", {href: "#"}, "answering a three-question survey."))
             )
@@ -3256,7 +3353,7 @@ CS.Controllers.WorkbookArea = P(function (c) {
                 workbookAreaDescriptionReact = React.createElement(CS.Controllers.WorkbookAreaDescription, {workbookAreaClassName: this.state.workbookArea.className, controller: this.state.controller});
 
                 if (CS.account.data && CS.account.data.standouts && CS.account.data.standouts[this.state.workbookArea.className]) {
-                    threeStandoutsReact = React.createElement(CS.Controllers.WorkbookAreaThreeStandoutsPanel, {workbookArea: this.state.workbookArea, threeStandouts: CS.account.data.standouts[this.state.workbookArea.className]});
+                    threeStandoutsReact = React.createElement(CS.Controllers.ThreeStandoutPanel[this.state.workbookArea.className], {threeStandouts: CS.account.data.standouts[this.state.workbookArea.className]});
                 } else {
                     if (!this.state.isPepTalkClosed && !this.state.customTask) {
                         var taskCompletePepTalk = null;
@@ -3451,9 +3548,8 @@ CS.Controllers.WorkbookArea = P(function (c) {
     c.init = function (workbookArea, customTasks, isAdmin) {
         this.workbookArea = workbookArea;
 
-        this.customTasks = customTasks;
-        if (!_.isEmpty(this.customTasks)) {
-            this.customTasks = _.map(this.customTasks, function(task) {
+        if (!_.isEmpty(customTasks)) {
+            this.customTasks = _.map(customTasks, function(task) {
                 task.templateClassName = CS.Controllers.WorkbookAreaCommon.customAreaTaskTemplateClassName;
                 return task;
             });
@@ -5132,7 +5228,7 @@ CS.Controllers.WorkbookItemNote = React.createClass({displayName: "WorkbookItemN
         },
         wordings: [
             {
-                prompt: "Which ones of these do you feel best describe your strengths? Prioritize by drag-and-dropping the items in this area"
+                prompt: "Which ones of these do you feel best describe your strengths? Prioritize by drag-and-dropping the items in this area."
             }
         ],
         stepCount: 1,
@@ -5171,7 +5267,7 @@ CS.Controllers.WorkbookItemNote = React.createClass({displayName: "WorkbookItemN
         },
         wordings: [
             {
-                prompt: "What's most important to you? Prioritize your drivers by drag-and-dropping the items"
+                prompt: "What's most important to you? Prioritize your drivers by drag-and-dropping the items."
             }
         ],
         stepCount: 1,
@@ -5210,7 +5306,7 @@ CS.Controllers.WorkbookItemNote = React.createClass({displayName: "WorkbookItemN
         },
         wordings: [
             {
-                prompt: "What's most important to you in a work environment? Please order these items in order of importance by drag-and-dropping"
+                prompt: "What's most important to you in a work environment? Please order these items in order of importance by drag-and-dropping."
             }
         ],
         stepCount: 1,
@@ -5249,7 +5345,7 @@ CS.Controllers.WorkbookItemNote = React.createClass({displayName: "WorkbookItemN
         },
         wordings: [
             {
-                prompt: "Which ones of these do you feel are your most important achievements? Prioritize by drag-and-dropping the items in this area"
+                prompt: "Which ones of these do you feel are your most important achievements? Prioritize by drag-and-dropping the items in this area."
             }
         ],
         stepCount: 1,
@@ -5327,7 +5423,7 @@ CS.Controllers.WorkbookItemNote = React.createClass({displayName: "WorkbookItemN
         },
         wordings: [
             {
-                prompt: "If you were given the opportunity to do more of only three things in this list, which ones would it be? Place them at the top by drag-and-dropping"
+                prompt: "If you were given the opportunity to do more of only three things in this list, which ones would it be? Place them at the top by drag-and-dropping."
             }
         ],
         stepCount: 1,
@@ -5366,7 +5462,7 @@ CS.Controllers.WorkbookItemNote = React.createClass({displayName: "WorkbookItemN
         },
         wordings: [
             {
-                prompt: "Which ones of these tracks do you find the most interesting to pursue right now? Prioritize by drag-and-dropping the items in this area"
+                prompt: "Which ones of these tracks do you find the most interesting to pursue right now? Prioritize by drag-and-dropping the items in this area."
             }
         ],
         stepCount: 1,

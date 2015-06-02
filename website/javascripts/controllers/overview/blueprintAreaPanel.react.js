@@ -24,12 +24,7 @@ CS.Controllers.OverviewBlueprintAreaPanel = React.createClass({
                     <h2><a href={workbookAreaTitleHref}>{this._getBlueprintArea().title}</a></h2>
                     <button className="styleless fa fa-chevron-down menu" onClick={this._showActionsMenu}></button>
 
-                    <section className="workbook-area-actions">
-                        <ul className="styleless">
-                            <li><i className="fa fa-question-circle"></i><a onClick={this._showWorkbookAreaDescriptionModal}>Area info</a></li>
-                            <li><i className="fa fa-eye-slash"></i><a onClick={this._hideBlueprintAreaPanel}>Hide this area</a></li>
-                        </ul>
-                    </section>
+                    <CS.Controllers.OverviewWorkbookAreaActions workbookArea={this._getBlueprintArea()} controller={this} />
 
                     <ul className="styleless item-names-list">
                         {this.props.blueprintAreaWithData.items.map(function (item, index) {
@@ -101,13 +96,8 @@ CS.Controllers.OverviewBlueprintAreaPanel = React.createClass({
     },
 
     _initNonReactableEvents: function() {
-        this.$contentOverlayWhenMenuOpen.click(this._hideActionsMenu);
+        this.$contentOverlayWhenMenuOpen.click(this.hideActionsMenu);
         this.$areaDescriptionModal.on("hidden.bs.modal", this._saveAreaDescriptionAsClosed);
-    },
-
-    _hideBlueprintAreaPanel: function () {
-        this._getBlueprintArea().deactivate();
-        CS.overviewController.reRender();
     },
 
     _toggleCollapsedList: function () {
@@ -122,14 +112,9 @@ CS.Controllers.OverviewBlueprintAreaPanel = React.createClass({
         this.$actionsMenu.show();
     },
 
-    _hideActionsMenu: function() {
+    hideActionsMenu: function() {
         this.$mainContainer.removeClass("workbook-area-actions-menu-open");
         this.$actionsMenu.hide();
-    },
-
-    _showWorkbookAreaDescriptionModal: function() {
-        this.$areaDescriptionModal.modal();
-        this._hideActionsMenu();
     },
 
     _saveAreaDescriptionAsClosed: function() {

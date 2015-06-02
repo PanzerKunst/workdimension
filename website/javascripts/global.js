@@ -28,6 +28,8 @@ CS.overviewController = null;
 CS.workbookAreaController = null;
 CS.blueprintAreasSelector = null;
 
+CS.Controllers.ThreeStandoutPanel = {};
+
 // Global functions
 CS.saveAccountData = function (callback) {
     var type = "POST";

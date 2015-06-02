@@ -23,11 +23,17 @@ CS.Controllers.OverviewThreeStandoutsPanel = React.createClass({
 
     _initElements: function() {
         this.$wrapper = $(React.findDOMNode(this.refs.wrapper));
+        this.$workbookAreaPanel = this.$wrapper.siblings(".well");
     },
 
     _hide: function() {
-        this.$wrapper.hide();
-        this.$wrapper.siblings(".well").show();
+        CS.Services.Animator.fadeOut(this.$wrapper, {
+            animationDuration: CS.animationDuration.short,
+            onComplete: function () {
+                CS.Services.Animator.fadeIn(this.$workbookAreaPanel);
+                CS.overviewController.rePackerise();
+            }.bind(this)
+        });
 
         CS.overviewController.rePackerise();
     }
