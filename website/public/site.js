@@ -2357,10 +2357,12 @@ CS.Controllers.OverviewBlueprintItem = React.createClass({displayName: "Overview
     render: function () {
         var href = "/workbook-items/" + this._getBlueprintAreaClassName() + "/" + this.props.blueprintItemIndex;
 
+        // TODO: replace .fa-bars element from <span> back to <button> after bug https://github.com/RubaXa/Sortable/issues/370 is fixed
+
         return (
             React.createElement("li", {ref: "li"}, 
                 React.createElement("div", {className: "notes-indicator"}), 
-                React.createElement("button", {className: "styleless fa fa-bars"}), 
+                React.createElement("span", {className: "fa fa-bars"}), 
                 React.createElement("p", null, React.createElement("a", {href: href}, this._getBlueprintItemName())), 
                 React.createElement("button", {className: "styleless fa fa-pencil", onClick: this._showEditor}), 
                 React.createElement("form", {role: "form", className: "item-composer", onSubmit: this._handleComposerFormSubmit}, 
@@ -3627,10 +3629,12 @@ CS.Controllers.WorkbookAreaWorkbookItem = React.createClass({displayName: "Workb
     render: function () {
         var href = "/workbook-items/" + this.props.workbookAreaClassName + "/" + this.props.workbookItemIndex;
 
+        // TODO: replace .fa-bars element from <span> back to <button> after bug https://github.com/RubaXa/Sortable/issues/370 is fixed
+
         return (
             React.createElement("li", {ref: "li"}, 
                 React.createElement("div", {className: "notes-indicator"}), 
-                React.createElement("button", {className: "styleless fa fa-bars"}), 
+                React.createElement("span", {className: "fa fa-bars"}), 
                 React.createElement("p", null, React.createElement("a", {href: href}, this.props.workbookItem.name)), 
                 React.createElement("button", {className: "styleless fa fa-pencil", onClick: this._showEditor}), 
                 React.createElement("form", {role: "form", className: "item-composer", onSubmit: this._handleComposerFormSubmit}, 

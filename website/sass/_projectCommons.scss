@@ -43,7 +43,8 @@ a.fa {
       background-color: $background-body-color;
     }
 
-    > button {
+    > button,
+    > span {  // Remove once bug https://github.com/RubaXa/Sortable/issues/370 is fixed
       position: absolute;
       top: -0.55em;
 

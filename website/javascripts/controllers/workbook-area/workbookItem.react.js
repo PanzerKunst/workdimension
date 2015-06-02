@@ -2,10 +2,12 @@ CS.Controllers.WorkbookAreaWorkbookItem = React.createClass({
     render: function () {
         var href = "/workbook-items/" + this.props.workbookAreaClassName + "/" + this.props.workbookItemIndex;
 
+        // TODO: replace .fa-bars element from <span> back to <button> after bug https://github.com/RubaXa/Sortable/issues/370 is fixed
+
         return (
             <li ref="li">
                 <div className="notes-indicator"></div>
-                <button className="styleless fa fa-bars"></button>
+                <span className="fa fa-bars"></span>
                 <p><a href={href}>{this.props.workbookItem.name}</a></p>
                 <button className="styleless fa fa-pencil" onClick={this._showEditor}></button>
                 <form role="form" className="item-composer" onSubmit={this._handleComposerFormSubmit}>

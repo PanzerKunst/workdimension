@@ -6223,18 +6223,26 @@ a.fa:hover, a.fa:focus {
   .item-notes-list > li.editing {
     background-color: white; }
   .item-names-list > li > button,
-  .item-notes-list > li > button {
+  .item-names-list > li > span,
+  .item-notes-list > li > button,
+  .item-notes-list > li > span {
     position: absolute;
     top: -0.55em;
     padding: 0.92em 1em; }
     .item-names-list > li > button.fa-bars,
-    .item-notes-list > li > button.fa-bars {
+    .item-names-list > li > span.fa-bars,
+    .item-notes-list > li > button.fa-bars,
+    .item-notes-list > li > span.fa-bars {
       left: -0.55em; }
       .item-names-list > li > button.fa-bars:hover,
-      .item-notes-list > li > button.fa-bars:hover {
+      .item-names-list > li > span.fa-bars:hover,
+      .item-notes-list > li > button.fa-bars:hover,
+      .item-notes-list > li > span.fa-bars:hover {
         cursor: move; }
     .item-names-list > li > button.fa-pencil,
-    .item-notes-list > li > button.fa-pencil {
+    .item-names-list > li > span.fa-pencil,
+    .item-notes-list > li > button.fa-pencil,
+    .item-notes-list > li > span.fa-pencil {
       right: -0.55em; }
   .item-names-list > li > p,
   .item-notes-list > li > p {
