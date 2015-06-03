@@ -585,14 +585,14 @@ CS.WorkbookAreaTasks = [
         },
         wordings: [
             {
-                prompt: "Which ones of these do you feel best describe your strengths? Prioritize by drag-and-dropping the items in this area."
+                prompt: "Vilka av de här tycker du bäst beskriver dina styrkor? Sortera dina styrkorna med de viktigaste överst genom genom att dra-och-släppa."
             }
         ],
         stepCount: 1,
         templateClassName: "WorkbookAreaPrioritizeItemsTask",
-        workingOnText: "prioritizing my Strengths",
-        notificationText: "Prioritize my Strengths",
-        comingUpText: "prioritizing"
+        workingOnText: "sortera styrkor",
+        notificationText: "Sortera styrkor",
+        comingUpText: "sortera"
     },
     {
         id: 20,
@@ -624,14 +624,14 @@ CS.WorkbookAreaTasks = [
         },
         wordings: [
             {
-                prompt: "What's most important to you? Prioritize your drivers by drag-and-dropping the items."
+                prompt: "Vad är viktigast för dig? Sortera dina drivkrafter med de viktigaste överst genom att dra-och-släppa"
             }
         ],
         stepCount: 1,
         templateClassName: "WorkbookAreaPrioritizeItemsTask",
-        workingOnText: "prioritizing my Drivers",
-        notificationText: "Prioritize my Drivers",
-        comingUpText: "prioritizing"
+        workingOnText: "sortera drivkrafter",
+        notificationText: "Sortera drivkrafter",
+        comingUpText: "sortera"
     },
     {
         id: 22,
@@ -663,14 +663,14 @@ CS.WorkbookAreaTasks = [
         },
         wordings: [
             {
-                prompt: "Which ones of these do you feel are your most important achievements? Prioritize by drag-and-dropping the items in this area."
+                prompt: "Vilka resultat känner du är mest engagerande? Sortera med det viktigaste överst genom att dra-och-släppa."
             }
         ],
         stepCount: 1,
         templateClassName: "WorkbookAreaPrioritizeItemsTask",
-        workingOnText: "prioritizing my Achievements",
-        notificationText: "Prioritize my Achievements",
-        comingUpText: "prioritizing"
+        workingOnText: "sortera resultat",
+        notificationText: "Sortera resultat",
+        comingUpText: "sortera"
     },
     {
         id: 24,
@@ -702,14 +702,14 @@ CS.WorkbookAreaTasks = [
         },
         wordings: [
             {
-                prompt: "If you were given the opportunity to do more of only three things in this list, which ones would it be? Place them at the top by drag-and-dropping."
+                prompt: "Om du bara fick välja en sak i listan, vad skulle det vara? Sortera listan med det viktigaste överst genom att dra-och-släppa.Place them at the top by drag-and-dropping."
             }
         ],
         stepCount: 1,
         templateClassName: "WorkbookAreaPrioritizeItemsTask",
-        workingOnText: "prioritizing what I want More",
-        notificationText: "Prioritize what I want More",
-        comingUpText: "prioritizing"
+        workingOnText: "sortera saker jag vill göra mer av",
+        notificationText: "Sortera saker jag vill göra mer av",
+        comingUpText: "sortera"
     },
     {
         id: 25,
@@ -741,13 +741,13 @@ CS.WorkbookAreaTasks = [
         },
         wordings: [
             {
-                prompt: "Which ones of these tracks do you find the most interesting to pursue right now? Prioritize by drag-and-dropping the items in this area."
+                prompt: "Vilka av de här tycker känns mest intressant just nu? Sortera med de viktigaste längst upp."
             }
         ],
         stepCount: 1,
         templateClassName: "WorkbookAreaPrioritizeItemsTask",
-        workingOnText: "prioritizing my Tracks",
-        notificationText: "Prioritize my Tracks",
-        comingUpText: "prioritizing"
+        workingOnText: "sortera Spår att följa",
+        notificationText: "Sortera spår att följa",
+        comingUpText: "sortera"
     }
 ];
