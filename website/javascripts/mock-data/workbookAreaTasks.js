@@ -40,8 +40,8 @@ CS.WorkbookAreaTasks = [
         ],
         stepCount: CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl1TaskComplete,
         templateClassName: "WorkbookAreaAddItemTask",
-        workingOnText: "making inventory of Achievements",
-        notificationText: "Make inventory of Achievements"
+        workingOnText: "Gör en inventering av Resultat",
+        notificationText: "Gör en inventering av Resultat"
     },
     {
         id: 2,
@@ -80,8 +80,8 @@ CS.WorkbookAreaTasks = [
         ],
         stepCount: CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl1TaskComplete,
         templateClassName: "WorkbookAreaAddItemTask",
-        workingOnText: "making inventory of Tracks",
-        notificationText: "Make inventory of Tracks"
+        workingOnText: "Gör en inventering av Spår att följa... ",
+        notificationText: "Gör en inventering av Spår att följa... "
     },
     {
         id: 3,
@@ -124,8 +124,8 @@ CS.WorkbookAreaTasks = [
         ],
         stepCount: CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl1TaskComplete,
         templateClassName: "WorkbookAreaAddItemTask",
-        workingOnText: "making inventory of Strengths",
-        notificationText: "Make inventory of Strengths"
+        workingOnText: "Gör en inventering av Styrkor",
+        notificationText: "Gör en inventering av Styrkor"
     },
     {
         id: 4,
@@ -169,8 +169,8 @@ CS.WorkbookAreaTasks = [
         ],
         stepCount: CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl1TaskComplete,
         templateClassName: "WorkbookAreaAddItemTask",
-        workingOnText: "making inventory of Drivers",
-        notificationText: "Make inventory of Drivers"
+        workingOnText: "Gör en inventering av Drivkrafter",
+        notificationText: "Gör en inventering av Drivkrafter"
     },
     {
         id: 5,
@@ -246,8 +246,8 @@ CS.WorkbookAreaTasks = [
         ],
         stepCount: CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl1TaskComplete,
         templateClassName: "WorkbookAreaAddItemTask",
-        workingOnText: "making inventory of Mores",
-        notificationText: "Make inventory of Mores"
+        workingOnText: "Gör en inventering av Göra mer av... ",
+        notificationText: "Gör en inventering av Göra mer av... "
     },
     {
         id: 7,
@@ -286,8 +286,8 @@ CS.WorkbookAreaTasks = [
         ],
         stepCount: CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl1TaskComplete,
         templateClassName: "WorkbookAreaAddItemTask",
-        workingOnText: "making inventory of Tools and Methods",
-        notificationText: "Make inventory of Tools and Methods"
+        workingOnText: "Gör en inventering av Metoder och verktyg",
+        notificationText: "Gör en inventering av Metoder och verktyg"
     },
     {
         id: 8,
@@ -320,8 +320,8 @@ CS.WorkbookAreaTasks = [
         ],
         stepCount: CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl1TaskComplete,
         templateClassName: "WorkbookAreaAddItemTask",
-        workingOnText: "making inventory of Leadership preferences",
-        notificationText: "Make inventory of Leadership preferences"
+        workingOnText: "Gör en inventering av Ledarskapet jag behöver",
+        notificationText: "Gör en inventering av Ledarskapet jag behöver"
     },
     {
         id: 9,
@@ -418,9 +418,9 @@ CS.WorkbookAreaTasks = [
         ],
         stepCount: CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl2TaskComplete - CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl1TaskComplete,
         templateClassName: "WorkbookAreaAddItemLvl2Task",
-        workingOnText: "making level 2 inventory of Achievements",
-        notificationText: "Make level 2 inventory of Achievements",
-        comingUpText: "making inventory level 2"
+        workingOnText: "Inventering nivå 2 av Resultat",
+        notificationText: "Inventering nivå 2 av Resultat",
+        comingUpText: "Inventering nivå 2 av Resultat"
     },
     {
         id: 11,
@@ -465,9 +465,9 @@ CS.WorkbookAreaTasks = [
         ],
         stepCount: CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl2TaskComplete - CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl1TaskComplete,
         templateClassName: "WorkbookAreaAddItemLvl2Task",
-        workingOnText: "making level 2 inventory of Tracks",
-        notificationText: "Make level 2 inventory of Tracks",
-        comingUpText: "making inventory level 2"
+        workingOnText: "Inventering nivå 2 av Spår att följa... ",
+        notificationText: "Inventering nivå 2 av Spår att följa... ",
+        comingUpText: "Inventering nivå 2 av Spår att följa... "
     },
     {
         id: 12,
@@ -516,9 +516,9 @@ CS.WorkbookAreaTasks = [
         ],
         stepCount: CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl2TaskComplete - CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl1TaskComplete,
         templateClassName: "WorkbookAreaAddItemLvl2Task",
-        workingOnText: "making level 2 inventory of Strengths",
-        notificationText: "Make level 2 inventory of Strengths",
-        comingUpText: "making inventory level 2"
+        workingOnText: "Inventering nivå 2 av Styrkor",
+        notificationText: "MakeInventering nivå 2 av Styrkor",
+        comingUpText: "Inventering nivå 2 av Styrkor"
     },
     {
         id: 13,
@@ -568,9 +568,9 @@ CS.WorkbookAreaTasks = [
         ],
         stepCount: CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl2TaskComplete - CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl1TaskComplete,
         templateClassName: "WorkbookAreaAddItemLvl2Task",
-        workingOnText: "making level 2 inventory of Drivers",
-        notificationText: "Make level 2 inventory of Drivers",
-        comingUpText: "making inventory level 2"
+        workingOnText: "Inventering nivå 2 av Drivkrafter",
+        notificationText: "Inventering nivå 2 av Drivkrafter",
+        comingUpText: "Inventering nivå 2 av Drivkrafter"
     },
     {
         id: 14,
@@ -659,9 +659,9 @@ CS.WorkbookAreaTasks = [
         ],
         stepCount: CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl2TaskComplete - CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl1TaskComplete,
         templateClassName: "WorkbookAreaAddItemLvl2Task",
-        workingOnText: "making level 2 inventory of Mores",
-        notificationText: "Make level 2 inventory of Mores",
-        comingUpText: "making inventory level 2"
+        workingOnText: "Inventering nivå 2 av Göra mer av... ",
+        notificationText: "Inventering nivå 2 av Göra mer av... ",
+        comingUpText: "Inventering nivå 2 av Göra mer av... "
     },
     {
         id: 16,
@@ -706,9 +706,9 @@ CS.WorkbookAreaTasks = [
         ],
         stepCount: CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl2TaskComplete - CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl1TaskComplete,
         templateClassName: "WorkbookAreaAddItemLvl2Task",
-        workingOnText: "making level 2 inventory of Tools and Methods",
-        notificationText: "Make level 2 inventory of Tools and Methods",
-        comingUpText: "making inventory level 2"
+        workingOnText: "Inventering nivå 2 av Metoder och verktyg",
+        notificationText: "Inventering nivå 2 av Metoder och verktyg",
+        comingUpText: "Inventering nivå 2 av Metoder och verktyg"
     },
     {
         id: 17,
