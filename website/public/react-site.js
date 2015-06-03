@@ -1190,8 +1190,8 @@ CS.Controllers.WorkbookAreaAddItemLvl1Complete = React.createClass({displayName:
         return (
             React.createElement("div", {id: "task-complete-pep-talk"}, 
                 React.createElement("h2", null, React.createElement("i", {className: "fa fa-star"}), "Härligt!", React.createElement("i", {className: "fa fa-star"})), 
-                React.createElement("p", null, "Vi gör två till. "), 
-                React.createElement("p", null, "När du har totalt fem kommer en av våra karriärvägledare att ta en titt för att ge dig ytterligare hjälp. "), 
+                React.createElement("p", null, "Vi gör två stycken till. "), 
+                React.createElement("p", null, "När du har totalt fem kommer en av våra karriärrådgivare att ta en titt för att kunna guida dig vidare med tips och frågor. "), 
                 React.createElement("div", {className: "centered-contents"}, 
                     React.createElement("button", {className: "btn btn-primary", onClick: this._handleTaskCompletePepTalkClosed}, "Ok!")
                 )
@@ -1248,7 +1248,7 @@ CS.Controllers.WorkbookAreaPrioritizeItemsComplete = React.createClass({displayN
             React.createElement("div", {id: "task-complete-pep-talk"}, 
                 React.createElement("h2", null, React.createElement("i", {className: "fa fa-star"}), "Super!", React.createElement("i", {className: "fa fa-star"})), 
                 React.createElement("p", null, "Nu ska vi gå in lite djupare på de saker du identifierat. Ge exempel, förklara och bekräfta att de här styrkorna verkligen är viktiga. "), 
-                React.createElement("p", null, "Klicka på en av punkteran nedan för att komma vidare: ")
+                React.createElement("p", null, "Klicka på en av punkterna nedan för att komma vidare: ")
             )
             );
     }
@@ -2158,7 +2158,7 @@ CS.Controllers.WorkbookItemAddItemComplete = React.createClass({displayName: "Wo
             React.createElement("div", {id: "task-complete-pep-talk"}, 
                 React.createElement("h2", null, React.createElement("i", {className: "fa fa-star"}), "Bra jobbat! ", React.createElement("i", {className: "fa fa-star"})), 
                 React.createElement("p", null, "Lägg till fler exempel och förklara djupare. Ju längre du går, desto bättre. "), 
-                React.createElement("p", null, "Du kan också ", React.createElement("a", {onClick: this._navigateBack}, "gå tillbaka för att jobba med en annan av dina styrkor.")), 
+                React.createElement("p", null, "Du kan också gå tillbaka för att jobba med ", React.createElement("a", {onClick: this._navigateBack}, "en annan av dina styrkor.")), 
                 React.createElement("div", {className: "centered-contents"}, 
                     React.createElement("button", {className: "btn btn-primary", onClick: this._handleTaskCompletePepTalkClosed}, "Ok!")
                 )
@@ -2179,7 +2179,7 @@ CS.Controllers.WorkbookItemCustomTaskComplete = React.createClass({displayName: 
     render: function () {
         return (
             React.createElement("div", {id: "task-complete-pep-talk"}, 
-                React.createElement("h2", null, React.createElement("i", {className: "fa fa-star"}), "Thanks!", React.createElement("i", {className: "fa fa-star"})), 
+                React.createElement("h2", null, React.createElement("i", {className: "fa fa-star"}), "Tack!", React.createElement("i", {className: "fa fa-star"})), 
                 React.createElement("p", null, "En karriäragent kommer att ta en titt för att hjälpa dig vidare ytterligare."), 
                 React.createElement("p", null, "Jobba gärna vidare under tiden! Med det här ämnet eller med ett annat."), 
                 React.createElement("div", {className: "centered-contents"}, 

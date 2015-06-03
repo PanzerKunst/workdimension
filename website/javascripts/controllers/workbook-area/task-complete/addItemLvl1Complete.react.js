@@ -3,8 +3,8 @@ CS.Controllers.WorkbookAreaAddItemLvl1Complete = React.createClass({
         return (
             <div id="task-complete-pep-talk">
                 <h2><i className="fa fa-star"></i>Härligt!<i className="fa fa-star"></i></h2>
-                <p>Vi gör två till. </p>
-                <p>När du har totalt fem kommer en av våra karriärvägledare att ta en titt för att ge dig ytterligare hjälp. </p>
+                <p>Vi gör två stycken till. </p>
+                <p>När du har totalt fem kommer en av våra karriärrådgivare att ta en titt för att kunna guida dig vidare med tips och frågor. </p>
                 <div className="centered-contents">
                     <button className="btn btn-primary" onClick={this._handleTaskCompletePepTalkClosed}>Ok!</button>
                 </div>

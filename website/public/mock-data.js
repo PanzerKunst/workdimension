@@ -775,8 +775,8 @@ CS.WorkbookAreaTasks = [
         ],
         stepCount: CS.Models.WorkbookItemTaskCommon.minItemCountForAddItemsTaskComplete,
         templateClassName: "WorkbookItemAddItemTask",
-        workingOnText: "describing Achievements",
-        notificationText: "Describe Achievements"
+        workingOnText: "beskriver ett resultat",
+        notificationText: "Beskriv resultat"
     },
     {
         id: 2,
@@ -809,8 +809,8 @@ CS.WorkbookAreaTasks = [
         ],
         stepCount: CS.Models.WorkbookItemTaskCommon.minItemCountForAddItemsTaskComplete,
         templateClassName: "WorkbookItemAddItemTask",
-        workingOnText: "describing Tracks",
-        notificationText: "Describe Tracks"
+        workingOnText: "beskriver ett spår att följa",
+        notificationText: "Beskriv spår att följa"
     },
     {
         id: 3,
@@ -846,8 +846,8 @@ CS.WorkbookAreaTasks = [
         ],
         stepCount: CS.Models.WorkbookItemTaskCommon.minItemCountForAddItemsTaskComplete,
         templateClassName: "WorkbookItemAddItemTask",
-        workingOnText: "describing Strengths",
-        notificationText: "Describe Strengths"
+        workingOnText: "beskriva styrka",
+        notificationText: "Beskriv styrka"
     },
     {
         id: 4,
@@ -874,8 +874,8 @@ CS.WorkbookAreaTasks = [
         ],
         stepCount: CS.Models.WorkbookItemTaskCommon.minItemCountForAddItemsTaskComplete,
         templateClassName: "WorkbookItemAddItemTask",
-        workingOnText: "describing Drivers",
-        notificationText: "Describe Drivers"
+        workingOnText: "beskriver drivkraft",
+        notificationText: "Beskriv drivkraft"
     },
     {
         id: 6,
@@ -902,8 +902,8 @@ CS.WorkbookAreaTasks = [
         ],
         stepCount: CS.Models.WorkbookItemTaskCommon.minItemCountForAddItemsTaskComplete,
         templateClassName: "WorkbookItemAddItemTask",
-        workingOnText: "describing Mores",
-        notificationText: "Describe Mores"
+        workingOnText: "beskriver något du vill göra mer av",
+        notificationText: "Beskriv Göra mer av... "
     },
     {
         id: 7,
@@ -930,8 +930,8 @@ CS.WorkbookAreaTasks = [
         ],
         stepCount: CS.Models.WorkbookItemTaskCommon.minItemCountForAddItemsTaskComplete,
         templateClassName: "WorkbookItemAddItemTask",
-        workingOnText: "describing Tools and Methods",
-        notificationText: "Describe Tools and Methods"
+        workingOnText: "beskriver en metod eller ett verktyg",
+        notificationText: "Beskriv Metod eller verktyg"
     }
 ];
 ;CS.WorkbookAreaTaskCompletePepTalks = [
