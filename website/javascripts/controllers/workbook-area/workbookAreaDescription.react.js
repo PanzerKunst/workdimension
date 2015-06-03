@@ -9,7 +9,7 @@ CS.Controllers.WorkbookAreaDescription = React.createClass({
             <div id="area-description">
                 <article className="workbook-area-description-text-wrapper" dangerouslySetInnerHTML={{__html: workbookAreaDescription}} />
                 <div className="centered-contents">
-                    <button className="btn btn-primary" onClick={this._showTask}>Got it</button>
+                    <button className="btn btn-primary" onClick={this._showTask}>Ok!</button>
                 </div>
             </div>
             );
