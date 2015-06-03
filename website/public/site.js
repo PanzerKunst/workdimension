@@ -1069,12 +1069,12 @@ CS.saveAccountData = function (callback) {
     {
         type: "workbook-area-description",
         workbookAreaClassName: "Strengths",
-        htmlText: "<p>What makes you, you? What parts of your character help you get the job done, and what aspects of your personality make you see things in a unique way? What are your skills?</p><p>In this section you'll answer questions about what makes you do a job like no one else can. </p>"
+        htmlText: "<p>Vad utmärker dig som person? Vilka styrkor använder för att få jobbet gjort? Från vilket perspektiv ser du på tillvaron?</p><p>I det här avsnittet av Tracks kommer du att besvara frågor om vad som är utmärkande för hur du gör ditt jobb.</p>"
     },
     {
         type: "workbook-area-description",
         workbookAreaClassName: "Drivers",
-        htmlText: "<p>TODO</p>"
+        htmlText: "<p>När du presenterar dig är det bra att berätta något om vad som driver dig att göra det du gör och vilka dina motivationskrafter är. Det gör bilden av dig mer levande och det blir lättare att lägga dig på minnet. Dessutom visar det att du har självinsikt och vet vad du söker och vad du vill ha.</p><p>I det här avsnittet av Tracks kommer du att besvara frågor om dina motivationskrafter.</p>"
     },
     {
         type: "workbook-area-description",
@@ -1089,7 +1089,7 @@ CS.saveAccountData = function (callback) {
     {
         type: "workbook-area-description",
         workbookAreaClassName: "Achievements",
-        htmlText: "<p>TODO</p>"
+        htmlText: "<p>Först lär man sig gå och sen lär man sig springa. Vad du har åstadkommit är en plattform för vad du kan åstadkomma i framtiden.</p><p>I det här avsnittet fokuserar vi på vad du åstadkommit, vilken skillnad du gjort och vad som blivit bättre medan du haft ditt senaste jobb.</p>"
     },
     {
         type: "workbook-area-description",
@@ -1124,7 +1124,7 @@ CS.saveAccountData = function (callback) {
     {
         type: "workbook-area-description",
         workbookAreaClassName: "Mores",
-        htmlText: "<p>TODO</p>"
+        htmlText: "<p>Ett av de enklaste och mest effektiva sätten att utvecklas mot ett mer meningsfullt yrkesliv är att aktivt göra mer av det man gillar och mindre av det man inte gillar. Ett första steg i den riktningen är att identifiera vad det är man gärna vill göra mer av.</p><p>I det här avsnittet av Tracks kommer du att identifiera vad du vill göra mer av i ditt nuvarande jobb och när du tar dig an nästa utmaning.</p>"
     },
     {
         type: "workbook-area-description",
@@ -1149,12 +1149,12 @@ CS.saveAccountData = function (callback) {
     {
         type: "workbook-area-description",
         workbookAreaClassName: "ToolsAndMethods",
-        htmlText: "<p>TODO</p>"
+        htmlText: "<p>De verktyg och metoder vi använder i jobbet blir ofta en del av vår yrkesidentitet. Man kan ha starka åsikter om vilka verktyg som fungerar bäst och vilka som fungerar mindre bra. Eller om vilka metoder man helst använder och vilka man försöker undvika.</p><p>I det här avsnittet av Tracks kommer du att lista verktyg och metoder som är viktiga i ditt jobb.</p>"
     },
     {
         type: "workbook-area-description",
         workbookAreaClassName: "Tracks",
-        htmlText: "<p>Putting words on what we want to do helps us make better decisions and makes it easier to reach what we aim for. Setting a goal can however feel daunting and not reaching it makes you feel bad about yourself.</p><p>We have a different approach. Think of different tracks you would like to or could see yourself try out some time. A track to pursue can be anything from a position you'd like to try, an industry that would be interesting to work in or an area you would like to learn more of.</p>"
+        htmlText: "<p>Det här området av Tracks handlar om vilka olika vägar du skulle kunna ta; vilka spår du skulle kunna följa.</p><p>Fundera på olika spår du skulle kunna tänka dig att prova någon gång i livet. Ett spår att följa kan vara alltifrån en roll du gärna skulle vilja ha, till en bransch du tycker verkar spännande eller en hobby du vill plocka upp och göra något mer av.</p>"
     },
     {
         type: "workbook-area-description",
@@ -2189,7 +2189,7 @@ CS.Controllers.OverviewBlueprintAreaComposer = React.createClass({displayName: "
                     React.createElement("button", {type: "button", className: "styleless fa fa-times", onClick: this._hideForm})
                 ), 
 
-                React.createElement("a", {className: "add-item-link", onClick: this._showComposer}, "+ Add item")
+                React.createElement("a", {className: "add-item-link", onClick: this._showComposer}, "+ Lägg till")
             )
             );
     },
@@ -2324,7 +2324,7 @@ CS.Controllers.OverviewBlueprintAreaPanel = React.createClass({displayName: "Ove
                             ), 
                             React.createElement("div", {className: "modal-body workbook-area-description-text-wrapper", dangerouslySetInnerHTML: {__html: workbookAreaDescription}}), 
                             React.createElement("div", {className: "modal-footer"}, 
-                                React.createElement("button", {type: "button", className: "btn btn-default", "data-dismiss": "modal"}, "Close")
+                                React.createElement("button", {type: "button", className: "btn btn-default", "data-dismiss": "modal"}, "Stäng")
                             )
                         )
                     )
@@ -2657,8 +2657,8 @@ CS.Controllers.OverviewWorkbookAreaActions = React.createClass({displayName: "Ov
         return (
             React.createElement("section", {className: "workbook-area-actions", ref: "wrapper"}, 
                 React.createElement("ul", {className: "styleless"}, 
-                    React.createElement("li", null, React.createElement("i", {className: "fa fa-question-circle"}), React.createElement("a", {onClick: this._showWorkbookAreaDescriptionModal}, "Area info")), 
-                    React.createElement("li", null, React.createElement("i", {className: "fa fa-eye-slash"}), React.createElement("a", {onClick: this._hideBlueprintAreaPanel}, "Hide this area")), 
+                    React.createElement("li", null, React.createElement("i", {className: "fa fa-question-circle"}), React.createElement("a", {onClick: this._showWorkbookAreaDescriptionModal}, "Mer info om ämnet")), 
+                    React.createElement("li", null, React.createElement("i", {className: "fa fa-eye-slash"}), React.createElement("a", {onClick: this._hideBlueprintAreaPanel}, "Göm det här ämnet")), 
                     threeStandoutsItemReact
                 )
             )
@@ -2825,11 +2825,11 @@ CS.Controllers.WorkbookAreaAddItemLvl1Complete = React.createClass({displayName:
     render: function () {
         return (
             React.createElement("div", {id: "task-complete-pep-talk"}, 
-                React.createElement("h2", null, React.createElement("i", {className: "fa fa-star"}), "Nice!", React.createElement("i", {className: "fa fa-star"})), 
-                React.createElement("p", null, "Let's add two more."), 
-                React.createElement("p", null, "Once you have five, a career advisor will have a look and you'll receive additional help."), 
+                React.createElement("h2", null, React.createElement("i", {className: "fa fa-star"}), "Härligt!", React.createElement("i", {className: "fa fa-star"})), 
+                React.createElement("p", null, "Vi gör två till. "), 
+                React.createElement("p", null, "När du har totalt fem kommer en av våra karriärvägledare att ta en titt för att ge dig ytterligare hjälp. "), 
                 React.createElement("div", {className: "centered-contents"}, 
-                    React.createElement("button", {className: "btn btn-primary", onClick: this._handleTaskCompletePepTalkClosed}, "Alright")
+                    React.createElement("button", {className: "btn btn-primary", onClick: this._handleTaskCompletePepTalkClosed}, "Ok!")
                 )
             )
             );
@@ -2844,11 +2844,11 @@ CS.Controllers.WorkbookAreaAddItemLvl2Complete = React.createClass({displayName:
     render: function () {
         return (
             React.createElement("div", {id: "task-complete-pep-talk"}, 
-                React.createElement("h2", null, React.createElement("i", {className: "fa fa-star"}), "Great work!", React.createElement("i", {className: "fa fa-star"})), 
-                React.createElement("p", null, "A career advisor has been notified of your progress and will e-mail you with additional questions or advice."), 
-                React.createElement("p", null, "Meanwhile, please keep moving. Follow the instructions or move to other areas in the app."), 
+                React.createElement("h2", null, React.createElement("i", {className: "fa fa-star"}), "Bra jobbat!", React.createElement("i", {className: "fa fa-star"})), 
+                React.createElement("p", null, "En karriäragent har meddelats om dina svar och du kommer att få ett mejl med ytterligare frågor och tips. "), 
+                React.createElement("p", null, "Fortsätt gärna så länge. Följ instruktionerna eller gå till andra områden i appen. "), 
                 React.createElement("div", {className: "centered-contents"}, 
-                    React.createElement("button", {className: "btn btn-primary", onClick: this._handleTaskCompletePepTalkClosed}, "Alright")
+                    React.createElement("button", {className: "btn btn-primary", onClick: this._handleTaskCompletePepTalkClosed}, "Ok!")
                 )
             )
             );
@@ -2863,11 +2863,11 @@ CS.Controllers.WorkbookAreaCustomTaskComplete = React.createClass({displayName: 
     render: function () {
         return (
             React.createElement("div", {id: "task-complete-pep-talk"}, 
-                React.createElement("h2", null, React.createElement("i", {className: "fa fa-star"}), "Thanks!", React.createElement("i", {className: "fa fa-star"})), 
-                React.createElement("p", null, "A career advisor will get back to you shortly."), 
-                React.createElement("p", null, "In the meantime, we invite you to continue working on this topic, or maybe switch to another one?"), 
+                React.createElement("h2", null, React.createElement("i", {className: "fa fa-star"}), "Tack!", React.createElement("i", {className: "fa fa-star"})), 
+                React.createElement("p", null, "En karriäragent kommer att ta en titt för att hjälpa dig vidare ytterligare."), 
+                React.createElement("p", null, "Jobba gärna vidare under tiden! Med det här ämnet eller med ett annat."), 
                 React.createElement("div", {className: "centered-contents"}, 
-                    React.createElement("button", {className: "btn btn-primary", onClick: this._handleTaskCompletePepTalkClosed}, "Continue")
+                    React.createElement("button", {className: "btn btn-primary", onClick: this._handleTaskCompletePepTalkClosed}, "Gå vidare")
                 )
             )
             );
@@ -2882,10 +2882,9 @@ CS.Controllers.WorkbookAreaPrioritizeItemsComplete = React.createClass({displayN
     render: function () {
         return (
             React.createElement("div", {id: "task-complete-pep-talk"}, 
-                React.createElement("h2", null, React.createElement("i", {className: "fa fa-star"}), "Awesome!", React.createElement("i", {className: "fa fa-star"})), 
-                React.createElement("p", null, "Dig deeper into what you’ve discovered.", React.createElement("br", null), 
-                    "Confirm, find examples and describe more thoroughly."), 
-                React.createElement("p", null, "Click on one of the items below to get started:")
+                React.createElement("h2", null, React.createElement("i", {className: "fa fa-star"}), "Super!", React.createElement("i", {className: "fa fa-star"})), 
+                React.createElement("p", null, "Nu ska vi gå in lite djupare på de saker du identifierat. Ge exempel, förklara och bekräfta att de här styrkorna verkligen är viktiga. "), 
+                React.createElement("p", null, "Klicka på en av punkteran nedan för att komma vidare: ")
             )
             );
     }
@@ -2896,7 +2895,7 @@ CS.Controllers.WorkbookAreaAddItemLvl2Task = React.createClass({displayName: "Wo
         var comingUpNextParagraph = null;
         if (this.props.comingUpNextText) {
             comingUpNextParagraph = (
-                React.createElement("p", {className: "coming-up-next"}, "Coming up next: ", this.props.comingUpNextText)
+                React.createElement("p", {className: "coming-up-next"}, "Nästa steg: ", this.props.comingUpNextText)
                 );
         }
 
@@ -2908,7 +2907,7 @@ CS.Controllers.WorkbookAreaAddItemLvl2Task = React.createClass({displayName: "Wo
         return (
             React.createElement("div", {className: wrapperClasses}, 
                 React.createElement("button", {className: "styleless fa fa-question-circle", onClick: CS.Controllers.WorkbookAreaCommon.showAreaDescription}), 
-                React.createElement("p", {className: "working-on"}, "Working on: ", this.props.task.workingOnText), 
+                React.createElement("p", {className: "working-on"}, "Du jobbar med: ", this.props.task.workingOnText), 
                 React.createElement("div", {className: "progress"}, 
                     React.createElement("div", {ref: "progressBar", className: "progress-bar progress-bar-success", role: "progressbar", "aria-valuenow": "", "aria-valuemin": "0", "aria-valuemax": "100"})
                 ), 
@@ -2947,7 +2946,7 @@ CS.Controllers.WorkbookAreaAddItemTask = React.createClass({displayName: "Workbo
         var comingUpNextParagraph = null;
         if (this.props.comingUpNextText) {
             comingUpNextParagraph = (
-                React.createElement("p", {className: "coming-up-next"}, "Coming up next: ", this.props.comingUpNextText)
+                React.createElement("p", {className: "coming-up-next"}, "Nästa steg: ", this.props.comingUpNextText)
                 );
         }
 
@@ -2959,7 +2958,7 @@ CS.Controllers.WorkbookAreaAddItemTask = React.createClass({displayName: "Workbo
         return (
             React.createElement("div", {className: wrapperClasses}, 
                 React.createElement("button", {className: "styleless fa fa-question-circle", onClick: CS.Controllers.WorkbookAreaCommon.showAreaDescription}), 
-                React.createElement("p", {className: "working-on"}, "Working on: ", this.props.task.workingOnText), 
+                React.createElement("p", {className: "working-on"}, "Du jobbar med: ", this.props.task.workingOnText), 
                 React.createElement("div", {className: "progress"}, 
                     React.createElement("div", {ref: "progressBar", className: "progress-bar progress-bar-success", role: "progressbar", "aria-valuenow": "", "aria-valuemin": "0", "aria-valuemax": "100"})
                 ), 
@@ -3004,8 +3003,8 @@ CS.Controllers.WorkbookAreaAddItemTaskForm = React.createClass({displayName: "Wo
                     React.createElement("label", {htmlFor: textareaId}, this.currentWording.prompt), 
                     React.createElement("textarea", {className: "form-control", id: textareaId, onKeyUp: this._handleTextareaKeyUp})
                 ), 
-                React.createElement("button", {className: "btn btn-primary"}, "Add item"), 
-                React.createElement("a", {onClick: this._setCurrentTaskAsSkippedAndReRender}, "Try another")
+                React.createElement("button", {className: "btn btn-primary"}, "Lägg till"), 
+                React.createElement("a", {onClick: this._setCurrentTaskAsSkippedAndReRender}, "Prova en annan fråga")
             )
             );
     },
@@ -3115,7 +3114,7 @@ CS.Controllers.WorkbookAreaCustomTask = React.createClass({displayName: "Workboo
             if (!this.props.task.question) {
                 tipReadBtnReact = (
                     React.createElement("div", {className: "centered-contents"}, 
-                        React.createElement("button", {className: "btn btn-primary", onClick: this._setCustomTaskAsCompletedAndReRender}, "Got it")
+                        React.createElement("button", {className: "btn btn-primary", onClick: this._setCustomTaskAsCompletedAndReRender}, "Ok!")
                     )
                     );
             }
@@ -3136,7 +3135,7 @@ CS.Controllers.WorkbookAreaCustomTask = React.createClass({displayName: "Workboo
                         React.createElement("label", {htmlFor: "custom-task-field"}, this.props.task.question), 
                         React.createElement("textarea", {className: "form-control", id: "custom-task-field", onKeyUp: this._handleTextareaKeyUp})
                     ), 
-                    React.createElement("button", {className: "btn btn-primary"}, "Add item")
+                    React.createElement("button", {className: "btn btn-primary"}, "Lägg till")
                 )
                 );
         }
@@ -3242,7 +3241,7 @@ CS.Controllers.WorkbookAreaPrioritizeItemsTask = React.createClass({displayName:
         var comingUpNextParagraph = null;
         if (this.props.comingUpNextText) {
             comingUpNextParagraph = (
-                React.createElement("p", {className: "coming-up-next"}, "Coming up next: ", this.props.comingUpNextText)
+                React.createElement("p", {className: "coming-up-next"}, "Nästa steg: ", this.props.comingUpNextText)
                 );
         }
 
@@ -3256,14 +3255,14 @@ CS.Controllers.WorkbookAreaPrioritizeItemsTask = React.createClass({displayName:
         return (
             React.createElement("div", {className: wrapperClasses}, 
                 React.createElement("button", {className: "styleless fa fa-question-circle", onClick: CS.Controllers.WorkbookAreaCommon.showAreaDescription}), 
-                React.createElement("p", {className: "working-on"}, "Working on: ", this.props.task.workingOnText), 
+                React.createElement("p", {className: "working-on"}, "Du jobbar med: ", this.props.task.workingOnText), 
                 React.createElement("div", {className: "progress"}, 
                     React.createElement("div", {ref: "progressBar", className: "progress-bar progress-bar-success", role: "progressbar", "aria-valuenow": "0", "aria-valuemin": "0", "aria-valuemax": "100"}, "0%")
                 ), 
                 comingUpNextParagraph, 
                 React.createElement("label", null, currentWording.prompt), 
                 React.createElement("div", {className: "centered-contents"}, 
-                    React.createElement("button", {className: "btn btn-primary", onClick: this._setCurrentWorkbookAreaAsPrioritizedAndReRender}, "I'm done prioritizing")
+                    React.createElement("button", {className: "btn btn-primary", onClick: this._setCurrentWorkbookAreaAsPrioritizedAndReRender}, "Jag har prioriterat klart!")
                 )
             )
             );
@@ -3296,6 +3295,30 @@ CS.Controllers.WorkbookAreaPrioritizeItemsTask = React.createClass({displayName:
     }
 });
 
+CS.Controllers.ThreeStandoutPanel.Drivers = React.createClass({displayName: "Drivers",
+    render: function () {
+        return (
+            React.createElement("div", {className: "three-standouts"}, 
+                React.createElement("h2", null, React.createElement("i", {className: "fa fa-star"}), "Dina viktigaste drivkrafter", React.createElement("i", {className: "fa fa-star"})), 
+
+                React.createElement("p", null, "Här är de tre viktigaste drivkrafter du identifierat hittills:"), 
+
+                React.createElement("ul", null, 
+                    React.createElement("li", null, this.props.threeStandouts[0]), 
+                    React.createElement("li", null, this.props.threeStandouts[1]), 
+                    React.createElement("li", null, this.props.threeStandouts[2])
+                ), 
+
+                React.createElement("p", null, "Använd dem när du beskriver dig själv. Ta med dem i ditt personliga brev och i fältet Sammanfattning i din LinkedIn-profil. "), 
+
+                React.createElement("p", null, "Den här övningen är nu slut. Du kommer att hitta dina drivkrafter i appen när du vill. Fortsätt gärna använda tjänsten! "), 
+
+                React.createElement("p", null, "Hjälp oss genom att svara på ", React.createElement("a", {href: "https://docs.google.com/forms/d/13iqOYQDe6YHEhDdc-XIoQQe4DD6HXLUVYf1W4GcUu0o/viewform?usp=send_form"}, "två korta frågor"))
+            )
+            );
+    }
+});
+
 CS.Controllers.ThreeStandoutPanel.Contexts = React.createClass({displayName: "Contexts",
     render: function () {
         return (
@@ -3320,37 +3343,13 @@ CS.Controllers.ThreeStandoutPanel.Contexts = React.createClass({displayName: "Co
     }
 });
 
-CS.Controllers.ThreeStandoutPanel.Drivers = React.createClass({displayName: "Drivers",
-    render: function () {
-        return (
-            React.createElement("div", {className: "three-standouts"}, 
-                React.createElement("h2", null, React.createElement("i", {className: "fa fa-star"}), "Your top-3 drivers", React.createElement("i", {className: "fa fa-star"})), 
-
-                React.createElement("p", null, "From what you've indicated so far, these are the three drivers that you should focus on when describing yourself:"), 
-
-                React.createElement("ul", null, 
-                    React.createElement("li", null, this.props.threeStandouts[0]), 
-                    React.createElement("li", null, this.props.threeStandouts[1]), 
-                    React.createElement("li", null, this.props.threeStandouts[2])
-                ), 
-
-                React.createElement("p", null, "You have great examples for all of them. Use examples when you write your application and always be prepared to use them during an interview."), 
-
-                React.createElement("p", null, "This exercise is now over. You'll find your top-3 drivers in the app at any time. Keep using the service at your wish."), 
-
-                React.createElement("p", null, "Please help us out by ", React.createElement("a", {href: "#"}, "answering a three-question survey."))
-            )
-            );
-    }
-});
-
 CS.Controllers.ThreeStandoutPanel.Strengths = React.createClass({displayName: "Strengths",
     render: function () {
         return (
             React.createElement("div", {className: "three-standouts"}, 
-                React.createElement("h2", null, React.createElement("i", {className: "fa fa-star"}), "Your top-3 strengths", React.createElement("i", {className: "fa fa-star"})), 
+                React.createElement("h2", null, React.createElement("i", {className: "fa fa-star"}), "Dina topp 3 styrkor", React.createElement("i", {className: "fa fa-star"})), 
 
-                React.createElement("p", null, "From what you've indicated so far, these are the three strengths that you should focus on when describing yourself:"), 
+                React.createElement("p", null, "Utifrån dina svar så här långt, är det här de styrkor du bör fokusera på när du beskriver dig själv::"), 
 
                 React.createElement("ul", null, 
                     React.createElement("li", null, this.props.threeStandouts[0]), 
@@ -3358,11 +3357,11 @@ CS.Controllers.ThreeStandoutPanel.Strengths = React.createClass({displayName: "S
                     React.createElement("li", null, this.props.threeStandouts[2])
                 ), 
 
-                React.createElement("p", null, "You have great examples for all of them. Use examples when you write your application and always be prepared to use them during an interview."), 
+                React.createElement("p", null, "Du har gett bra exempel på dem alla! Använd exemplen när du skriver din jobbansökan och var också beredd att använda dem under en intervju. "), 
 
-                React.createElement("p", null, "This exercise is now over. You'll find your top-3 strengths in the app at any time. Keep using the service at your wish."), 
+                React.createElement("p", null, "Den här övningen är nu slut. Du kommer att hitta dina topp-3-styrkor i appen när du vill. Fortsätt gärna använda tjänsten! "), 
 
-                React.createElement("p", null, "Please help us out by ", React.createElement("a", {href: "#"}, "answering a three-question survey."))
+                React.createElement("p", null, "Hjälp oss genom att svara på ", React.createElement("a", {href: "https://docs.google.com/forms/d/13iqOYQDe6YHEhDdc-XIoQQe4DD6HXLUVYf1W4GcUu0o/viewform?usp=send_form"}, "två korta frågor."))
             )
             );
     }
@@ -3464,7 +3463,7 @@ CS.Controllers.WorkbookArea = P(function (c) {
                         React.createElement("button", {type: "button", className: "styleless fa fa-times", onClick: this._hideForm})
                     ), 
 
-                    React.createElement("a", {className: "add-item-link", onClick: this._showComposer}, "+ Add item")
+                    React.createElement("a", {className: "add-item-link", onClick: this._showComposer}, "+ Lägg till")
                 )
                 );
         },
@@ -3654,7 +3653,7 @@ CS.Controllers.WorkbookAreaDescription = React.createClass({displayName: "Workbo
             React.createElement("div", {id: "area-description"}, 
                 React.createElement("article", {className: "workbook-area-description-text-wrapper", dangerouslySetInnerHTML: {__html: workbookAreaDescription}}), 
                 React.createElement("div", {className: "centered-contents"}, 
-                    React.createElement("button", {className: "btn btn-primary", onClick: this._showTask}, "Got it")
+                    React.createElement("button", {className: "btn btn-primary", onClick: this._showTask}, "Ok!")
                 )
             )
             );
@@ -3793,11 +3792,11 @@ CS.Controllers.WorkbookItemAddItemComplete = React.createClass({displayName: "Wo
     render: function () {
         return (
             React.createElement("div", {id: "task-complete-pep-talk"}, 
-                React.createElement("h2", null, React.createElement("i", {className: "fa fa-star"}), "Great work!", React.createElement("i", {className: "fa fa-star"})), 
-                React.createElement("p", null, "Keep adding examples or try describing more."), 
-                React.createElement("p", null, "Or ", React.createElement("a", {onClick: this._navigateBack}, "go back"), " to work on another item."), 
+                React.createElement("h2", null, React.createElement("i", {className: "fa fa-star"}), "Bra jobbat! ", React.createElement("i", {className: "fa fa-star"})), 
+                React.createElement("p", null, "Lägg till fler exempel och förklara djupare. Ju längre du går, desto bättre. "), 
+                React.createElement("p", null, "Du kan också ", React.createElement("a", {onClick: this._navigateBack}, "gå tillbaka för att jobba med en annan av dina styrkor.")), 
                 React.createElement("div", {className: "centered-contents"}, 
-                    React.createElement("button", {className: "btn btn-primary", onClick: this._handleTaskCompletePepTalkClosed}, "Alright")
+                    React.createElement("button", {className: "btn btn-primary", onClick: this._handleTaskCompletePepTalkClosed}, "Ok!")
                 )
             )
             );
@@ -3817,10 +3816,10 @@ CS.Controllers.WorkbookItemCustomTaskComplete = React.createClass({displayName: 
         return (
             React.createElement("div", {id: "task-complete-pep-talk"}, 
                 React.createElement("h2", null, React.createElement("i", {className: "fa fa-star"}), "Thanks!", React.createElement("i", {className: "fa fa-star"})), 
-                React.createElement("p", null, "A career advisor will get back to you shortly."), 
-                React.createElement("p", null, "In the meantime, we invite you to continue working on this topic, or maybe switch to another one?"), 
+                React.createElement("p", null, "En karriäragent kommer att ta en titt för att hjälpa dig vidare ytterligare."), 
+                React.createElement("p", null, "Jobba gärna vidare under tiden! Med det här ämnet eller med ett annat."), 
                 React.createElement("div", {className: "centered-contents"}, 
-                    React.createElement("button", {className: "btn btn-primary", onClick: this._handleTaskCompletePepTalkClosed}, "Continue")
+                    React.createElement("button", {className: "btn btn-primary", onClick: this._handleTaskCompletePepTalkClosed}, "Gå vidare")
                 )
             )
             );
@@ -3853,8 +3852,8 @@ CS.Controllers.WorkbookItemAddItemTask = React.createClass({displayName: "Workbo
                         React.createElement("label", {htmlFor: textareaId, dangerouslySetInnerHTML: {__html: currentWordingPrompt}}), 
                         React.createElement("textarea", {className: "form-control", id: textareaId, onKeyUp: this._handleTextareaKeyUp})
                     ), 
-                    React.createElement("button", {className: "btn btn-primary"}, "Add note"), 
-                    React.createElement("a", {onClick: this._setCurrentTaskAsSkippedAndReRender}, "Try another")
+                    React.createElement("button", {className: "btn btn-primary"}, "Lägg till"), 
+                    React.createElement("a", {onClick: this._setCurrentTaskAsSkippedAndReRender}, "Prova en annan fråga")
                 )
             )
             );
@@ -3999,7 +3998,7 @@ CS.Controllers.WorkbookItemCustomTask = React.createClass({displayName: "Workboo
                         React.createElement("label", {htmlFor: "custom-task-field"}, this.props.task.question), 
                         React.createElement("textarea", {className: "form-control", id: "custom-task-field", onKeyUp: CS.Controllers.WorkbookItemCommon.handleTextareaKeyUp})
                     ), 
-                    React.createElement("button", {className: "btn btn-primary"}, "Add note")
+                    React.createElement("button", {className: "btn btn-primary"}, "Lägg till")
                 )
                 );
         }
@@ -4177,11 +4176,11 @@ CS.Controllers.WorkbookItem = P(function (c) {
 
                     React.createElement("form", {role: "form", className: "item-composer note", onSubmit: this._handleComposerFormSubmit}, 
                         React.createElement("textarea", {className: "form-control", onKeyUp: this._handleTextareaKeyUp}), 
-                        React.createElement("button", {className: "btn btn-primary"}, "Add"), 
+                        React.createElement("button", {className: "btn btn-primary"}, "Lägg till"), 
                         React.createElement("button", {type: "button", className: "styleless fa fa-times", onClick: this._hideForm})
                     ), 
 
-                    React.createElement("a", {className: "add-item-link", onClick: this._showComposer}, "+ Add note")
+                    React.createElement("a", {className: "add-item-link", onClick: this._showComposer}, "+ Lägg till")
                 )
                 );
         },
@@ -4331,7 +4330,7 @@ CS.Controllers.WorkbookItemNote = React.createClass({displayName: "WorkbookItemN
                 React.createElement("button", {className: "styleless fa fa-pencil", onClick: this._showEditor}), 
                 React.createElement("form", {role: "form", className: "item-composer note", onSubmit: this._handleComposerFormSubmit}, 
                     React.createElement("textarea", {className: "form-control", onKeyUp: this._handleTextareaKeyUp}), 
-                    React.createElement("button", {className: "btn btn-primary"}, "Save changes"), 
+                    React.createElement("button", {className: "btn btn-primary"}, "Spara ändringar"), 
                     React.createElement("button", {type: "button", className: "styleless fa fa-times", onClick: this._hideForm})
                 )
             )

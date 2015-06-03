@@ -84,6 +84,10 @@ header {
         width: $medium-content-width;
       }
     }
+
+    .border-only {
+      margin: 1em 0;
+    }
   }
 }
 
@@ -255,7 +259,7 @@ header {
 }
 
 #sign-in-modal {
-  #tracks-intro {
+  .tracks-intro {
     font-weight: bold;
     margin: 0.5em 1em;
   }

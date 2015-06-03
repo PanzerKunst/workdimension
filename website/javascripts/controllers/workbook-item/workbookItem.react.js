@@ -74,11 +74,11 @@ CS.Controllers.WorkbookItem = P(function (c) {
 
                     <form role="form" className="item-composer note" onSubmit={this._handleComposerFormSubmit}>
                         <textarea className="form-control" onKeyUp={this._handleTextareaKeyUp} />
-                        <button className="btn btn-primary">Add</button>
+                        <button className="btn btn-primary">Lägg till</button>
                         <button type="button" className="styleless fa fa-times" onClick={this._hideForm}></button>
                     </form>
 
-                    <a className="add-item-link" onClick={this._showComposer}>+ Add note</a>
+                    <a className="add-item-link" onClick={this._showComposer}>+ Lägg till</a>
                 </div>
                 );
         },

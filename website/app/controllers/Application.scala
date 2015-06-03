@@ -37,75 +37,103 @@ object Application extends Controller {
 
     newSession = newSession + ("accountId" -> accountId.toString)
 
-    Ok(views.html.index(WorkbookAreaDto.getAll, accountId, AccountDataDto.getOfAccountId(accountId)))
+    Ok(views.html.index(WorkbookAreaDto.getAllUsable, accountId, AccountDataDto.getOfAccountId(accountId)))
       .withSession(newSession)
       .withHeaders(doNotCachePage: _*)
   }
 
   def workbookArea(className: String) = Action { request =>
-    getAccountId(request.session) match {
+    var newSession = request.session
+
+    val accountId = getAccountId(request.session) match {
+      case None =>
+        val account1d = generateTempAccountIdAndInitialiseTables(request.session)
+        newSession = newSession + ("accountId" -> account1d.toString)
+        account1d
+
+      case Some(id) =>
+        AccountDto.getOfId(id) match {
+          case Some(account) => id
+
+          case None =>
+            AccountDto.createTemporary(id)
+            id
+        }
+    }
+
+    AccountDto.getOfId(accountId) match {
       case None => Redirect("/")
 
-      case Some(accountId) =>
-        AccountDto.getOfId(accountId) match {
-          case None => Redirect("/")
+      case Some(account) =>
+        WorkbookAreaDto.getOfClassName(className) match {
+          case None => BadRequest("No workbook area found for class name " + className)
 
-          case Some(account) =>
-            WorkbookAreaDto.getOfClassName(className) match {
-              case None => BadRequest("No workbook area found for class name " + className)
+          case Some(workbookArea) =>
+            var accountData = AccountDataDto.getOfAccountId(accountId)
 
-              case Some(workbookArea) =>
-                var accountData = AccountDataDto.getOfAccountId(accountId)
+            if (request.queryString.contains("taskIdToMarkAsViewed")) {
+              val taskIdToMarkAsViewed = request.queryString.get("taskIdToMarkAsViewed").get.head
+              accountData = Some(addTaskMarkedAsViewedToAccountData(accountData, taskIdToMarkAsViewed))
 
-                if (request.queryString.contains("taskIdToMarkAsViewed")) {
-                  val taskIdToMarkAsViewed = request.queryString.get("taskIdToMarkAsViewed").get.head
-                  accountData = Some(addTaskMarkedAsViewedToAccountData(accountData, taskIdToMarkAsViewed))
-
-                  AccountDataDto.create(accountId, accountData.get)
-                }
-
-                val customTasks = CustomTaskDto.get(account.id.get, workbookArea.id, None)
-
-                Ok(views.html.workbookArea(WorkbookAreaDto.getAll, workbookArea, accountId, accountData, customTasks, isAdmin(request.session)))
-                  .withHeaders(doNotCachePage: _*)
+              AccountDataDto.create(accountId, accountData.get)
             }
+
+            val customTasks = CustomTaskDto.get(account.id.get, workbookArea.id, None)
+
+            Ok(views.html.workbookArea(WorkbookAreaDto.getAllUsable, workbookArea, accountId, accountData, customTasks, isAdmin(request.session)))
+              .withSession(newSession)
+              .withHeaders(doNotCachePage: _*)
         }
     }
   }
 
   def workbookItem(areaClassName: String, index: Int) = Action { request =>
-    getAccountId(request.session) match {
+    var newSession = request.session
+
+    val accountId = getAccountId(request.session) match {
+      case None =>
+        val account1d = generateTempAccountIdAndInitialiseTables(request.session)
+        newSession = newSession + ("accountId" -> account1d.toString)
+        account1d
+
+      case Some(id) =>
+        AccountDto.getOfId(id) match {
+          case Some(account) => id
+
+          case None =>
+            AccountDto.createTemporary(id)
+            id
+        }
+    }
+
+    AccountDto.getOfId(accountId) match {
       case None => Redirect("/")
 
-      case Some(accountId) =>
-        AccountDto.getOfId(accountId) match {
-          case None => Redirect("/")
+      case Some(account) =>
+        WorkbookAreaDto.getOfClassName(areaClassName) match {
+          case None => BadRequest("No workbook area found for class name " + areaClassName)
 
-          case Some(account) =>
-            WorkbookAreaDto.getOfClassName(areaClassName) match {
-              case None => BadRequest("No workbook area found for class name " + areaClassName)
+          case Some(workbookArea) =>
+            AccountDataDto.getOfAccountId(accountId) match {
+              case None => BadRequest("No account data found")
 
-              case Some(workbookArea) =>
-                AccountDataDto.getOfAccountId(accountId) match {
-                  case None => BadRequest("No account data found")
+              case Some(accountData) =>
+                var accountDat4 = accountData
 
-                  case Some(accountData) =>
-                    var accountDat4 = accountData
+                val workbookItems = (accountData \ workbookArea.className).as[List[WorkbookItem]]
 
-                    val workbookItems = (accountData \ workbookArea.className).as[List[WorkbookItem]]
+                if (request.queryString.contains("taskIdToMarkAsViewed")) {
+                  val taskIdToMarkAsViewed = request.queryString.get("taskIdToMarkAsViewed").get.head
+                  accountDat4 = addTaskMarkedAsViewedToAccountData(Some(accountData), taskIdToMarkAsViewed)
 
-                    if (request.queryString.contains("taskIdToMarkAsViewed")) {
-                      val taskIdToMarkAsViewed = request.queryString.get("taskIdToMarkAsViewed").get.head
-                      accountDat4 = addTaskMarkedAsViewedToAccountData(Some(accountData), taskIdToMarkAsViewed)
-
-                      AccountDataDto.create(accountId, accountDat4)
-                    }
-
-                    val customTasks = CustomTaskDto.get(account.id.get, workbookArea.id, Some(index))
-
-                    Ok(views.html.workbookItem(WorkbookAreaDto.getAll, workbookArea, workbookItems.apply(index), accountId, accountDat4, customTasks, isAdmin(request.session)))
-                      .withHeaders(doNotCachePage: _*)
+                  AccountDataDto.create(accountId, accountDat4)
                 }
+
+                val customTasks = CustomTaskDto.get(account.id.get, workbookArea.id, Some(index))
+
+                Ok(views.html.workbookItem(WorkbookAreaDto.getAllUsable, workbookArea, workbookItems.apply(index), accountId, accountDat4, customTasks, isAdmin(request.session)))
+                  .withSession(newSession)
+                  .withHeaders(doNotCachePage: _*)
             }
         }
     }

@@ -20,8 +20,8 @@ CS.Controllers.WorkbookItemAddItemTask = React.createClass({
                         <label htmlFor={textareaId} dangerouslySetInnerHTML={{__html: currentWordingPrompt}} />
                         <textarea className="form-control" id={textareaId} onKeyUp={this._handleTextareaKeyUp} />
                     </div>
-                    <button className="btn btn-primary">Add note</button>
-                    <a onClick={this._setCurrentTaskAsSkippedAndReRender}>Try another</a>
+                    <button className="btn btn-primary">Lägg till</button>
+                    <a onClick={this._setCurrentTaskAsSkippedAndReRender}>Prova en annan fråga</a>
                 </form>
             </div>
             );

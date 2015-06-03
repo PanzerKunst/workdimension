@@ -17,13 +17,35 @@ object WorkbookAreaDto {
       Logger.info("WorkbookAreaDto.getAll():" + query)
 
       SQL(query)().map { row =>
-          WorkbookArea(
-            row[Long]("id"),
-            row[Long]("workbook_category_id"),
-            row[String]("class_name"),
-            row[String]("human_readable_class_name"),
-            row[String]("title")
-          )
+        WorkbookArea(
+          row[Long]("id"),
+          row[Long]("workbook_category_id"),
+          row[String]("class_name"),
+          row[String]("human_readable_class_name"),
+          row[String]("title")
+        )
+      }.toList
+    }
+  }
+
+  def getAllUsable: List[WorkbookArea] = {
+    DB.withConnection { implicit c =>
+      val query = """
+      select distinct id, workbook_category_id, class_name, human_readable_class_name, title
+      from workbook_area
+      where class_name not in ('PhaseAndSize', 'Coworkers', 'Projects', 'ManagementStyle', 'Roles', 'Employers', 'Lesses', 'Expertise', 'Culture', 'Values', 'Contexts', 'Workplace', 'Leadership')
+      order by id;"""
+
+      Logger.info("WorkbookAreaDto.getAll():" + query)
+
+      SQL(query)().map { row =>
+        WorkbookArea(
+          row[Long]("id"),
+          row[Long]("workbook_category_id"),
+          row[String]("class_name"),
+          row[String]("human_readable_class_name"),
+          row[String]("title")
+        )
       }.toList
     }
   }

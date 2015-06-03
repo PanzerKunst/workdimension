@@ -28,7 +28,7 @@ CS.Controllers.WorkbookItemCustomTask = React.createClass({
                         <label htmlFor="custom-task-field">{this.props.task.question}</label>
                         <textarea className="form-control" id="custom-task-field" onKeyUp={CS.Controllers.WorkbookItemCommon.handleTextareaKeyUp} />
                     </div>
-                    <button className="btn btn-primary">Add note</button>
+                    <button className="btn btn-primary">Lägg till</button>
                 </form>
                 );
         }

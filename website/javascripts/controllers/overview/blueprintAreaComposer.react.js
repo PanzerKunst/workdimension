@@ -10,7 +10,7 @@ CS.Controllers.OverviewBlueprintAreaComposer = React.createClass({
                     <button type="button" className="styleless fa fa-times" onClick={this._hideForm}></button>
                 </form>
 
-                <a className="add-item-link" onClick={this._showComposer}>+ Add item</a>
+                <a className="add-item-link" onClick={this._showComposer}>+ Lägg till</a>
             </section>
             );
     },

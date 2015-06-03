@@ -133,34 +133,6 @@ CS.WorkbookItemTasks = [
         notificationText: "Describe Drivers"
     },
     {
-        id: 5,
-        workbookAreaId: 4,  // Workplace
-        getWorkbookArea: function() {
-            return CS.blueprintAreasModel.getOfId(this.workbookAreaId);
-        },
-        isActive: function (itemIndex) {
-            var workbookArea = this.getWorkbookArea();
-
-            if (!workbookArea.isActive()) {
-                return false;
-            }
-
-            return CS.account.data[workbookArea.className] && !_.isEmpty(CS.account.data[workbookArea.className][itemIndex]);
-        },
-        isDone: function (itemIndex) {
-            return CS.account.data.describedWorkbookItemIds && _.includes(CS.account.data.describedWorkbookItemIds[this.getWorkbookArea().className], itemIndex);
-        },
-        wordings: [
-            {
-                prompt: "<p>Why is this important for you at the workplace:</p><p><em>{itemName}</em></p>"
-            }
-        ],
-        stepCount: CS.Models.WorkbookItemTaskCommon.minItemCountForAddItemsTaskComplete,
-        templateClassName: "WorkbookItemAddItemTask",
-        workingOnText: "describing Workplace preferences",
-        notificationText: "Describe Workplace preferences"
-    },
-    {
         id: 6,
         workbookAreaId: 12,  // Mores
         getWorkbookArea: function() {
@@ -215,61 +187,5 @@ CS.WorkbookItemTasks = [
         templateClassName: "WorkbookItemAddItemTask",
         workingOnText: "describing Tools and Methods",
         notificationText: "Describe Tools and Methods"
-    },
-    {
-        id: 8,
-        workbookAreaId: 9,  // Leadership
-        getWorkbookArea: function() {
-            return CS.blueprintAreasModel.getOfId(this.workbookAreaId);
-        },
-        isActive: function (itemIndex) {
-            var workbookArea = this.getWorkbookArea();
-
-            if (!workbookArea.isActive()) {
-                return false;
-            }
-
-            return CS.account.data[workbookArea.className] && !_.isEmpty(CS.account.data[workbookArea.className][itemIndex]);
-        },
-        isDone: function (itemIndex) {
-            return CS.account.data.describedWorkbookItemIds && _.includes(CS.account.data.describedWorkbookItemIds[this.getWorkbookArea().className], itemIndex);
-        },
-        wordings: [
-            {
-                prompt: "<p><em>{itemName}</em></p><p>In what way such a leadership helps you in your work?</p>"
-            }
-        ],
-        stepCount: CS.Models.WorkbookItemTaskCommon.minItemCountForAddItemsTaskComplete,
-        templateClassName: "WorkbookItemAddItemTask",
-        workingOnText: "describing Leadership preferences",
-        notificationText: "Describe Leadership preferences"
-    },
-    {
-        id: 9,
-        workbookAreaId: 3,  // Contexts
-        getWorkbookArea: function() {
-            return CS.blueprintAreasModel.getOfId(this.workbookAreaId);
-        },
-        isActive: function (itemIndex) {
-            var workbookArea = this.getWorkbookArea();
-
-            if (!workbookArea.isActive()) {
-                return false;
-            }
-
-            return CS.account.data[workbookArea.className] && !_.isEmpty(CS.account.data[workbookArea.className][itemIndex]);
-        },
-        isDone: function (itemIndex) {
-            return CS.account.data.describedWorkbookItemIds && _.includes(CS.account.data.describedWorkbookItemIds[this.getWorkbookArea().className], itemIndex);
-        },
-        wordings: [
-            {
-                prompt: "<p>Can you describe this:</p><p><em>{itemName}</em></p>"
-            }
-        ],
-        stepCount: CS.Models.WorkbookItemTaskCommon.minItemCountForAddItemsTaskComplete,
-        templateClassName: "WorkbookItemAddItemTask",
-        workingOnText: "describing Contexts",
-        notificationText: "Describe Contexts"
     }
 ];

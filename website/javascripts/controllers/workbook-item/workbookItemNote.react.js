@@ -8,7 +8,7 @@ CS.Controllers.WorkbookItemNote = React.createClass({
                 <button className="styleless fa fa-pencil" onClick={this._showEditor}></button>
                 <form role="form" className="item-composer note" onSubmit={this._handleComposerFormSubmit}>
                     <textarea className="form-control" onKeyUp={this._handleTextareaKeyUp} />
-                    <button className="btn btn-primary">Save changes</button>
+                    <button className="btn btn-primary">Spara ändringar</button>
                     <button type="button" className="styleless fa fa-times" onClick={this._hideForm}></button>
                 </form>
             </li>

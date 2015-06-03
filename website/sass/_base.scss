@@ -85,16 +85,29 @@ ul {
   background-color: transparent;
 }
 
-button.styleless {
-  @include styleless-btn;
-  padding: 0;
-
-  &:focus {
+button {
+  &.styleless,
+  &.border-only {
     @include styleless-btn;
+
+    &:focus {
+      @include styleless-btn;
+    }
+
+    &:hover {
+      cursor: pointer;
+    }
   }
 
-  &:hover {
-    cursor: pointer;
+  &.styleless {
+    padding: 0;
+  }
+
+  &.border-only {
+    border: 1px solid $background-body-color;
+    border-radius: $border-radius-base;
+
+    padding: 0.35em 0.75em;
   }
 }
 

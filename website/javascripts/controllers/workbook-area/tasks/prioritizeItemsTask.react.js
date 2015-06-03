@@ -24,7 +24,7 @@ CS.Controllers.WorkbookAreaPrioritizeItemsTask = React.createClass({
                 {comingUpNextParagraph}
                 <label>{currentWording.prompt}</label>
                 <div className="centered-contents">
-                    <button className="btn btn-primary" onClick={this._setCurrentWorkbookAreaAsPrioritizedAndReRender}>I'm done prioritizing</button>
+                    <button className="btn btn-primary" onClick={this._setCurrentWorkbookAreaAsPrioritizedAndReRender}>Jag har prioriterat klart!</button>
                 </div>
             </div>
             );

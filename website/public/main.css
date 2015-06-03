@@ -6110,19 +6110,24 @@ ul {
     padding-left: 0;
     list-style-type: none; }
 
-button.styleless {
+button.styleless, button.border-only {
   border: none;
   box-shadow: none;
   border-radius: 0;
-  background-color: transparent;
-  padding: 0; }
-  button.styleless:focus {
+  background-color: transparent; }
+  button.styleless:focus, button.border-only:focus {
     border: none;
     box-shadow: none;
     border-radius: 0;
     background-color: transparent; }
-  button.styleless:hover {
+  button.styleless:hover, button.border-only:hover {
     cursor: pointer; }
+button.styleless {
+  padding: 0; }
+button.border-only {
+  border: 1px solid white;
+  border-radius: 4px;
+  padding: 0.35em 0.75em; }
 
 a,
 a:visited {
@@ -6334,6 +6339,8 @@ header {
       @media screen and (min-width: 960px) {
         header > #get-started > div {
           width: 640px; } }
+    header > #get-started .border-only {
+      margin: 1em 0; }
 
 #task-notifications-btn {
   color: #0c57d3; }
@@ -6472,7 +6479,7 @@ header {
 #container.workbook-area-actions-menu-open #content-overlay-when-menu-open, #container.get-started-section-open #content-overlay-when-menu-open {
   display: block; }
 
-#sign-in-modal #tracks-intro {
+#sign-in-modal .tracks-intro {
   font-weight: bold;
   margin: 0.5em 1em; }
 #sign-in-modal .centered-contents {

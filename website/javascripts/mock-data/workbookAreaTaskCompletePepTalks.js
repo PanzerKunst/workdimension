@@ -96,30 +96,6 @@ CS.WorkbookAreaTaskCompletePepTalks = [
         templateClassName: "WorkbookAreaAddItemLvl1Complete"
     },
     {
-        completedTaskId: 5, // Workplace lvl 1
-        getWorkbookArea: function() {
-            var completedTask = _.find(CS.WorkbookAreaTasks, function (task) {
-                return task.id === this.completedTaskId;
-            }.bind(this));
-
-            return completedTask.getWorkbookArea();
-        },
-        getWorkbookItemsForThisArea: function() {
-            return CS.account.data ? CS.account.data[this.getWorkbookArea().className] : [];
-        },
-        isActive: function () {
-            if (!this.getWorkbookArea().isActive()) {
-                return false;
-            }
-
-            var workbookItemsForThisArea = this.getWorkbookItemsForThisArea();
-
-            return !_.isEmpty(workbookItemsForThisArea) &&
-                workbookItemsForThisArea.length === CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl1TaskComplete;
-        },
-        templateClassName: "WorkbookAreaAddItemLvl1Complete"
-    },
-    {
         completedTaskId: 6, // Mores lvl 1
         getWorkbookArea: function() {
             var completedTask = _.find(CS.WorkbookAreaTasks, function (task) {
@@ -145,54 +121,6 @@ CS.WorkbookAreaTaskCompletePepTalks = [
     },
     {
         completedTaskId: 7, // ToolsAndMethods lvl 1
-        getWorkbookArea: function() {
-            var completedTask = _.find(CS.WorkbookAreaTasks, function (task) {
-                return task.id === this.completedTaskId;
-            }.bind(this));
-
-            return completedTask.getWorkbookArea();
-        },
-        getWorkbookItemsForThisArea: function() {
-            return CS.account.data ? CS.account.data[this.getWorkbookArea().className] : [];
-        },
-        isActive: function () {
-            if (!this.getWorkbookArea().isActive()) {
-                return false;
-            }
-
-            var workbookItemsForThisArea = this.getWorkbookItemsForThisArea();
-
-            return !_.isEmpty(workbookItemsForThisArea) &&
-                workbookItemsForThisArea.length === CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl1TaskComplete;
-        },
-        templateClassName: "WorkbookAreaAddItemLvl1Complete"
-    },
-    {
-        completedTaskId: 8, // Leadership lvl 1
-        getWorkbookArea: function() {
-            var completedTask = _.find(CS.WorkbookAreaTasks, function (task) {
-                return task.id === this.completedTaskId;
-            }.bind(this));
-
-            return completedTask.getWorkbookArea();
-        },
-        getWorkbookItemsForThisArea: function() {
-            return CS.account.data ? CS.account.data[this.getWorkbookArea().className] : [];
-        },
-        isActive: function () {
-            if (!this.getWorkbookArea().isActive()) {
-                return false;
-            }
-
-            var workbookItemsForThisArea = this.getWorkbookItemsForThisArea();
-
-            return !_.isEmpty(workbookItemsForThisArea) &&
-                workbookItemsForThisArea.length === CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl1TaskComplete;
-        },
-        templateClassName: "WorkbookAreaAddItemLvl1Complete"
-    },
-    {
-        completedTaskId: 9, // Contexts lvl 1
         getWorkbookArea: function() {
             var completedTask = _.find(CS.WorkbookAreaTasks, function (task) {
                 return task.id === this.completedTaskId;
@@ -266,31 +194,6 @@ CS.WorkbookAreaTaskCompletePepTalks = [
         templateClassName: "WorkbookAreaAddItemLvl2Complete"
     },
     {
-        completedTaskId: 14, // Workplace lvl 2
-        getWorkbookArea: function() {
-            var completedTask = _.find(CS.WorkbookAreaTasks, function (task) {
-                return task.id === this.completedTaskId;
-            }.bind(this));
-
-            return completedTask.getWorkbookArea();
-        },
-        getWorkbookItemsForThisArea: function() {
-            return CS.account.data ? CS.account.data[this.getWorkbookArea().className] : [];
-        },
-        isActive: function () {
-            if (!this.getWorkbookArea().isActive()) {
-                return false;
-            }
-
-            var workbookItemsForThisArea = this.getWorkbookItemsForThisArea();
-
-            return !_.isEmpty(workbookItemsForThisArea) &&
-                workbookItemsForThisArea.length === CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl2TaskComplete &&
-                (!CS.account.data || !CS.account.data.prioritizedWorkbookAreaIds || !_.includes(CS.account.data.prioritizedWorkbookAreaIds, this.getWorkbookArea().id));
-        },
-        templateClassName: "WorkbookAreaAddItemLvl2Complete"
-    },
-    {
         completedTaskId: 15, // Mores lvl 2
         getWorkbookArea: function() {
             var completedTask = _.find(CS.WorkbookAreaTasks, function (task) {
@@ -317,56 +220,6 @@ CS.WorkbookAreaTaskCompletePepTalks = [
     },
     {
         completedTaskId: 16, // ToolsAndMethods lvl 2
-        getWorkbookArea: function() {
-            var completedTask = _.find(CS.WorkbookAreaTasks, function (task) {
-                return task.id === this.completedTaskId;
-            }.bind(this));
-
-            return completedTask.getWorkbookArea();
-        },
-        getWorkbookItemsForThisArea: function() {
-            return CS.account.data ? CS.account.data[this.getWorkbookArea().className] : [];
-        },
-        isActive: function () {
-            if (!this.getWorkbookArea().isActive()) {
-                return false;
-            }
-
-            var workbookItemsForThisArea = this.getWorkbookItemsForThisArea();
-
-            return !_.isEmpty(workbookItemsForThisArea) &&
-                workbookItemsForThisArea.length === CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl2TaskComplete &&
-                (!CS.account.data || !CS.account.data.prioritizedWorkbookAreaIds || !_.includes(CS.account.data.prioritizedWorkbookAreaIds, this.getWorkbookArea().id));
-        },
-        templateClassName: "WorkbookAreaAddItemLvl2Complete"
-    },
-    {
-        completedTaskId: 17, // Leadership lvl 2
-        getWorkbookArea: function() {
-            var completedTask = _.find(CS.WorkbookAreaTasks, function (task) {
-                return task.id === this.completedTaskId;
-            }.bind(this));
-
-            return completedTask.getWorkbookArea();
-        },
-        getWorkbookItemsForThisArea: function() {
-            return CS.account.data ? CS.account.data[this.getWorkbookArea().className] : [];
-        },
-        isActive: function () {
-            if (!this.getWorkbookArea().isActive()) {
-                return false;
-            }
-
-            var workbookItemsForThisArea = this.getWorkbookItemsForThisArea();
-
-            return !_.isEmpty(workbookItemsForThisArea) &&
-                workbookItemsForThisArea.length === CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl2TaskComplete &&
-                (!CS.account.data || !CS.account.data.prioritizedWorkbookAreaIds || !_.includes(CS.account.data.prioritizedWorkbookAreaIds, this.getWorkbookArea().id));
-        },
-        templateClassName: "WorkbookAreaAddItemLvl2Complete"
-    },
-    {
-        completedTaskId: 18, // Contexts lvl 2
         getWorkbookArea: function() {
             var completedTask = _.find(CS.WorkbookAreaTasks, function (task) {
                 return task.id === this.completedTaskId;
@@ -441,57 +294,7 @@ CS.WorkbookAreaTaskCompletePepTalks = [
         templateClassName: "WorkbookAreaPrioritizeItemsComplete"
     },
     {
-        completedTaskId: 21, // Prioritize workplace
-        getWorkbookArea: function() {
-            var completedTask = _.find(CS.WorkbookAreaTasks, function (task) {
-                return task.id === this.completedTaskId;
-            }.bind(this));
-
-            return completedTask.getWorkbookArea();
-        },
-        getWorkbookItemsForThisArea: function() {
-            return CS.account.data ? CS.account.data[this.getWorkbookArea().className] : [];
-        },
-        isActive: function () {
-            if (!this.getWorkbookArea().isActive()) {
-                return false;
-            }
-
-            var workbookItemsForThisArea = this.getWorkbookItemsForThisArea();
-
-            return !_.isEmpty(workbookItemsForThisArea) &&
-                workbookItemsForThisArea.length >= CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl2TaskComplete &&
-                CS.account.data && CS.account.data.prioritizedWorkbookAreaIds && _.includes(CS.account.data.prioritizedWorkbookAreaIds, this.getWorkbookArea().id);
-        },
-        templateClassName: "WorkbookAreaPrioritizeItemsComplete"
-    },
-    {
         completedTaskId: 22, // Prioritize achievements
-        getWorkbookArea: function() {
-            var completedTask = _.find(CS.WorkbookAreaTasks, function (task) {
-                return task.id === this.completedTaskId;
-            }.bind(this));
-
-            return completedTask.getWorkbookArea();
-        },
-        getWorkbookItemsForThisArea: function() {
-            return CS.account.data ? CS.account.data[this.getWorkbookArea().className] : [];
-        },
-        isActive: function () {
-            if (!this.getWorkbookArea().isActive()) {
-                return false;
-            }
-
-            var workbookItemsForThisArea = this.getWorkbookItemsForThisArea();
-
-            return !_.isEmpty(workbookItemsForThisArea) &&
-                workbookItemsForThisArea.length >= CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl2TaskComplete &&
-                CS.account.data && CS.account.data.prioritizedWorkbookAreaIds && _.includes(CS.account.data.prioritizedWorkbookAreaIds, this.getWorkbookArea().id);
-        },
-        templateClassName: "WorkbookAreaPrioritizeItemsComplete"
-    },
-    {
-        completedTaskId: 23, // Prioritize Leadership preferences
         getWorkbookArea: function() {
             var completedTask = _.find(CS.WorkbookAreaTasks, function (task) {
                 return task.id === this.completedTaskId;

@@ -40,8 +40,8 @@ CS.WorkbookAreaTasks = [
         ],
         stepCount: CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl1TaskComplete,
         templateClassName: "WorkbookAreaAddItemTask",
-        workingOnText: "making inventory of Achievements",
-        notificationText: "Make inventory of Achievements"
+        workingOnText: "Gör en inventering av Resultat",
+        notificationText: "Gör en inventering av Resultat"
     },
     {
         id: 2,
@@ -80,8 +80,8 @@ CS.WorkbookAreaTasks = [
         ],
         stepCount: CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl1TaskComplete,
         templateClassName: "WorkbookAreaAddItemTask",
-        workingOnText: "making inventory of Tracks",
-        notificationText: "Make inventory of Tracks"
+        workingOnText: "Gör en inventering av Spår att följa... ",
+        notificationText: "Gör en inventering av Spår att följa... "
     },
     {
         id: 3,
@@ -124,8 +124,8 @@ CS.WorkbookAreaTasks = [
         ],
         stepCount: CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl1TaskComplete,
         templateClassName: "WorkbookAreaAddItemTask",
-        workingOnText: "making inventory of Strengths",
-        notificationText: "Make inventory of Strengths"
+        workingOnText: "Gör en inventering av Styrkor",
+        notificationText: "Gör en inventering av Styrkor"
     },
     {
         id: 4,
@@ -169,45 +169,8 @@ CS.WorkbookAreaTasks = [
         ],
         stepCount: CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl1TaskComplete,
         templateClassName: "WorkbookAreaAddItemTask",
-        workingOnText: "making inventory of Drivers",
-        notificationText: "Make inventory of Drivers"
-    },
-    {
-        id: 5,
-        level: 1,
-        workbookAreaId: 4,  // Workplace
-        getWorkbookArea: function() {
-            return CS.blueprintAreasModel.getOfId(this.workbookAreaId);
-        },
-        getWorkbookItemsForThisArea: function() {
-            return CS.account.data ? CS.account.data[this.getWorkbookArea().className] : [];
-        },
-        isActive: function () {
-            if (!this.getWorkbookArea().isActive()) {
-                return false;
-            }
-
-            var workbookItemsForThisArea = this.getWorkbookItemsForThisArea();
-
-            return _.isEmpty(workbookItemsForThisArea) || workbookItemsForThisArea.length < CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl1TaskComplete;
-        },
-        isDone: function() {
-            var workbookItemsForThisArea = this.getWorkbookItemsForThisArea();
-
-            return !_.isEmpty(workbookItemsForThisArea) && workbookItemsForThisArea.length >= CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl1TaskComplete;
-        },
-        wordings: [
-            {
-                prompt: "What kind of environment are you the most creative in?"
-            },
-            {
-                prompt: "What kind of environment are you the most productive in?"
-            }
-        ],
-        stepCount: CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl1TaskComplete,
-        templateClassName: "WorkbookAreaAddItemTask",
-        workingOnText: "making inventory of Workplace preferences",
-        notificationText: "Make inventory of Workplace preferences"
+        workingOnText: "Gör en inventering av Drivkrafter",
+        notificationText: "Gör en inventering av Drivkrafter"
     },
     {
         id: 6,
@@ -246,8 +209,8 @@ CS.WorkbookAreaTasks = [
         ],
         stepCount: CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl1TaskComplete,
         templateClassName: "WorkbookAreaAddItemTask",
-        workingOnText: "making inventory of Mores",
-        notificationText: "Make inventory of Mores"
+        workingOnText: "Gör en inventering av Göra mer av... ",
+        notificationText: "Gör en inventering av Göra mer av... "
     },
     {
         id: 7,
@@ -286,90 +249,8 @@ CS.WorkbookAreaTasks = [
         ],
         stepCount: CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl1TaskComplete,
         templateClassName: "WorkbookAreaAddItemTask",
-        workingOnText: "making inventory of Tools and Methods",
-        notificationText: "Make inventory of Tools and Methods"
-    },
-    {
-        id: 8,
-        level: 1,
-        workbookAreaId: 9,  // Leadership
-        getWorkbookArea: function() {
-            return CS.blueprintAreasModel.getOfId(this.workbookAreaId);
-        },
-        getWorkbookItemsForThisArea: function() {
-            return CS.account.data ? CS.account.data[this.getWorkbookArea().className] : [];
-        },
-        isActive: function () {
-            if (!this.getWorkbookArea().isActive()) {
-                return false;
-            }
-
-            var workbookItemsForThisArea = this.getWorkbookItemsForThisArea();
-
-            return _.isEmpty(workbookItemsForThisArea) || workbookItemsForThisArea.length < CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl1TaskComplete;
-        },
-        isDone: function() {
-            var workbookItemsForThisArea = this.getWorkbookItemsForThisArea();
-
-            return !_.isEmpty(workbookItemsForThisArea) && workbookItemsForThisArea.length >= CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl1TaskComplete;
-        },
-        wordings: [
-            {
-                prompt: "This is something my boss should keep in mind to make me stay..."
-            }
-        ],
-        stepCount: CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl1TaskComplete,
-        templateClassName: "WorkbookAreaAddItemTask",
-        workingOnText: "making inventory of Leadership preferences",
-        notificationText: "Make inventory of Leadership preferences"
-    },
-    {
-        id: 9,
-        level: 1,
-        workbookAreaId: 3,  // Contexts
-        getWorkbookArea: function() {
-            return CS.blueprintAreasModel.getOfId(this.workbookAreaId);
-        },
-        getWorkbookItemsForThisArea: function() {
-            return CS.account.data ? CS.account.data[this.getWorkbookArea().className] : [];
-        },
-        isActive: function () {
-            if (!this.getWorkbookArea().isActive()) {
-                return false;
-            }
-
-            var workbookItemsForThisArea = this.getWorkbookItemsForThisArea();
-
-            return _.isEmpty(workbookItemsForThisArea) || workbookItemsForThisArea.length < CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl1TaskComplete;
-        },
-        isDone: function() {
-            var workbookItemsForThisArea = this.getWorkbookItemsForThisArea();
-
-            return !_.isEmpty(workbookItemsForThisArea) && workbookItemsForThisArea.length >= CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl1TaskComplete;
-        },
-        wordings: [
-            {
-                prompt: "Name a position or role you'd like to have!",
-                sentenceStart: "I would like to work as "
-            },
-            {
-                prompt: "Name an industry you're interested in working in!"
-            },
-            {
-                prompt: "What position would you chose, if given the possibility to decide all by yourself?"
-            },
-            {
-                prompt: "Please name an organization that you would find interesting to work with"
-            },
-            {
-                prompt: "What industries would you not work in?",
-                sentenceStart: "I would never work in "
-            }
-        ],
-        stepCount: CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl1TaskComplete,
-        templateClassName: "WorkbookAreaAddItemTask",
-        workingOnText: "making inventory of Contexts",
-        notificationText: "Make inventory of Contexts"
+        workingOnText: "Gör en inventering av Metoder och verktyg",
+        notificationText: "Gör en inventering av Metoder och verktyg"
     },
     {   // Level 2
         id: 10,
@@ -418,9 +299,9 @@ CS.WorkbookAreaTasks = [
         ],
         stepCount: CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl2TaskComplete - CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl1TaskComplete,
         templateClassName: "WorkbookAreaAddItemLvl2Task",
-        workingOnText: "making level 2 inventory of Achievements",
-        notificationText: "Make level 2 inventory of Achievements",
-        comingUpText: "making inventory level 2"
+        workingOnText: "Inventering nivå 2 av Resultat",
+        notificationText: "Inventering nivå 2 av Resultat",
+        comingUpText: "Inventering nivå 2 av Resultat"
     },
     {
         id: 11,
@@ -465,9 +346,9 @@ CS.WorkbookAreaTasks = [
         ],
         stepCount: CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl2TaskComplete - CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl1TaskComplete,
         templateClassName: "WorkbookAreaAddItemLvl2Task",
-        workingOnText: "making level 2 inventory of Tracks",
-        notificationText: "Make level 2 inventory of Tracks",
-        comingUpText: "making inventory level 2"
+        workingOnText: "Inventering nivå 2 av Spår att följa... ",
+        notificationText: "Inventering nivå 2 av Spår att följa... ",
+        comingUpText: "Inventering nivå 2 av Spår att följa... "
     },
     {
         id: 12,
@@ -516,9 +397,9 @@ CS.WorkbookAreaTasks = [
         ],
         stepCount: CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl2TaskComplete - CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl1TaskComplete,
         templateClassName: "WorkbookAreaAddItemLvl2Task",
-        workingOnText: "making level 2 inventory of Strengths",
-        notificationText: "Make level 2 inventory of Strengths",
-        comingUpText: "making inventory level 2"
+        workingOnText: "Inventering nivå 2 av Styrkor",
+        notificationText: "MakeInventering nivå 2 av Styrkor",
+        comingUpText: "Inventering nivå 2 av Styrkor"
     },
     {
         id: 13,
@@ -568,53 +449,9 @@ CS.WorkbookAreaTasks = [
         ],
         stepCount: CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl2TaskComplete - CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl1TaskComplete,
         templateClassName: "WorkbookAreaAddItemLvl2Task",
-        workingOnText: "making level 2 inventory of Drivers",
-        notificationText: "Make level 2 inventory of Drivers",
-        comingUpText: "making inventory level 2"
-    },
-    {
-        id: 14,
-        level: 2,
-        previousTaskId: 5,
-        getWorkbookArea: function() {
-            var previousTask = _.find(CS.WorkbookAreaTasks, function (task) {
-                return task.id === this.previousTaskId;
-            }.bind(this));
-
-            return previousTask.getWorkbookArea();
-        },
-        getWorkbookItemsForThisArea: function() {
-            return CS.account.data ? CS.account.data[this.getWorkbookArea().className] : [];
-        },
-        isActive: function () {
-            if (!this.getWorkbookArea().isActive()) {
-                return false;
-            }
-
-            var workbookItemsForThisArea = this.getWorkbookItemsForThisArea();
-
-            return !_.isEmpty(workbookItemsForThisArea) &&
-                workbookItemsForThisArea.length >= CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl1TaskComplete &&
-                workbookItemsForThisArea.length < CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl2TaskComplete;
-        },
-        isDone: function() {
-            var workbookItemsForThisArea = this.getWorkbookItemsForThisArea();
-
-            return !_.isEmpty(workbookItemsForThisArea) && workbookItemsForThisArea.length >= CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl2TaskComplete;
-        },
-        wordings: [
-            {
-                prompt: "What kind of environment are you the most creative in?"
-            },
-            {
-                prompt: "What kind of environment are you the most productive in?"
-            }
-        ],
-        stepCount: CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl2TaskComplete - CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl1TaskComplete,
-        templateClassName: "WorkbookAreaAddItemLvl2Task",
-        workingOnText: "making level 2 inventory of Workplace preferences",
-        notificationText: "Make level 2 inventory of Workplace preferences",
-        comingUpText: "making inventory level 2"
+        workingOnText: "Inventering nivå 2 av Drivkrafter",
+        notificationText: "Inventering nivå 2 av Drivkrafter",
+        comingUpText: "Inventering nivå 2 av Drivkrafter"
     },
     {
         id: 15,
@@ -659,9 +496,9 @@ CS.WorkbookAreaTasks = [
         ],
         stepCount: CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl2TaskComplete - CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl1TaskComplete,
         templateClassName: "WorkbookAreaAddItemLvl2Task",
-        workingOnText: "making level 2 inventory of Mores",
-        notificationText: "Make level 2 inventory of Mores",
-        comingUpText: "making inventory level 2"
+        workingOnText: "Inventering nivå 2 av Göra mer av... ",
+        notificationText: "Inventering nivå 2 av Göra mer av... ",
+        comingUpText: "Inventering nivå 2 av Göra mer av... "
     },
     {
         id: 16,
@@ -706,105 +543,9 @@ CS.WorkbookAreaTasks = [
         ],
         stepCount: CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl2TaskComplete - CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl1TaskComplete,
         templateClassName: "WorkbookAreaAddItemLvl2Task",
-        workingOnText: "making level 2 inventory of Tools and Methods",
-        notificationText: "Make level 2 inventory of Tools and Methods",
-        comingUpText: "making inventory level 2"
-    },
-    {
-        id: 17,
-        level: 2,
-        previousTaskId: 8,
-        getWorkbookArea: function() {
-            var previousTask = _.find(CS.WorkbookAreaTasks, function (task) {
-                return task.id === this.previousTaskId;
-            }.bind(this));
-
-            return previousTask.getWorkbookArea();
-        },
-        getWorkbookItemsForThisArea: function() {
-            return CS.account.data ? CS.account.data[this.getWorkbookArea().className] : [];
-        },
-        isActive: function () {
-            if (!this.getWorkbookArea().isActive()) {
-                return false;
-            }
-
-            var workbookItemsForThisArea = this.getWorkbookItemsForThisArea();
-
-            return !_.isEmpty(workbookItemsForThisArea) &&
-                workbookItemsForThisArea.length >= CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl1TaskComplete &&
-                workbookItemsForThisArea.length < CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl2TaskComplete;
-        },
-        isDone: function() {
-            var workbookItemsForThisArea = this.getWorkbookItemsForThisArea();
-
-            return !_.isEmpty(workbookItemsForThisArea) && workbookItemsForThisArea.length >= CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl2TaskComplete;
-        },
-        wordings: [
-            {
-                prompt: "This is something my boss should keep in mind to make me stay..."
-            }
-        ],
-        stepCount: CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl2TaskComplete - CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl1TaskComplete,
-        templateClassName: "WorkbookAreaAddItemLvl2Task",
-        workingOnText: "making level 2 inventory of Leadership preferences",
-        notificationText: "Make level 2 inventory of Leadership preferences",
-        comingUpText: "making inventory level 2"
-    },
-    {
-        id: 18,
-        level: 2,
-        previousTaskId: 9,
-        getWorkbookArea: function() {
-            var previousTask = _.find(CS.WorkbookAreaTasks, function (task) {
-                return task.id === this.previousTaskId;
-            }.bind(this));
-
-            return previousTask.getWorkbookArea();
-        },
-        getWorkbookItemsForThisArea: function() {
-            return CS.account.data ? CS.account.data[this.getWorkbookArea().className] : [];
-        },
-        isActive: function () {
-            if (!this.getWorkbookArea().isActive()) {
-                return false;
-            }
-
-            var workbookItemsForThisArea = this.getWorkbookItemsForThisArea();
-
-            return !_.isEmpty(workbookItemsForThisArea) &&
-                workbookItemsForThisArea.length >= CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl1TaskComplete &&
-                workbookItemsForThisArea.length < CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl2TaskComplete;
-        },
-        isDone: function() {
-            var workbookItemsForThisArea = this.getWorkbookItemsForThisArea();
-
-            return !_.isEmpty(workbookItemsForThisArea) && workbookItemsForThisArea.length >= CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl2TaskComplete;
-        },
-        wordings: [
-            {
-                prompt: "Name a position or role you'd like to have!",
-                sentenceStart: "I would like to work as "
-            },
-            {
-                prompt: "Name an industry you're interested in working in!"
-            },
-            {
-                prompt: "What position would you chose, if given the possibility to decide all by yourself?"
-            },
-            {
-                prompt: "Please name an organization that you would find interesting to work with"
-            },
-            {
-                prompt: "What industries would you not work in?",
-                sentenceStart: "I would never work in "
-            }
-        ],
-        stepCount: CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl2TaskComplete - CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl1TaskComplete,
-        templateClassName: "WorkbookAreaAddItemLvl2Task",
-        workingOnText: "making level 2 inventory of Contexts",
-        notificationText: "Make level 2 inventory of Contexts",
-        comingUpText: "making inventory level 2"
+        workingOnText: "Inventering nivå 2 av Metoder och verktyg",
+        notificationText: "Inventering nivå 2 av Metoder och verktyg",
+        comingUpText: "Inventering nivå 2 av Metoder och verktyg"
     },
     {   // Level 3
         id: 19,
@@ -885,45 +626,6 @@ CS.WorkbookAreaTasks = [
         comingUpText: "prioritizing"
     },
     {
-        id: 21,
-        level: 3,
-        previousTaskId: 14,
-        getWorkbookArea: function() {
-            var previousTask = _.find(CS.WorkbookAreaTasks, function (task) {
-                return task.id === this.previousTaskId;
-            }.bind(this));
-
-            return previousTask.getWorkbookArea();
-        },
-        getWorkbookItemsForThisArea: function() {
-            return CS.account.data ? CS.account.data[this.getWorkbookArea().className] : [];
-        },
-        isActive: function () {
-            if (!this.getWorkbookArea().isActive()) {
-                return false;
-            }
-
-            var workbookItemsForThisArea = this.getWorkbookItemsForThisArea();
-
-            return !this.isDone() &&
-                !_.isEmpty(workbookItemsForThisArea) &&
-                workbookItemsForThisArea.length >= CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl2TaskComplete;
-        },
-        isDone: function() {
-            return CS.account.data && CS.account.data.prioritizedWorkbookAreaIds && _.includes(CS.account.data.prioritizedWorkbookAreaIds, this.getWorkbookArea().id);
-        },
-        wordings: [
-            {
-                prompt: "What's most important to you in a work environment? Please order these items in order of importance by drag-and-dropping."
-            }
-        ],
-        stepCount: 1,
-        templateClassName: "WorkbookAreaPrioritizeItemsTask",
-        workingOnText: "prioritizing Workplace preferences",
-        notificationText: "Prioritize Workplace preferences",
-        comingUpText: "prioritizing"
-    },
-    {
         id: 22,
         level: 3,
         previousTaskId: 10,
@@ -960,45 +662,6 @@ CS.WorkbookAreaTasks = [
         templateClassName: "WorkbookAreaPrioritizeItemsTask",
         workingOnText: "prioritizing my Achievements",
         notificationText: "Prioritize my Achievements",
-        comingUpText: "prioritizing"
-    },
-    {
-        id: 23,
-        level: 3,
-        previousTaskId: 17,
-        getWorkbookArea: function() {
-            var previousTask = _.find(CS.WorkbookAreaTasks, function (task) {
-                return task.id === this.previousTaskId;
-            }.bind(this));
-
-            return previousTask.getWorkbookArea();
-        },
-        getWorkbookItemsForThisArea: function() {
-            return CS.account.data ? CS.account.data[this.getWorkbookArea().className] : [];
-        },
-        isActive: function () {
-            if (!this.getWorkbookArea().isActive()) {
-                return false;
-            }
-
-            var workbookItemsForThisArea = this.getWorkbookItemsForThisArea();
-
-            return !this.isDone() &&
-                !_.isEmpty(workbookItemsForThisArea) &&
-                workbookItemsForThisArea.length >= CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl2TaskComplete;
-        },
-        isDone: function() {
-            return CS.account.data && CS.account.data.prioritizedWorkbookAreaIds && _.includes(CS.account.data.prioritizedWorkbookAreaIds, this.getWorkbookArea().id);
-        },
-        wordings: [
-            {
-                prompt: "Prioritize the list by drag-and-dropping. What's the top things you need in the leadership to do a great job?"
-            }
-        ],
-        stepCount: 1,
-        templateClassName: "WorkbookAreaPrioritizeItemsTask",
-        workingOnText: "prioritizing Leadership preferences",
-        notificationText: "Prioritize Leadership preferences",
         comingUpText: "prioritizing"
     },
     {
@@ -1215,34 +878,6 @@ CS.WorkbookAreaTasks = [
         notificationText: "Describe Drivers"
     },
     {
-        id: 5,
-        workbookAreaId: 4,  // Workplace
-        getWorkbookArea: function() {
-            return CS.blueprintAreasModel.getOfId(this.workbookAreaId);
-        },
-        isActive: function (itemIndex) {
-            var workbookArea = this.getWorkbookArea();
-
-            if (!workbookArea.isActive()) {
-                return false;
-            }
-
-            return CS.account.data[workbookArea.className] && !_.isEmpty(CS.account.data[workbookArea.className][itemIndex]);
-        },
-        isDone: function (itemIndex) {
-            return CS.account.data.describedWorkbookItemIds && _.includes(CS.account.data.describedWorkbookItemIds[this.getWorkbookArea().className], itemIndex);
-        },
-        wordings: [
-            {
-                prompt: "<p>Why is this important for you at the workplace:</p><p><em>{itemName}</em></p>"
-            }
-        ],
-        stepCount: CS.Models.WorkbookItemTaskCommon.minItemCountForAddItemsTaskComplete,
-        templateClassName: "WorkbookItemAddItemTask",
-        workingOnText: "describing Workplace preferences",
-        notificationText: "Describe Workplace preferences"
-    },
-    {
         id: 6,
         workbookAreaId: 12,  // Mores
         getWorkbookArea: function() {
@@ -1297,62 +932,6 @@ CS.WorkbookAreaTasks = [
         templateClassName: "WorkbookItemAddItemTask",
         workingOnText: "describing Tools and Methods",
         notificationText: "Describe Tools and Methods"
-    },
-    {
-        id: 8,
-        workbookAreaId: 9,  // Leadership
-        getWorkbookArea: function() {
-            return CS.blueprintAreasModel.getOfId(this.workbookAreaId);
-        },
-        isActive: function (itemIndex) {
-            var workbookArea = this.getWorkbookArea();
-
-            if (!workbookArea.isActive()) {
-                return false;
-            }
-
-            return CS.account.data[workbookArea.className] && !_.isEmpty(CS.account.data[workbookArea.className][itemIndex]);
-        },
-        isDone: function (itemIndex) {
-            return CS.account.data.describedWorkbookItemIds && _.includes(CS.account.data.describedWorkbookItemIds[this.getWorkbookArea().className], itemIndex);
-        },
-        wordings: [
-            {
-                prompt: "<p><em>{itemName}</em></p><p>In what way such a leadership helps you in your work?</p>"
-            }
-        ],
-        stepCount: CS.Models.WorkbookItemTaskCommon.minItemCountForAddItemsTaskComplete,
-        templateClassName: "WorkbookItemAddItemTask",
-        workingOnText: "describing Leadership preferences",
-        notificationText: "Describe Leadership preferences"
-    },
-    {
-        id: 9,
-        workbookAreaId: 3,  // Contexts
-        getWorkbookArea: function() {
-            return CS.blueprintAreasModel.getOfId(this.workbookAreaId);
-        },
-        isActive: function (itemIndex) {
-            var workbookArea = this.getWorkbookArea();
-
-            if (!workbookArea.isActive()) {
-                return false;
-            }
-
-            return CS.account.data[workbookArea.className] && !_.isEmpty(CS.account.data[workbookArea.className][itemIndex]);
-        },
-        isDone: function (itemIndex) {
-            return CS.account.data.describedWorkbookItemIds && _.includes(CS.account.data.describedWorkbookItemIds[this.getWorkbookArea().className], itemIndex);
-        },
-        wordings: [
-            {
-                prompt: "<p>Can you describe this:</p><p><em>{itemName}</em></p>"
-            }
-        ],
-        stepCount: CS.Models.WorkbookItemTaskCommon.minItemCountForAddItemsTaskComplete,
-        templateClassName: "WorkbookItemAddItemTask",
-        workingOnText: "describing Contexts",
-        notificationText: "Describe Contexts"
     }
 ];
 ;CS.WorkbookAreaTaskCompletePepTalks = [
@@ -1453,30 +1032,6 @@ CS.WorkbookAreaTasks = [
         templateClassName: "WorkbookAreaAddItemLvl1Complete"
     },
     {
-        completedTaskId: 5, // Workplace lvl 1
-        getWorkbookArea: function() {
-            var completedTask = _.find(CS.WorkbookAreaTasks, function (task) {
-                return task.id === this.completedTaskId;
-            }.bind(this));
-
-            return completedTask.getWorkbookArea();
-        },
-        getWorkbookItemsForThisArea: function() {
-            return CS.account.data ? CS.account.data[this.getWorkbookArea().className] : [];
-        },
-        isActive: function () {
-            if (!this.getWorkbookArea().isActive()) {
-                return false;
-            }
-
-            var workbookItemsForThisArea = this.getWorkbookItemsForThisArea();
-
-            return !_.isEmpty(workbookItemsForThisArea) &&
-                workbookItemsForThisArea.length === CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl1TaskComplete;
-        },
-        templateClassName: "WorkbookAreaAddItemLvl1Complete"
-    },
-    {
         completedTaskId: 6, // Mores lvl 1
         getWorkbookArea: function() {
             var completedTask = _.find(CS.WorkbookAreaTasks, function (task) {
@@ -1502,54 +1057,6 @@ CS.WorkbookAreaTasks = [
     },
     {
         completedTaskId: 7, // ToolsAndMethods lvl 1
-        getWorkbookArea: function() {
-            var completedTask = _.find(CS.WorkbookAreaTasks, function (task) {
-                return task.id === this.completedTaskId;
-            }.bind(this));
-
-            return completedTask.getWorkbookArea();
-        },
-        getWorkbookItemsForThisArea: function() {
-            return CS.account.data ? CS.account.data[this.getWorkbookArea().className] : [];
-        },
-        isActive: function () {
-            if (!this.getWorkbookArea().isActive()) {
-                return false;
-            }
-
-            var workbookItemsForThisArea = this.getWorkbookItemsForThisArea();
-
-            return !_.isEmpty(workbookItemsForThisArea) &&
-                workbookItemsForThisArea.length === CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl1TaskComplete;
-        },
-        templateClassName: "WorkbookAreaAddItemLvl1Complete"
-    },
-    {
-        completedTaskId: 8, // Leadership lvl 1
-        getWorkbookArea: function() {
-            var completedTask = _.find(CS.WorkbookAreaTasks, function (task) {
-                return task.id === this.completedTaskId;
-            }.bind(this));
-
-            return completedTask.getWorkbookArea();
-        },
-        getWorkbookItemsForThisArea: function() {
-            return CS.account.data ? CS.account.data[this.getWorkbookArea().className] : [];
-        },
-        isActive: function () {
-            if (!this.getWorkbookArea().isActive()) {
-                return false;
-            }
-
-            var workbookItemsForThisArea = this.getWorkbookItemsForThisArea();
-
-            return !_.isEmpty(workbookItemsForThisArea) &&
-                workbookItemsForThisArea.length === CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl1TaskComplete;
-        },
-        templateClassName: "WorkbookAreaAddItemLvl1Complete"
-    },
-    {
-        completedTaskId: 9, // Contexts lvl 1
         getWorkbookArea: function() {
             var completedTask = _.find(CS.WorkbookAreaTasks, function (task) {
                 return task.id === this.completedTaskId;
@@ -1623,31 +1130,6 @@ CS.WorkbookAreaTasks = [
         templateClassName: "WorkbookAreaAddItemLvl2Complete"
     },
     {
-        completedTaskId: 14, // Workplace lvl 2
-        getWorkbookArea: function() {
-            var completedTask = _.find(CS.WorkbookAreaTasks, function (task) {
-                return task.id === this.completedTaskId;
-            }.bind(this));
-
-            return completedTask.getWorkbookArea();
-        },
-        getWorkbookItemsForThisArea: function() {
-            return CS.account.data ? CS.account.data[this.getWorkbookArea().className] : [];
-        },
-        isActive: function () {
-            if (!this.getWorkbookArea().isActive()) {
-                return false;
-            }
-
-            var workbookItemsForThisArea = this.getWorkbookItemsForThisArea();
-
-            return !_.isEmpty(workbookItemsForThisArea) &&
-                workbookItemsForThisArea.length === CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl2TaskComplete &&
-                (!CS.account.data || !CS.account.data.prioritizedWorkbookAreaIds || !_.includes(CS.account.data.prioritizedWorkbookAreaIds, this.getWorkbookArea().id));
-        },
-        templateClassName: "WorkbookAreaAddItemLvl2Complete"
-    },
-    {
         completedTaskId: 15, // Mores lvl 2
         getWorkbookArea: function() {
             var completedTask = _.find(CS.WorkbookAreaTasks, function (task) {
@@ -1674,56 +1156,6 @@ CS.WorkbookAreaTasks = [
     },
     {
         completedTaskId: 16, // ToolsAndMethods lvl 2
-        getWorkbookArea: function() {
-            var completedTask = _.find(CS.WorkbookAreaTasks, function (task) {
-                return task.id === this.completedTaskId;
-            }.bind(this));
-
-            return completedTask.getWorkbookArea();
-        },
-        getWorkbookItemsForThisArea: function() {
-            return CS.account.data ? CS.account.data[this.getWorkbookArea().className] : [];
-        },
-        isActive: function () {
-            if (!this.getWorkbookArea().isActive()) {
-                return false;
-            }
-
-            var workbookItemsForThisArea = this.getWorkbookItemsForThisArea();
-
-            return !_.isEmpty(workbookItemsForThisArea) &&
-                workbookItemsForThisArea.length === CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl2TaskComplete &&
-                (!CS.account.data || !CS.account.data.prioritizedWorkbookAreaIds || !_.includes(CS.account.data.prioritizedWorkbookAreaIds, this.getWorkbookArea().id));
-        },
-        templateClassName: "WorkbookAreaAddItemLvl2Complete"
-    },
-    {
-        completedTaskId: 17, // Leadership lvl 2
-        getWorkbookArea: function() {
-            var completedTask = _.find(CS.WorkbookAreaTasks, function (task) {
-                return task.id === this.completedTaskId;
-            }.bind(this));
-
-            return completedTask.getWorkbookArea();
-        },
-        getWorkbookItemsForThisArea: function() {
-            return CS.account.data ? CS.account.data[this.getWorkbookArea().className] : [];
-        },
-        isActive: function () {
-            if (!this.getWorkbookArea().isActive()) {
-                return false;
-            }
-
-            var workbookItemsForThisArea = this.getWorkbookItemsForThisArea();
-
-            return !_.isEmpty(workbookItemsForThisArea) &&
-                workbookItemsForThisArea.length === CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl2TaskComplete &&
-                (!CS.account.data || !CS.account.data.prioritizedWorkbookAreaIds || !_.includes(CS.account.data.prioritizedWorkbookAreaIds, this.getWorkbookArea().id));
-        },
-        templateClassName: "WorkbookAreaAddItemLvl2Complete"
-    },
-    {
-        completedTaskId: 18, // Contexts lvl 2
         getWorkbookArea: function() {
             var completedTask = _.find(CS.WorkbookAreaTasks, function (task) {
                 return task.id === this.completedTaskId;
@@ -1798,57 +1230,7 @@ CS.WorkbookAreaTasks = [
         templateClassName: "WorkbookAreaPrioritizeItemsComplete"
     },
     {
-        completedTaskId: 21, // Prioritize workplace
-        getWorkbookArea: function() {
-            var completedTask = _.find(CS.WorkbookAreaTasks, function (task) {
-                return task.id === this.completedTaskId;
-            }.bind(this));
-
-            return completedTask.getWorkbookArea();
-        },
-        getWorkbookItemsForThisArea: function() {
-            return CS.account.data ? CS.account.data[this.getWorkbookArea().className] : [];
-        },
-        isActive: function () {
-            if (!this.getWorkbookArea().isActive()) {
-                return false;
-            }
-
-            var workbookItemsForThisArea = this.getWorkbookItemsForThisArea();
-
-            return !_.isEmpty(workbookItemsForThisArea) &&
-                workbookItemsForThisArea.length >= CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl2TaskComplete &&
-                CS.account.data && CS.account.data.prioritizedWorkbookAreaIds && _.includes(CS.account.data.prioritizedWorkbookAreaIds, this.getWorkbookArea().id);
-        },
-        templateClassName: "WorkbookAreaPrioritizeItemsComplete"
-    },
-    {
         completedTaskId: 22, // Prioritize achievements
-        getWorkbookArea: function() {
-            var completedTask = _.find(CS.WorkbookAreaTasks, function (task) {
-                return task.id === this.completedTaskId;
-            }.bind(this));
-
-            return completedTask.getWorkbookArea();
-        },
-        getWorkbookItemsForThisArea: function() {
-            return CS.account.data ? CS.account.data[this.getWorkbookArea().className] : [];
-        },
-        isActive: function () {
-            if (!this.getWorkbookArea().isActive()) {
-                return false;
-            }
-
-            var workbookItemsForThisArea = this.getWorkbookItemsForThisArea();
-
-            return !_.isEmpty(workbookItemsForThisArea) &&
-                workbookItemsForThisArea.length >= CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl2TaskComplete &&
-                CS.account.data && CS.account.data.prioritizedWorkbookAreaIds && _.includes(CS.account.data.prioritizedWorkbookAreaIds, this.getWorkbookArea().id);
-        },
-        templateClassName: "WorkbookAreaPrioritizeItemsComplete"
-    },
-    {
-        completedTaskId: 23, // Prioritize Leadership preferences
         getWorkbookArea: function() {
             var completedTask = _.find(CS.WorkbookAreaTasks, function (task) {
                 return task.id === this.completedTaskId;
@@ -2005,26 +1387,6 @@ CS.WorkbookAreaTasks = [
         templateClassName: "WorkbookItemAddItemComplete"
     },
     {
-        completedTaskId: 5, // Workplace
-        getWorkbookArea: function() {
-            var completedTask = _.find(CS.WorkbookItemTasks, function (task) {
-                return task.id === this.completedTaskId;
-            }.bind(this));
-
-            return completedTask.getWorkbookArea();
-        },
-        isActive: function (itemIndex) {
-            var workbookArea = this.getWorkbookArea();
-
-            if (!workbookArea.isActive()) {
-                return false;
-            }
-
-            return CS.account.data[workbookArea.className] && !_.isEmpty(CS.account.data[workbookArea.className][itemIndex]) && !_.isEmpty(CS.account.data[workbookArea.className][itemIndex].notes);
-        },
-        templateClassName: "WorkbookItemAddItemComplete"
-    },
-    {
         completedTaskId: 6, // Mores
         getWorkbookArea: function() {
             var completedTask = _.find(CS.WorkbookItemTasks, function (task) {
@@ -2046,46 +1408,6 @@ CS.WorkbookAreaTasks = [
     },
     {
         completedTaskId: 7, // ToolsAndMethods
-        getWorkbookArea: function() {
-            var completedTask = _.find(CS.WorkbookItemTasks, function (task) {
-                return task.id === this.completedTaskId;
-            }.bind(this));
-
-            return completedTask.getWorkbookArea();
-        },
-        isActive: function (itemIndex) {
-            var workbookArea = this.getWorkbookArea();
-
-            if (!workbookArea.isActive()) {
-                return false;
-            }
-
-            return CS.account.data[workbookArea.className] && !_.isEmpty(CS.account.data[workbookArea.className][itemIndex]) && !_.isEmpty(CS.account.data[workbookArea.className][itemIndex].notes);
-        },
-        templateClassName: "WorkbookItemAddItemComplete"
-    },
-    {
-        completedTaskId: 8, // Leadership
-        getWorkbookArea: function() {
-            var completedTask = _.find(CS.WorkbookItemTasks, function (task) {
-                return task.id === this.completedTaskId;
-            }.bind(this));
-
-            return completedTask.getWorkbookArea();
-        },
-        isActive: function (itemIndex) {
-            var workbookArea = this.getWorkbookArea();
-
-            if (!workbookArea.isActive()) {
-                return false;
-            }
-
-            return CS.account.data[workbookArea.className] && !_.isEmpty(CS.account.data[workbookArea.className][itemIndex]) && !_.isEmpty(CS.account.data[workbookArea.className][itemIndex].notes);
-        },
-        templateClassName: "WorkbookItemAddItemComplete"
-    },
-    {
-        completedTaskId: 9, // Contexts
         getWorkbookArea: function() {
             var completedTask = _.find(CS.WorkbookItemTasks, function (task) {
                 return task.id === this.completedTaskId;
