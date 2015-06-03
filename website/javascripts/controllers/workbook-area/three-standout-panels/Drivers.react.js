@@ -2,9 +2,9 @@ CS.Controllers.ThreeStandoutPanel.Drivers = React.createClass({
     render: function () {
         return (
             <div className="three-standouts">
-                <h2><i className="fa fa-star"></i>Your top-3 drivers<i className="fa fa-star"></i></h2>
+                <h2><i className="fa fa-star"></i>Dina viktigaste drivkrafter<i className="fa fa-star"></i></h2>
 
-                <p>From what you've indicated so far, these are the three drivers that you should focus on when describing yourself:</p>
+                <p>Här är de tre viktigaste drivkrafter du identifierat hittills:</p>
 
                 <ul>
                     <li>{this.props.threeStandouts[0]}</li>
@@ -12,11 +12,11 @@ CS.Controllers.ThreeStandoutPanel.Drivers = React.createClass({
                     <li>{this.props.threeStandouts[2]}</li>
                 </ul>
 
-                <p>You have great examples for all of them. Use examples when you write your application and always be prepared to use them during an interview.</p>
+                <p>Använd dem när du beskriver dig själv. Ta med dem i ditt personliga brev och i fältet Sammanfattning i din LinkedIn-profil. </p>
 
-                <p>This exercise is now over. You'll find your top-3 drivers in the app at any time. Keep using the service at your wish.</p>
+                <p>Den här övningen är nu slut. Du kommer att hitta dina drivkrafter i appen när du vill. Fortsätt gärna använda tjänsten! </p>
 
-                <p>Please help us out by <a href="#">answering a three-question survey.</a></p>
+                <p>Hjälp oss genom att svara på <a href="https://docs.google.com/forms/d/13iqOYQDe6YHEhDdc-XIoQQe4DD6HXLUVYf1W4GcUu0o/viewform?usp=send_form">två korta frågor</a></p>
             </div>
             );
     }

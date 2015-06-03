@@ -2,11 +2,11 @@ CS.Controllers.WorkbookItemAddItemComplete = React.createClass({
     render: function () {
         return (
             <div id="task-complete-pep-talk">
-                <h2><i className="fa fa-star"></i>Great work!<i className="fa fa-star"></i></h2>
-                <p>Keep adding examples or try describing more.</p>
-                <p>Or <a onClick={this._navigateBack}>go back</a> to work on another item.</p>
+                <h2><i className="fa fa-star"></i>Bra jobbat! <i className="fa fa-star"></i></h2>
+                <p>Lägg till fler exempel och förklara djupare. Ju längre du går, desto bättre. </p>
+                <p>Du kan också <a onClick={this._navigateBack}>gå tillbaka för att jobba med en annan av dina styrkor.</a></p>
                 <div className="centered-contents">
-                    <button className="btn btn-primary" onClick={this._handleTaskCompletePepTalkClosed}>Alright</button>
+                    <button className="btn btn-primary" onClick={this._handleTaskCompletePepTalkClosed}>Ok!</button>
                 </div>
             </div>
             );

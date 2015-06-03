@@ -3,7 +3,7 @@ CS.Controllers.WorkbookAreaAddItemTask = React.createClass({
         var comingUpNextParagraph = null;
         if (this.props.comingUpNextText) {
             comingUpNextParagraph = (
-                <p className="coming-up-next">Coming up next: {this.props.comingUpNextText}</p>
+                <p className="coming-up-next">Nästa steg: {this.props.comingUpNextText}</p>
                 );
         }
 

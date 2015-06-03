@@ -16,8 +16,8 @@
 
 <section id="get-started">
     <div>
-        <p>Standouts are the things that make you uniquely qualified, uniquely motivated, and uniquely inspiring. What are your standouts?</p>
-        <p>We'll start you out with some topics. Click on the ones that interest you, or add a topic from the menu.</p>
+        <p>Tracks handlar om att identifiera de och utforska de viktigaste budskapen i ditt jobbsök. Det du ska lyfta fram för att sticka ut som kandidat och få det jobb du vill ha. </p>
+        <p>Vi har valt några ämnen åt dig som start. Klicka på det ämne du vill börja med eller lägg till ett nytt från menyn längst upp till höger. </p>
     </div>
 </section>
 
@@ -27,14 +27,14 @@
 
 <nav role="navigation" id="main-menu">
     @if(pageId != "index") {
-    <a href="/">Home</a>
+    <a href="/">Hem</a>
     }
     <section>
     </section>
     @if(pageId == "index") {
-    <a id="select-areas">Add a topic</a>
+    <a id="select-areas">Lägg till ämne</a>
     }
-    <a id="sign-out">Sign out</a>
+    <a id="sign-out">Logga ut</a>
 </nav>
 
 <div class="modal fade" id="select-areas-modal">
@@ -44,11 +44,11 @@
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
-                <h2 class="modal-title">Select the topic to add</h2>
+                <h2 class="modal-title">Välj ett ämne att lägga till</h2>
             </div>
             <div class="modal-body"></div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">Stäng</button>
             </div>
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
@@ -58,17 +58,17 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-body">
-                <p id="tracks-intro">Tracks will help you discover and describe what makes you stand out.</p>
+                <p id="tracks-intro">Välkommen till Tracks! Här kan du upptäcka och utforska de saker som får just dig att sticka ut i ett jobbsammanhang. Använd dem i din jobbansökan, i en intervju eller när du pratar med dina kontakter. </p>
 
                 <div class="centered-contents">
-                    <p>Please sign in to continue</p>
+                    <p>Logga in med LinkedIn för att fortsätta</p>
                     <button class="styleless sign-in-with-linkedin">
-                        <span>Sign in with LinkedIn</span>
+                        <span>Sign in</span>
                         <i class="fa fa-spinner fa-pulse"></i>
                     </button>
                 </div>
 
-                <p id="disclaimer">This service is still under development. There are no obligations and no costs. Your information is secure.</p>
+                <p id="disclaimer">Den här tjänsten är under utveckling. Det finns inga kostnader och inga förbindelser. Din information är säker och du kan när som helst välja att ta bort ditt konto. </p>
             </div>
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
