@@ -3,7 +3,7 @@ CS.Controllers.WorkbookAreaAddItemLvl2Task = React.createClass({
         var comingUpNextParagraph = null;
         if (this.props.comingUpNextText) {
             comingUpNextParagraph = (
-                <p className="coming-up-next">Coming up next: {this.props.comingUpNextText}</p>
+                <p className="coming-up-next">Nästa steg: {this.props.comingUpNextText}</p>
                 );
         }
 
@@ -15,7 +15,7 @@ CS.Controllers.WorkbookAreaAddItemLvl2Task = React.createClass({
         return (
             <div className={wrapperClasses}>
                 <button className="styleless fa fa-question-circle" onClick={CS.Controllers.WorkbookAreaCommon.showAreaDescription}></button>
-                <p className="working-on">Working on: {this.props.task.workingOnText}</p>
+                <p className="working-on">Du jobbar med: {this.props.task.workingOnText}</p>
                 <div className="progress">
                     <div ref="progressBar" className="progress-bar progress-bar-success" role="progressbar" aria-valuenow="" aria-valuemin="0" aria-valuemax="100"></div>
                 </div>
