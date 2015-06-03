@@ -11,8 +11,8 @@ CS.Controllers.OverviewWorkbookAreaActions = React.createClass({
         return (
             <section className="workbook-area-actions" ref="wrapper">
                 <ul className="styleless">
-                    <li><i className="fa fa-question-circle"></i><a onClick={this._showWorkbookAreaDescriptionModal}>Area info</a></li>
-                    <li><i className="fa fa-eye-slash"></i><a onClick={this._hideBlueprintAreaPanel}>Hide this area</a></li>
+                    <li><i className="fa fa-question-circle"></i><a onClick={this._showWorkbookAreaDescriptionModal}>Mer info om ämnet</a></li>
+                    <li><i className="fa fa-eye-slash"></i><a onClick={this._hideBlueprintAreaPanel}>Göm det här ämnet</a></li>
                     {threeStandoutsItemReact}
                 </ul>
             </section>
