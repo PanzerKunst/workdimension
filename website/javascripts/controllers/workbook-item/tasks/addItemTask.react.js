@@ -11,7 +11,7 @@ CS.Controllers.WorkbookItemAddItemTask = React.createClass({
 
         return (
             <div className={wrapperClasses} ref="wrapper">
-                <p>Working on: {this.props.task.workingOnText}</p>
+                <p>Du jobbar med: {this.props.task.workingOnText}</p>
                 <div className="progress">
                     <div className="progress-bar progress-bar-success" role="progressbar" aria-valuenow="" aria-valuemin="0" aria-valuemax="100"></div>
                 </div>

@@ -120,7 +120,7 @@ CS.WorkbookAreaTasks = [
             },
             {
                 prompt: "Vad är du bra på?"
-            }
+            },
             {
                 prompt: "Hur skulle de människor du jobbar med besrkiva dig?"
             }

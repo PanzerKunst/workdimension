@@ -3843,7 +3843,7 @@ CS.Controllers.WorkbookItemAddItemTask = React.createClass({displayName: "Workbo
 
         return (
             React.createElement("div", {className: wrapperClasses, ref: "wrapper"}, 
-                React.createElement("p", null, "Working on: ", this.props.task.workingOnText), 
+                React.createElement("p", null, "Du jobbar med: ", this.props.task.workingOnText), 
                 React.createElement("div", {className: "progress"}, 
                     React.createElement("div", {className: "progress-bar progress-bar-success", role: "progressbar", "aria-valuenow": "", "aria-valuemin": "0", "aria-valuemax": "100"})
                 ), 
