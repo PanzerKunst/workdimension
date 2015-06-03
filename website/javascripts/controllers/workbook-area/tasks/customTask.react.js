@@ -7,7 +7,7 @@ CS.Controllers.WorkbookAreaCustomTask = React.createClass({
             if (!this.props.task.question) {
                 tipReadBtnReact = (
                     <div className="centered-contents">
-                        <button className="btn btn-primary" onClick={this._setCustomTaskAsCompletedAndReRender}>Got it</button>
+                        <button className="btn btn-primary" onClick={this._setCustomTaskAsCompletedAndReRender}>Ok!</button>
                     </div>
                     );
             }
@@ -28,7 +28,7 @@ CS.Controllers.WorkbookAreaCustomTask = React.createClass({
                         <label htmlFor="custom-task-field">{this.props.task.question}</label>
                         <textarea className="form-control" id="custom-task-field" onKeyUp={this._handleTextareaKeyUp} />
                     </div>
-                    <button className="btn btn-primary">Add item</button>
+                    <button className="btn btn-primary">Lägg till</button>
                 </form>
                 );
         }
