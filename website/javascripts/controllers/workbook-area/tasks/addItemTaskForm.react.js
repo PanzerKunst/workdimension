@@ -10,7 +10,7 @@ CS.Controllers.WorkbookAreaAddItemTaskForm = React.createClass({
                     <textarea className="form-control" id={textareaId} onKeyUp={this._handleTextareaKeyUp} />
                 </div>
                 <button className="btn btn-primary">Lägg till</button>
-                <a onClick={this._setCurrentTaskAsSkippedAndReRender}>Try another</a>
+                <a onClick={this._setCurrentTaskAsSkippedAndReRender}>Prova en annan fråga</a>
             </form>
             );
     },
