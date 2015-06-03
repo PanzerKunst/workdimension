@@ -68,5 +68,9 @@ CS.Services.Browser = {
         if (Modernizr.localstorage) {
             localStorage.removeItem(key);
         }
+    },
+
+    isIOS: function() {
+        return /(iPad|iPhone|iPod)/g.test(navigator.userAgent);
     }
 };

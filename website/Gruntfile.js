@@ -47,6 +47,7 @@ module.exports = function (grunt) {
                     "javascripts/services/animator.js",
                     "javascripts/services/string.js",
                     "javascripts/services/keyboard.js",
+                    "javascripts/services/iosWindowFocusDetector.js",
 
                     // Models
                     "javascripts/models/blueprintArea.js",

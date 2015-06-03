@@ -18,7 +18,7 @@ object Application extends Controller {
       newSession = request.session + ("isAdmin" -> "true")
     }
 
-    val accountId = if (request.queryString.contains("email")) {  // TODO: remove
+    val accountId = if (request.queryString.contains("email")) {
       AccountDto.getOfEmailAddress(request.queryString.get("email").get.head).get.id.get
     } else {
       getAccountId(request.session) match {

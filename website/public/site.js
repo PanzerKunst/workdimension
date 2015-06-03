@@ -380,6 +380,10 @@ CS.saveAccountData = function (callback) {
         if (Modernizr.localstorage) {
             localStorage.removeItem(key);
         }
+    },
+
+    isIOS: function() {
+        return /(iPad|iPhone|iPod)/g.test(navigator.userAgent);
     }
 };
 ;CS.Services.Validator = P(function (c) {
@@ -803,6 +807,25 @@ CS.saveAccountData = function (callback) {
             keyCode !== this.keyCode.space;
     }
 };
+;CS.Services.iosWindowFocusDetector = P(function (c) {
+    c.timestamp = new Date().getTime();
+
+    c.init = function () {
+        window.setInterval(this.checkResume, 50);
+    };
+
+    c.checkResume = function () {
+        var current = new Date().getTime();
+
+        if (current - this.timestamp > 3000) {
+            var event = document.createEvent("Events");
+            event.initEvent("iosWindowFocus", true, true);
+            document.dispatchEvent(event);
+        }
+
+        this.timestamp = current;
+    };
+});
 ;CS.Models.BlueprintArea = P(function (c) {
     c.init = function (id, className, humanReadableClassName, blueprintCategoryId, title) {
         this.id = id;
@@ -1437,6 +1460,14 @@ CS.Controllers.MainMenuLinkedInAuthenticator = P(CS.Controllers.Base, function (
         this.$signInWithLinkedInBtn.click(this._signInWithLinkedIn.bind(this));
         this.$signOutLink.click(this._signOut.bind(this));
         IN.Event.on(IN, "auth", this._signIn.bind(this));
+
+        /* TODO if (CS.Services.Browser.isIOS()) {
+            CS.Services.iosWindowFocusDetector();
+
+            document.addEventListener("iosWindowFocus", function () {
+                this._signIn();
+            }.bind(this), false);
+        } */
     };
 
     c._signInWithLinkedIn = function () {
@@ -1472,27 +1503,34 @@ CS.Controllers.MainMenuLinkedInAuthenticator = P(CS.Controllers.Base, function (
     };
 
     c._signIn = function () {
-        if (this.isTemporaryAccount()) {
-            this._spin();
+        /* TODO if (!this.isSigningIn) {
+            this.isSigningIn = true; */
 
-            IN.API.Profile("me").result(function (profiles) {
-                var type = "POST";
-                var url = "/api/auth?linkedinAccountId=" + profiles.values[0].id;
+            if (this.isTemporaryAccount()) {
+                this._spin();
 
-                $.ajax({
-                    url: url,
-                    type: type,
-                    success: function (data, textStatus, jqXHR) {
-                        if (jqXHR.status === this.httpStatusCode.ok) {
-                            this._loadAccountData(data);
+                IN.API.Profile("me").result(function (profiles) {
+                    var type = "POST";
+                    var url = "/api/auth?linkedinAccountId=" + profiles.values[0].id;
+
+                    $.ajax({
+                        url: url,
+                        type: type,
+                        success: function (data, textStatus, jqXHR) {
+                            if (jqXHR.status === this.httpStatusCode.ok) {
+                                this._loadAccountData(data);
+                            }
+                        }.bind(this),
+                        error: function () {
+                            alert("AJAX failure doing a " + type + " request to \"" + url + "\"");
                         }
-                    }.bind(this),
-                    error: function () {
-                        alert("AJAX failure doing a " + type + " request to \"" + url + "\"");
-                    }
-                });
-            }.bind(this));
-        }
+                    });
+                }.bind(this));
+            /* TODO }
+            else {
+                this.isSigningIn = false; */
+            }
+        //}
     };
 
     c._createAccount = function (linkedInAccountData) {
@@ -1538,13 +1576,15 @@ CS.Controllers.MainMenuLinkedInAuthenticator = P(CS.Controllers.Base, function (
         CS.blueprintAreasModel.updateStatus();
 
         CS.taskNotificationsController.reRender();
+
+        // TODO this.isSigningIn = false;
     };
 
     c._signOut = function () {
         IN.User.logout(CS.mainMenuController.signOut, this);
     };
 
-    c._spin = function() {
+    c._spin = function () {
         this.$signInBtnSpan.hide();
         this.$signInBtnSpinner.show();
     };
