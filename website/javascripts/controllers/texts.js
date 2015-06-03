@@ -2,7 +2,7 @@ CS.Controllers.Texts = [
     {
         type: "workbook-area-description",
         workbookAreaClassName: "Styrkor",
-        htmlText: "<p>Vad utmärker dig som person? Vilka styrkor använder för att få jobbet gjort? Från vilket perspektiv ser du på tillvaron? </p><p>I det här avsnittet av Tracks kommer du att besvara frågor om vad som är utmärkande för hur du gör ditt jobb. </p>"
+        htmlText: "<p>Vad utmärker dig som person? Vilka styrkor använder du för att få jobbet gjort? Från vilket perspektiv ser du på tillvaron? </p><p>I det här avsnittet av Tracks kommer du att besvara frågor om vad som är utmärkande för hur du gör ditt jobb. </p>"
     },
     {
         type: "workbook-area-description",
