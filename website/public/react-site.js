@@ -771,7 +771,7 @@ CS.Controllers.OverviewBlueprintItem = React.createClass({displayName: "Overview
                 React.createElement("button", {className: "styleless fa fa-pencil", onClick: this._showEditor}), 
                 React.createElement("form", {role: "form", className: "item-composer", onSubmit: this._handleComposerFormSubmit}, 
                     React.createElement("textarea", {className: "form-control", onKeyUp: this._handleTextareaKeyUp}), 
-                    React.createElement("button", {className: "btn btn-primary"}, "Save changes"), 
+                    React.createElement("button", {className: "btn btn-primary"}, "Spara ändringar"), 
                     React.createElement("button", {type: "button", className: "styleless fa fa-times", onClick: this._hideForm})
                 )
             )
@@ -2042,7 +2042,7 @@ CS.Controllers.WorkbookAreaWorkbookItem = React.createClass({displayName: "Workb
                 React.createElement("button", {className: "styleless fa fa-pencil", onClick: this._showEditor}), 
                 React.createElement("form", {role: "form", className: "item-composer", onSubmit: this._handleComposerFormSubmit}, 
                     React.createElement("textarea", {className: "form-control", onKeyUp: this._handleTextareaKeyUp}), 
-                    React.createElement("button", {className: "btn btn-primary"}, "Save changes"), 
+                    React.createElement("button", {className: "btn btn-primary"}, "Spara ändringar"), 
                     React.createElement("button", {type: "button", className: "styleless fa fa-times", onClick: this._hideForm})
                 )
             )

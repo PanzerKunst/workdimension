@@ -2407,7 +2407,7 @@ CS.Controllers.OverviewBlueprintItem = React.createClass({displayName: "Overview
                 React.createElement("button", {className: "styleless fa fa-pencil", onClick: this._showEditor}), 
                 React.createElement("form", {role: "form", className: "item-composer", onSubmit: this._handleComposerFormSubmit}, 
                     React.createElement("textarea", {className: "form-control", onKeyUp: this._handleTextareaKeyUp}), 
-                    React.createElement("button", {className: "btn btn-primary"}, "Save changes"), 
+                    React.createElement("button", {className: "btn btn-primary"}, "Spara ändringar"), 
                     React.createElement("button", {type: "button", className: "styleless fa fa-times", onClick: this._hideForm})
                 )
             )
@@ -3678,7 +3678,7 @@ CS.Controllers.WorkbookAreaWorkbookItem = React.createClass({displayName: "Workb
                 React.createElement("button", {className: "styleless fa fa-pencil", onClick: this._showEditor}), 
                 React.createElement("form", {role: "form", className: "item-composer", onSubmit: this._handleComposerFormSubmit}, 
                     React.createElement("textarea", {className: "form-control", onKeyUp: this._handleTextareaKeyUp}), 
-                    React.createElement("button", {className: "btn btn-primary"}, "Save changes"), 
+                    React.createElement("button", {className: "btn btn-primary"}, "Spara ändringar"), 
                     React.createElement("button", {type: "button", className: "styleless fa fa-times", onClick: this._hideForm})
                 )
             )
@@ -4723,17 +4723,17 @@ CS.Controllers.WorkbookItemNote = React.createClass({displayName: "WorkbookItemN
         },
         wordings: [
             {
-                prompt: "Describe a situation where you've solved a problem in a very good or unexpected way"
+                prompt: "Beskriv en situation där du löst ett problem på ett bra eller oväntat sätt"
             },
             {
-                prompt: "Something you feel really proud of"
+                prompt: "Något du är riktigt stolt över från tidigare jobb och studier: "
             },
             {
-                prompt: "Have you won any awards or prices for your work or educational achievements?",
-                sentenceStart: "I was "
+                prompt: "Har du vunnit några priser för ditt jobb eller under din utbildning?",
+                sentenceStart: "Jag "
             },
             {
-                prompt: "Think about the last job you had. One thing you achieved when you worked there was..."
+                prompt: "Tänk på det senaste jobb du hade. En sak du lyckades riktigt bra med där var... "
             }
         ],
         stepCount: CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl2TaskComplete - CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl1TaskComplete,
@@ -4774,13 +4774,13 @@ CS.Controllers.WorkbookItemNote = React.createClass({displayName: "WorkbookItemN
         },
         wordings: [
             {
-                prompt: "What tracks would you like to pursue at some point?"
+                prompt: "Vilka spår skulle du nån gång kunna tänka dig att följa? Jobb, roller, branscher, titlar, uppgifter... "
             },
             {
-                prompt: "Anything you dreamed of when you were younger but haven't done and still would find exciting to try out?"
+                prompt: "Något du drömde om att göra när du var yngre och fortfarande skulle vilja prova på?"
             },
             {
-                prompt: "If you get a salary for working on anything you want, what would you work with?"
+                prompt: "Om du fick lön för att jobba med vad som helst, vad skulle det vara?"
             }
         ],
         stepCount: CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl2TaskComplete - CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl1TaskComplete,
@@ -4821,17 +4821,20 @@ CS.Controllers.WorkbookItemNote = React.createClass({displayName: "WorkbookItemN
         },
         wordings: [
             {
-                prompt: "When are you the happiest with your work?",
-                sentenceStart: "When I "
+                prompt: "När känner du dig som mest glad över ditt jobb?",
+                sentenceStart: "När jag "
             },
             {
-                prompt: "What are you the most confident at in your work?"
+                prompt: "Vad känner du dig som mest trygg med att göra på jobbet?"
             },
             {
-                prompt: "What qualities were important in the last role you had?"
+                prompt: "Vilka egenskaper var viktiga för att göra ett bra jobb i den senaste roll du hade?"
             },
             {
-                prompt: "What things are you good at?"
+                prompt: "Vad är du bra på?"
+            },
+            {
+                prompt: "Hur skulle de människor du jobbar med besrkiva dig?"
             }
         ],
         stepCount: CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl2TaskComplete - CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl1TaskComplete,
@@ -4872,18 +4875,18 @@ CS.Controllers.WorkbookItemNote = React.createClass({displayName: "WorkbookItemN
         },
         wordings: [
             {
-                prompt: "Why do you go to work, except from the salary?"
+                prompt: "Varför går du till jobbet förutom för lönen? "
             },
             {
-                prompt: "When do you feel the most energy at work?",
-                sentenceStart: "When I "
+                prompt: "När känner du som mest energi på jobbet?",
+                sentenceStart: "När jag "
             },
             {
-                prompt: "What are you passions?",
-                sentenceStart: "I'm passionate about "
+                prompt: "Vad är du som mest intresserad av?",
+                sentenceStart: "Jag är väldigt intresserad av "
             },
             {
-                prompt: "What impact do you want to have on the world?"
+                prompt: "På vilket sätt vill du påverka världen?"
             }
         ],
         stepCount: CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl2TaskComplete - CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl1TaskComplete,
@@ -4924,13 +4927,14 @@ CS.Controllers.WorkbookItemNote = React.createClass({displayName: "WorkbookItemN
         },
         wordings: [
             {
-                prompt: "What would you like to spend more time on in your work?"
+                prompt: "Vad skulle du vilja lägga mer tid på i jobbet? "
             },
             {
-                prompt: "In what area do you want to improve yourself in your work?"
+                prompt: "Vilka delar av ditt jobb skulle du hellre vara utan? ",
+                sentenceStart: "Jag skulle kunna göra mer av det roliga om jag minskade på "
             },
             {
-                prompt: "What are the tasks you look the most forward to?"
+                prompt: "Vilka delar av jobbet ser du mest fram emot att göra? "
             }
         ],
         stepCount: CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl2TaskComplete - CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl1TaskComplete,
@@ -4971,13 +4975,13 @@ CS.Controllers.WorkbookItemNote = React.createClass({displayName: "WorkbookItemN
         },
         wordings: [
             {
-                prompt: "What methods do you use to do your work?"
+                prompt: "Vilka verktyg gillar du att använda för att göra ditt jobb?"
             },
             {
-                prompt: "What are the tools you consider essential to do your work?"
+                prompt: "Har du några metoder som du tycker fungerar riktigt bra för att göra det du gör? "
             },
             {
-                prompt: "If you could freely select the tools and methodologies to do your work, what would you chose?"
+                prompt: "Om du kunde välja metoder och verktyg helt fritt, vad skulle du välja?"
             }
         ],
         stepCount: CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl2TaskComplete - CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl1TaskComplete,
