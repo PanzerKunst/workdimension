@@ -98,6 +98,8 @@ CS.Controllers.WorkbookAreaCommon = {
                 CS.Services.Animator.fadeIn($("#area-description"));
             }
         });
+
+        ga("send", "event", "button", "click", "Workbook Area > Shown area description");
     },
 
     _getTextareaDefaultHeight: function($textarea) {

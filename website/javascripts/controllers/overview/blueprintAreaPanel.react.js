@@ -105,11 +105,15 @@ CS.Controllers.OverviewBlueprintAreaPanel = React.createClass({
         this.$well.toggleClass("expanded-list");
 
         CS.overviewController.rePackerise();
+
+        ga("send", "event", "link", "click", "Overview > Toggle collapsed list");
     },
 
     _showActionsMenu: function() {
         this.$mainContainer.addClass("workbook-area-actions-menu-open");
         this.$actionsMenu.show();
+
+        ga("send", "event", "button", "click", "Overview > Show actions menu");
     },
 
     hideActionsMenu: function() {

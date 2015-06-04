@@ -49,6 +49,8 @@ CS.Controllers.WorkbookAreaAddItemTaskForm = React.createClass({
         if (this._isValid(itemNameToAdd) && !CS.Controllers.WorkbookAreaCommon.doesItemAlreadyExist(itemNameToAdd, this.props.workbookArea.className)) {
             this._fetchLatestAccountDataAndUpdateIt(itemNameToAdd);
         }
+
+        ga("send", "event", "form", "submit", "Workbook Area > Add item task > Add item: " + itemNameToAdd);
     },
 
     _isValid: function(trimmedItemName) {
@@ -71,6 +73,8 @@ CS.Controllers.WorkbookAreaAddItemTaskForm = React.createClass({
 
         this.$form[0].reset();
         this.props.controller.reRender();
+
+        ga("send", "event", "link", "click", "Workbook Area > Add item task > Try another");
     },
 
     _handleTextareaKeyUp: function (e) {

@@ -211,6 +211,8 @@ CS.Controllers.TaskNotifications = P(function (c) {
         this.$taskNotificationsBtn.removeClass("with-new-items");
 
         this._fetchLatestAccountDataAndUpdateIt();
+
+        ga("send", "event", "button", "click", "Toggle notifications");
     };
 
     c._fetchLatestAccountDataAndUpdateIt = function () {

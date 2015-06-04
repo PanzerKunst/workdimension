@@ -95,11 +95,15 @@ CS.Controllers.MainMenu = P(CS.Controllers.Base, function (c) {
     c._toggleMenu = function () {
         CS.taskNotificationsController.hide();
         this.$mainContainer.toggleClass("menu-open");
+
+        ga("send", "event", "button", "click", "Menu > Toggle menu");
     };
 
     c._showModal = function() {
         CS.blueprintAreasSelector.reRender();
         this.$selectAreasModal.modal();
         this.hideMenu();
+
+        ga("send", "event", "link", "click", "Menu > Show area selection modal");
     };
 });

@@ -61,6 +61,8 @@ CS.Controllers.WorkbookAreaCustomTask = React.createClass({
         if (this._isValid(itemNameToAdd) && !CS.Controllers.WorkbookAreaCommon.doesItemAlreadyExist(itemNameToAdd, this.props.workbookArea.className)) {
             this._fetchLatestAccountDataAndUpdateIt(itemNameToAdd);
         }
+
+        ga("send", "event", "form", "submit", "Workbook Area > Custom task > Add item: " + itemNameToAdd + ". Question was: " + this.props.task.question);
     },
 
     _handleTextareaKeyUp: function (e) {

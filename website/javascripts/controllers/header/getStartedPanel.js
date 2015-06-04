@@ -29,6 +29,8 @@ CS.Controllers.GetStartedPanel = P(function (c) {
         } else {
             this._showPanel();
         }
+
+        ga("send", "event", "button", "click", "Toggle Get Started panel");
     };
 
     c._showPanel = function() {

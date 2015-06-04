@@ -36,5 +36,7 @@ CS.Controllers.OverviewThreeStandoutsPanel = React.createClass({
         });
 
         CS.overviewController.rePackerise();
+
+        ga("send", "event", "button", "click", "Overview > Hide three standouts panel");
     }
 });

@@ -8,6 +8,8 @@ CS.Controllers.BlueprintAreaSelectorItem = React.createClass({
 
         this.props.blueprintArea.activate();
 
+        ga("send", "event", "link", "click", "Activate workbook Area");
+
         if (window.location.pathname !== "/") {
             location.href = "/workbook-areas/" + this.props.blueprintArea.className;
         }

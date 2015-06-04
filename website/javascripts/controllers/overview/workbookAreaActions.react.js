@@ -34,6 +34,8 @@ CS.Controllers.OverviewWorkbookAreaActions = React.createClass({
         this.props.controller.hideActionsMenu();
 
         this.$areaDescriptionModal.modal();
+
+        ga("send", "event", "link", "click", "Overview > Show workbook area description");
     },
 
     _hideBlueprintAreaPanel: function () {
@@ -41,6 +43,8 @@ CS.Controllers.OverviewWorkbookAreaActions = React.createClass({
 
         this.props.workbookArea.deactivate();
         CS.overviewController.reRender();
+
+        ga("send", "event", "link", "click", "Overview > Hide workbook area");
     },
 
     _showThreeStandouts: function() {
@@ -53,5 +57,7 @@ CS.Controllers.OverviewWorkbookAreaActions = React.createClass({
                 CS.overviewController.rePackerise();
             }.bind(this)
         });
+
+        ga("send", "event", "link", "click", "Overview > Show 3 standouts");
     }
 });

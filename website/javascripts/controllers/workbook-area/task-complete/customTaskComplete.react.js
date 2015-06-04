@@ -14,5 +14,7 @@ CS.Controllers.WorkbookAreaCustomTaskComplete = React.createClass({
 
     _handleTaskCompletePepTalkClosed: function () {
         this.props.controller.handleTaskCompletePepTalkClosed();
+
+        ga("send", "event", "button", "click", "Workbook Area > Pep talk > Closed custom task");
     }
 });

@@ -34,6 +34,8 @@ CS.Controllers.OverviewBlueprintAreaComposer = React.createClass({
         this.$textarea.focus();
 
         CS.overviewController.rePackerise();
+
+        ga("send", "event", "link", "click", "Overview > Show composer");
     },
 
     _hideOtherOpenComposers: function () {
@@ -52,6 +54,8 @@ CS.Controllers.OverviewBlueprintAreaComposer = React.createClass({
         }
 
         CS.Controllers.WorkbookAreaCommon.resetAndHideForm(this.$textarea, this._hideForm);
+
+        ga("send", "event", "form", "submit", "Overview > Add item: " + itemNameToAdd);
     },
 
     _handleTextareaKeyUp: function (e) {
@@ -62,6 +66,8 @@ CS.Controllers.OverviewBlueprintAreaComposer = React.createClass({
         this.$well.removeClass(this.addItemComposerOpenCssClass);
 
         CS.overviewController.rePackerise();
+
+        ga("send", "event", "link", "click", "Overview > Hide composer");
     },
 
     _fetchLatestAccountDataAndUpdateIt: function(itemNameToAdd) {

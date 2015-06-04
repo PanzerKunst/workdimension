@@ -60,6 +60,8 @@ CS.Controllers.WorkbookItemCustomTask = React.createClass({
         if (this._isValid(itemNoteToAdd) && !CS.Controllers.WorkbookItemCommon.doesItemAlreadyExist(itemNoteToAdd, this.props.workbookArea.className, this.props.workbookItemIndex)) {
             this._fetchLatestAccountDataAndUpdateIt(itemNoteToAdd);
         }
+
+        ga("send", "event", "form", "submit", "Workbook Item > Custom task > Add note: " + itemNoteToAdd + ". Question was: " + this.props.task.question);
     },
 
     _fetchLatestAccountDataAndUpdateIt: function (itemNoteToAdd) {

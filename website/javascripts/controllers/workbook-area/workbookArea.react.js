@@ -155,6 +155,8 @@ CS.Controllers.WorkbookArea = P(function (c) {
             CS.Controllers.WorkbookAreaCommon.adaptTextareaHeight(this.$textarea);
 
             this.$addItemLink.hide();
+
+            ga("send", "event", "link", "click", "Workbook Area > Show composer at the bottom");
         },
 
         _handleComposerFormSubmit: function (e) {
@@ -168,6 +170,8 @@ CS.Controllers.WorkbookArea = P(function (c) {
             }
 
             CS.Controllers.WorkbookAreaCommon.resetAndHideForm(this.$textarea, this._hideForm);
+
+            ga("send", "event", "form", "submit", "Workbook Area > Add item outside task");
         },
 
         _handleTextareaKeyUp: function (e) {
@@ -220,12 +224,11 @@ CS.Controllers.WorkbookArea = P(function (c) {
     c.init = function (workbookArea, customTasks, isAdmin) {
         this.workbookArea = workbookArea;
 
-        if (!_.isEmpty(customTasks)) {
-            this.customTasks = _.map(customTasks, function(task) {
+        this.customTasks = _.isEmpty(customTasks) ? [] :
+            _.map(customTasks, function (task) {
                 task.templateClassName = CS.Controllers.WorkbookAreaCommon.customAreaTaskTemplateClassName;
                 return task;
             });
-        }
 
         this.isAdmin = isAdmin;
 
@@ -238,7 +241,7 @@ CS.Controllers.WorkbookArea = P(function (c) {
     };
 
     c.reRender = function () {
-        var firstCustomTaskNotCompleted = _.find(this.customTasks, function(task) {
+        var firstCustomTaskNotCompleted = _.find(this.customTasks, function (task) {
             return task.completionTimestamp === undefined;
         });
 
@@ -258,16 +261,16 @@ CS.Controllers.WorkbookArea = P(function (c) {
         CS.saveAccountData();
     };
 
-    c.showTask = function() {
+    c.showTask = function () {
         this.reactInstance.showTask();
     };
 
-    c.handleCustomTaskCompleteConfirmed = function() {
+    c.handleCustomTaskCompleteConfirmed = function () {
         this.isCustomTaskComplete = false;
         this.reRender();
     };
 
-    c.handleTaskCompletePepTalkClosed = function() {
+    c.handleTaskCompletePepTalkClosed = function () {
         this.isPepTalkClosed = true;
         this.reRender();
     };

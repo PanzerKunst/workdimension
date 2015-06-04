@@ -13,7 +13,7 @@ object EmailService {
     val body = views.html.email.welcome().toString()
 
     MailerPlugin.send(Email(
-      subject = "Välkommen till WorkDimension",
+      subject = "Välkommen till Tracks",
       from = accountName + "<" + accountAddress + ">",
       to = Seq(emailAddress),
       bodyHtml = Some(body),

@@ -14,5 +14,7 @@ CS.Controllers.WorkbookAreaAddItemLvl2Complete = React.createClass({
 
     _handleTaskCompletePepTalkClosed: function () {
         this.props.controller.handleTaskCompletePepTalkClosed();
+
+        ga("send", "event", "button", "click", "Workbook Area > Pep talk > Closed add item lvl 2");
     }
 });

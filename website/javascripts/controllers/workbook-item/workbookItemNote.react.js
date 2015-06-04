@@ -44,6 +44,8 @@ CS.Controllers.WorkbookItemNote = React.createClass({
         this.$form.show();
         CS.Controllers.WorkbookItemCommon.adaptTextareaHeight(this.$textarea);
         this.$textarea.focus();
+
+        ga("send", "event", "button", "click", "Workbook Item > Show edit item editor");
     },
 
     _hideOtherOpenComposers: function() {
@@ -67,6 +69,8 @@ CS.Controllers.WorkbookItemNote = React.createClass({
         var newItemNote = this.$textarea.val().trim();
         this._hideForm();
         this._fetchLatestAccountDataAndUpdateIt(newItemNote);
+
+        ga("send", "event", "form", "submit", "Workbook Item > Save item change");
     },
 
     _handleTextareaKeyUp: function(e) {

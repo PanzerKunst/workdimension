@@ -18,7 +18,7 @@ CS.Controllers.WorkbookItem = P(function (c) {
         render: function () {
             var pepTalkReact = null;
             var taskReact = null;
-            var addCustomTaskPanelReact = null;
+            var adminPanelReact = null;
             var listItemsReact = null;
 
             if (this.state.workbookArea) {
@@ -50,7 +50,11 @@ CS.Controllers.WorkbookItem = P(function (c) {
                 }
 
                 if (this.state.isAdmin && !this.state.customTask) {
-                    addCustomTaskPanelReact = <CS.Controllers.AddCustomTask workbookAreaId={this.state.workbookArea.id} workbookItemIndex={this.state.workbookItemIndex} controller={this.state.controller} />;
+                    adminPanelReact = (
+                        <section className="admin-panel">
+                            <CS.Controllers.AddCustomTask workbookAreaId={this.state.workbookArea.id} workbookItemIndex={this.state.workbookItemIndex} controller={this.state.controller} />
+                        </section>
+                        );
                 }
 
                 if (this.state.workbookItem && !_.isEmpty(this.state.workbookItem.notes)) {
@@ -66,7 +70,7 @@ CS.Controllers.WorkbookItem = P(function (c) {
                 <div ref="wrapper">
                     {pepTalkReact}
                     {taskReact}
-                    {addCustomTaskPanelReact}
+                    {adminPanelReact}
 
                     <ul className="styleless item-notes-list">
                         {listItemsReact}
@@ -102,6 +106,8 @@ CS.Controllers.WorkbookItem = P(function (c) {
             CS.Controllers.WorkbookItemCommon.adaptTextareaHeight(this.$textarea);
 
             this.$addNoteLink.hide();
+
+            ga("send", "event", "link", "click", "Workbook Item > Show composer at the bottom");
         },
 
         _handleComposerFormSubmit: function (e) {
@@ -115,6 +121,8 @@ CS.Controllers.WorkbookItem = P(function (c) {
             }
 
             CS.Controllers.WorkbookItemCommon.resetAndHideForm(this.$textarea, this._hideForm);
+
+            ga("send", "event", "form", "submit", "Workbook Item > Add note outside task");
         },
 
         _handleTextareaKeyUp: function (e) {

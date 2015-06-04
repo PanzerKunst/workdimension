@@ -52,6 +52,8 @@ CS.Controllers.WorkbookAreaWorkbookItem = React.createClass({
         this.$form.show();
         CS.Controllers.WorkbookAreaCommon.adaptTextareaHeight(this.$textarea);
         this.$textarea.focus();
+
+        ga("send", "event", "button", "click", "Workbook Area > Open item editor");
     },
 
     _hideOtherOpenComposers: function() {
@@ -73,6 +75,8 @@ CS.Controllers.WorkbookAreaWorkbookItem = React.createClass({
 
         var newItemName = this.$textarea.val().trim();
         this._fetchLatestAccountDataAndUpdateIt(newItemName);
+
+        ga("send", "event", "form", "submit", "Workbook Area > Submit item change");
     },
 
     _handleTextareaKeyUp: function(e) {

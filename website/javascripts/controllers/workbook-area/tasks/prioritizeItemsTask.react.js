@@ -54,5 +54,7 @@ CS.Controllers.WorkbookAreaPrioritizeItemsTask = React.createClass({
                 alert("AJAX failure doing a " + type + " request to \"" + url + "\"");
             }
         });
+
+        ga("send", "event", "button", "click", "Workbook Area > Prioritize items task > Done");
     }
 });

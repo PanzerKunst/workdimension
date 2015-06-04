@@ -1314,6 +1314,8 @@ CS.saveAccountData = function (callback) {
                 CS.Services.Animator.fadeIn($("#area-description"));
             }
         });
+
+        ga("send", "event", "button", "click", "Workbook Area > Shown area description");
     },
 
     _getTextareaDefaultHeight: function($textarea) {
@@ -1396,6 +1398,8 @@ CS.saveAccountData = function (callback) {
         } else {
             this._showPanel();
         }
+
+        ga("send", "event", "button", "click", "Toggle Get Started panel");
     };
 
     c._showPanel = function() {
@@ -1472,6 +1476,8 @@ CS.Controllers.MainMenuLinkedInAuthenticator = P(CS.Controllers.Base, function (
 
     c._signInWithLinkedIn = function () {
         IN.User.authorize(this._saveProfileData, this);
+
+        ga("send", "event", "button", "click", "Sign in with linkedIn");
     };
 
     c._saveProfileData = function () {
@@ -1582,6 +1588,8 @@ CS.Controllers.MainMenuLinkedInAuthenticator = P(CS.Controllers.Base, function (
 
     c._signOut = function () {
         IN.User.logout(CS.mainMenuController.signOut, this);
+
+        ga("send", "event", "link", "click", "Sign out");
     };
 
     c._spin = function () {
@@ -1819,6 +1827,8 @@ CS.Controllers.BlueprintAreaSelectorItem = React.createClass({displayName: "Blue
 
         this.props.blueprintArea.activate();
 
+        ga("send", "event", "link", "click", "Activate workbook Area");
+
         if (window.location.pathname !== "/") {
             location.href = "/workbook-areas/" + this.props.blueprintArea.className;
         }
@@ -1922,12 +1932,16 @@ CS.Controllers.MainMenu = P(CS.Controllers.Base, function (c) {
     c._toggleMenu = function () {
         CS.taskNotificationsController.hide();
         this.$mainContainer.toggleClass("menu-open");
+
+        ga("send", "event", "button", "click", "Menu > Toggle menu");
     };
 
     c._showModal = function() {
         CS.blueprintAreasSelector.reRender();
         this.$selectAreasModal.modal();
         this.hideMenu();
+
+        ga("send", "event", "link", "click", "Menu > Show area selection modal");
     };
 });
 
@@ -2144,6 +2158,8 @@ CS.Controllers.TaskNotifications = P(function (c) {
         this.$taskNotificationsBtn.removeClass("with-new-items");
 
         this._fetchLatestAccountDataAndUpdateIt();
+
+        ga("send", "event", "button", "click", "Toggle notifications");
     };
 
     c._fetchLatestAccountDataAndUpdateIt = function () {
@@ -2213,6 +2229,8 @@ CS.Controllers.OverviewBlueprintAreaComposer = React.createClass({displayName: "
         this.$textarea.focus();
 
         CS.overviewController.rePackerise();
+
+        ga("send", "event", "link", "click", "Overview > Show composer");
     },
 
     _hideOtherOpenComposers: function () {
@@ -2231,6 +2249,8 @@ CS.Controllers.OverviewBlueprintAreaComposer = React.createClass({displayName: "
         }
 
         CS.Controllers.WorkbookAreaCommon.resetAndHideForm(this.$textarea, this._hideForm);
+
+        ga("send", "event", "form", "submit", "Overview > Add item: " + itemNameToAdd);
     },
 
     _handleTextareaKeyUp: function (e) {
@@ -2241,6 +2261,8 @@ CS.Controllers.OverviewBlueprintAreaComposer = React.createClass({displayName: "
         this.$well.removeClass(this.addItemComposerOpenCssClass);
 
         CS.overviewController.rePackerise();
+
+        ga("send", "event", "link", "click", "Overview > Hide composer");
     },
 
     _fetchLatestAccountDataAndUpdateIt: function(itemNameToAdd) {
@@ -2376,11 +2398,15 @@ CS.Controllers.OverviewBlueprintAreaPanel = React.createClass({displayName: "Ove
         this.$well.toggleClass("expanded-list");
 
         CS.overviewController.rePackerise();
+
+        ga("send", "event", "link", "click", "Overview > Toggle collapsed list");
     },
 
     _showActionsMenu: function() {
         this.$mainContainer.addClass("workbook-area-actions-menu-open");
         this.$actionsMenu.show();
+
+        ga("send", "event", "button", "click", "Overview > Show actions menu");
     },
 
     hideActionsMenu: function() {
@@ -2478,6 +2504,8 @@ CS.Controllers.OverviewBlueprintItem = React.createClass({displayName: "Overview
 
         var newItemName = this.$textarea.val().trim();
         this._fetchLatestAccountDataAndUpdateIt(newItemName);
+
+        ga("send", "event", "form", "submit", "Overview > Save changes to workbook item");
     },
 
     _handleTextareaKeyUp: function(e) {
@@ -2641,6 +2669,8 @@ CS.Controllers.OverviewThreeStandoutsPanel = React.createClass({displayName: "Ov
         });
 
         CS.overviewController.rePackerise();
+
+        ga("send", "event", "button", "click", "Overview > Hide three standouts panel");
     }
 });
 
@@ -2680,6 +2710,8 @@ CS.Controllers.OverviewWorkbookAreaActions = React.createClass({displayName: "Ov
         this.props.controller.hideActionsMenu();
 
         this.$areaDescriptionModal.modal();
+
+        ga("send", "event", "link", "click", "Overview > Show workbook area description");
     },
 
     _hideBlueprintAreaPanel: function () {
@@ -2687,6 +2719,8 @@ CS.Controllers.OverviewWorkbookAreaActions = React.createClass({displayName: "Ov
 
         this.props.workbookArea.deactivate();
         CS.overviewController.reRender();
+
+        ga("send", "event", "link", "click", "Overview > Hide workbook area");
     },
 
     _showThreeStandouts: function() {
@@ -2699,6 +2733,8 @@ CS.Controllers.OverviewWorkbookAreaActions = React.createClass({displayName: "Ov
                 CS.overviewController.rePackerise();
             }.bind(this)
         });
+
+        ga("send", "event", "link", "click", "Overview > Show 3 standouts");
     }
 });
 
@@ -2837,6 +2873,8 @@ CS.Controllers.WorkbookAreaAddItemLvl1Complete = React.createClass({displayName:
 
     _handleTaskCompletePepTalkClosed: function () {
         this.props.controller.handleTaskCompletePepTalkClosed();
+
+        ga("send", "event", "button", "click", "Workbook Area > Pep talk > Closed add item lvl 1");
     }
 });
 
@@ -2856,6 +2894,8 @@ CS.Controllers.WorkbookAreaAddItemLvl2Complete = React.createClass({displayName:
 
     _handleTaskCompletePepTalkClosed: function () {
         this.props.controller.handleTaskCompletePepTalkClosed();
+
+        ga("send", "event", "button", "click", "Workbook Area > Pep talk > Closed add item lvl 2");
     }
 });
 
@@ -2875,6 +2915,8 @@ CS.Controllers.WorkbookAreaCustomTaskComplete = React.createClass({displayName: 
 
     _handleTaskCompletePepTalkClosed: function () {
         this.props.controller.handleTaskCompletePepTalkClosed();
+
+        ga("send", "event", "button", "click", "Workbook Area > Pep talk > Closed custom task");
     }
 });
 
@@ -3043,6 +3085,8 @@ CS.Controllers.WorkbookAreaAddItemTaskForm = React.createClass({displayName: "Wo
         if (this._isValid(itemNameToAdd) && !CS.Controllers.WorkbookAreaCommon.doesItemAlreadyExist(itemNameToAdd, this.props.workbookArea.className)) {
             this._fetchLatestAccountDataAndUpdateIt(itemNameToAdd);
         }
+
+        ga("send", "event", "form", "submit", "Workbook Area > Add item task > Add item: " + itemNameToAdd);
     },
 
     _isValid: function(trimmedItemName) {
@@ -3065,6 +3109,8 @@ CS.Controllers.WorkbookAreaAddItemTaskForm = React.createClass({displayName: "Wo
 
         this.$form[0].reset();
         this.props.controller.reRender();
+
+        ga("send", "event", "link", "click", "Workbook Area > Add item task > Try another");
     },
 
     _handleTextareaKeyUp: function (e) {
@@ -3168,6 +3214,8 @@ CS.Controllers.WorkbookAreaCustomTask = React.createClass({displayName: "Workboo
         if (this._isValid(itemNameToAdd) && !CS.Controllers.WorkbookAreaCommon.doesItemAlreadyExist(itemNameToAdd, this.props.workbookArea.className)) {
             this._fetchLatestAccountDataAndUpdateIt(itemNameToAdd);
         }
+
+        ga("send", "event", "form", "submit", "Workbook Area > Custom task > Add item: " + itemNameToAdd + ". Question was: " + this.props.task.question);
     },
 
     _handleTextareaKeyUp: function (e) {
@@ -3292,6 +3340,8 @@ CS.Controllers.WorkbookAreaPrioritizeItemsTask = React.createClass({displayName:
                 alert("AJAX failure doing a " + type + " request to \"" + url + "\"");
             }
         });
+
+        ga("send", "event", "button", "click", "Workbook Area > Prioritize items task > Done");
     }
 });
 
@@ -3524,6 +3574,8 @@ CS.Controllers.WorkbookArea = P(function (c) {
             CS.Controllers.WorkbookAreaCommon.adaptTextareaHeight(this.$textarea);
 
             this.$addItemLink.hide();
+
+            ga("send", "event", "link", "click", "Workbook Area > Show composer at the bottom");
         },
 
         _handleComposerFormSubmit: function (e) {
@@ -3537,6 +3589,8 @@ CS.Controllers.WorkbookArea = P(function (c) {
             }
 
             CS.Controllers.WorkbookAreaCommon.resetAndHideForm(this.$textarea, this._hideForm);
+
+            ga("send", "event", "form", "submit", "Workbook Area > Add item outside task");
         },
 
         _handleTextareaKeyUp: function (e) {
@@ -3589,12 +3643,11 @@ CS.Controllers.WorkbookArea = P(function (c) {
     c.init = function (workbookArea, customTasks, isAdmin) {
         this.workbookArea = workbookArea;
 
-        if (!_.isEmpty(customTasks)) {
-            this.customTasks = _.map(customTasks, function(task) {
+        this.customTasks = _.isEmpty(customTasks) ? [] :
+            _.map(customTasks, function (task) {
                 task.templateClassName = CS.Controllers.WorkbookAreaCommon.customAreaTaskTemplateClassName;
                 return task;
             });
-        }
 
         this.isAdmin = isAdmin;
 
@@ -3607,7 +3660,7 @@ CS.Controllers.WorkbookArea = P(function (c) {
     };
 
     c.reRender = function () {
-        var firstCustomTaskNotCompleted = _.find(this.customTasks, function(task) {
+        var firstCustomTaskNotCompleted = _.find(this.customTasks, function (task) {
             return task.completionTimestamp === undefined;
         });
 
@@ -3627,16 +3680,16 @@ CS.Controllers.WorkbookArea = P(function (c) {
         CS.saveAccountData();
     };
 
-    c.showTask = function() {
+    c.showTask = function () {
         this.reactInstance.showTask();
     };
 
-    c.handleCustomTaskCompleteConfirmed = function() {
+    c.handleCustomTaskCompleteConfirmed = function () {
         this.isCustomTaskComplete = false;
         this.reRender();
     };
 
-    c.handleTaskCompletePepTalkClosed = function() {
+    c.handleTaskCompletePepTalkClosed = function () {
         this.isPepTalkClosed = true;
         this.reRender();
     };
@@ -3661,6 +3714,8 @@ CS.Controllers.WorkbookAreaDescription = React.createClass({displayName: "Workbo
 
     _showTask: function() {
         this.props.controller.showTask();
+
+        ga("send", "event", "button", "click", "Workbook Area > Close area description");
     }
 });
 
@@ -3718,6 +3773,8 @@ CS.Controllers.WorkbookAreaWorkbookItem = React.createClass({displayName: "Workb
         this.$form.show();
         CS.Controllers.WorkbookAreaCommon.adaptTextareaHeight(this.$textarea);
         this.$textarea.focus();
+
+        ga("send", "event", "button", "click", "Workbook Area > Open item editor");
     },
 
     _hideOtherOpenComposers: function() {
@@ -3739,6 +3796,8 @@ CS.Controllers.WorkbookAreaWorkbookItem = React.createClass({displayName: "Workb
 
         var newItemName = this.$textarea.val().trim();
         this._fetchLatestAccountDataAndUpdateIt(newItemName);
+
+        ga("send", "event", "form", "submit", "Workbook Area > Submit item change");
     },
 
     _handleTextareaKeyUp: function(e) {
@@ -3794,7 +3853,7 @@ CS.Controllers.WorkbookItemAddItemComplete = React.createClass({displayName: "Wo
             React.createElement("div", {id: "task-complete-pep-talk"}, 
                 React.createElement("h2", null, React.createElement("i", {className: "fa fa-star"}), "Bra jobbat! ", React.createElement("i", {className: "fa fa-star"})), 
                 React.createElement("p", null, "Lägg till fler exempel och förklara djupare. Ju längre du går, desto bättre. "), 
-                React.createElement("p", null, "Du kan också gå tillbaka för att jobba med ", React.createElement("a", {onClick: this._navigateBack}, "en annan av dina styrkor.")), 
+                React.createElement("p", null, "Du kan också gå tillbaka för att jobba med ", React.createElement("a", {onClick: this._navigateBack}, "ett annat ämne.")), 
                 React.createElement("div", {className: "centered-contents"}, 
                     React.createElement("button", {className: "btn btn-primary", onClick: this._handleTaskCompletePepTalkClosed}, "Ok!")
                 )
@@ -3804,6 +3863,8 @@ CS.Controllers.WorkbookItemAddItemComplete = React.createClass({displayName: "Wo
 
     _handleTaskCompletePepTalkClosed: function () {
         this.props.controller.handleTaskCompletePepTalkClosed();
+
+        ga("send", "event", "button", "click", "Workbook Item > Pep talk > Closed add note");
     },
 
     _navigateBack: function() {
@@ -3827,6 +3888,8 @@ CS.Controllers.WorkbookItemCustomTaskComplete = React.createClass({displayName: 
 
     _handleTaskCompletePepTalkClosed: function () {
         this.props.controller.handleTaskCompletePepTalkClosed();
+
+        ga("send", "event", "button", "click", "Workbook Item > Pep talk > Closed custom task");
     }
 });
 
@@ -3902,6 +3965,8 @@ CS.Controllers.WorkbookItemAddItemTask = React.createClass({displayName: "Workbo
         if (this._isValid(itemNoteToAdd) && !CS.Controllers.WorkbookItemCommon.doesItemAlreadyExist(itemNoteToAdd, this.props.workbookArea.className, this.props.workbookItemIndex)) {
             this._fetchLatestAccountDataAndUpdateIt(itemNoteToAdd);
         }
+
+        ga("send", "event", "form", "submit", "Workbook Item > Add item task > Add note: " + itemNoteToAdd);
     },
 
     _isValid: function(trimmedItemNote) {
@@ -3924,6 +3989,8 @@ CS.Controllers.WorkbookItemAddItemTask = React.createClass({displayName: "Workbo
 
         this.$form[0].reset();
         this.props.controller.reRender();
+
+        ga("send", "event", "link", "click", "Workbook Item > Add item task > Try another");
     },
 
     _handleTextareaKeyUp: function (e) {
@@ -4030,6 +4097,8 @@ CS.Controllers.WorkbookItemCustomTask = React.createClass({displayName: "Workboo
         if (this._isValid(itemNoteToAdd) && !CS.Controllers.WorkbookItemCommon.doesItemAlreadyExist(itemNoteToAdd, this.props.workbookArea.className, this.props.workbookItemIndex)) {
             this._fetchLatestAccountDataAndUpdateIt(itemNoteToAdd);
         }
+
+        ga("send", "event", "form", "submit", "Workbook Item > Custom task > Add note: " + itemNoteToAdd + ". Question was: " + this.props.task.question);
     },
 
     _fetchLatestAccountDataAndUpdateIt: function (itemNoteToAdd) {
@@ -4120,7 +4189,7 @@ CS.Controllers.WorkbookItem = P(function (c) {
         render: function () {
             var pepTalkReact = null;
             var taskReact = null;
-            var addCustomTaskPanelReact = null;
+            var adminPanelReact = null;
             var listItemsReact = null;
 
             if (this.state.workbookArea) {
@@ -4152,7 +4221,11 @@ CS.Controllers.WorkbookItem = P(function (c) {
                 }
 
                 if (this.state.isAdmin && !this.state.customTask) {
-                    addCustomTaskPanelReact = React.createElement(CS.Controllers.AddCustomTask, {workbookAreaId: this.state.workbookArea.id, workbookItemIndex: this.state.workbookItemIndex, controller: this.state.controller});
+                    adminPanelReact = (
+                        React.createElement("section", {className: "admin-panel"}, 
+                            React.createElement(CS.Controllers.AddCustomTask, {workbookAreaId: this.state.workbookArea.id, workbookItemIndex: this.state.workbookItemIndex, controller: this.state.controller})
+                        )
+                        );
                 }
 
                 if (this.state.workbookItem && !_.isEmpty(this.state.workbookItem.notes)) {
@@ -4168,7 +4241,7 @@ CS.Controllers.WorkbookItem = P(function (c) {
                 React.createElement("div", {ref: "wrapper"}, 
                     pepTalkReact, 
                     taskReact, 
-                    addCustomTaskPanelReact, 
+                    adminPanelReact, 
 
                     React.createElement("ul", {className: "styleless item-notes-list"}, 
                         listItemsReact
@@ -4204,6 +4277,8 @@ CS.Controllers.WorkbookItem = P(function (c) {
             CS.Controllers.WorkbookItemCommon.adaptTextareaHeight(this.$textarea);
 
             this.$addNoteLink.hide();
+
+            ga("send", "event", "link", "click", "Workbook Item > Show composer at the bottom");
         },
 
         _handleComposerFormSubmit: function (e) {
@@ -4217,6 +4292,8 @@ CS.Controllers.WorkbookItem = P(function (c) {
             }
 
             CS.Controllers.WorkbookItemCommon.resetAndHideForm(this.$textarea, this._hideForm);
+
+            ga("send", "event", "form", "submit", "Workbook Item > Add note outside task");
         },
 
         _handleTextareaKeyUp: function (e) {
@@ -4366,6 +4443,8 @@ CS.Controllers.WorkbookItemNote = React.createClass({displayName: "WorkbookItemN
         this.$form.show();
         CS.Controllers.WorkbookItemCommon.adaptTextareaHeight(this.$textarea);
         this.$textarea.focus();
+
+        ga("send", "event", "button", "click", "Workbook Item > Show edit item editor");
     },
 
     _hideOtherOpenComposers: function() {
@@ -4389,6 +4468,8 @@ CS.Controllers.WorkbookItemNote = React.createClass({displayName: "WorkbookItemN
         var newItemNote = this.$textarea.val().trim();
         this._hideForm();
         this._fetchLatestAccountDataAndUpdateIt(newItemNote);
+
+        ga("send", "event", "form", "submit", "Workbook Item > Save item change");
     },
 
     _handleTextareaKeyUp: function(e) {

@@ -30,6 +30,8 @@ CS.Controllers.MainMenuLinkedInAuthenticator = P(CS.Controllers.Base, function (
 
     c._signInWithLinkedIn = function () {
         IN.User.authorize(this._saveProfileData, this);
+
+        ga("send", "event", "button", "click", "Sign in with linkedIn");
     };
 
     c._saveProfileData = function () {
@@ -140,6 +142,8 @@ CS.Controllers.MainMenuLinkedInAuthenticator = P(CS.Controllers.Base, function (
 
     c._signOut = function () {
         IN.User.logout(CS.mainMenuController.signOut, this);
+
+        ga("send", "event", "link", "click", "Sign out");
     };
 
     c._spin = function () {

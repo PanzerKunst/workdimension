@@ -17,5 +17,7 @@ CS.Controllers.WorkbookAreaDescription = React.createClass({
 
     _showTask: function() {
         this.props.controller.showTask();
+
+        ga("send", "event", "button", "click", "Workbook Area > Close area description");
     }
 });
