@@ -2185,7 +2185,7 @@ CS.Controllers.OverviewBlueprintAreaComposer = React.createClass({displayName: "
             React.createElement("section", {ref: "wrapper", className: "add-item-section"}, 
                 React.createElement("form", {role: "form", className: "item-composer", ref: "form", onSubmit: this._handleComposerFormSubmit}, 
                     React.createElement("textarea", {className: "form-control", onKeyUp: this._handleTextareaKeyUp}), 
-                    React.createElement("button", {className: "btn btn-primary"}, "Add"), 
+                    React.createElement("button", {className: "btn btn-primary"}, "Lägg till"), 
                     React.createElement("button", {type: "button", className: "styleless fa fa-times", onClick: this._hideForm})
                 ), 
 
@@ -3295,30 +3295,6 @@ CS.Controllers.WorkbookAreaPrioritizeItemsTask = React.createClass({displayName:
     }
 });
 
-CS.Controllers.ThreeStandoutPanel.Drivers = React.createClass({displayName: "Drivers",
-    render: function () {
-        return (
-            React.createElement("div", {className: "three-standouts"}, 
-                React.createElement("h2", null, React.createElement("i", {className: "fa fa-star"}), "Dina viktigaste drivkrafter", React.createElement("i", {className: "fa fa-star"})), 
-
-                React.createElement("p", null, "Här är de tre viktigaste drivkrafter du identifierat hittills:"), 
-
-                React.createElement("ul", null, 
-                    React.createElement("li", null, this.props.threeStandouts[0]), 
-                    React.createElement("li", null, this.props.threeStandouts[1]), 
-                    React.createElement("li", null, this.props.threeStandouts[2])
-                ), 
-
-                React.createElement("p", null, "Använd dem när du beskriver dig själv. Ta med dem i ditt personliga brev och i fältet Sammanfattning i din LinkedIn-profil. "), 
-
-                React.createElement("p", null, "Den här övningen är nu slut. Du kommer att hitta dina drivkrafter i appen när du vill. Fortsätt gärna använda tjänsten! "), 
-
-                React.createElement("p", null, "Hjälp oss genom att svara på ", React.createElement("a", {href: "https://docs.google.com/forms/d/13iqOYQDe6YHEhDdc-XIoQQe4DD6HXLUVYf1W4GcUu0o/viewform?usp=send_form"}, "två korta frågor"))
-            )
-            );
-    }
-});
-
 CS.Controllers.ThreeStandoutPanel.Contexts = React.createClass({displayName: "Contexts",
     render: function () {
         return (
@@ -3343,6 +3319,30 @@ CS.Controllers.ThreeStandoutPanel.Contexts = React.createClass({displayName: "Co
     }
 });
 
+CS.Controllers.ThreeStandoutPanel.Drivers = React.createClass({displayName: "Drivers",
+    render: function () {
+        return (
+            React.createElement("div", {className: "three-standouts"}, 
+                React.createElement("h2", null, React.createElement("i", {className: "fa fa-star"}), "Dina viktigaste drivkrafter", React.createElement("i", {className: "fa fa-star"})), 
+
+                React.createElement("p", null, "Här är de tre viktigaste drivkrafter du identifierat hittills:"), 
+
+                React.createElement("ul", null, 
+                    React.createElement("li", null, this.props.threeStandouts[0]), 
+                    React.createElement("li", null, this.props.threeStandouts[1]), 
+                    React.createElement("li", null, this.props.threeStandouts[2])
+                ), 
+
+                React.createElement("p", null, "Använd dem när du beskriver dig själv. Ta med dem i ditt personliga brev och i fältet Sammanfattning i din LinkedIn-profil. "), 
+
+                React.createElement("p", null, "Den här övningen är nu slut. Du kommer att hitta dina drivkrafter i appen när du vill. Fortsätt gärna använda tjänsten! "), 
+
+                React.createElement("p", null, "Hjälp oss genom att svara på ", React.createElement("a", {href: "https://docs.google.com/forms/d/13iqOYQDe6YHEhDdc-XIoQQe4DD6HXLUVYf1W4GcUu0o/viewform?usp=send_form", target: "_blank"}, "två korta frågor"))
+            )
+            );
+    }
+});
+
 CS.Controllers.ThreeStandoutPanel.Strengths = React.createClass({displayName: "Strengths",
     render: function () {
         return (
@@ -3361,7 +3361,7 @@ CS.Controllers.ThreeStandoutPanel.Strengths = React.createClass({displayName: "S
 
                 React.createElement("p", null, "Den här övningen är nu slut. Du kommer att hitta dina topp-3-styrkor i appen när du vill. Fortsätt gärna använda tjänsten! "), 
 
-                React.createElement("p", null, "Hjälp oss genom att svara på ", React.createElement("a", {href: "https://docs.google.com/forms/d/13iqOYQDe6YHEhDdc-XIoQQe4DD6HXLUVYf1W4GcUu0o/viewform?usp=send_form"}, "två korta frågor."))
+                React.createElement("p", null, "Hjälp oss genom att svara på ", React.createElement("a", {href: "https://docs.google.com/forms/d/13iqOYQDe6YHEhDdc-XIoQQe4DD6HXLUVYf1W4GcUu0o/viewform?usp=send_form", target: "_blank"}, "två korta frågor."))
             )
             );
     }
@@ -3459,7 +3459,7 @@ CS.Controllers.WorkbookArea = P(function (c) {
 
                     React.createElement("form", {role: "form", className: "item-composer", onSubmit: this._handleComposerFormSubmit}, 
                         React.createElement("textarea", {className: "form-control", onKeyUp: this._handleTextareaKeyUp}), 
-                        React.createElement("button", {className: "btn btn-primary"}, "Add"), 
+                        React.createElement("button", {className: "btn btn-primary"}, "Lägg till"), 
                         React.createElement("button", {type: "button", className: "styleless fa fa-times", onClick: this._hideForm})
                     ), 
 

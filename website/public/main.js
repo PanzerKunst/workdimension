@@ -2185,7 +2185,7 @@ CS.Controllers.OverviewBlueprintAreaComposer = React.createClass({displayName: "
             React.createElement("section", {ref: "wrapper", className: "add-item-section"}, 
                 React.createElement("form", {role: "form", className: "item-composer", ref: "form", onSubmit: this._handleComposerFormSubmit}, 
                     React.createElement("textarea", {className: "form-control", onKeyUp: this._handleTextareaKeyUp}), 
-                    React.createElement("button", {className: "btn btn-primary"}, "Add"), 
+                    React.createElement("button", {className: "btn btn-primary"}, "Lägg till"), 
                     React.createElement("button", {type: "button", className: "styleless fa fa-times", onClick: this._hideForm})
                 ), 
 
@@ -3295,30 +3295,6 @@ CS.Controllers.WorkbookAreaPrioritizeItemsTask = React.createClass({displayName:
     }
 });
 
-CS.Controllers.ThreeStandoutPanel.Drivers = React.createClass({displayName: "Drivers",
-    render: function () {
-        return (
-            React.createElement("div", {className: "three-standouts"}, 
-                React.createElement("h2", null, React.createElement("i", {className: "fa fa-star"}), "Dina viktigaste drivkrafter", React.createElement("i", {className: "fa fa-star"})), 
-
-                React.createElement("p", null, "Här är de tre viktigaste drivkrafter du identifierat hittills:"), 
-
-                React.createElement("ul", null, 
-                    React.createElement("li", null, this.props.threeStandouts[0]), 
-                    React.createElement("li", null, this.props.threeStandouts[1]), 
-                    React.createElement("li", null, this.props.threeStandouts[2])
-                ), 
-
-                React.createElement("p", null, "Använd dem när du beskriver dig själv. Ta med dem i ditt personliga brev och i fältet Sammanfattning i din LinkedIn-profil. "), 
-
-                React.createElement("p", null, "Den här övningen är nu slut. Du kommer att hitta dina drivkrafter i appen när du vill. Fortsätt gärna använda tjänsten! "), 
-
-                React.createElement("p", null, "Hjälp oss genom att svara på ", React.createElement("a", {href: "https://docs.google.com/forms/d/13iqOYQDe6YHEhDdc-XIoQQe4DD6HXLUVYf1W4GcUu0o/viewform?usp=send_form"}, "två korta frågor"))
-            )
-            );
-    }
-});
-
 CS.Controllers.ThreeStandoutPanel.Contexts = React.createClass({displayName: "Contexts",
     render: function () {
         return (
@@ -3343,6 +3319,30 @@ CS.Controllers.ThreeStandoutPanel.Contexts = React.createClass({displayName: "Co
     }
 });
 
+CS.Controllers.ThreeStandoutPanel.Drivers = React.createClass({displayName: "Drivers",
+    render: function () {
+        return (
+            React.createElement("div", {className: "three-standouts"}, 
+                React.createElement("h2", null, React.createElement("i", {className: "fa fa-star"}), "Dina viktigaste drivkrafter", React.createElement("i", {className: "fa fa-star"})), 
+
+                React.createElement("p", null, "Här är de tre viktigaste drivkrafter du identifierat hittills:"), 
+
+                React.createElement("ul", null, 
+                    React.createElement("li", null, this.props.threeStandouts[0]), 
+                    React.createElement("li", null, this.props.threeStandouts[1]), 
+                    React.createElement("li", null, this.props.threeStandouts[2])
+                ), 
+
+                React.createElement("p", null, "Använd dem när du beskriver dig själv. Ta med dem i ditt personliga brev och i fältet Sammanfattning i din LinkedIn-profil. "), 
+
+                React.createElement("p", null, "Den här övningen är nu slut. Du kommer att hitta dina drivkrafter i appen när du vill. Fortsätt gärna använda tjänsten! "), 
+
+                React.createElement("p", null, "Hjälp oss genom att svara på ", React.createElement("a", {href: "https://docs.google.com/forms/d/13iqOYQDe6YHEhDdc-XIoQQe4DD6HXLUVYf1W4GcUu0o/viewform?usp=send_form", target: "_blank"}, "två korta frågor"))
+            )
+            );
+    }
+});
+
 CS.Controllers.ThreeStandoutPanel.Strengths = React.createClass({displayName: "Strengths",
     render: function () {
         return (
@@ -3361,7 +3361,7 @@ CS.Controllers.ThreeStandoutPanel.Strengths = React.createClass({displayName: "S
 
                 React.createElement("p", null, "Den här övningen är nu slut. Du kommer att hitta dina topp-3-styrkor i appen när du vill. Fortsätt gärna använda tjänsten! "), 
 
-                React.createElement("p", null, "Hjälp oss genom att svara på ", React.createElement("a", {href: "https://docs.google.com/forms/d/13iqOYQDe6YHEhDdc-XIoQQe4DD6HXLUVYf1W4GcUu0o/viewform?usp=send_form"}, "två korta frågor."))
+                React.createElement("p", null, "Hjälp oss genom att svara på ", React.createElement("a", {href: "https://docs.google.com/forms/d/13iqOYQDe6YHEhDdc-XIoQQe4DD6HXLUVYf1W4GcUu0o/viewform?usp=send_form", target: "_blank"}, "två korta frågor."))
             )
             );
     }
@@ -3459,7 +3459,7 @@ CS.Controllers.WorkbookArea = P(function (c) {
 
                     React.createElement("form", {role: "form", className: "item-composer", onSubmit: this._handleComposerFormSubmit}, 
                         React.createElement("textarea", {className: "form-control", onKeyUp: this._handleTextareaKeyUp}), 
-                        React.createElement("button", {className: "btn btn-primary"}, "Add"), 
+                        React.createElement("button", {className: "btn btn-primary"}, "Lägg till"), 
                         React.createElement("button", {type: "button", className: "styleless fa fa-times", onClick: this._hideForm})
                     ), 
 
@@ -4840,7 +4840,7 @@ CS.Controllers.WorkbookItemNote = React.createClass({displayName: "WorkbookItemN
         stepCount: CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl2TaskComplete - CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl1TaskComplete,
         templateClassName: "WorkbookAreaAddItemLvl2Task",
         workingOnText: "Inventering nivå 2 av Styrkor",
-        notificationText: "MakeInventering nivå 2 av Styrkor",
+        notificationText: "Inventering nivå 2 av Styrkor",
         comingUpText: "Inventering nivå 2 av Styrkor"
     },
     {
@@ -5020,14 +5020,14 @@ CS.Controllers.WorkbookItemNote = React.createClass({displayName: "WorkbookItemN
         },
         wordings: [
             {
-                prompt: "Which ones of these do you feel best describe your strengths? Prioritize by drag-and-dropping the items in this area."
+                prompt: "Vilka av de här tycker du bäst beskriver dina styrkor? Sortera dina styrkorna med de viktigaste överst genom genom att dra-och-släppa."
             }
         ],
         stepCount: 1,
         templateClassName: "WorkbookAreaPrioritizeItemsTask",
-        workingOnText: "prioritizing my Strengths",
-        notificationText: "Prioritize my Strengths",
-        comingUpText: "prioritizing"
+        workingOnText: "sortera styrkor",
+        notificationText: "Sortera styrkor",
+        comingUpText: "sortera"
     },
     {
         id: 20,
@@ -5059,14 +5059,14 @@ CS.Controllers.WorkbookItemNote = React.createClass({displayName: "WorkbookItemN
         },
         wordings: [
             {
-                prompt: "What's most important to you? Prioritize your drivers by drag-and-dropping the items."
+                prompt: "Vad är viktigast för dig? Sortera dina drivkrafter med de viktigaste överst genom att dra-och-släppa"
             }
         ],
         stepCount: 1,
         templateClassName: "WorkbookAreaPrioritizeItemsTask",
-        workingOnText: "prioritizing my Drivers",
-        notificationText: "Prioritize my Drivers",
-        comingUpText: "prioritizing"
+        workingOnText: "sortera drivkrafter",
+        notificationText: "Sortera drivkrafter",
+        comingUpText: "sortera"
     },
     {
         id: 22,
@@ -5098,14 +5098,14 @@ CS.Controllers.WorkbookItemNote = React.createClass({displayName: "WorkbookItemN
         },
         wordings: [
             {
-                prompt: "Which ones of these do you feel are your most important achievements? Prioritize by drag-and-dropping the items in this area."
+                prompt: "Vilka resultat känner du är mest engagerande? Sortera med det viktigaste överst genom att dra-och-släppa."
             }
         ],
         stepCount: 1,
         templateClassName: "WorkbookAreaPrioritizeItemsTask",
-        workingOnText: "prioritizing my Achievements",
-        notificationText: "Prioritize my Achievements",
-        comingUpText: "prioritizing"
+        workingOnText: "sortera resultat",
+        notificationText: "Sortera resultat",
+        comingUpText: "sortera"
     },
     {
         id: 24,
@@ -5137,14 +5137,14 @@ CS.Controllers.WorkbookItemNote = React.createClass({displayName: "WorkbookItemN
         },
         wordings: [
             {
-                prompt: "If you were given the opportunity to do more of only three things in this list, which ones would it be? Place them at the top by drag-and-dropping."
+                prompt: "Om du bara fick välja en sak i listan, vad skulle det vara? Sortera listan med det viktigaste överst genom att dra-och-släppa.Place them at the top by drag-and-dropping."
             }
         ],
         stepCount: 1,
         templateClassName: "WorkbookAreaPrioritizeItemsTask",
-        workingOnText: "prioritizing what I want More",
-        notificationText: "Prioritize what I want More",
-        comingUpText: "prioritizing"
+        workingOnText: "sortera saker jag vill göra mer av",
+        notificationText: "Sortera saker jag vill göra mer av",
+        comingUpText: "sortera"
     },
     {
         id: 25,
@@ -5176,14 +5176,14 @@ CS.Controllers.WorkbookItemNote = React.createClass({displayName: "WorkbookItemN
         },
         wordings: [
             {
-                prompt: "Which ones of these tracks do you find the most interesting to pursue right now? Prioritize by drag-and-dropping the items in this area."
+                prompt: "Vilka av de här tycker känns mest intressant just nu? Sortera med de viktigaste längst upp."
             }
         ],
         stepCount: 1,
         templateClassName: "WorkbookAreaPrioritizeItemsTask",
-        workingOnText: "prioritizing my Tracks",
-        notificationText: "Prioritize my Tracks",
-        comingUpText: "prioritizing"
+        workingOnText: "sortera Spår att följa",
+        notificationText: "Sortera spår att följa",
+        comingUpText: "sortera"
     }
 ];
 ;CS.WorkbookItemTasks = [

@@ -6,7 +6,7 @@ CS.Controllers.OverviewBlueprintAreaComposer = React.createClass({
             <section ref="wrapper" className="add-item-section">
                 <form role="form" className="item-composer" ref="form" onSubmit={this._handleComposerFormSubmit}>
                     <textarea className="form-control" onKeyUp={this._handleTextareaKeyUp} />
-                    <button className="btn btn-primary">Add</button>
+                    <button className="btn btn-primary">Lägg till</button>
                     <button type="button" className="styleless fa fa-times" onClick={this._hideForm}></button>
                 </form>
 

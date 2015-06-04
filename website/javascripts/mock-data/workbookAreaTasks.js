@@ -405,7 +405,7 @@ CS.WorkbookAreaTasks = [
         stepCount: CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl2TaskComplete - CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl1TaskComplete,
         templateClassName: "WorkbookAreaAddItemLvl2Task",
         workingOnText: "Inventering nivå 2 av Styrkor",
-        notificationText: "MakeInventering nivå 2 av Styrkor",
+        notificationText: "Inventering nivå 2 av Styrkor",
         comingUpText: "Inventering nivå 2 av Styrkor"
     },
     {

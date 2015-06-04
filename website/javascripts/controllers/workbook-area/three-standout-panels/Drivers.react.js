@@ -16,7 +16,7 @@ CS.Controllers.ThreeStandoutPanel.Drivers = React.createClass({
 
                 <p>Den här övningen är nu slut. Du kommer att hitta dina drivkrafter i appen när du vill. Fortsätt gärna använda tjänsten! </p>
 
-                <p>Hjälp oss genom att svara på <a href="https://docs.google.com/forms/d/13iqOYQDe6YHEhDdc-XIoQQe4DD6HXLUVYf1W4GcUu0o/viewform?usp=send_form">två korta frågor</a></p>
+                <p>Hjälp oss genom att svara på <a href="https://docs.google.com/forms/d/13iqOYQDe6YHEhDdc-XIoQQe4DD6HXLUVYf1W4GcUu0o/viewform?usp=send_form" target="_blank">två korta frågor</a></p>
             </div>
             );
     }
