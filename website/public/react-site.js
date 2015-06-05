@@ -700,10 +700,7 @@ CS.Controllers.OverviewBlueprintAreaPanel = React.createClass({displayName: "Ove
                                 ), 
                                 React.createElement("h2", {className: "modal-title"}, this._getBlueprintArea().title)
                             ), 
-                            React.createElement("div", {className: "modal-body workbook-area-description-text-wrapper", dangerouslySetInnerHTML: {__html: workbookAreaDescription}}), 
-                            React.createElement("div", {className: "modal-footer"}, 
-                                React.createElement("button", {type: "button", className: "btn btn-default", "data-dismiss": "modal"}, "Stäng")
-                            )
+                            React.createElement("div", {className: "modal-body workbook-area-description-text-wrapper", dangerouslySetInnerHTML: {__html: workbookAreaDescription}})
                         )
                     )
                 )

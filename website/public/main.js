@@ -2344,10 +2344,7 @@ CS.Controllers.OverviewBlueprintAreaPanel = React.createClass({displayName: "Ove
                                 ), 
                                 React.createElement("h2", {className: "modal-title"}, this._getBlueprintArea().title)
                             ), 
-                            React.createElement("div", {className: "modal-body workbook-area-description-text-wrapper", dangerouslySetInnerHTML: {__html: workbookAreaDescription}}), 
-                            React.createElement("div", {className: "modal-footer"}, 
-                                React.createElement("button", {type: "button", className: "btn btn-default", "data-dismiss": "modal"}, "Stäng")
-                            )
+                            React.createElement("div", {className: "modal-body workbook-area-description-text-wrapper", dangerouslySetInnerHTML: {__html: workbookAreaDescription}})
                         )
                     )
                 )
@@ -5359,7 +5356,7 @@ CS.Controllers.WorkbookItemNote = React.createClass({displayName: "WorkbookItemN
                 prompt: "<p>Hur kan andra människor observera detta i ditt jobb:</p><p><em>{itemName}</em></p>"
             },
             {
-                prompt: "<p>Beskriv en situation där det här verkligen var viktigt: :</p><p><em>{itemName}</em></p>"
+                prompt: "<p>Beskriv en situation där det här verkligen var viktigt:</p><p><em>{itemName}</em></p>"
             },
             {
                 prompt: "<p><em>{itemName}</em></p><p>Vad händer om du inte får tillfälle att göra det här i jobbet?</p>"

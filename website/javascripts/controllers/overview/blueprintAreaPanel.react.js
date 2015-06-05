@@ -52,9 +52,6 @@ CS.Controllers.OverviewBlueprintAreaPanel = React.createClass({
                                 <h2 className="modal-title">{this._getBlueprintArea().title}</h2>
                             </div>
                             <div className="modal-body workbook-area-description-text-wrapper" dangerouslySetInnerHTML={{__html: workbookAreaDescription}}></div>
-                            <div className="modal-footer">
-                                <button type="button" className="btn btn-default" data-dismiss="modal">Stäng</button>
-                            </div>
                         </div>
                     </div>
                 </div>

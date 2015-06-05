@@ -90,7 +90,7 @@ CS.WorkbookItemTasks = [
                 prompt: "<p>Hur kan andra människor observera detta i ditt jobb:</p><p><em>{itemName}</em></p>"
             },
             {
-                prompt: "<p>Beskriv en situation där det här verkligen var viktigt: :</p><p><em>{itemName}</em></p>"
+                prompt: "<p>Beskriv en situation där det här verkligen var viktigt:</p><p><em>{itemName}</em></p>"
             },
             {
                 prompt: "<p><em>{itemName}</em></p><p>Vad händer om du inte får tillfälle att göra det här i jobbet?</p>"
