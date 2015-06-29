@@ -1,0 +1,20 @@
+<mockup version="1.0" skin="sketch" measuredW="577" measuredH="597" mockupW="282" mockupH="510">
+  <controls>
+    <control controlID="0" controlTypeID="com.balsamiq.mockups::iPhone" x="295" y="87" w="-1" h="-1" measuredW="282" measuredH="510" zOrder="0" locked="false" isInGroup="-1"/>
+    <control controlID="1" controlTypeID="com.balsamiq.mockups::Paragraph" x="336" y="205" w="200" h="169" measuredW="200" measuredH="80" zOrder="1" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>This%20page%20requires%20that%20you%20upload%20your%20CV%20and/or%20cover%20letter%20as%20a%20file.%20It%20seems%20to%20us%20that%20it%20can%27t%20really%20be%20done%20from%20your%20device.%0A%20%0AWould%20you%20like%20to%20be%20reminded%20to%20do%20that%20file%20upload%20from%20a%20computer%3F%20Then%20please%20enter%20your%20email%20address%20here%3A</text>
+      </controlProperties>
+    </control>
+    <control controlID="3" controlTypeID="com.balsamiq.mockups::TextInput" x="365" y="380" w="142" h="-1" measuredW="101" measuredH="27" zOrder="2" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>my@email.com</text>
+      </controlProperties>
+    </control>
+    <control controlID="4" controlTypeID="com.balsamiq.mockups::Button" x="392" y="415" w="-1" h="-1" measuredW="88" measuredH="27" zOrder="3" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Remind%20me</text>
+      </controlProperties>
+    </control>
+  </controls>
+</mockup>

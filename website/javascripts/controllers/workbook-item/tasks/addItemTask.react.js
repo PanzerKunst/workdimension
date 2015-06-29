@@ -2,7 +2,7 @@ CS.Controllers.WorkbookItemAddItemTask = React.createClass({
     render: function () {
         var textareaId = "add-note-task";
         this.currentWording = CS.Models.WorkbookItemTaskCommon.getNextWording(this.props.task, this.props.workbookItemIndex);
-        var currentWordingPrompt = CS.Services.String.template(this.currentWording.prompt, "itemName", this.props.workbookItemName);
+        this.currentWordingPrompt = CS.Services.String.template(this.currentWording.prompt, "itemName", this.props.workbookItemName);
 
         var wrapperClasses = classNames({
             "workbook-task": true,
@@ -17,7 +17,7 @@ CS.Controllers.WorkbookItemAddItemTask = React.createClass({
                 </div>
                 <form role="form" className="item-composer task" onSubmit={this._handleFormSubmit}>
                     <div className="form-group">
-                        <label htmlFor={textareaId} dangerouslySetInnerHTML={{__html: currentWordingPrompt}} />
+                        <label htmlFor={textareaId} dangerouslySetInnerHTML={{__html: this.currentWordingPrompt}} />
                         <textarea className="form-control" id={textareaId} onKeyUp={this._handleTextareaKeyUp} />
                     </div>
                     <button className="btn btn-primary">Lägg till</button>
@@ -71,7 +71,7 @@ CS.Controllers.WorkbookItemAddItemTask = React.createClass({
             this._fetchLatestAccountDataAndUpdateIt(itemNoteToAdd);
         }
 
-        ga("send", "event", "form", "submit", "Workbook Item > Add item task > Add note: " + itemNoteToAdd);
+        ga("send", "event", "form", "submit", "Workbook Item (" + this.props.workbookItemName + ") > Add note task (" + this.currentWordingPrompt + ") > Add note: " + itemNoteToAdd);
     },
 
     _isValid: function(trimmedItemNote) {

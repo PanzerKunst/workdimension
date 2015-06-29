@@ -1,0 +1,43 @@
+<mockup version="1.0" skin="sketch" measuredW="1190" measuredH="407" mockupW="960" mockupH="384">
+  <controls>
+    <control controlID="0" controlTypeID="com.balsamiq.mockups::BrowserWindow" x="230" y="23" w="960" h="384" measuredW="450" measuredH="400" zOrder="0" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Partner%20coupons%0Ahttp%3A//</text>
+      </controlProperties>
+    </control>
+    <control controlID="1" controlTypeID="com.balsamiq.mockups::Label" x="261" y="116" w="-1" h="-1" measuredW="153" measuredH="28" zOrder="1" locked="false" isInGroup="-1">
+      <controlProperties>
+        <bold>true</bold>
+        <size>20</size>
+        <text>Partner%20coupons</text>
+      </controlProperties>
+    </control>
+    <control controlID="7" controlTypeID="com.balsamiq.mockups::List" x="359" y="186" w="702" h="124" measuredW="100" measuredH="126" zOrder="2" locked="false" isInGroup="-1">
+      <controlProperties>
+        <alternateRowColor>15658734</alternateRowColor>
+        <rowHeight>39</rowHeight>
+        <text>Jusek%0ASveriges%20ingenj%F6rer%0ATrygghetsstiftelsen</text>
+      </controlProperties>
+    </control>
+    <control controlID="40" controlTypeID="com.balsamiq.mockups::Label" x="934" y="318" w="-1" h="-1" measuredW="127" measuredH="21" zOrder="3" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>%5BAdd%20a%20partner%20coupon%5D</text>
+      </controlProperties>
+    </control>
+    <control controlID="41" controlTypeID="com.balsamiq.mockups::Label" x="1004" y="197" w="-1" h="-1" measuredW="45" measuredH="21" zOrder="4" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>%5BDelete%5D</text>
+      </controlProperties>
+    </control>
+    <control controlID="42" controlTypeID="com.balsamiq.mockups::Label" x="1004" y="238" w="-1" h="-1" measuredW="45" measuredH="21" zOrder="5" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>%5BDelete%5D</text>
+      </controlProperties>
+    </control>
+    <control controlID="43" controlTypeID="com.balsamiq.mockups::Label" x="1004" y="276" w="-1" h="-1" measuredW="45" measuredH="21" zOrder="6" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>%5BDelete%5D</text>
+      </controlProperties>
+    </control>
+  </controls>
+</mockup>

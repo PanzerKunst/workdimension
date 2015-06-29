@@ -1439,7 +1439,7 @@ CS.Controllers.WorkbookAreaAddItemTaskForm = React.createClass({displayName: "Wo
             this._fetchLatestAccountDataAndUpdateIt(itemNameToAdd);
         }
 
-        ga("send", "event", "form", "submit", "Workbook Area > Add item task > Add item: " + itemNameToAdd);
+        ga("send", "event", "form", "submit", "Workbook Area (" + this.props.workbookArea.className + ") > Add item task (" + this.currentWording.prompt + ") > Add item: " + itemNameToAdd);
     },
 
     _isValid: function(trimmedItemName) {
@@ -2250,7 +2250,7 @@ CS.Controllers.WorkbookItemAddItemTask = React.createClass({displayName: "Workbo
     render: function () {
         var textareaId = "add-note-task";
         this.currentWording = CS.Models.WorkbookItemTaskCommon.getNextWording(this.props.task, this.props.workbookItemIndex);
-        var currentWordingPrompt = CS.Services.String.template(this.currentWording.prompt, "itemName", this.props.workbookItemName);
+        this.currentWordingPrompt = CS.Services.String.template(this.currentWording.prompt, "itemName", this.props.workbookItemName);
 
         var wrapperClasses = classNames({
             "workbook-task": true,
@@ -2265,7 +2265,7 @@ CS.Controllers.WorkbookItemAddItemTask = React.createClass({displayName: "Workbo
                 ), 
                 React.createElement("form", {role: "form", className: "item-composer task", onSubmit: this._handleFormSubmit}, 
                     React.createElement("div", {className: "form-group"}, 
-                        React.createElement("label", {htmlFor: textareaId, dangerouslySetInnerHTML: {__html: currentWordingPrompt}}), 
+                        React.createElement("label", {htmlFor: textareaId, dangerouslySetInnerHTML: {__html: this.currentWordingPrompt}}), 
                         React.createElement("textarea", {className: "form-control", id: textareaId, onKeyUp: this._handleTextareaKeyUp})
                     ), 
                     React.createElement("button", {className: "btn btn-primary"}, "Lägg till"), 
@@ -2319,7 +2319,7 @@ CS.Controllers.WorkbookItemAddItemTask = React.createClass({displayName: "Workbo
             this._fetchLatestAccountDataAndUpdateIt(itemNoteToAdd);
         }
 
-        ga("send", "event", "form", "submit", "Workbook Item > Add item task > Add note: " + itemNoteToAdd);
+        ga("send", "event", "form", "submit", "Workbook Item (" + this.props.workbookItemName + ") > Add note task (" + this.currentWordingPrompt + ") > Add note: " + itemNoteToAdd);
     },
 
     _isValid: function(trimmedItemNote) {

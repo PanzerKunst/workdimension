@@ -50,7 +50,7 @@ CS.Controllers.WorkbookAreaAddItemTaskForm = React.createClass({
             this._fetchLatestAccountDataAndUpdateIt(itemNameToAdd);
         }
 
-        ga("send", "event", "form", "submit", "Workbook Area > Add item task > Add item: " + itemNameToAdd);
+        ga("send", "event", "form", "submit", "Workbook Area (" + this.props.workbookArea.className + ") > Add item task (" + this.currentWording.prompt + ") > Add item: " + itemNameToAdd);
     },
 
     _isValid: function(trimmedItemName) {
