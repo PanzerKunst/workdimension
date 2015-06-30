@@ -106,3 +106,27 @@ a.fa {
     margin-bottom: 0;
   }
 }
+
+.three-standouts {
+  background-color: $standouts-background-color;
+
+  > h2 {
+    text-align: center;
+
+    > .fa-star {
+      color: $icon-success-color;
+
+      margin: 0 1em;
+    }
+  }
+
+  > ul {
+    > li {
+      margin-bottom: 0.5em;
+
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
+  }
+}

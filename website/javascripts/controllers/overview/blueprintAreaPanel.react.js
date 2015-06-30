@@ -10,7 +10,7 @@ CS.Controllers.OverviewBlueprintAreaPanel = React.createClass({
 
         var wellClasses = classNames("well", {
             "collapsed-list": this.props.blueprintAreaWithData.items.length > CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl1TaskComplete,
-            "hidd3n": threeStandoutsPanelReact !== null
+            "hidd3n": threeStandoutsPanelReact !== null && !_.includes(CS.account.data.hiddenThreeStandoutsPanelsIds, this._getBlueprintArea().id)
         });
 
         var workbookAreaDescription = _.find(CS.Controllers.Texts, function(text) {

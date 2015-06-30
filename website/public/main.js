@@ -807,25 +807,6 @@ CS.saveAccountData = function (callback) {
             keyCode !== this.keyCode.space;
     }
 };
-;CS.Services.iosWindowFocusDetector = P(function (c) {
-    c.timestamp = new Date().getTime();
-
-    c.init = function () {
-        window.setInterval(this.checkResume, 50);
-    };
-
-    c.checkResume = function () {
-        var current = new Date().getTime();
-
-        if (current - this.timestamp > 3000) {
-            var event = document.createEvent("Events");
-            event.initEvent("iosWindowFocus", true, true);
-            document.dispatchEvent(event);
-        }
-
-        this.timestamp = current;
-    };
-});
 ;CS.Models.BlueprintArea = P(function (c) {
     c.init = function (id, className, humanReadableClassName, blueprintCategoryId, title) {
         this.id = id;
@@ -1464,14 +1445,6 @@ CS.Controllers.MainMenuLinkedInAuthenticator = P(CS.Controllers.Base, function (
         this.$signInWithLinkedInBtn.click(this._signInWithLinkedIn.bind(this));
         this.$signOutLink.click(this._signOut.bind(this));
         IN.Event.on(IN, "auth", this._signIn.bind(this));
-
-        /* TODO if (CS.Services.Browser.isIOS()) {
-            CS.Services.iosWindowFocusDetector();
-
-            document.addEventListener("iosWindowFocus", function () {
-                this._signIn();
-            }.bind(this), false);
-        } */
     };
 
     c._signInWithLinkedIn = function () {
@@ -1509,34 +1482,27 @@ CS.Controllers.MainMenuLinkedInAuthenticator = P(CS.Controllers.Base, function (
     };
 
     c._signIn = function () {
-        /* TODO if (!this.isSigningIn) {
-            this.isSigningIn = true; */
+        if (this.isTemporaryAccount()) {
+            this._spin();
 
-            if (this.isTemporaryAccount()) {
-                this._spin();
+            IN.API.Profile("me").result(function (profiles) {
+                var type = "POST";
+                var url = "/api/auth?linkedinAccountId=" + profiles.values[0].id;
 
-                IN.API.Profile("me").result(function (profiles) {
-                    var type = "POST";
-                    var url = "/api/auth?linkedinAccountId=" + profiles.values[0].id;
-
-                    $.ajax({
-                        url: url,
-                        type: type,
-                        success: function (data, textStatus, jqXHR) {
-                            if (jqXHR.status === this.httpStatusCode.ok) {
-                                this._loadAccountData(data);
-                            }
-                        }.bind(this),
-                        error: function () {
-                            alert("AJAX failure doing a " + type + " request to \"" + url + "\"");
+                $.ajax({
+                    url: url,
+                    type: type,
+                    success: function (data, textStatus, jqXHR) {
+                        if (jqXHR.status === this.httpStatusCode.ok) {
+                            this._loadAccountData(data);
                         }
-                    });
-                }.bind(this));
-            /* TODO }
-            else {
-                this.isSigningIn = false; */
-            }
-        //}
+                    }.bind(this),
+                    error: function () {
+                        alert("AJAX failure doing a " + type + " request to \"" + url + "\"");
+                    }
+                });
+            }.bind(this));
+        }
     };
 
     c._createAccount = function (linkedInAccountData) {
@@ -1582,8 +1548,6 @@ CS.Controllers.MainMenuLinkedInAuthenticator = P(CS.Controllers.Base, function (
         CS.blueprintAreasModel.updateStatus();
 
         CS.taskNotificationsController.reRender();
-
-        // TODO this.isSigningIn = false;
     };
 
     c._signOut = function () {
@@ -2303,7 +2267,7 @@ CS.Controllers.OverviewBlueprintAreaPanel = React.createClass({displayName: "Ove
 
         var wellClasses = classNames("well", {
             "collapsed-list": this.props.blueprintAreaWithData.items.length > CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl1TaskComplete,
-            "hidd3n": threeStandoutsPanelReact !== null
+            "hidd3n": threeStandoutsPanelReact !== null && !_.includes(CS.account.data.hiddenThreeStandoutsPanelsIds, this._getBlueprintArea().id)
         });
 
         var workbookAreaDescription = _.find(CS.Controllers.Texts, function(text) {
@@ -2651,12 +2615,14 @@ CS.Controllers.OverviewThreeStandoutsPanel = React.createClass({displayName: "Ov
         this._initElements();
     },
 
-    _initElements: function() {
+    _initElements: function () {
         this.$wrapper = $(React.findDOMNode(this.refs.wrapper));
         this.$workbookAreaPanel = this.$wrapper.siblings(".well");
+
+        this._hideIfRequired();
     },
 
-    _hide: function() {
+    _hide: function () {
         CS.Services.Animator.fadeOut(this.$wrapper, {
             animationDuration: CS.animationDuration.short,
             onComplete: function () {
@@ -2665,9 +2631,21 @@ CS.Controllers.OverviewThreeStandoutsPanel = React.createClass({displayName: "Ov
             }.bind(this)
         });
 
-        CS.overviewController.rePackerise();
+        if (!_.includes(CS.account.data.hiddenThreeStandoutsPanelsIds, this.props.workbookArea.id)) {
+            var hiddenThreeStandoutsPanelsIds = CS.account.data.hiddenThreeStandoutsPanelsIds || [];
+            hiddenThreeStandoutsPanelsIds.push(this.props.workbookArea.id);
+
+            CS.account.data.hiddenThreeStandoutsPanelsIds = hiddenThreeStandoutsPanelsIds;
+            CS.saveAccountData();
+        }
 
         ga("send", "event", "button", "click", "Overview > Hide three standouts panel");
+    },
+
+    _hideIfRequired: function() {
+        if (_.includes(CS.account.data.hiddenThreeStandoutsPanelsIds, this.props.workbookArea.id)) {
+            this.$wrapper.hide();
+        }
     }
 });
 
@@ -2731,6 +2709,13 @@ CS.Controllers.OverviewWorkbookAreaActions = React.createClass({displayName: "Ov
             }.bind(this)
         });
 
+        var hiddenThreeStandoutsPanelsIds = CS.account.data.hiddenThreeStandoutsPanelsIds || [];
+        var indexOfStandoutToUnhide = hiddenThreeStandoutsPanelsIds.indexOf(this.props.workbookArea.id);
+        hiddenThreeStandoutsPanelsIds.splice(indexOfStandoutToUnhide, 1);
+
+        CS.account.data.hiddenThreeStandoutsPanelsIds = hiddenThreeStandoutsPanelsIds;
+        CS.saveAccountData();
+
         ga("send", "event", "link", "click", "Overview > Show 3 standouts");
     }
 });
@@ -2754,19 +2739,19 @@ CS.Controllers.SetThreeStandouts = React.createClass({displayName: "SetThreeStan
 
                 React.createElement("form", {onSubmit: this._handleFormSubmit, ref: "form"}, 
                     React.createElement("div", {className: "form-group"}, 
-                        React.createElement("input", {type: "text", className: "form-control", id: "first-standout", maxLength: "64"}), 
+                        React.createElement("input", {type: "text", className: "form-control", id: "first-standout", maxLength: "256"}), 
 
                         React.createElement("p", {className: "field-error", "data-check": "empty"})
                     ), 
 
                     React.createElement("div", {className: "form-group"}, 
-                        React.createElement("input", {type: "text", className: "form-control", id: "second-standout", maxLength: "64"}), 
+                        React.createElement("input", {type: "text", className: "form-control", id: "second-standout", maxLength: "256"}), 
 
                         React.createElement("p", {className: "field-error", "data-check": "empty"})
                     ), 
 
                     React.createElement("div", {className: "form-group"}, 
-                        React.createElement("input", {type: "text", className: "form-control", id: "third-standout", maxLength: "64"}), 
+                        React.createElement("input", {type: "text", className: "form-control", id: "third-standout", maxLength: "256"}), 
 
                         React.createElement("p", {className: "field-error", "data-check": "empty"})
                     ), 
@@ -3339,30 +3324,6 @@ CS.Controllers.WorkbookAreaPrioritizeItemsTask = React.createClass({displayName:
         });
 
         ga("send", "event", "button", "click", "Workbook Area > Prioritize items task > Done");
-    }
-});
-
-CS.Controllers.ThreeStandoutPanel.Contexts = React.createClass({displayName: "Contexts",
-    render: function () {
-        return (
-            React.createElement("div", {className: "three-standouts"}, 
-                React.createElement("h2", null, React.createElement("i", {className: "fa fa-star"}), "Your top-3 contexts", React.createElement("i", {className: "fa fa-star"})), 
-
-                React.createElement("p", null, "From what you've indicated so far, these are the three contexts that you should focus on when describing yourself:"), 
-
-                React.createElement("ul", null, 
-                    React.createElement("li", null, this.props.threeStandouts[0]), 
-                    React.createElement("li", null, this.props.threeStandouts[1]), 
-                    React.createElement("li", null, this.props.threeStandouts[2])
-                ), 
-
-                React.createElement("p", null, "You have great examples for all of them. Use examples when you write your application and always be prepared to use them during an interview."), 
-
-                React.createElement("p", null, "This exercise is now over. You'll find your top-3 contexts in the app at any time. Keep using the service at your wish."), 
-
-                React.createElement("p", null, "Please help us out by ", React.createElement("a", {href: "#"}, "answering a three-question survey."))
-            )
-            );
     }
 });
 
@@ -5393,7 +5354,7 @@ CS.Controllers.WorkbookItemNote = React.createClass({displayName: "WorkbookItemN
                 prompt: "<p>Kan du ge ett exempel på när du verkligen känt att du drivs av det här?</p><p><em>{itemName}</em></p>"
             },
             {
-                prompt: "<p>När har du som mest fått tillfälle att göra leva enligt den här drivkraften?</p><p><em>{itemName}</em></p>"
+                prompt: "<p>När har du som mest fått tillfälle att leva enligt den här drivkraften?</p><p><em>{itemName}</em></p>"
             }
         ],
         stepCount: CS.Models.WorkbookItemTaskCommon.minItemCountForAddItemsTaskComplete,

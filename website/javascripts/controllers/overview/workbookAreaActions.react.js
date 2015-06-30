@@ -58,6 +58,13 @@ CS.Controllers.OverviewWorkbookAreaActions = React.createClass({
             }.bind(this)
         });
 
+        var hiddenThreeStandoutsPanelsIds = CS.account.data.hiddenThreeStandoutsPanelsIds || [];
+        var indexOfStandoutToUnhide = hiddenThreeStandoutsPanelsIds.indexOf(this.props.workbookArea.id);
+        hiddenThreeStandoutsPanelsIds.splice(indexOfStandoutToUnhide, 1);
+
+        CS.account.data.hiddenThreeStandoutsPanelsIds = hiddenThreeStandoutsPanelsIds;
+        CS.saveAccountData();
+
         ga("send", "event", "link", "click", "Overview > Show 3 standouts");
     }
 });

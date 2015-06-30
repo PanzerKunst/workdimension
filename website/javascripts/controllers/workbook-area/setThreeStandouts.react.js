@@ -6,19 +6,19 @@ CS.Controllers.SetThreeStandouts = React.createClass({
 
                 <form onSubmit={this._handleFormSubmit} ref="form">
                     <div className="form-group">
-                        <input type="text" className="form-control" id="first-standout" maxLength="64" />
+                        <input type="text" className="form-control" id="first-standout" maxLength="256" />
 
                         <p className="field-error" data-check="empty" />
                     </div>
 
                     <div className="form-group">
-                        <input type="text" className="form-control" id="second-standout" maxLength="64" />
+                        <input type="text" className="form-control" id="second-standout" maxLength="256" />
 
                         <p className="field-error" data-check="empty" />
                     </div>
 
                     <div className="form-group">
-                        <input type="text" className="form-control" id="third-standout" maxLength="64" />
+                        <input type="text" className="form-control" id="third-standout" maxLength="256" />
 
                         <p className="field-error" data-check="empty" />
                     </div>

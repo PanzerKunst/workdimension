@@ -21,12 +21,14 @@ CS.Controllers.OverviewThreeStandoutsPanel = React.createClass({
         this._initElements();
     },
 
-    _initElements: function() {
+    _initElements: function () {
         this.$wrapper = $(React.findDOMNode(this.refs.wrapper));
         this.$workbookAreaPanel = this.$wrapper.siblings(".well");
+
+        this._hideIfRequired();
     },
 
-    _hide: function() {
+    _hide: function () {
         CS.Services.Animator.fadeOut(this.$wrapper, {
             animationDuration: CS.animationDuration.short,
             onComplete: function () {
@@ -35,8 +37,20 @@ CS.Controllers.OverviewThreeStandoutsPanel = React.createClass({
             }.bind(this)
         });
 
-        CS.overviewController.rePackerise();
+        if (!_.includes(CS.account.data.hiddenThreeStandoutsPanelsIds, this.props.workbookArea.id)) {
+            var hiddenThreeStandoutsPanelsIds = CS.account.data.hiddenThreeStandoutsPanelsIds || [];
+            hiddenThreeStandoutsPanelsIds.push(this.props.workbookArea.id);
+
+            CS.account.data.hiddenThreeStandoutsPanelsIds = hiddenThreeStandoutsPanelsIds;
+            CS.saveAccountData();
+        }
 
         ga("send", "event", "button", "click", "Overview > Hide three standouts panel");
+    },
+
+    _hideIfRequired: function() {
+        if (_.includes(CS.account.data.hiddenThreeStandoutsPanelsIds, this.props.workbookArea.id)) {
+            this.$wrapper.hide();
+        }
     }
 });

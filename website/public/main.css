@@ -6275,6 +6275,18 @@ a.fa:hover, a.fa:focus {
 .workbook-area-description-text-wrapper > p:last-child {
   margin-bottom: 0; }
 
+.three-standouts {
+  background-color: #e1f2e1; }
+  .three-standouts > h2 {
+    text-align: center; }
+    .three-standouts > h2 > .fa-star {
+      color: #FDC300;
+      margin: 0 1em; }
+  .three-standouts > ul > li {
+    margin-bottom: 0.5em; }
+    .three-standouts > ul > li:last-child {
+      margin-bottom: 0; }
+
 header {
   position: fixed;
   width: 100%;
@@ -6656,16 +6668,9 @@ footer {
   @media screen and (min-width: 960px) {
     #index #content .workbook-area-description-modal .modal-header > .close {
       margin-top: -6px; } }
-  #index #content .three-standouts {
-    background-color: #e1f2e1; }
-    #index #content .three-standouts > h2 {
-      text-align: center; }
-    #index #content .three-standouts > .fa-times {
-      right: -0.45em;
-      top: -0.45em; }
-    #index #content .three-standouts .fa-star {
-      color: #FDC300;
-      margin: 0 1em; }
+  #index #content .three-standouts > .fa-times {
+    right: -0.45em;
+    top: -0.45em; }
 
 #select-areas-modal .modal-title {
   font-size: 1.2em;
@@ -6794,14 +6799,9 @@ footer {
   #workbook-area #area-description > .centered-contents {
     padding-bottom: 1em; }
 #workbook-area .three-standouts {
-  padding: 1.5em 1em 1em 1em;
-  background-color: #e1f2e1; }
+  padding: 1.5em 1em 1em 1em; }
   #workbook-area .three-standouts > h2 {
-    text-align: center;
     font-size: 1.5em; }
-    #workbook-area .three-standouts > h2 .fa-star {
-      color: #FDC300;
-      margin: 0 1em; }
   #workbook-area .three-standouts > ul {
     font-weight: bold;
     margin-bottom: 1em; }

@@ -18,14 +18,6 @@ CS.Controllers.MainMenuLinkedInAuthenticator = P(CS.Controllers.Base, function (
         this.$signInWithLinkedInBtn.click(this._signInWithLinkedIn.bind(this));
         this.$signOutLink.click(this._signOut.bind(this));
         IN.Event.on(IN, "auth", this._signIn.bind(this));
-
-        /* TODO if (CS.Services.Browser.isIOS()) {
-            CS.Services.iosWindowFocusDetector();
-
-            document.addEventListener("iosWindowFocus", function () {
-                this._signIn();
-            }.bind(this), false);
-        } */
     };
 
     c._signInWithLinkedIn = function () {
@@ -63,34 +55,27 @@ CS.Controllers.MainMenuLinkedInAuthenticator = P(CS.Controllers.Base, function (
     };
 
     c._signIn = function () {
-        /* TODO if (!this.isSigningIn) {
-            this.isSigningIn = true; */
+        if (this.isTemporaryAccount()) {
+            this._spin();
 
-            if (this.isTemporaryAccount()) {
-                this._spin();
+            IN.API.Profile("me").result(function (profiles) {
+                var type = "POST";
+                var url = "/api/auth?linkedinAccountId=" + profiles.values[0].id;
 
-                IN.API.Profile("me").result(function (profiles) {
-                    var type = "POST";
-                    var url = "/api/auth?linkedinAccountId=" + profiles.values[0].id;
-
-                    $.ajax({
-                        url: url,
-                        type: type,
-                        success: function (data, textStatus, jqXHR) {
-                            if (jqXHR.status === this.httpStatusCode.ok) {
-                                this._loadAccountData(data);
-                            }
-                        }.bind(this),
-                        error: function () {
-                            alert("AJAX failure doing a " + type + " request to \"" + url + "\"");
+                $.ajax({
+                    url: url,
+                    type: type,
+                    success: function (data, textStatus, jqXHR) {
+                        if (jqXHR.status === this.httpStatusCode.ok) {
+                            this._loadAccountData(data);
                         }
-                    });
-                }.bind(this));
-            /* TODO }
-            else {
-                this.isSigningIn = false; */
-            }
-        //}
+                    }.bind(this),
+                    error: function () {
+                        alert("AJAX failure doing a " + type + " request to \"" + url + "\"");
+                    }
+                });
+            }.bind(this));
+        }
     };
 
     c._createAccount = function (linkedInAccountData) {
@@ -136,8 +121,6 @@ CS.Controllers.MainMenuLinkedInAuthenticator = P(CS.Controllers.Base, function (
         CS.blueprintAreasModel.updateStatus();
 
         CS.taskNotificationsController.reRender();
-
-        // TODO this.isSigningIn = false;
     };
 
     c._signOut = function () {

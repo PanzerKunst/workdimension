@@ -880,7 +880,7 @@ CS.WorkbookAreaTasks = [
                 prompt: "<p>Kan du ge ett exempel på när du verkligen känt att du drivs av det här?</p><p><em>{itemName}</em></p>"
             },
             {
-                prompt: "<p>När har du som mest fått tillfälle att göra leva enligt den här drivkraften?</p><p><em>{itemName}</em></p>"
+                prompt: "<p>När har du som mest fått tillfälle att leva enligt den här drivkraften?</p><p><em>{itemName}</em></p>"
             }
         ],
         stepCount: CS.Models.WorkbookItemTaskCommon.minItemCountForAddItemsTaskComplete,
