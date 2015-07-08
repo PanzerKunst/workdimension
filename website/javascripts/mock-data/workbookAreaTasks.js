@@ -171,6 +171,9 @@ CS.WorkbookAreaTasks = [
             },
             {
                 prompt: "När känner du dig som mest nöjd (eller stolt!) över vad du gjort?"
+            },
+            {
+                prompt: "Vad trivs du mest med att göra - utanför jobbet?"
             }
         ],
         stepCount: CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl1TaskComplete,
