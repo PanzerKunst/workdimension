@@ -168,6 +168,9 @@ CS.WorkbookAreaTasks = [
             },
             {
                 prompt: "På vilket sätt vill du påverka världen?"
+            },
+            {
+                prompt: "När känner du dig som mest nöjd (eller stolt!) över vad du gjort?"
             }
         ],
         stepCount: CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl1TaskComplete,
