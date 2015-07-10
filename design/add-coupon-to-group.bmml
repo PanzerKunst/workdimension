@@ -1,0 +1,33 @@
+<mockup version="1.0" skin="sketch" measuredW="1445" measuredH="1226" mockupW="1215" mockupH="1203">
+  <controls>
+    <control controlID="0" controlTypeID="com.balsamiq.mockups::BrowserWindow" x="230" y="23" w="1215" h="1203" measuredW="450" measuredH="400" zOrder="0" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Coupons%0Ahttp%3A//</text>
+      </controlProperties>
+    </control>
+    <control controlID="44" controlTypeID="com.balsamiq.mockups::ModalScreen" x="230" y="95" w="1215" h="1104" measuredW="320" measuredH="240" zOrder="2" locked="false" isInGroup="-1"/>
+    <control controlID="45" controlTypeID="com.balsamiq.mockups::Canvas" x="674" y="405" w="327" h="139" measuredW="100" measuredH="70" zOrder="3" locked="false" isInGroup="-1"/>
+    <control controlID="46" controlTypeID="com.balsamiq.mockups::ComboBox" x="811" y="434" w="166" h="-1" measuredW="32" measuredH="24" zOrder="4" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text/>
+      </controlProperties>
+    </control>
+    <control controlID="47" controlTypeID="com.balsamiq.mockups::Label" x="696" y="436" w="-1" h="-1" measuredW="103" measuredH="21" zOrder="5" locked="false" isInGroup="-1">
+      <controlProperties>
+        <bold>true</bold>
+        <text>Group%20to%20add%20to</text>
+      </controlProperties>
+    </control>
+    <control controlID="50" controlTypeID="com.balsamiq.mockups::Button" x="757" y="487" w="-1" h="-1" measuredW="163" measuredH="27" zOrder="6" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Add%20coupon%20to%20this%20group</text>
+      </controlProperties>
+    </control>
+    <control controlID="53" controlTypeID="com.balsamiq.mockups::Image" x="234" y="95" w="-1" h="-1" measuredW="1211" measuredH="1104" zOrder="1" locked="false" isInGroup="-1">
+      <controlProperties>
+        <src>./Add-to-group.png</src>
+        <text/>
+      </controlProperties>
+    </control>
+  </controls>
+</mockup>
