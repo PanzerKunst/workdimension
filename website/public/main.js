@@ -4642,6 +4642,12 @@ CS.Controllers.WorkbookItemNote = React.createClass({displayName: "WorkbookItemN
             },
             {
                 prompt: "På vilket sätt vill du påverka världen?"
+            },
+            {
+                prompt: "När känner du dig som mest nöjd (eller stolt!) över vad du gjort?"
+            },
+            {
+                prompt: "Vad trivs du mest med att göra - utanför jobbet?"
             }
         ],
         stepCount: CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl1TaskComplete,
