@@ -122,7 +122,7 @@ CS.WorkbookAreaTasks = [
                 prompt: "Vad är du bra på?"
             },
             {
-                prompt: "Hur skulle de människor du jobbar med besrkiva dig?"
+                prompt: "Hur tror du att dina kollegor beskriver dig i din yrkesroll?"
             }
         ],
         stepCount: CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl1TaskComplete,
