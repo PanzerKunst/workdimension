@@ -6646,6 +6646,8 @@ footer {
     font-size: 16.8px;
     font-weight: bold;
     letter-spacing: -0.05em; }
+    #index #content h2 > a {
+      text-decoration: underline; }
   #index #content .item-names-list > li {
     background-color: #777777;
     margin-bottom: 0.25em; }

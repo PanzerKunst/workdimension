@@ -152,6 +152,10 @@
       font-size: #{1.2 * $font-size-base-px}px;
       font-weight: bold;
       letter-spacing: -0.05em;
+
+      > a {
+        text-decoration: underline;
+      }
     }
 
     .item-names-list {
