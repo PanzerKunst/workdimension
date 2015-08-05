@@ -76,7 +76,7 @@ CS.Controllers.WorkbookAreaWorkbookItem = React.createClass({
         var newItemName = this.$textarea.val().trim();
         this._fetchLatestAccountDataAndUpdateIt(newItemName);
 
-        ga("send", "event", "form", "submit", "Workbook Area > Submit item change");
+        ga("send", "event", "form", "submit", "[" + CS.account.email + "] Workbook Area > Submit item change: " + newItemName);
     },
 
     _handleTextareaKeyUp: function(e) {

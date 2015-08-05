@@ -84,7 +84,7 @@ CS.Controllers.OverviewBlueprintItem = React.createClass({
         var newItemName = this.$textarea.val().trim();
         this._fetchLatestAccountDataAndUpdateIt(newItemName);
 
-        ga("send", "event", "form", "submit", "Overview > Save changes to workbook item");
+        ga("send", "event", "form", "submit", "[" + CS.account.email + "] Overview > Save changes to workbook item: " + newItemName);
     },
 
     _handleTextareaKeyUp: function(e) {

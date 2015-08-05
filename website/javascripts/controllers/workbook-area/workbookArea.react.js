@@ -171,7 +171,7 @@ CS.Controllers.WorkbookArea = P(function (c) {
 
             CS.Controllers.WorkbookAreaCommon.resetAndHideForm(this.$textarea, this._hideForm);
 
-            ga("send", "event", "form", "submit", "Workbook Area > Add item outside task");
+            ga("send", "event", "form", "submit", "[" + CS.account.email + "] Workbook Area (" + this.state.workbookArea.className + ") > Add item outside task: " + itemNameToAdd);
         },
 
         _handleTextareaKeyUp: function (e) {

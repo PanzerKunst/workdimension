@@ -71,7 +71,7 @@ CS.Controllers.WorkbookItemAddItemTask = React.createClass({
             this._fetchLatestAccountDataAndUpdateIt(itemNoteToAdd);
         }
 
-        ga("send", "event", "form", "submit", "Workbook Item (" + this.props.workbookItemName + ") > Add note task (" + this.currentWordingPrompt + ") > Add note: " + itemNoteToAdd);
+        ga("send", "event", "form", "submit", "[" + CS.account.email + "] Workbook Item (" + this.props.workbookItemName + ") > Add note task (" + this.currentWordingPrompt + ") > Add note: " + itemNoteToAdd);
     },
 
     _isValid: function(trimmedItemNote) {

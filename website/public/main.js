@@ -2214,7 +2214,7 @@ CS.Controllers.OverviewBlueprintAreaComposer = React.createClass({displayName: "
 
         CS.Controllers.WorkbookAreaCommon.resetAndHideForm(this.$textarea, this._hideForm);
 
-        ga("send", "event", "form", "submit", "Overview > Add item: " + itemNameToAdd);
+        ga("send", "event", "form", "submit", "[" + CS.account.email + "] Overview > Add item: " + itemNameToAdd);
     },
 
     _handleTextareaKeyUp: function (e) {
@@ -2466,7 +2466,7 @@ CS.Controllers.OverviewBlueprintItem = React.createClass({displayName: "Overview
         var newItemName = this.$textarea.val().trim();
         this._fetchLatestAccountDataAndUpdateIt(newItemName);
 
-        ga("send", "event", "form", "submit", "Overview > Save changes to workbook item");
+        ga("send", "event", "form", "submit", "[" + CS.account.email + "] Overview > Save changes to workbook item: " + newItemName);
     },
 
     _handleTextareaKeyUp: function(e) {
@@ -3068,7 +3068,7 @@ CS.Controllers.WorkbookAreaAddItemTaskForm = React.createClass({displayName: "Wo
             this._fetchLatestAccountDataAndUpdateIt(itemNameToAdd);
         }
 
-        ga("send", "event", "form", "submit", "Workbook Area (" + this.props.workbookArea.className + ") > Add item task (" + this.currentWording.prompt + ") > Add item: " + itemNameToAdd);
+        ga("send", "event", "form", "submit", "[" + CS.account.email + "] Workbook Area (" + this.props.workbookArea.className + ") > Add item task (" + this.currentWording.prompt + ") > Add item: " + itemNameToAdd);
     },
 
     _isValid: function(trimmedItemName) {
@@ -3197,7 +3197,7 @@ CS.Controllers.WorkbookAreaCustomTask = React.createClass({displayName: "Workboo
             this._fetchLatestAccountDataAndUpdateIt(itemNameToAdd);
         }
 
-        ga("send", "event", "form", "submit", "Workbook Area > Custom task > Add item: " + itemNameToAdd + ". Question was: " + this.props.task.question);
+        ga("send", "event", "form", "submit", "[" + CS.account.email + "] Workbook Area (" + this.props.workbookArea.className + ") > Custom task > Add item: " + itemNameToAdd + ". Question was: " + this.props.task.question);
     },
 
     _handleTextareaKeyUp: function (e) {
@@ -3548,7 +3548,7 @@ CS.Controllers.WorkbookArea = P(function (c) {
 
             CS.Controllers.WorkbookAreaCommon.resetAndHideForm(this.$textarea, this._hideForm);
 
-            ga("send", "event", "form", "submit", "Workbook Area > Add item outside task");
+            ga("send", "event", "form", "submit", "[" + CS.account.email + "] Workbook Area (" + this.state.workbookArea.className + ") > Add item outside task: " + itemNameToAdd);
         },
 
         _handleTextareaKeyUp: function (e) {
@@ -3755,7 +3755,7 @@ CS.Controllers.WorkbookAreaWorkbookItem = React.createClass({displayName: "Workb
         var newItemName = this.$textarea.val().trim();
         this._fetchLatestAccountDataAndUpdateIt(newItemName);
 
-        ga("send", "event", "form", "submit", "Workbook Area > Submit item change");
+        ga("send", "event", "form", "submit", "[" + CS.account.email + "] Workbook Area > Submit item change: " + newItemName);
     },
 
     _handleTextareaKeyUp: function(e) {
@@ -3924,7 +3924,7 @@ CS.Controllers.WorkbookItemAddItemTask = React.createClass({displayName: "Workbo
             this._fetchLatestAccountDataAndUpdateIt(itemNoteToAdd);
         }
 
-        ga("send", "event", "form", "submit", "Workbook Item (" + this.props.workbookItemName + ") > Add note task (" + this.currentWordingPrompt + ") > Add note: " + itemNoteToAdd);
+        ga("send", "event", "form", "submit", "[" + CS.account.email + "] Workbook Item (" + this.props.workbookItemName + ") > Add note task (" + this.currentWordingPrompt + ") > Add note: " + itemNoteToAdd);
     },
 
     _isValid: function(trimmedItemNote) {
@@ -4056,7 +4056,7 @@ CS.Controllers.WorkbookItemCustomTask = React.createClass({displayName: "Workboo
             this._fetchLatestAccountDataAndUpdateIt(itemNoteToAdd);
         }
 
-        ga("send", "event", "form", "submit", "Workbook Item > Custom task > Add note: " + itemNoteToAdd + ". Question was: " + this.props.task.question);
+        ga("send", "event", "form", "submit", "[" + CS.account.email + "] Workbook Item > Custom task > Add note: " + itemNoteToAdd + ". Question was: " + this.props.task.question);
     },
 
     _fetchLatestAccountDataAndUpdateIt: function (itemNoteToAdd) {
@@ -4251,7 +4251,7 @@ CS.Controllers.WorkbookItem = P(function (c) {
 
             CS.Controllers.WorkbookItemCommon.resetAndHideForm(this.$textarea, this._hideForm);
 
-            ga("send", "event", "form", "submit", "Workbook Item > Add note outside task");
+            ga("send", "event", "form", "submit", "[" + CS.account.email + "] Workbook Item > Add note outside task: " + itemNoteToAdd);
         },
 
         _handleTextareaKeyUp: function (e) {
@@ -4427,7 +4427,7 @@ CS.Controllers.WorkbookItemNote = React.createClass({displayName: "WorkbookItemN
         this._hideForm();
         this._fetchLatestAccountDataAndUpdateIt(newItemNote);
 
-        ga("send", "event", "form", "submit", "Workbook Item > Save item change");
+        ga("send", "event", "form", "submit", "[" + CS.account.email + "] Workbook Item > Save item change: " + newItemNote);
     },
 
     _handleTextareaKeyUp: function(e) {
@@ -4596,7 +4596,7 @@ CS.Controllers.WorkbookItemNote = React.createClass({displayName: "WorkbookItemN
                 prompt: "Vad är du bra på?"
             },
             {
-                prompt: "Hur skulle de människor du jobbar med besrkiva dig?"
+                prompt: "Hur tror du att dina kollegor beskriver dig i din yrkesroll?"
             }
         ],
         stepCount: CS.Models.WorkbookAreaTaskCommon.minItemCountForAddItemsLvl1TaskComplete,

@@ -55,7 +55,7 @@ CS.Controllers.OverviewBlueprintAreaComposer = React.createClass({
 
         CS.Controllers.WorkbookAreaCommon.resetAndHideForm(this.$textarea, this._hideForm);
 
-        ga("send", "event", "form", "submit", "Overview > Add item: " + itemNameToAdd);
+        ga("send", "event", "form", "submit", "[" + CS.account.email + "] Overview > Add item: " + itemNameToAdd);
     },
 
     _handleTextareaKeyUp: function (e) {

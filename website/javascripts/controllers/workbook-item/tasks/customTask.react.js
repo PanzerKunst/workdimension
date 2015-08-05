@@ -61,7 +61,7 @@ CS.Controllers.WorkbookItemCustomTask = React.createClass({
             this._fetchLatestAccountDataAndUpdateIt(itemNoteToAdd);
         }
 
-        ga("send", "event", "form", "submit", "Workbook Item > Custom task > Add note: " + itemNoteToAdd + ". Question was: " + this.props.task.question);
+        ga("send", "event", "form", "submit", "[" + CS.account.email + "] Workbook Item > Custom task > Add note: " + itemNoteToAdd + ". Question was: " + this.props.task.question);
     },
 
     _fetchLatestAccountDataAndUpdateIt: function (itemNoteToAdd) {

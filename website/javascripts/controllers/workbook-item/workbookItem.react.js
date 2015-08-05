@@ -122,7 +122,7 @@ CS.Controllers.WorkbookItem = P(function (c) {
 
             CS.Controllers.WorkbookItemCommon.resetAndHideForm(this.$textarea, this._hideForm);
 
-            ga("send", "event", "form", "submit", "Workbook Item > Add note outside task");
+            ga("send", "event", "form", "submit", "[" + CS.account.email + "] Workbook Item > Add note outside task: " + itemNoteToAdd);
         },
 
         _handleTextareaKeyUp: function (e) {

@@ -70,7 +70,7 @@ CS.Controllers.WorkbookItemNote = React.createClass({
         this._hideForm();
         this._fetchLatestAccountDataAndUpdateIt(newItemNote);
 
-        ga("send", "event", "form", "submit", "Workbook Item > Save item change");
+        ga("send", "event", "form", "submit", "[" + CS.account.email + "] Workbook Item > Save item change: " + newItemNote);
     },
 
     _handleTextareaKeyUp: function(e) {

@@ -62,7 +62,7 @@ CS.Controllers.WorkbookAreaCustomTask = React.createClass({
             this._fetchLatestAccountDataAndUpdateIt(itemNameToAdd);
         }
 
-        ga("send", "event", "form", "submit", "Workbook Area > Custom task > Add item: " + itemNameToAdd + ". Question was: " + this.props.task.question);
+        ga("send", "event", "form", "submit", "[" + CS.account.email + "] Workbook Area (" + this.props.workbookArea.className + ") > Custom task > Add item: " + itemNameToAdd + ". Question was: " + this.props.task.question);
     },
 
     _handleTextareaKeyUp: function (e) {
