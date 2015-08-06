@@ -259,6 +259,13 @@ header {
 }
 
 #sign-in-modal {
+  > .modal-dialog {
+    @include large-screen {
+      width: 75%;
+      max-width: $large-content-width;
+    }
+  }
+
   .tracks-intro {
     font-weight: bold;
     margin: 0.5em 1em;

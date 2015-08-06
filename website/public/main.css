@@ -6491,6 +6491,10 @@ header {
 #container.workbook-area-actions-menu-open #content-overlay-when-menu-open, #container.get-started-section-open #content-overlay-when-menu-open {
   display: block; }
 
+@media screen and (min-width: 960px) {
+  #sign-in-modal > .modal-dialog {
+    width: 75%;
+    max-width: 960px; } }
 #sign-in-modal .tracks-intro {
   font-weight: bold;
   margin: 0.5em 1em; }
