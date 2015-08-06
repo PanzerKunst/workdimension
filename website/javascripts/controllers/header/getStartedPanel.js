@@ -64,10 +64,12 @@ CS.Controllers.GetStartedPanel = P(function (c) {
             url: url,
             type: type,
             success: function (data) {
-                CS.account.data = data || {};
+                if (!CS.account.data || !CS.account.data.hasClosedGetStartedPanel) {
+                    CS.account.data = data || {};
 
-                CS.account.data.hasClosedGetStartedPanel = true;
-                CS.saveAccountData();
+                    CS.account.data.hasClosedGetStartedPanel = true;
+                    CS.saveAccountData();
+                }
             },
             error: function () {
                 alert("AJAX failure doing a " + type + " request to \"" + url + "\"");

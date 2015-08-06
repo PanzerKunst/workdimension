@@ -43,10 +43,11 @@ CS.Controllers.WorkbookCommon = {
 
     saveAreaDescriptionAsClosed: function(workbookAreaId) {
         var idOfClosedAreaDescriptionPanels = CS.account.data.idOfClosedAreaDescriptionPanels || [];
+
         if (!_.includes(idOfClosedAreaDescriptionPanels, workbookAreaId)) {
             idOfClosedAreaDescriptionPanels.push(workbookAreaId);
+            CS.account.data.idOfClosedAreaDescriptionPanels = idOfClosedAreaDescriptionPanels;
+            CS.saveAccountData();
         }
-        CS.account.data.idOfClosedAreaDescriptionPanels = idOfClosedAreaDescriptionPanels;
-        CS.saveAccountData();
     }
 };
