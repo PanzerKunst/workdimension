@@ -1188,11 +1188,12 @@ CS.saveAccountData = function (callback) {
 
     saveAreaDescriptionAsClosed: function(workbookAreaId) {
         var idOfClosedAreaDescriptionPanels = CS.account.data.idOfClosedAreaDescriptionPanels || [];
+
         if (!_.includes(idOfClosedAreaDescriptionPanels, workbookAreaId)) {
             idOfClosedAreaDescriptionPanels.push(workbookAreaId);
+            CS.account.data.idOfClosedAreaDescriptionPanels = idOfClosedAreaDescriptionPanels;
+            CS.saveAccountData();
         }
-        CS.account.data.idOfClosedAreaDescriptionPanels = idOfClosedAreaDescriptionPanels;
-        CS.saveAccountData();
     }
 };
 ;CS.Controllers.WorkbookAreaCommon = {
@@ -1416,8 +1417,10 @@ CS.saveAccountData = function (callback) {
             success: function (data) {
                 CS.account.data = data || {};
 
-                CS.account.data.hasClosedGetStartedPanel = true;
-                CS.saveAccountData();
+                if (!CS.account.data.hasClosedGetStartedPanel) {
+                    CS.account.data.hasClosedGetStartedPanel = true;
+                    CS.saveAccountData();
+                }
             },
             error: function () {
                 alert("AJAX failure doing a " + type + " request to \"" + url + "\"");
