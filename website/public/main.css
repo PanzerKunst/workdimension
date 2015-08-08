@@ -6496,11 +6496,11 @@ header {
     width: 75%;
     max-width: 960px; } }
 #sign-in-modal .tracks-intro {
-  font-weight: bold;
-  margin: 0.5em 1em; }
+  margin: 1em 1em 2em 1em; }
 #sign-in-modal .centered-contents {
   margin: 3em 0 3.2em 0; }
   #sign-in-modal .centered-contents > p {
+    font-style: italic;
     text-align: center;
     margin-bottom: 0.5em; }
 #sign-in-modal .sign-in-with-linkedin {

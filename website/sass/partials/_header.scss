@@ -267,14 +267,15 @@ header {
   }
 
   .tracks-intro {
-    font-weight: bold;
-    margin: 0.5em 1em;
+    margin: 1em 1em 2em 1em;
   }
 
   .centered-contents {
     margin: 3em 0 3.2em 0;
 
     > p {
+      font-style: italic;
+
       text-align: center;
       margin-bottom: 0.5em;
     }
